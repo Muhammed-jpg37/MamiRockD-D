@@ -1,0 +1,24 @@
+{
+  "name": "mamirockd-d",
+  "version": "1.0.0",
+  "description": "OZORUN AQ \r İLK AÇTIĞINIZDA RESET EVERYTHING ATALIM LÜTFEN ARKADAŞLAR",
+  "main": "spell-catalog.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Muhammed-jpg37/MamiRockD-D.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Muhammed-jpg37/MamiRockD-D/issues"
+  },
+  "homepage": "https://github.com/Muhammed-jpg37/MamiRockD-D#readme",
+  "dependencies": {
+    "firebase": "^12.19.0"
+  }
+}

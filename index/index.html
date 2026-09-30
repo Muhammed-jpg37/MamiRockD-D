@@ -10036,21 +10036,29 @@
   <!-- FIREBASE SETUP & REAL-TIME INVENTORY SYNC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-analytics.js";
     import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
 
-    // MamiRock D&D Firebase configuration
+    // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyBxAzKHHh3h1H6ELMRO2efynXtkBpMjlPY",
-      authDomain: "mamirockd-d.firebaseapp.com",
-      databaseURL: "https://mamirockd-d-default-rtdb.firebaseio.com",
-      projectId: "mamirockd-d",
-      storageBucket: "mamirockd-d.firebasestorage.app",
-      messagingSenderId: "553038127627",
-      appId: "1:553038127627:web:e62cb280b0e546789c1d0e",
-      measurementId: "G-RXWCRDR7KL"
+      apiKey: "AIzaSyACV3sk-oG_kFLcrsNXwFnLmHIYisMP6j0",
+      authDomain: "mamirockd-d37.firebaseapp.com",
+      databaseURL: "https://mamirockd-d37-default-rtdb.firebaseio.com",
+      projectId: "mamirockd-d37",
+      storageBucket: "mamirockd-d37.firebasestorage.app",
+      messagingSenderId: "655783304075",
+      appId: "1:655783304075:web:ed082166a76e4221caed8e",
+      measurementId: "G-DK8Z13YSGB"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    let analytics = null;
+    try {
+      analytics = getAnalytics(app);
+    } catch (e) {
+      console.warn("Firebase Analytics could not be initialized in this environment:", e);
+    }
     const db = getDatabase(app);
 
     // The path in your database where loot is saved
