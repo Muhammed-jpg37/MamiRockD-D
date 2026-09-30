@@ -1363,8 +1363,10 @@
     <span class="titlebar-sub" id="session-label"></span>
     <div class="titlebar-spacer"></div>
     <button class="tbarbtn" onclick="toggleBgPanel()" id="bg-btn" title="Background">🎨 Background</button>
-    <button class="tbarbtn" onclick="exportNotes()">💾 Export</button>
-    <button class="tbarbtn" onclick="importNotes()">📂 Import</button>
+    <button class="tbarbtn" onclick="exportNotes()" title="Export Notes JSON Backup">💾 Export Notes</button>
+    <button class="tbarbtn" onclick="importNotes()" title="Import Notes JSON Backup">📂 Import Notes</button>
+    <button class="tbarbtn" onclick="exportFullSuiteData()" style="color:var(--gold); border-color:var(--gold);" title="Export Complete Suite Backup (Character, Inventory, Spells & Notes)">👑 Export All</button>
+    <button class="tbarbtn" onclick="importFullSuite()" style="color:var(--gold); border-color:var(--gold);" title="Import Complete Suite Backup">📥 Import All</button>
   </div>
 
   <div class="layout">
@@ -2315,18 +2317,61 @@
       toast('Notes exported ✓');
     }
     function importNotes() { document.getElementById('file-import').click(); }
+    function importFullSuite() { document.getElementById('file-import').click(); }
+
+    function exportFullSuiteData() {
+      let charState = null;
+      try {
+        const raw = localStorage.getItem('dnd_character_sheet_v1');
+        if (raw) charState = JSON.parse(raw);
+      } catch (e) {}
+      const fullBackup = {
+        type: 'dnd_complete_suite_backup',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        characterState: charState,
+        notesState: S,
+        bgState: BG
+      };
+      const blob = new Blob([JSON.stringify(fullBackup, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      const safeName = (charState && (charState.characterName || charState.campaign) || 'dnd').replace(/\s+/g, '_');
+      a.download = `${safeName}_FullSuiteBackup_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('Complete Suite Backup exported ✓');
+    }
+
     function handleImport(input) {
       const file = input.files[0]; if (!file) return;
       const reader = new FileReader();
       reader.onload = e => {
         try {
           const data = JSON.parse(e.target.result);
-          if (!data.cats || !data.notes) throw new Error();
-          if (!confirm('Replace all current notes with the imported data?')) return;
-          S = data;
-          S.notes.forEach(n => { if (!n.images) n.images = []; });
-          S.cats.forEach(c => { if (c.parentId === undefined) c.parentId = null; if (c.order === undefined) c.order = 0; if (c.open === undefined) c.open = true; });
-          save(); render(); toast('Notes imported ✓');
+          if (data.type === 'dnd_complete_suite_backup' && data.notesState) {
+            if (!confirm('This will restore both Campaign Notes and Character/Inventory. Continue?')) return;
+            S = data.notesState;
+            S.notes.forEach(n => { if (!n.images) n.images = []; });
+            S.cats.forEach(c => { if (c.parentId === undefined) c.parentId = null; if (c.order === undefined) c.order = 0; if (c.open === undefined) c.open = true; });
+            save(); render();
+            if (data.characterState) {
+              localStorage.setItem('dnd_character_sheet_v1', JSON.stringify(data.characterState));
+            }
+            if (data.bgState) {
+              BG = Object.assign(BG, data.bgState);
+              applyBg();
+            }
+            toast('Complete Suite Backup restored ✓');
+          } else if (data.cats && data.notes) {
+            if (!confirm('Replace all current notes with the imported data?')) return;
+            S = data;
+            S.notes.forEach(n => { if (!n.images) n.images = []; });
+            S.cats.forEach(c => { if (c.parentId === undefined) c.parentId = null; if (c.order === undefined) c.order = 0; if (c.open === undefined) c.open = true; });
+            save(); render(); toast('Notes imported ✓');
+          } else {
+            throw new Error();
+          }
         } catch { toast('Import failed — invalid file'); }
       };
       reader.readAsText(file); input.value = '';
