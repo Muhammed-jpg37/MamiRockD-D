@@ -4007,6 +4007,17 @@
           </select>
         </div>
         <div class="grid" id="item-grid"></div>
+
+        <!-- REALTIME FIREBASE INVENTORY DISPLAY -->
+        <div class="live-loot-feed" style="margin-top:14px; padding:10px 12px; background:rgba(0,0,0,0.35); border:1px solid var(--gold, #d4af37); border-radius:6px;">
+          <div style="font-size:12px; font-weight:700; color:var(--gold-bright, #ffd700); margin-bottom:8px; display:flex; align-items:center; justify-content:space-between;">
+            <span>⚡ Real-Time Firebase Loot Feed</span>
+            <button class="btn ghost small" style="font-size:11px; padding:2px 8px;" onclick="const itm = prompt('Enter loot item name:'); if(itm && window.addLoot) window.addLoot(itm.trim());">+ Add Loot</button>
+          </div>
+          <div id="inventory-display" style="font-size:13px; color:var(--text, #ddd); max-height:160px; overflow-y:auto;">
+            <p style="color:var(--text-muted, #888); margin:0;">Connecting to Firebase...</p>
+          </div>
+        </div>
       </div>
 
       <!-- COL 4 (FAR RIGHT): Active Effects, Death Saves, Attunement & Details -->
@@ -10006,6 +10017,92 @@
     </div>
   </div>
 
+  <!-- FIREBASE SETUP & REAL-TIME INVENTORY SYNC -->
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js",
+        "firebase/analytics": "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js",
+        "firebase/database": "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "firebase/app";
+    import { getAnalytics } from "firebase/analytics";
+    import { getDatabase, ref, push, set, onValue } from "firebase/database";
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxAzKHHh3h1H6ELMRO2efynXtkBpMjlPY",
+      authDomain: "mamirockd-d.firebaseapp.com",
+      projectId: "mamirockd-d",
+      storageBucket: "mamirockd-d.firebasestorage.app",
+      messagingSenderId: "553038127627",
+      appId: "1:553038127627:web:e62cb280b0e546789c1d0e",
+      measurementId: "G-RXWCRDR7KL"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    let analytics = null;
+    try {
+      analytics = getAnalytics(app);
+    } catch (e) {
+      console.warn("Analytics not initialized in this environment:", e);
+    }
+    const db = getDatabase(app);
+
+    // ==========================================
+    // D&D INVENTORY LOGIC
+    // ==========================================
+
+    // Create a reference path in the database for your character
+    const inventoryRef = ref(db, 'inventory/my_character');
+
+    // FUNCTION: Add an item (DM action)
+    // We attach this to 'window' so standard HTML buttons can trigger it
+    window.addLoot = function(itemName) {
+      if (!itemName) return;
+      const newItemRef = push(inventoryRef); // Generates a unique ID for the new item
+      set(newItemRef, {
+        name: itemName,
+        addedAt: Date.now()
+      });
+    };
+
+    // FUNCTION: Listen for database updates in real-time
+    onValue(inventoryRef, (snapshot) => {
+      const data = snapshot.val();
+      const displayDiv = document.getElementById('inventory-display');
+      
+      if (!displayDiv) return;
+
+      if (!data) {
+        displayDiv.innerHTML = "<p style='color:var(--text-muted); margin:0;'>Inventory is empty.</p>";
+        return;
+      }
+
+      // Convert the database JSON object into HTML list items
+      let html = "<ul style='margin:0; padding-left:18px;'>";
+      for (const itemId in data) {
+        const item = data[itemId];
+        const name = typeof item === 'string' ? item : (item && item.name ? item.name : 'Item');
+        html += `<li>${name}</li>`;
+      }
+      html += "</ul>";
+      
+      displayDiv.innerHTML = html;
+    });
+
+    // Attach instances to window for console/DM use
+    window.firebaseApp = app;
+    window.firebaseDb = db;
+    window.inventoryRef = inventoryRef;
+  </script>
 </body>
 
 </html>
