@@ -4599,25 +4599,9 @@
           </select>
         </div>
         <div class="grid" id="item-grid"></div>
-
-        <!-- REALTIME FIREBASE INVENTORY DISPLAY -->
-        <div class="live-loot-feed"
-          style="margin-top:14px; padding:10px 12px; background:rgba(0,0,0,0.35); border:1px solid var(--gold, #d4af37); border-radius:6px;">
-          <div
-            style="font-size:12px; font-weight:700; color:var(--gold-bright, #ffd700); margin-bottom:8px; display:flex; align-items:center; justify-content:space-between;">
-            <span>⚡ Real-Time Firebase Loot Feed</span>
-            <button class="btn ghost small" style="font-size:11px; padding:2px 8px;"
-              onclick="const itm = prompt('Enter loot item name:'); if(itm && window.addLoot) window.addLoot(itm.trim());">+
-              Add Loot</button>
-          </div>
-          <div id="inventory-display"
-            style="font-size:13px; color:var(--text, #ddd); max-height:160px; overflow-y:auto;">
-            <p style="color:var(--text-muted, #888); margin:0;">Connecting to Firebase...</p>
-          </div>
-        </div>
       </div>
 
-      <!-- COL 4 (FAR RIGHT): Active Effects, Death Saves, Attunement & Details -->
+<!-- COL 4 (FAR RIGHT): Active Effects, Death Saves, Attunement & Details -->
       <div class="panel side-trackers-column">
         <div class="active-effects-panel" style="margin-bottom:12px;">
           <div class="active-effects-head"
@@ -5326,6 +5310,17 @@
     }
 
     let state = getDefaultState('Default');
+    window.getState = function() { return state; };
+    window.applyCloudInventory = function(targetNickname, cloudState) {
+      if (!cloudState) return;
+      state = Object.assign(getDefaultState(targetNickname), cloudState);
+      const localKey = STORAGE_INV_PREFIX + targetNickname.toLowerCase();
+      try {
+        localStorage.setItem(localKey, JSON.stringify(state));
+      } catch (e) { }
+      normalizeState();
+      renderAll();
+    };
 
     const THEMES = {
       leather: { label: 'Leather', void: '#100b08', panel: '#1c150f', panel2: '#251c14', panel3: '#2e2318', border: '#4a3a24', borderBright: '#8a6d3b', gold: '#c9a227', goldBright: '#e8cf7a', text: '#e9e0c8', textDim: '#a89876', textFaint: '#6e6248' },
@@ -9257,8 +9252,14 @@
         state.attunements.slots = state.attunements.slots.map(slot => slot === editId ? null : slot);
       }
       save();
+      if (typeof window.fbSaveInventoryInstant === 'function') {
+        window.fbSaveInventoryInstant(activeInventoryUser || (currentUser ? currentUser.nickname : 'DM'), state);
+      }
       closeItemModal();
       renderAll();
+      if (typeof toast === 'function') {
+        toast('✨ Item "' + data.name + '" added to ' + (activeInventoryUser || 'inventory') + ' and synced to cloud!', 3000);
+      }
     }
 
     function openSettings() {
@@ -11292,16 +11293,16 @@
     }
 
     /* ========================================================
-       2. INVENTORIES & STATS & TRAITS SYNCHRONIZATION
+       2. NORMAL INVENTORIES & ITEMS SYNCHRONIZATION
+       When an item is added, it is sent to db and owner sees it
        ======================================================== */
     let invDebounceTimer = null;
-    window.fbSaveInventory = function(targetNickname, invState) {
+    window.fbSaveInventory = function(targetNickname, invState, immediate = false) {
       if (!db || !targetNickname || !invState) return;
       const key = targetNickname.toLowerCase();
-      updateSyncBadge('syncing', '🔄 Syncing Sheet...');
+      updateSyncBadge('syncing', '🔄 Syncing Items...');
 
-      clearTimeout(invDebounceTimer);
-      invDebounceTimer = setTimeout(() => {
+      const doSave = () => {
         const payload = cleanData(invState);
         set(ref(db, 'inventories/' + key), payload)
           .then(() => {
@@ -11311,7 +11312,19 @@
             console.warn("Firebase inventory save error:", err);
             updateSyncBadge('offline', '⚠️ Sync Warning');
           });
-      }, 300);
+      };
+
+      if (immediate) {
+        clearTimeout(invDebounceTimer);
+        doSave();
+      } else {
+        clearTimeout(invDebounceTimer);
+        invDebounceTimer = setTimeout(doSave, 250);
+      }
+    };
+
+    window.fbSaveInventoryInstant = function(targetNickname, invState) {
+      window.fbSaveInventory(targetNickname, invState, true);
     };
 
     let currentActiveInventoryListener = null;
@@ -11320,11 +11333,13 @@
     window.fbListenToInventory = function(targetNickname) {
       if (!db || !targetNickname) return;
       const pathKey = 'inventories/' + targetNickname.toLowerCase();
-      if (currentListenerPath === pathKey) return;
 
-      if (currentActiveInventoryListener) {
-        off(currentActiveInventoryListener);
+      if (currentListenerPath === pathKey) return; // already listening
+
+      if (currentActiveInventoryListener && currentListenerPath) {
+        off(ref(db, currentListenerPath));
         currentActiveInventoryListener = null;
+        currentListenerPath = null;
       }
 
       currentListenerPath = pathKey;
@@ -11333,26 +11348,36 @@
 
       // Seed cloud from local if cloud is empty
       get(targetRef).then((snapshot) => {
-        if (!snapshot.exists() && window.state && window.activeInventoryUser && window.activeInventoryUser.toLowerCase() === targetNickname.toLowerCase()) {
-          console.log("Seeding inventory to Firebase cloud for:", targetNickname);
-          window.fbSaveInventory(targetNickname, window.state);
+        if (!snapshot.exists()) {
+          const currentLocal = window.getState ? window.getState() : window.state;
+          if (currentLocal && window.activeInventoryUser && window.activeInventoryUser.toLowerCase() === targetNickname.toLowerCase()) {
+            console.log("Seeding inventory to Firebase cloud for:", targetNickname);
+            window.fbSaveInventoryInstant(targetNickname, currentLocal);
+          }
         }
       });
 
+      // Real-time listener: when any item is added or edited in this inventory, update view immediately!
       onValue(targetRef, (snapshot) => {
         const cloudState = snapshot.val();
         if (cloudState && window.activeInventoryUser && window.activeInventoryUser.toLowerCase() === targetNickname.toLowerCase()) {
-          // Compare to prevent feedback loops
-          const localStr = JSON.stringify(cleanData(window.state));
-          const cloudStr = JSON.stringify(cloudState);
+          const currentLocal = window.getState ? window.getState() : window.state;
+          const localStr = JSON.stringify(cleanData(currentLocal));
+          const cloudStr = JSON.stringify(cleanData(cloudState));
+
           if (localStr !== cloudStr) {
+            console.log("⚡ Real-time inventory sync received from Firebase for:", targetNickname);
             window.isSyncingFromCloud = true;
             try {
-              window.state = Object.assign(window.getDefaultState(targetNickname), cloudState);
-              const localKey = 'hoard_inv_user_' + targetNickname.toLowerCase();
-              localStorage.setItem(localKey, JSON.stringify(window.state));
-              if (typeof window.normalizeState === 'function') window.normalizeState();
-              if (typeof window.renderAll === 'function') window.renderAll();
+              if (typeof window.applyCloudInventory === 'function') {
+                window.applyCloudInventory(targetNickname, cloudState);
+              } else {
+                window.state = Object.assign(window.getDefaultState(targetNickname), cloudState);
+                const localKey = 'hoard_inv_user_' + targetNickname.toLowerCase();
+                localStorage.setItem(localKey, JSON.stringify(window.state));
+                if (typeof window.normalizeState === 'function') window.normalizeState();
+                if (typeof window.renderAll === 'function') window.renderAll();
+              }
               updateSyncBadge('online', '⚡ Live Cloud Updated');
               setTimeout(() => updateSyncBadge('online', '🟢 Firebase Live'), 2000);
             } catch(err) {
@@ -11365,7 +11390,7 @@
     };
 
     /* ========================================================
-       3. CAMPAIGN NOTES SYNCHRONIZATION (WORKSPACE & DRAWINGS)
+       3. CAMPAIGN NOTES SYNCHRONIZATION
        ======================================================== */
     let notesDebounceTimer = null;
     window.fbSaveNotes = function(notesState) {
@@ -11388,7 +11413,6 @@
     if (db) {
       const notesRef = ref(db, 'campaign_notes/workspace');
 
-      // Seed local notes to Firebase if cloud is empty
       get(notesRef).then((snapshot) => {
         if (!snapshot.exists() && window.S && window.S.notes && window.S.notes.length > 0) {
           console.log("Seeding campaign notes to Firebase cloud...");
@@ -11396,7 +11420,6 @@
         }
       });
 
-      // Realtime listener for shared campaign notes
       onValue(notesRef, (snapshot) => {
         const cloudNotes = snapshot.val();
         if (cloudNotes && typeof cloudNotes === 'object' && cloudNotes.cats && cloudNotes.notes) {
@@ -11437,44 +11460,6 @@
             if (typeof window.applyBg === 'function') window.applyBg();
           }
         }
-      });
-    }
-
-    /* ========================================================
-       5. PARTY SHARED LOOT (LEGACY & EXTENSION)
-       ======================================================== */
-    const partyLootRef = db ? ref(db, 'inventory/party_loot') : null;
-    window.inventoryRef = partyLootRef;
-
-    window.addLoot = function (itemName) {
-      if (!itemName || !partyLootRef) return;
-      const newItemRef = push(partyLootRef);
-      set(newItemRef, { name: itemName, addedAt: Date.now() })
-        .then(() => {
-          console.log("Firebase: loot added successfully ->", itemName);
-        })
-        .catch((err) => {
-          console.error("Firebase write error:", err);
-        });
-    };
-
-    if (partyLootRef) {
-      onValue(partyLootRef, (snapshot) => {
-        const data = snapshot.val();
-        const displayDiv = document.getElementById('inventory-display');
-        if (!displayDiv) return;
-        if (!data) {
-          displayDiv.innerHTML = "<p style='color:var(--text-muted); margin:0;'>Inventory is empty.</p>";
-          return;
-        }
-        let html = "<ul style='margin:0; padding-left:20px;'>";
-        for (const itemId in data) {
-          const item = data[itemId];
-          const name = typeof item === 'string' ? item : (item && item.name ? item.name : 'Item');
-          html += `<li style='margin-bottom:4px;'>${name}</li>`;
-        }
-        html += "</ul>";
-        displayDiv.innerHTML = html;
       });
     }
 

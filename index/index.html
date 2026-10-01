@@ -3857,26 +3857,23 @@
       backdrop-filter: blur(10px);
       transition: opacity 0.3s ease, visibility 0.3s ease;
     }
-
     #auth-portal-screen.auth-hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
-
     .auth-card {
       width: 100%;
       max-width: 440px;
       background: var(--panel);
       border: 2px solid var(--border-bright);
       border-radius: 12px;
-      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(201, 162, 39, 0.25), inset 0 0 30px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(201, 162, 39, 0.25), inset 0 0 30px rgba(0,0,0,0.7);
       padding: 32px 36px;
       position: relative;
       color: var(--text);
       font-family: 'Spectral', serif;
     }
-
     .auth-card::before {
       content: '';
       position: absolute;
@@ -3885,42 +3882,30 @@
       border-radius: 8px;
       pointer-events: none;
     }
-
     .auth-header {
       text-align: center;
       margin-bottom: 24px;
       position: relative;
     }
-
     .auth-emblem {
       font-size: 38px;
       margin-bottom: 6px;
       filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.5));
       animation: authGlow 3s ease-in-out infinite alternate;
     }
-
     @keyframes authGlow {
-      from {
-        transform: scale(1);
-        filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.4));
-      }
-
-      to {
-        transform: scale(1.05);
-        filter: drop-shadow(0 0 16px rgba(232, 207, 122, 0.8));
-      }
+      from { transform: scale(1); filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.4)); }
+      to { transform: scale(1.05); filter: drop-shadow(0 0 16px rgba(232, 207, 122, 0.8)); }
     }
-
     .auth-title {
       font-family: 'Cinzel', serif;
       font-size: 24px;
       font-weight: 900;
       letter-spacing: 2px;
       color: var(--gold-bright);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
       margin: 0;
     }
-
     .auth-subtitle {
       font-size: 13px;
       color: var(--text-dim);
@@ -3928,14 +3913,12 @@
       margin-top: 4px;
       letter-spacing: 0.5px;
     }
-
     .auth-tabs {
       display: flex;
       border-bottom: 1px solid var(--border);
       margin-bottom: 20px;
       gap: 8px;
     }
-
     .auth-tab-btn {
       flex: 1;
       background: transparent;
@@ -3950,18 +3933,15 @@
       transition: all 0.2s ease;
       letter-spacing: 1px;
     }
-
     .auth-tab-btn.active {
       color: var(--gold-bright);
       border-bottom-color: var(--gold);
       background: rgba(201, 162, 39, 0.08);
       border-radius: 4px 4px 0 0;
     }
-
     .auth-form-group {
       margin-bottom: 16px;
     }
-
     .auth-label {
       display: block;
       font-size: 12px;
@@ -3971,13 +3951,11 @@
       letter-spacing: 1px;
       margin-bottom: 6px;
     }
-
     .auth-input-wrap {
       position: relative;
       display: flex;
       align-items: center;
     }
-
     .auth-input-icon {
       position: absolute;
       left: 12px;
@@ -3985,7 +3963,6 @@
       color: var(--text-faint);
       pointer-events: none;
     }
-
     .auth-input {
       width: 100%;
       background: rgba(0, 0, 0, 0.45);
@@ -3998,12 +3975,10 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-
     .auth-input:focus {
       border-color: var(--gold);
       box-shadow: 0 0 8px rgba(201, 162, 39, 0.4);
     }
-
     .auth-pw-toggle {
       position: absolute;
       right: 10px;
@@ -4014,34 +3989,29 @@
       font-size: 14px;
       padding: 4px;
     }
-
     .auth-pw-toggle:hover {
       color: var(--gold-bright);
     }
-
     .auth-role-select {
       display: flex;
       gap: 10px;
       margin-top: 4px;
     }
-
     .auth-role-card {
       flex: 1;
       border: 1px solid var(--border);
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0,0,0,0.3);
       border-radius: 6px;
       padding: 10px;
       cursor: pointer;
       text-align: center;
       transition: all 0.2s;
     }
-
     .auth-role-card.selected {
       border-color: var(--gold);
       background: rgba(201, 162, 39, 0.15);
       box-shadow: 0 0 8px rgba(201, 162, 39, 0.3);
     }
-
     .auth-role-card .role-title {
       font-family: 'Cinzel', serif;
       font-size: 12px;
@@ -4049,13 +4019,11 @@
       color: var(--gold-bright);
       margin-bottom: 3px;
     }
-
     .auth-role-card .role-desc {
       font-size: 10px;
       color: var(--text-dim);
       line-height: 1.2;
     }
-
     .auth-btn-submit {
       width: 100%;
       background: linear-gradient(135deg, #a8811f 0%, #d8b038 50%, #997217 100%);
@@ -4069,20 +4037,17 @@
       letter-spacing: 1.5px;
       cursor: pointer;
       margin-top: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       transition: all 0.2s ease;
     }
-
     .auth-btn-submit:hover {
       filter: brightness(1.15);
       transform: translateY(-1px);
       box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
     }
-
     .auth-btn-submit:active {
       transform: translateY(1px);
     }
-
     .auth-msg {
       margin-top: 12px;
       padding: 8px 12px;
@@ -4091,28 +4056,24 @@
       text-align: center;
       display: none;
     }
-
     .auth-msg.error {
       display: block;
       background: rgba(168, 60, 50, 0.25);
       border: 1px solid var(--danger);
       color: var(--danger-bright);
     }
-
     .auth-msg.success {
       display: block;
       background: rgba(74, 143, 79, 0.25);
       border: 1px solid var(--success);
       color: #4ade80;
     }
-
     .auth-quick-demo {
       margin-top: 20px;
       border-top: 1px dashed var(--border);
       padding-top: 14px;
       text-align: center;
     }
-
     .auth-quick-demo-title {
       font-size: 11px;
       color: var(--text-dim);
@@ -4120,16 +4081,14 @@
       letter-spacing: 1px;
       margin-bottom: 8px;
     }
-
     .auth-demo-pills {
       display: flex;
       justify-content: center;
       gap: 8px;
       flex-wrap: wrap;
     }
-
     .auth-demo-pill {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0,0,0,0.5);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 4px 10px;
@@ -4138,7 +4097,6 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-
     .auth-demo-pill:hover {
       border-color: var(--gold);
       background: rgba(201, 162, 39, 0.15);
@@ -4155,7 +4113,6 @@
       border-radius: 20px;
       padding: 3px 8px 3px 12px;
     }
-
     .auth-user-badge {
       display: flex;
       align-items: center;
@@ -4163,12 +4120,10 @@
       font-size: 12px;
       color: var(--text);
     }
-
     .auth-user-badge strong {
       color: var(--gold-bright);
       font-family: 'Cinzel', serif;
     }
-
     .auth-user-role-tag {
       font-size: 10px;
       text-transform: uppercase;
@@ -4176,13 +4131,11 @@
       padding: 1px 6px;
       border-radius: 10px;
     }
-
     .auth-user-role-tag.dm {
       background: rgba(201, 162, 39, 0.25);
       border: 1px solid var(--gold);
       color: var(--gold-bright);
     }
-
     .auth-user-role-tag.player {
       background: rgba(59, 142, 196, 0.25);
       border: 1px solid var(--rare);
@@ -4200,9 +4153,8 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(201, 162, 39, 0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 15px rgba(201,162,39,0.15);
     }
-
     .dm-control-badge {
       font-family: 'Cinzel', serif;
       font-size: 12px;
@@ -4213,12 +4165,10 @@
       gap: 6px;
       letter-spacing: 1px;
     }
-
     .dm-control-label {
       font-size: 12px;
       color: var(--text-dim);
     }
-
     .dm-player-dropdown {
       background: #150f0a;
       border: 1px solid var(--border-bright);
@@ -4231,21 +4181,18 @@
       outline: none;
       cursor: pointer;
     }
-
     .dm-player-dropdown:focus {
       border-color: var(--gold);
       box-shadow: 0 0 6px rgba(201, 162, 39, 0.4);
     }
-
     .dm-status-tag {
       font-size: 11px;
       color: var(--text-dim);
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0,0,0,0.4);
       padding: 4px 8px;
       border-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255,255,255,0.08);
     }
-
     .dm-inspecting-banner {
       background: linear-gradient(90deg, rgba(201, 162, 39, 0.2), rgba(30, 20, 10, 0.4));
       border: 1px solid var(--gold);
@@ -4256,9 +4203,8 @@
       align-items: center;
       font-size: 12px;
       color: var(--gold-bright);
-      box-shadow: 0 0 10px rgba(201, 162, 39, 0.2);
+      box-shadow: 0 0 10px rgba(201,162,39,0.2);
     }
-
     .dm-inspecting-banner strong {
       color: #fff;
     }
@@ -4281,7 +4227,6 @@
       transition: all 0.3s ease;
       user-select: none;
     }
-
     .cloud-sync-badge .sync-dot {
       width: 7px;
       height: 7px;
@@ -4291,48 +4236,32 @@
       display: inline-block;
       animation: syncPulse 2.5s infinite ease-in-out;
     }
-
     @keyframes syncPulse {
-      0% {
-        opacity: 0.6;
-        transform: scale(0.9);
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.15);
-        box-shadow: 0 0 10px #4ade80;
-      }
-
-      100% {
-        opacity: 0.6;
-        transform: scale(0.9);
-      }
+      0% { opacity: 0.6; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 10px #4ade80; }
+      100% { opacity: 0.6; transform: scale(0.9); }
     }
-
     .cloud-sync-badge.syncing {
       color: #facc15;
       background: rgba(250, 204, 21, 0.15);
       border-color: rgba(250, 204, 21, 0.4);
     }
-
     .cloud-sync-badge.syncing .sync-dot {
       background: #eab308;
       box-shadow: 0 0 8px #facc15;
       animation: spin 0.8s linear infinite;
     }
-
     .cloud-sync-badge.offline {
       color: #f87171;
       background: rgba(248, 113, 113, 0.15);
       border-color: rgba(248, 113, 113, 0.4);
     }
-
     .cloud-sync-badge.offline .sync-dot {
       background: #ef4444;
       box-shadow: none;
       animation: none;
     }
+
   </style>
 
 
@@ -4349,10 +4278,8 @@
       </div>
 
       <div class="auth-tabs">
-        <button type="button" class="auth-tab-btn active" id="auth-tab-login" onclick="switchAuthTab('login')">🔑 Sign
-          In</button>
-        <button type="button" class="auth-tab-btn" id="auth-tab-register" onclick="switchAuthTab('register')">📜 Create
-          Account</button>
+        <button type="button" class="auth-tab-btn active" id="auth-tab-login" onclick="switchAuthTab('login')">🔑 Sign In</button>
+        <button type="button" class="auth-tab-btn" id="auth-tab-register" onclick="switchAuthTab('register')">📜 Create Account</button>
       </div>
 
       <form id="auth-form" onsubmit="handleAuthSubmit(event)">
@@ -4360,8 +4287,7 @@
           <label class="auth-label" for="auth-nickname">Nickname</label>
           <div class="auth-input-wrap">
             <span class="auth-input-icon">👤</span>
-            <input type="text" id="auth-nickname" class="auth-input" placeholder="Enter character or DM nickname"
-              autocomplete="username" required>
+            <input type="text" id="auth-nickname" class="auth-input" placeholder="Enter character or DM nickname" autocomplete="username" required>
           </div>
         </div>
 
@@ -4369,10 +4295,8 @@
           <label class="auth-label" for="auth-password">Password</label>
           <div class="auth-input-wrap">
             <span class="auth-input-icon">🔒</span>
-            <input type="password" id="auth-password" class="auth-input" placeholder="Enter password"
-              autocomplete="current-password" required>
-            <button type="button" class="auth-pw-toggle" onclick="toggleAuthPasswordVisibility()"
-              title="Show/Hide Password">👁️</button>
+            <input type="password" id="auth-password" class="auth-input" placeholder="Enter password" autocomplete="current-password" required>
+            <button type="button" class="auth-pw-toggle" onclick="toggleAuthPasswordVisibility()" title="Show/Hide Password">👁️</button>
           </div>
         </div>
 
@@ -4400,10 +4324,8 @@
         <div class="auth-quick-demo-title">⚡ Quick Test Accounts (Password: 123)</div>
         <div class="auth-demo-pills">
           <button type="button" class="auth-demo-pill" onclick="quickFillAuth('DM', '123')">👑 DM (Master)</button>
-          <button type="button" class="auth-demo-pill" onclick="quickFillAuth('Gimli', '123')">🛡️ Gimli
-            (Player)</button>
-          <button type="button" class="auth-demo-pill" onclick="quickFillAuth('Legolas', '123')">🛡️ Legolas
-            (Player)</button>
+          <button type="button" class="auth-demo-pill" onclick="quickFillAuth('Gimli', '123')">🛡️ Gimli (Player)</button>
+          <button type="button" class="auth-demo-pill" onclick="quickFillAuth('Legolas', '123')">🛡️ Legolas (Player)</button>
         </div>
       </div>
     </div>
@@ -4417,8 +4339,7 @@
         <button class="btn-close" onclick="closeDmCreatePlayerModal()">✕</button>
       </div>
       <div class="modal-body">
-        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;">Create an individual account and
-          inventory for a player at your table.</div>
+        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;">Create an individual account and inventory for a player at your table.</div>
         <div class="field" style="margin-bottom: 12px;">
           <label>Player Nickname</label>
           <input type="text" id="dm-new-player-nickname" placeholder="e.g. Aragorn">
@@ -4450,8 +4371,7 @@
         <button class="btn-close" onclick="closeDmGiftLootModal()">✕</button>
       </div>
       <div class="modal-body">
-        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;" id="dm-gift-target-desc">Give an item
-          or coins directly to the active player's inventory.</div>
+        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;" id="dm-gift-target-desc">Give an item or coins directly to the active player's inventory.</div>
         <div class="field" style="margin-bottom: 12px;">
           <label>Item Name</label>
           <input type="text" id="dm-gift-item-name" placeholder="e.g. Potion of Greater Healing">
@@ -4501,19 +4421,18 @@
       </div>
       <div class="header-stats">
         <!-- USER SESSION BADGE -->
-        <!-- REALTIME FIREBASE STATUS BADGE -->
-        <div class="cloud-sync-badge" id="cloud-sync-badge" title="Firebase Realtime Database: Connected & Live">
-          <span class="sync-dot"></span>
-          <span id="cloud-sync-text">🟢 Firebase Live</span>
-        </div>
+                  <!-- REALTIME FIREBASE STATUS BADGE -->
+          <div class="cloud-sync-badge" id="cloud-sync-badge" title="Firebase Realtime Database: Connected & Live">
+            <span class="sync-dot"></span>
+            <span id="cloud-sync-text">🟢 Firebase Live</span>
+          </div>
         <div class="auth-user-bar" id="auth-user-bar">
           <div class="auth-user-badge" id="auth-user-info">
             <span id="auth-user-icon">👤</span>
             <strong id="auth-user-name">Adventurer</strong>
             <span id="auth-user-role" class="auth-user-role-tag player">Player</span>
           </div>
-          <button type="button" class="btn ghost small" style="padding:3px 8px; font-size:11px;"
-            onclick="logoutCurrentUser()" title="Log out / Switch User">🚪 Exit</button>
+          <button type="button" class="btn ghost small" style="padding:3px 8px; font-size:11px;" onclick="logoutCurrentUser()" title="Log out / Switch User">🚪 Exit</button>
         </div>
 
         <!-- HP TRACKER WIDGET -->
@@ -4564,7 +4483,7 @@
       </div>
     </div>
 
-    <!-- DM CONTROL BAR (Visible only to Dungeon Master) -->
+        <!-- DM CONTROL BAR (Visible only to Dungeon Master) -->
     <div id="dm-control-bar" class="dm-control-bar" style="display: none;">
       <div class="dm-control-badge">👑 DUNGEON MASTER PANEL</div>
       <div class="dm-control-label">Viewing Inventory:</div>
@@ -4572,10 +4491,8 @@
         <!-- Populated dynamically -->
       </select>
       <div id="dm-status-tag" class="dm-status-tag">Inspecting: Self</div>
-      <button type="button" class="btn small" style="font-size:11px; padding:4px 10px;"
-        onclick="openDmGiftLootModal()">🎁 Gift Loot</button>
-      <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;"
-        onclick="openDmCreatePlayerModal()">+ New Player</button>
+      <button type="button" class="btn small" style="font-size:11px; padding:4px 10px;" onclick="openDmGiftLootModal()">🎁 Gift Loot</button>
+      <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="openDmCreatePlayerModal()">+ New Player</button>
     </div>
     <div class="layout" id="inventory-view-container">
       <!-- COL 1 (FAR LEFT): Character Stats & Bonuses Panel -->
@@ -4639,10 +4556,8 @@
         <div class="panel-title">Inventory</div>
         <!-- DM INSPECTION NOTIFICATION BANNER -->
         <div id="dm-inspecting-notice" class="dm-inspecting-banner" style="display: none;">
-          <span>👑 <strong>DM OVERRIDE:</strong> Currently inspecting &amp; editing <span
-              id="dm-inspecting-target-name">Player</span>'s inventory. All changes save live!</span>
-          <button type="button" class="btn ghost small" style="margin-left:auto; padding:2px 8px; font-size:11px;"
-            onclick="dmSwitchActivePlayer('__dm__')">↩ Return to My Vault</button>
+          <span>👑 <strong>DM OVERRIDE:</strong> Currently inspecting &amp; editing <span id="dm-inspecting-target-name">Player</span>'s inventory. All changes save live!</span>
+          <button type="button" class="btn ghost small" style="margin-left:auto; padding:2px 8px; font-size:11px;" onclick="dmSwitchActivePlayer('__dm__')">↩ Return to My Vault</button>
         </div>
 
         <div class="toolbar">
@@ -4684,25 +4599,9 @@
           </select>
         </div>
         <div class="grid" id="item-grid"></div>
-
-        <!-- REALTIME FIREBASE INVENTORY DISPLAY -->
-        <div class="live-loot-feed"
-          style="margin-top:14px; padding:10px 12px; background:rgba(0,0,0,0.35); border:1px solid var(--gold, #d4af37); border-radius:6px;">
-          <div
-            style="font-size:12px; font-weight:700; color:var(--gold-bright, #ffd700); margin-bottom:8px; display:flex; align-items:center; justify-content:space-between;">
-            <span>⚡ Real-Time Firebase Loot Feed</span>
-            <button class="btn ghost small" style="font-size:11px; padding:2px 8px;"
-              onclick="const itm = prompt('Enter loot item name:'); if(itm && window.addLoot) window.addLoot(itm.trim());">+
-              Add Loot</button>
-          </div>
-          <div id="inventory-display"
-            style="font-size:13px; color:var(--text, #ddd); max-height:160px; overflow-y:auto;">
-            <p style="color:var(--text-muted, #888); margin:0;">Connecting to Firebase...</p>
-          </div>
-        </div>
       </div>
 
-      <!-- COL 4 (FAR RIGHT): Active Effects, Death Saves, Attunement & Details -->
+<!-- COL 4 (FAR RIGHT): Active Effects, Death Saves, Attunement & Details -->
       <div class="panel side-trackers-column">
         <div class="active-effects-panel" style="margin-bottom:12px;">
           <div class="active-effects-head"
@@ -5411,6 +5310,17 @@
     }
 
     let state = getDefaultState('Default');
+    window.getState = function() { return state; };
+    window.applyCloudInventory = function(targetNickname, cloudState) {
+      if (!cloudState) return;
+      state = Object.assign(getDefaultState(targetNickname), cloudState);
+      const localKey = STORAGE_INV_PREFIX + targetNickname.toLowerCase();
+      try {
+        localStorage.setItem(localKey, JSON.stringify(state));
+      } catch (e) { }
+      normalizeState();
+      renderAll();
+    };
 
     const THEMES = {
       leather: { label: 'Leather', void: '#100b08', panel: '#1c150f', panel2: '#251c14', panel3: '#2e2318', border: '#4a3a24', borderBright: '#8a6d3b', gold: '#c9a227', goldBright: '#e8cf7a', text: '#e9e0c8', textDim: '#a89876', textFaint: '#6e6248' },
@@ -9342,8 +9252,14 @@
         state.attunements.slots = state.attunements.slots.map(slot => slot === editId ? null : slot);
       }
       save();
+      if (typeof window.fbSaveInventoryInstant === 'function') {
+        window.fbSaveInventoryInstant(activeInventoryUser || (currentUser ? currentUser.nickname : 'DM'), state);
+      }
       closeItemModal();
       renderAll();
+      if (typeof toast === 'function') {
+        toast('✨ Item "' + data.name + '" added to ' + (activeInventoryUser || 'inventory') + ' and synced to cloud!', 3000);
+      }
     }
 
     function openSettings() {
@@ -11305,7 +11221,7 @@
     /* ========================================================
        1. ACCOUNTS SYNCHRONIZATION (TWO-WAY LIVE SYNC)
        ======================================================== */
-    window.fbSaveAccount = function (acc) {
+    window.fbSaveAccount = function(acc) {
       if (!db || !acc || !acc.nickname) return;
       const key = acc.nickname.toLowerCase();
       updateSyncBadge('syncing', '🔄 Saving Account...');
@@ -11355,7 +11271,7 @@
           try {
             const raw = localStorage.getItem('dnd_accounts_v1');
             if (raw) localAccounts = JSON.parse(raw);
-          } catch (e) { }
+          } catch(e) {}
 
           let changed = false;
           Object.keys(data).forEach(k => {
@@ -11377,16 +11293,16 @@
     }
 
     /* ========================================================
-       2. INVENTORIES & STATS & TRAITS SYNCHRONIZATION
+       2. NORMAL INVENTORIES & ITEMS SYNCHRONIZATION
+       When an item is added, it is sent to db and owner sees it
        ======================================================== */
     let invDebounceTimer = null;
-    window.fbSaveInventory = function (targetNickname, invState) {
+    window.fbSaveInventory = function(targetNickname, invState, immediate = false) {
       if (!db || !targetNickname || !invState) return;
       const key = targetNickname.toLowerCase();
-      updateSyncBadge('syncing', '🔄 Syncing Sheet...');
+      updateSyncBadge('syncing', '🔄 Syncing Items...');
 
-      clearTimeout(invDebounceTimer);
-      invDebounceTimer = setTimeout(() => {
+      const doSave = () => {
         const payload = cleanData(invState);
         set(ref(db, 'inventories/' + key), payload)
           .then(() => {
@@ -11396,20 +11312,34 @@
             console.warn("Firebase inventory save error:", err);
             updateSyncBadge('offline', '⚠️ Sync Warning');
           });
-      }, 300);
+      };
+
+      if (immediate) {
+        clearTimeout(invDebounceTimer);
+        doSave();
+      } else {
+        clearTimeout(invDebounceTimer);
+        invDebounceTimer = setTimeout(doSave, 250);
+      }
+    };
+
+    window.fbSaveInventoryInstant = function(targetNickname, invState) {
+      window.fbSaveInventory(targetNickname, invState, true);
     };
 
     let currentActiveInventoryListener = null;
     let currentListenerPath = null;
 
-    window.fbListenToInventory = function (targetNickname) {
+    window.fbListenToInventory = function(targetNickname) {
       if (!db || !targetNickname) return;
       const pathKey = 'inventories/' + targetNickname.toLowerCase();
-      if (currentListenerPath === pathKey) return;
 
-      if (currentActiveInventoryListener) {
-        off(currentActiveInventoryListener);
+      if (currentListenerPath === pathKey) return; // already listening
+
+      if (currentActiveInventoryListener && currentListenerPath) {
+        off(ref(db, currentListenerPath));
         currentActiveInventoryListener = null;
+        currentListenerPath = null;
       }
 
       currentListenerPath = pathKey;
@@ -11418,29 +11348,39 @@
 
       // Seed cloud from local if cloud is empty
       get(targetRef).then((snapshot) => {
-        if (!snapshot.exists() && window.state && window.activeInventoryUser && window.activeInventoryUser.toLowerCase() === targetNickname.toLowerCase()) {
-          console.log("Seeding inventory to Firebase cloud for:", targetNickname);
-          window.fbSaveInventory(targetNickname, window.state);
+        if (!snapshot.exists()) {
+          const currentLocal = window.getState ? window.getState() : window.state;
+          if (currentLocal && window.activeInventoryUser && window.activeInventoryUser.toLowerCase() === targetNickname.toLowerCase()) {
+            console.log("Seeding inventory to Firebase cloud for:", targetNickname);
+            window.fbSaveInventoryInstant(targetNickname, currentLocal);
+          }
         }
       });
 
+      // Real-time listener: when any item is added or edited in this inventory, update view immediately!
       onValue(targetRef, (snapshot) => {
         const cloudState = snapshot.val();
         if (cloudState && window.activeInventoryUser && window.activeInventoryUser.toLowerCase() === targetNickname.toLowerCase()) {
-          // Compare to prevent feedback loops
-          const localStr = JSON.stringify(cleanData(window.state));
-          const cloudStr = JSON.stringify(cloudState);
+          const currentLocal = window.getState ? window.getState() : window.state;
+          const localStr = JSON.stringify(cleanData(currentLocal));
+          const cloudStr = JSON.stringify(cleanData(cloudState));
+
           if (localStr !== cloudStr) {
+            console.log("⚡ Real-time inventory sync received from Firebase for:", targetNickname);
             window.isSyncingFromCloud = true;
             try {
-              window.state = Object.assign(window.getDefaultState(targetNickname), cloudState);
-              const localKey = 'hoard_inv_user_' + targetNickname.toLowerCase();
-              localStorage.setItem(localKey, JSON.stringify(window.state));
-              if (typeof window.normalizeState === 'function') window.normalizeState();
-              if (typeof window.renderAll === 'function') window.renderAll();
+              if (typeof window.applyCloudInventory === 'function') {
+                window.applyCloudInventory(targetNickname, cloudState);
+              } else {
+                window.state = Object.assign(window.getDefaultState(targetNickname), cloudState);
+                const localKey = 'hoard_inv_user_' + targetNickname.toLowerCase();
+                localStorage.setItem(localKey, JSON.stringify(window.state));
+                if (typeof window.normalizeState === 'function') window.normalizeState();
+                if (typeof window.renderAll === 'function') window.renderAll();
+              }
               updateSyncBadge('online', '⚡ Live Cloud Updated');
               setTimeout(() => updateSyncBadge('online', '🟢 Firebase Live'), 2000);
-            } catch (err) {
+            } catch(err) {
               console.warn("Error applying cloud inventory update:", err);
             }
             window.isSyncingFromCloud = false;
@@ -11450,10 +11390,10 @@
     };
 
     /* ========================================================
-       3. CAMPAIGN NOTES SYNCHRONIZATION (WORKSPACE & DRAWINGS)
+       3. CAMPAIGN NOTES SYNCHRONIZATION
        ======================================================== */
     let notesDebounceTimer = null;
-    window.fbSaveNotes = function (notesState) {
+    window.fbSaveNotes = function(notesState) {
       if (!db || !notesState) return;
       updateSyncBadge('syncing', '🔄 Saving Notes...');
       clearTimeout(notesDebounceTimer);
@@ -11473,7 +11413,6 @@
     if (db) {
       const notesRef = ref(db, 'campaign_notes/workspace');
 
-      // Seed local notes to Firebase if cloud is empty
       get(notesRef).then((snapshot) => {
         if (!snapshot.exists() && window.S && window.S.notes && window.S.notes.length > 0) {
           console.log("Seeding campaign notes to Firebase cloud...");
@@ -11481,7 +11420,6 @@
         }
       });
 
-      // Realtime listener for shared campaign notes
       onValue(notesRef, (snapshot) => {
         const cloudNotes = snapshot.val();
         if (cloudNotes && typeof cloudNotes === 'object' && cloudNotes.cats && cloudNotes.notes) {
@@ -11506,7 +11444,7 @@
     /* ========================================================
        4. CAMPAIGN BACKGROUND & THEME SYNCHRONIZATION
        ======================================================== */
-    window.fbSaveBackground = function (bgState) {
+    window.fbSaveBackground = function(bgState) {
       if (!db || !bgState) return;
       const payload = cleanData(bgState);
       set(ref(db, 'campaign_background/meta'), payload).catch(err => console.warn("Firebase bg save error:", err));
@@ -11522,44 +11460,6 @@
             if (typeof window.applyBg === 'function') window.applyBg();
           }
         }
-      });
-    }
-
-    /* ========================================================
-       5. PARTY SHARED LOOT (LEGACY & EXTENSION)
-       ======================================================== */
-    const partyLootRef = db ? ref(db, 'inventory/party_loot') : null;
-    window.inventoryRef = partyLootRef;
-
-    window.addLoot = function (itemName) {
-      if (!itemName || !partyLootRef) return;
-      const newItemRef = push(partyLootRef);
-      set(newItemRef, { name: itemName, addedAt: Date.now() })
-        .then(() => {
-          console.log("Firebase: loot added successfully ->", itemName);
-        })
-        .catch((err) => {
-          console.error("Firebase write error:", err);
-        });
-    };
-
-    if (partyLootRef) {
-      onValue(partyLootRef, (snapshot) => {
-        const data = snapshot.val();
-        const displayDiv = document.getElementById('inventory-display');
-        if (!displayDiv) return;
-        if (!data) {
-          displayDiv.innerHTML = "<p style='color:var(--text-muted); margin:0;'>Inventory is empty.</p>";
-          return;
-        }
-        let html = "<ul style='margin:0; padding-left:20px;'>";
-        for (const itemId in data) {
-          const item = data[itemId];
-          const name = typeof item === 'string' ? item : (item && item.name ? item.name : 'Item');
-          html += `<li style='margin-bottom:4px;'>${name}</li>`;
-        }
-        html += "</ul>";
-        displayDiv.innerHTML = html;
       });
     }
 
