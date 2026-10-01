@@ -23,24 +23,39 @@ const server = http.createServer((req, res) => {
   let reqPath = decodeURI(req.url.split('?')[0]);
   if (reqPath === '/' || reqPath === '') reqPath = '/index.html';
 
-  const filePath = path.join(__dirname, reqPath);
+  let filePath = path.join(__dirname, reqPath);
+
+  // If requested file does not exist directly, check root for assets (e.g. /index/spell-catalog.json -> spell-catalog.json)
+  if (!fs.existsSync(filePath)) {
+    const rootCandidate = path.join(__dirname, path.basename(reqPath));
+    if (fs.existsSync(rootCandidate) && fs.statSync(rootCandidate).isFile()) {
+      filePath = rootCandidate;
+    }
+  }
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
-      // Fallback to root index.html
-      const indexPath = path.join(__dirname, 'index.html');
-      fs.stat(indexPath, (indexErr, indexStats) => {
-        if (!indexErr && indexStats.isFile()) {
-          res.writeHead(200, {
-            'Content-Type': 'text/html; charset=utf-8',
-            'Access-Control-Allow-Origin': '*'
-          });
-          fs.createReadStream(indexPath).pipe(res);
-        } else {
-          res.writeHead(404, { 'Content-Type': 'text/plain' });
-          res.end('404 Not Found');
-        }
-      });
+      // Fallback to root index.html ONLY for navigation/HTML requests (SPA routing)
+      const ext = path.extname(reqPath).toLowerCase();
+      if (!ext || ext === '.html') {
+        const indexPath = path.join(__dirname, 'index.html');
+        fs.stat(indexPath, (indexErr, indexStats) => {
+          if (!indexErr && indexStats.isFile()) {
+            res.writeHead(200, {
+              'Content-Type': 'text/html; charset=utf-8',
+              'Access-Control-Allow-Origin': '*'
+            });
+            fs.createReadStream(indexPath).pipe(res);
+          } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('404 Not Found');
+          }
+        });
+      } else {
+        // Return 404 for missing static assets (prevent returning index.html for .json/.js)
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('404 Not Found');
+      }
       return;
     }
 

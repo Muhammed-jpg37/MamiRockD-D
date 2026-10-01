@@ -9,6 +9,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet">
+  <script src="spell-catalog.js" defer></script>
   <style>
     :root {
       --void: #100b08;
@@ -7854,6 +7855,9 @@
     function openSpellCatalogModal() {
       const overlay = document.getElementById('spell-catalog-overlay');
       if (overlay) overlay.classList.add('open');
+      if (!state.spellbook.catalogLoaded || !state.spellbook.catalog || state.spellbook.catalog.length === 0) {
+        refreshSpellCatalog();
+      }
       renderSpellbookContents();
     }
 
@@ -8627,14 +8631,57 @@
         }
 
         if (!rawCatalog) {
-          try {
-            const localResponse = await fetch('spell-catalog.json', { cache: 'no-store' });
-            if (localResponse.ok) {
-              let text = await localResponse.text();
-              if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-              rawCatalog = JSON.parse(text);
+          const fetchCandidates = [
+            'spell-catalog.json',
+            '/spell-catalog.json',
+            './spell-catalog.json',
+            '../spell-catalog.json',
+            'index/spell-catalog.json'
+          ];
+          for (const url of fetchCandidates) {
+            try {
+              const res = await fetch(url, { cache: 'no-store' });
+              if (res.ok) {
+                let text = await res.text();
+                if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+                text = text.trim();
+                if (text.startsWith('[') || text.startsWith('{')) {
+                  const parsed = JSON.parse(text);
+                  if (Array.isArray(parsed) && parsed.length > 0) {
+                    rawCatalog = parsed;
+                    break;
+                  }
+                }
+              }
+            } catch (e) { }
+          }
+        }
+
+        if (!rawCatalog && (!Array.isArray(window.SPELL_CATALOG) || window.SPELL_CATALOG.length === 0)) {
+          const scriptCandidates = ['spell-catalog.js', '/spell-catalog.js', './spell-catalog.js', '../spell-catalog.js', 'index/spell-catalog.js'];
+          for (const sUrl of scriptCandidates) {
+            if (Array.isArray(window.SPELL_CATALOG) && window.SPELL_CATALOG.length > 0) {
+              rawCatalog = window.SPELL_CATALOG;
+              break;
             }
-          } catch (e) { }
+            await new Promise((resolve) => {
+              const s = document.createElement('script');
+              s.src = sUrl;
+              s.onload = () => {
+                if (Array.isArray(window.SPELL_CATALOG) && window.SPELL_CATALOG.length > 0) {
+                  rawCatalog = window.SPELL_CATALOG;
+                }
+                resolve();
+              };
+              s.onerror = () => resolve();
+              document.head.appendChild(s);
+            });
+            if (rawCatalog) break;
+          }
+        }
+
+        if (!rawCatalog && Array.isArray(window.SPELL_CATALOG) && window.SPELL_CATALOG.length > 0) {
+          rawCatalog = window.SPELL_CATALOG;
         }
 
         if (rawCatalog && Array.isArray(rawCatalog)) {
