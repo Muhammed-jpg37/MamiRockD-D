@@ -3841,12 +3841,516 @@
       position: relative;
       z-index: 1;
     }
+
+    /* ========================================================
+       AUTH LOGIN & REGISTRATION SCREEN + DM ROLE STYLES
+       ======================================================== */
+    #auth-portal-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: radial-gradient(ellipse at center, rgba(32, 22, 14, 0.96) 0%, rgba(10, 7, 5, 0.98) 75%, #050302 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    #auth-portal-screen.auth-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--panel);
+      border: 2px solid var(--border-bright);
+      border-radius: 12px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(201, 162, 39, 0.25), inset 0 0 30px rgba(0,0,0,0.7);
+      padding: 32px 36px;
+      position: relative;
+      color: var(--text);
+      font-family: 'Spectral', serif;
+    }
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .auth-emblem {
+      font-size: 38px;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.5));
+      animation: authGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes authGlow {
+      from { transform: scale(1); filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.4)); }
+      to { transform: scale(1.05); filter: drop-shadow(0 0 16px rgba(232, 207, 122, 0.8)); }
+    }
+    .auth-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--gold-bright);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      margin: 0;
+    }
+    .auth-subtitle {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-style: italic;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      gap: 8px;
+    }
+    .auth-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-dim);
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 1px;
+    }
+    .auth-tab-btn.active {
+      color: var(--gold-bright);
+      border-bottom-color: var(--gold);
+      background: rgba(201, 162, 39, 0.08);
+      border-radius: 4px 4px 0 0;
+    }
+    .auth-form-group {
+      margin-bottom: 16px;
+    }
+    .auth-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .auth-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .auth-input-icon {
+      position: absolute;
+      left: 12px;
+      font-size: 16px;
+      color: var(--text-faint);
+      pointer-events: none;
+    }
+    .auth-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px 10px 38px;
+      font-family: 'Spectral', serif;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .auth-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 8px rgba(201, 162, 39, 0.4);
+    }
+    .auth-pw-toggle {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+    }
+    .auth-pw-toggle:hover {
+      color: var(--gold-bright);
+    }
+    .auth-role-select {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .auth-role-card {
+      flex: 1;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .auth-role-card.selected {
+      border-color: var(--gold);
+      background: rgba(201, 162, 39, 0.15);
+      box-shadow: 0 0 8px rgba(201, 162, 39, 0.3);
+    }
+    .auth-role-card .role-title {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-bright);
+      margin-bottom: 3px;
+    }
+    .auth-role-card .role-desc {
+      font-size: 10px;
+      color: var(--text-dim);
+      line-height: 1.2;
+    }
+    .auth-btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #a8811f 0%, #d8b038 50%, #997217 100%);
+      color: #100b08;
+      border: 1px solid #e8cf7a;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      transition: all 0.2s ease;
+    }
+    .auth-btn-submit:hover {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
+    }
+    .auth-btn-submit:active {
+      transform: translateY(1px);
+    }
+    .auth-msg {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      text-align: center;
+      display: none;
+    }
+    .auth-msg.error {
+      display: block;
+      background: rgba(168, 60, 50, 0.25);
+      border: 1px solid var(--danger);
+      color: var(--danger-bright);
+    }
+    .auth-msg.success {
+      display: block;
+      background: rgba(74, 143, 79, 0.25);
+      border: 1px solid var(--success);
+      color: #4ade80;
+    }
+    .auth-quick-demo {
+      margin-top: 20px;
+      border-top: 1px dashed var(--border);
+      padding-top: 14px;
+      text-align: center;
+    }
+    .auth-quick-demo-title {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .auth-demo-pills {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .auth-demo-pill {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--gold-bright);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .auth-demo-pill:hover {
+      border-color: var(--gold);
+      background: rgba(201, 162, 39, 0.15);
+      transform: translateY(-1px);
+    }
+
+    /* Top Bar User Badge */
+    .auth-user-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 8px 3px 12px;
+    }
+    .auth-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .auth-user-badge strong {
+      color: var(--gold-bright);
+      font-family: 'Cinzel', serif;
+    }
+    .auth-user-role-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+    .auth-user-role-tag.dm {
+      background: rgba(201, 162, 39, 0.25);
+      border: 1px solid var(--gold);
+      color: var(--gold-bright);
+    }
+    .auth-user-role-tag.player {
+      background: rgba(59, 142, 196, 0.25);
+      border: 1px solid var(--rare);
+      color: #7dd3fc;
+    }
+
+    /* DM Control Bar */
+    .dm-control-bar {
+      background: linear-gradient(90deg, rgba(46, 35, 24, 0.95), rgba(28, 21, 15, 0.95));
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      padding: 8px 16px;
+      margin: 10px 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 15px rgba(201,162,39,0.15);
+    }
+    .dm-control-badge {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 1px;
+    }
+    .dm-control-label {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .dm-player-dropdown {
+      background: #150f0a;
+      border: 1px solid var(--border-bright);
+      color: var(--gold-bright);
+      font-family: 'Spectral', serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+    }
+    .dm-player-dropdown:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 6px rgba(201, 162, 39, 0.4);
+    }
+    .dm-status-tag {
+      font-size: 11px;
+      color: var(--text-dim);
+      background: rgba(0,0,0,0.4);
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .dm-inspecting-banner {
+      background: linear-gradient(90deg, rgba(201, 162, 39, 0.2), rgba(30, 20, 10, 0.4));
+      border: 1px solid var(--gold);
+      border-radius: 6px;
+      padding: 8px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: var(--gold-bright);
+      box-shadow: 0 0 10px rgba(201,162,39,0.2);
+    }
+    .dm-inspecting-banner strong {
+      color: #fff;
+    }
+
   </style>
 
 
 </head>
 
 <body>
+  <!-- D&D AUTHENTICATION / LOGIN OVERLAY -->
+  <div id="auth-portal-screen">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-emblem">⚔️</div>
+        <h2 class="auth-title">MAMİ ROCK D&amp;D</h2>
+        <div class="auth-subtitle">Adventurer's Vault &amp; Hoard Ledger</div>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" id="auth-tab-login" onclick="switchAuthTab('login')">🔑 Sign In</button>
+        <button type="button" class="auth-tab-btn" id="auth-tab-register" onclick="switchAuthTab('register')">📜 Create Account</button>
+      </div>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div class="auth-form-group">
+          <label class="auth-label" for="auth-nickname">Nickname</label>
+          <div class="auth-input-wrap">
+            <span class="auth-input-icon">👤</span>
+            <input type="text" id="auth-nickname" class="auth-input" placeholder="Enter character or DM nickname" autocomplete="username" required>
+          </div>
+        </div>
+
+        <div class="auth-form-group">
+          <label class="auth-label" for="auth-password">Password</label>
+          <div class="auth-input-wrap">
+            <span class="auth-input-icon">🔒</span>
+            <input type="password" id="auth-password" class="auth-input" placeholder="Enter password" autocomplete="current-password" required>
+            <button type="button" class="auth-pw-toggle" onclick="toggleAuthPasswordVisibility()" title="Show/Hide Password">👁️</button>
+          </div>
+        </div>
+
+        <!-- Role Selector (Visible only on Register Tab) -->
+        <div class="auth-form-group" id="auth-role-group" style="display: none;">
+          <label class="auth-label">Choose Role</label>
+          <div class="auth-role-select">
+            <div class="auth-role-card selected" id="role-card-player" onclick="selectAuthRole('player')">
+              <div class="role-title">🛡️ Player</div>
+              <div class="role-desc">Individual personal inventory &amp; spells</div>
+            </div>
+            <div class="auth-role-card" id="role-card-dm" onclick="selectAuthRole('dm')">
+              <div class="role-title">👑 Dungeon Master</div>
+              <div class="role-desc">Full master access over all players' inventories</div>
+            </div>
+          </div>
+          <input type="hidden" id="auth-role" value="player">
+        </div>
+
+        <button type="submit" class="auth-btn-submit" id="auth-submit-btn">⚔ ENTER REALM</button>
+        <div id="auth-msg-box" class="auth-msg"></div>
+      </form>
+
+      <div class="auth-quick-demo">
+        <div class="auth-quick-demo-title">⚡ Quick Test Accounts (Password: 123)</div>
+        <div class="auth-demo-pills">
+          <button type="button" class="auth-demo-pill" onclick="quickFillAuth('DM', '123')">👑 DM (Master)</button>
+          <button type="button" class="auth-demo-pill" onclick="quickFillAuth('Gimli', '123')">🛡️ Gimli (Player)</button>
+          <button type="button" class="auth-demo-pill" onclick="quickFillAuth('Legolas', '123')">🛡️ Legolas (Player)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DM CREATE PLAYER MODAL -->
+  <div class="overlay" id="dm-create-player-overlay">
+    <div class="modal" style="max-width: 420px;">
+      <div class="modal-header">
+        <div class="modal-title">👑 Create New Player Account</div>
+        <button class="btn-close" onclick="closeDmCreatePlayerModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;">Create an individual account and inventory for a player at your table.</div>
+        <div class="field" style="margin-bottom: 12px;">
+          <label>Player Nickname</label>
+          <input type="text" id="dm-new-player-nickname" placeholder="e.g. Aragorn">
+        </div>
+        <div class="field" style="margin-bottom: 12px;">
+          <label>Password</label>
+          <input type="text" id="dm-new-player-password" value="123" placeholder="Password">
+        </div>
+        <div class="field" style="margin-bottom: 12px;">
+          <label>Character Class &amp; Level</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="dm-new-player-class" placeholder="e.g. Ranger" style="flex:2;">
+            <input type="number" id="dm-new-player-level" value="5" min="1" max="20" style="flex:1;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn ghost small" onclick="closeDmCreatePlayerModal()">Cancel</button>
+        <button class="btn small" onclick="dmSubmitCreatePlayer()">✨ Create Player Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DM QUICK GIFT LOOT MODAL -->
+  <div class="overlay" id="dm-gift-loot-overlay">
+    <div class="modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <div class="modal-title">🎁 Gift Loot to Player</div>
+        <button class="btn-close" onclick="closeDmGiftLootModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;" id="dm-gift-target-desc">Give an item or coins directly to the active player's inventory.</div>
+        <div class="field" style="margin-bottom: 12px;">
+          <label>Item Name</label>
+          <input type="text" id="dm-gift-item-name" placeholder="e.g. Potion of Greater Healing">
+        </div>
+        <div style="display:flex; gap:10px; margin-bottom: 12px;">
+          <div class="field" style="flex:1;">
+            <label>Quantity</label>
+            <input type="number" id="dm-gift-item-qty" value="1" min="1">
+          </div>
+          <div class="field" style="flex:1;">
+            <label>Rarity</label>
+            <select id="dm-gift-item-rarity">
+              <option value="common">Common</option>
+              <option value="uncommon">Uncommon</option>
+              <option value="rare" selected>Rare</option>
+              <option value="veryrare">Very Rare</option>
+              <option value="legendary">Legendary</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom: 12px;">
+          <label>Also Gift Gold Coins (gp)</label>
+          <input type="number" id="dm-gift-coins" value="0" min="0" placeholder="0 gp">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn ghost small" onclick="closeDmGiftLootModal()">Cancel</button>
+        <button class="btn small" onclick="dmSubmitGiftLoot()">🎁 Deliver Loot</button>
+      </div>
+    </div>
+  </div>
+
   <div class="frame">
 
     <div class="header">
@@ -3863,6 +4367,16 @@
         </div>
       </div>
       <div class="header-stats">
+        <!-- USER SESSION BADGE -->
+        <div class="auth-user-bar" id="auth-user-bar">
+          <div class="auth-user-badge" id="auth-user-info">
+            <span id="auth-user-icon">👤</span>
+            <strong id="auth-user-name">Adventurer</strong>
+            <span id="auth-user-role" class="auth-user-role-tag player">Player</span>
+          </div>
+          <button type="button" class="btn ghost small" style="padding:3px 8px; font-size:11px;" onclick="logoutCurrentUser()" title="Log out / Switch User">🚪 Exit</button>
+        </div>
+
         <!-- HP TRACKER WIDGET -->
         <div class="stat-pill hp-pill" id="hp-pill" title="Click to open HP Management Modal"
           onclick="openHpQuickModal(event)">
@@ -3911,6 +4425,17 @@
       </div>
     </div>
 
+        <!-- DM CONTROL BAR (Visible only to Dungeon Master) -->
+    <div id="dm-control-bar" class="dm-control-bar" style="display: none;">
+      <div class="dm-control-badge">👑 DUNGEON MASTER PANEL</div>
+      <div class="dm-control-label">Viewing Inventory:</div>
+      <select id="dm-player-dropdown" class="dm-player-dropdown" onchange="dmSwitchActivePlayer(this.value)">
+        <!-- Populated dynamically -->
+      </select>
+      <div id="dm-status-tag" class="dm-status-tag">Inspecting: Self</div>
+      <button type="button" class="btn small" style="font-size:11px; padding:4px 10px;" onclick="openDmGiftLootModal()">🎁 Gift Loot</button>
+      <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="openDmCreatePlayerModal()">+ New Player</button>
+    </div>
     <div class="layout" id="inventory-view-container">
       <!-- COL 1 (FAR LEFT): Character Stats & Bonuses Panel -->
       <div class="panel dnd-stats-column">
@@ -3971,6 +4496,12 @@
       <!-- COL 3 (CENTER): Inventory Grid -->
       <div class="panel inventory-column">
         <div class="panel-title">Inventory</div>
+        <!-- DM INSPECTION NOTIFICATION BANNER -->
+        <div id="dm-inspecting-notice" class="dm-inspecting-banner" style="display: none;">
+          <span>👑 <strong>DM OVERRIDE:</strong> Currently inspecting &amp; editing <span id="dm-inspecting-target-name">Player</span>'s inventory. All changes save live!</span>
+          <button type="button" class="btn ghost small" style="margin-left:auto; padding:2px 8px; font-size:11px;" onclick="dmSwitchActivePlayer('__dm__')">↩ Return to My Vault</button>
+        </div>
+
         <div class="toolbar">
           <input type="text" id="search-input" placeholder="Search items..." oninput="renderGrid()">
           <select id="filter-type" onchange="renderGrid()">
@@ -4642,26 +5173,101 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'hoard_inventory_v1';
-    let state = {
-      campaign: 'Party Loot',
-      currency: { platinum: 0, gold: 0, electrum: 0, silver: 0, copper: 0 },
-      capacity: 150,
-      items: [],
-      selectedId: null,
-      deathSaves: { open: true, successes: [false, false, false], failures: [false, false, false] },
-      attunements: { open: true, slots: [null, null, null] },
-      spellSlots: {
-        max: { 1: 4, 2: 3, 3: 2, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
-        used: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
-      },
-      spellbook: {
-        open: true, query: '', classFilter: '', levelFilter: '', schoolFilter: '', sortBy: 'level-asc',
-        catalogLoaded: false, loading: false, error: '', catalog: [], list: [],
-        maxPerLevel: { 0: 3, 1: 4, 2: 3, 3: 2, 4: 2, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1 }
-      },
-      theme: { preset: 'leather', customBg: '#100b08', customAccent: '#c9a227' }
-    };
+    /* ========================================================
+       AUTHENTICATION, INDIVIDUAL INVENTORIES & DM ROLE STATE
+       ======================================================== */
+    const STORAGE_ACCOUNTS_KEY = 'dnd_accounts_v1';
+    const STORAGE_SESSION_KEY = 'dnd_current_user_session';
+    const STORAGE_INV_PREFIX = 'hoard_inv_user_';
+    const LEGACY_STORAGE_KEY = 'hoard_inventory_v1';
+
+    let currentUser = null;           // Logged in account: { nickname, role, ... }
+    let activeInventoryUser = null;    // Nickname of inventory being inspected / modified
+    let isSyncingFromCloud = false;    // Prevents feedback loops during Firebase updates
+
+    function getDefaultState(characterName) {
+      const isDm = (currentUser && currentUser.role === 'dm' && (!characterName || characterName === currentUser.nickname));
+      const cleanName = characterName || (currentUser ? currentUser.nickname : 'Adventurer');
+
+      let defaultItems = [];
+      let defaultStats = {
+        str: 14, dex: 14, con: 14, int: 10, wis: 12, cha: 10,
+        profBonus: 2, speed: 30, initBonus: 2, ac: 12,
+        characterClass: 'Fighter', species: 'Human', level: 5,
+        armorProf: 'All Armor, Shields',
+        weaponProf: 'Simple Weapons, Martial Weapons',
+        toolProf: '',
+        languages: 'Common',
+        saveNotes: '', senseNotes: '',
+        saveProfs: {}, skillProfs: {}, saveCustomBonuses: {}, skillCustomBonuses: {}
+      };
+      let defaultCurrency = { platinum: 0, gold: 50, electrum: 0, silver: 20, copper: 50 };
+
+      if (cleanName.toLowerCase() === 'gimli') {
+        defaultStats.characterClass = 'Fighter';
+        defaultStats.species = 'Dwarf';
+        defaultStats.subrace = 'Mountain Dwarf';
+        defaultStats.subclass = 'Champion';
+        defaultStats.str = 18; defaultStats.con = 16; defaultStats.dex = 12; defaultStats.int = 10; defaultStats.wis = 12; defaultStats.cha = 8;
+        defaultStats.ac = 16;
+        defaultCurrency.gold = 145;
+        defaultItems = [
+          { id: 'g_item_1', name: 'Dwarven Greataxe +1', category: 'weapon', rarity: 'rare', qty: 1, weight: 7, value: 500, equipped: 'main', desc: 'A masterwork double-bladed greataxe forged in Mithral Hall. Grants +1 to attack and damage rolls.', damage: '1d12+5 Slashing', damageType: 'Slashing', proficiencyType: 'Martial' },
+          { id: 'g_item_2', name: 'Dwarven Plate Armor', category: 'armor', rarity: 'veryrare', qty: 1, weight: 65, value: 1500, equipped: 'chest', desc: 'Heavy dwarven plate adorned with mountain runes.', baseAc: 18, armorType: 'Heavy' },
+          { id: 'g_item_3', name: 'Ring of Protection', category: 'ring', rarity: 'rare', qty: 1, weight: 0.1, value: 800, equipped: 'ring1', attunementRequired: true, desc: 'You gain a +1 bonus to AC and saving throws while wearing this ring.' },
+          { id: 'g_item_4', name: 'Potion of Greater Healing', category: 'potion', rarity: 'uncommon', qty: 3, weight: 1.5, value: 150, desc: 'A creature that drinks this potion regains 4d4 + 4 hit points.' }
+        ];
+      } else if (cleanName.toLowerCase() === 'legolas') {
+        defaultStats.characterClass = 'Ranger';
+        defaultStats.species = 'Elf';
+        defaultStats.subrace = 'Wood Elf';
+        defaultStats.subclass = 'Hunter';
+        defaultStats.str = 12; defaultStats.con = 14; defaultStats.dex = 18; defaultStats.int = 12; defaultStats.wis = 16; defaultStats.cha = 10;
+        defaultStats.ac = 15;
+        defaultCurrency.gold = 95;
+        defaultItems = [
+          { id: 'l_item_1', name: 'Longbow of the Woodland', category: 'weapon', rarity: 'veryrare', qty: 1, weight: 2, value: 1200, equipped: 'main', desc: 'Carved from Lothlórien mallorn wood. Whispers like wind when drawn.', damage: '1d8+5 Piercing', damageType: 'Piercing', proficiencyType: 'Martial' },
+          { id: 'l_item_2', name: 'Elven Studded Leather', category: 'armor', rarity: 'rare', qty: 1, weight: 13, value: 500, equipped: 'chest', desc: 'Supple elven leather armor affording silent movement.', baseAc: 12, armorType: 'Light' },
+          { id: 'l_item_3', name: 'Cloak of Elvenkind', category: 'cloak', rarity: 'uncommon', qty: 1, weight: 1, value: 400, equipped: 'cloak', attunementRequired: true, desc: 'While wearing this cloak with its hood up, Wisdom (Perception) checks made to see you have disadvantage.' },
+          { id: 'l_item_4', name: 'Quiver of Arrows', category: 'gear', rarity: 'common', qty: 60, weight: 3, value: 3, desc: 'Standard sharp bodkin arrows.' }
+        ];
+      } else if (cleanName.toLowerCase() === 'dm') {
+        defaultStats.characterClass = 'Dungeon Master';
+        defaultStats.species = 'Omnipotent';
+        defaultStats.level = 20;
+        defaultStats.ac = 25;
+        defaultCurrency = { platinum: 100, gold: 5000, electrum: 500, silver: 2000, copper: 5000 };
+        defaultItems = [
+          { id: 'dm_item_1', name: 'Staff of the Magi', category: 'weapon', rarity: 'artifact', qty: 1, weight: 5, value: 50000, equipped: 'main', attunementRequired: true, desc: 'An artifact of incredible wizardry and planar energy.' },
+          { id: 'dm_item_2', name: 'Deck of Many Things', category: 'wondrous', rarity: 'legendary', qty: 1, weight: 0.5, value: 20000, desc: 'A fateful deck of enchanted cards.' },
+          { id: 'dm_item_3', name: 'Vorpal Longsword', category: 'weapon', rarity: 'legendary', qty: 1, weight: 3, value: 15000, desc: 'Snicker-snack! Decapitates foes on a natural 20.' }
+        ];
+      }
+
+      return {
+        campaign: isDm ? '👑 DM Master Vault' : cleanName + "'s Vault",
+        currency: defaultCurrency,
+        capacity: 150,
+        items: defaultItems,
+        selectedId: null,
+        deathSaves: { open: true, successes: [false, false, false], failures: [false, false, false] },
+        attunements: { open: true, slots: [null, null, null] },
+        characterStats: defaultStats,
+        hp: { current: 45, max: 45, temp: 0 },
+        spellSlots: {
+          max: { 1: 4, 2: 3, 3: 2, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
+          used: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
+        },
+        spellbook: {
+          open: true, query: '', classFilter: '', levelFilter: '', schoolFilter: '', sortBy: 'level-asc',
+          catalogLoaded: false, loading: false, error: '', catalog: [], list: [],
+          maxPerLevel: { 0: 3, 1: 4, 2: 3, 3: 2, 4: 2, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1 }
+        },
+        theme: { preset: 'leather', customBg: '#100b08', customAccent: '#c9a227' }
+      };
+    }
+
+    let state = getDefaultState('Default');
 
     const THEMES = {
       leather: { label: 'Leather', void: '#100b08', panel: '#1c150f', panel2: '#251c14', panel3: '#2e2318', border: '#4a3a24', borderBright: '#8a6d3b', gold: '#c9a227', goldBright: '#e8cf7a', text: '#e9e0c8', textDim: '#a89876', textFaint: '#6e6248' },
@@ -4757,18 +5363,60 @@
       save();
     }
 
-    function load() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        try { state = Object.assign(state, JSON.parse(raw)); } catch (e) { }
+    /* ========================================================
+       LOAD & SAVE - INDIVIDUAL PER-ACCOUNT INVENTORIES
+       ======================================================== */
+    function load(targetNickname) {
+      if (!targetNickname) {
+        targetNickname = activeInventoryUser || (currentUser ? currentUser.nickname : 'DM');
       }
+      activeInventoryUser = targetNickname;
+      const key = STORAGE_INV_PREFIX + targetNickname.toLowerCase();
+      const raw = localStorage.getItem(key);
+
+      if (raw) {
+        try {
+          state = Object.assign(getDefaultState(targetNickname), JSON.parse(raw));
+        } catch (e) {
+          console.error("Error parsing saved inventory for", targetNickname, e);
+          state = getDefaultState(targetNickname);
+        }
+      } else {
+        // If no user inventory exists yet, check if there is a legacy hoard inventory to migrate
+        const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+        if (legacyRaw && (targetNickname.toLowerCase() === 'dm' || targetNickname.toLowerCase() === 'admin')) {
+          try {
+            state = Object.assign(getDefaultState(targetNickname), JSON.parse(legacyRaw));
+          } catch (e) {
+            state = getDefaultState(targetNickname);
+          }
+        } else {
+          state = getDefaultState(targetNickname);
+        }
+        localStorage.setItem(key, JSON.stringify(state));
+      }
+
       state.deathSaves = Object.assign({ open: true, successes: [false, false, false], failures: [false, false, false] }, state.deathSaves || {});
       state.deathSaves.successes = Array.isArray(state.deathSaves.successes) ? state.deathSaves.successes.slice(0, 3).map(Boolean) : [false, false, false];
       while (state.deathSaves.successes.length < 3) state.deathSaves.successes.push(false);
       state.deathSaves.failures = Array.isArray(state.deathSaves.failures) ? state.deathSaves.failures.slice(0, 3).map(Boolean) : [false, false, false];
       while (state.deathSaves.failures.length < 3) state.deathSaves.failures.push(false);
     }
-    function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+    function save() {
+      const targetNickname = activeInventoryUser || (currentUser ? currentUser.nickname : 'DM');
+      const key = STORAGE_INV_PREFIX + targetNickname.toLowerCase();
+      try {
+        localStorage.setItem(key, JSON.stringify(state));
+      } catch (err) {
+        console.warn("Local storage save error:", err);
+      }
+
+      // Sync to Firebase Realtime Database if available and not currently processing cloud update
+      if (typeof window.fbSaveInventory === 'function' && !isSyncingFromCloud) {
+        window.fbSaveInventory(targetNickname, state);
+      }
+    }
 
     function normalizeState() {
       const legacyGold = Number(state.gold || 0);
@@ -6273,6 +6921,407 @@
       save();
       closeBackgroundModal();
       renderAll();
+    }
+
+
+    /* ========================================================
+       ACCOUNT AUTHENTICATION & DM INVENTORY SWITCHER LOGIC
+       ======================================================== */
+    function getStoredAccounts() {
+      let accounts = {};
+      try {
+        const raw = localStorage.getItem(STORAGE_ACCOUNTS_KEY);
+        if (raw) accounts = JSON.parse(raw);
+      } catch (e) { }
+
+      // Seed default accounts if empty
+      if (!accounts || Object.keys(accounts).length === 0) {
+        accounts = {
+          "dm": { nickname: "DM", password: "123", role: "dm", createdAt: 1700000000000 },
+          "gimli": { nickname: "Gimli", password: "123", role: "player", createdAt: 1700000001000 },
+          "legolas": { nickname: "Legolas", password: "123", role: "player", createdAt: 1700000002000 }
+        };
+        localStorage.setItem(STORAGE_ACCOUNTS_KEY, JSON.stringify(accounts));
+        // Pre-save default states so their inventories are populated immediately
+        ['dm', 'gimli', 'legolas'].forEach(nick => {
+          const k = STORAGE_INV_PREFIX + nick;
+          if (!localStorage.getItem(k)) {
+            localStorage.setItem(k, JSON.stringify(getDefaultState(nick)));
+          }
+        });
+      }
+      return accounts;
+    }
+
+    function saveStoredAccount(acc) {
+      const accounts = getStoredAccounts();
+      const lower = acc.nickname.toLowerCase();
+      accounts[lower] = acc;
+      localStorage.setItem(STORAGE_ACCOUNTS_KEY, JSON.stringify(accounts));
+      if (typeof window.fbSaveAccount === 'function') {
+        window.fbSaveAccount(acc);
+      }
+    }
+
+    function switchAuthTab(tab) {
+      const btnLogin = document.getElementById('auth-tab-login');
+      const btnReg = document.getElementById('auth-tab-register');
+      const roleGroup = document.getElementById('auth-role-group');
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const msgBox = document.getElementById('auth-msg-box');
+      if (msgBox) { msgBox.textContent = ''; msgBox.className = 'auth-msg'; }
+
+      if (tab === 'register') {
+        if (btnLogin) btnLogin.classList.remove('active');
+        if (btnReg) btnReg.classList.add('active');
+        if (roleGroup) roleGroup.style.display = 'block';
+        if (submitBtn) submitBtn.textContent = '✨ FORGE ACCOUNT & ENTER';
+      } else {
+        if (btnLogin) btnLogin.classList.add('active');
+        if (btnReg) btnReg.classList.remove('active');
+        if (roleGroup) roleGroup.style.display = 'none';
+        if (submitBtn) submitBtn.textContent = '⚔ ENTER REALM';
+      }
+    }
+
+    function selectAuthRole(role) {
+      const cardPlayer = document.getElementById('role-card-player');
+      const cardDm = document.getElementById('role-card-dm');
+      const roleInput = document.getElementById('auth-role');
+      if (roleInput) roleInput.value = role;
+
+      if (role === 'dm') {
+        if (cardPlayer) cardPlayer.classList.remove('selected');
+        if (cardDm) cardDm.classList.add('selected');
+      } else {
+        if (cardPlayer) cardPlayer.classList.add('selected');
+        if (cardDm) cardDm.classList.remove('selected');
+      }
+    }
+
+    function toggleAuthPasswordVisibility() {
+      const pwInput = document.getElementById('auth-password');
+      if (!pwInput) return;
+      pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+    }
+
+    function quickFillAuth(nick, pw) {
+      const nInput = document.getElementById('auth-nickname');
+      const pInput = document.getElementById('auth-password');
+      if (nInput) nInput.value = nick;
+      if (pInput) pInput.value = pw;
+      switchAuthTab('login');
+      handleAuthSubmit(new Event('submit'));
+    }
+
+    function handleAuthSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const nInput = document.getElementById('auth-nickname');
+      const pInput = document.getElementById('auth-password');
+      const msgBox = document.getElementById('auth-msg-box');
+      const roleInput = document.getElementById('auth-role');
+
+      const nickname = (nInput ? nInput.value : '').trim();
+      const password = (pInput ? pInput.value : '').trim();
+      const isRegister = document.getElementById('auth-tab-register')?.classList.contains('active');
+      const role = (roleInput ? roleInput.value : 'player') || 'player';
+
+      if (!nickname || !password) {
+        if (msgBox) {
+          msgBox.textContent = 'Please enter both nickname and password.';
+          msgBox.className = 'auth-msg error';
+        }
+        return;
+      }
+
+      const accounts = getStoredAccounts();
+      const key = nickname.toLowerCase();
+
+      if (isRegister) {
+        if (accounts[key]) {
+          if (msgBox) {
+            msgBox.textContent = 'Nickname already taken! Please choose another or sign in.';
+            msgBox.className = 'auth-msg error';
+          }
+          return;
+        }
+        const newAccount = {
+          nickname: nickname,
+          password: password,
+          role: role,
+          createdAt: Date.now()
+        };
+        saveStoredAccount(newAccount);
+        if (msgBox) {
+          msgBox.textContent = 'Account forged! Entering realm...';
+          msgBox.className = 'auth-msg success';
+        }
+        setTimeout(() => {
+          loginUser(newAccount);
+        }, 300);
+      } else {
+        const acc = accounts[key];
+        if (!acc) {
+          if (msgBox) {
+            msgBox.textContent = 'Adventurer "' + nickname + '" not found. Check spelling or create an account!';
+            msgBox.className = 'auth-msg error';
+          }
+          return;
+        }
+        if (acc.password !== password) {
+          if (msgBox) {
+            msgBox.textContent = 'Incorrect password! The arcane seal remains unbroken.';
+            msgBox.className = 'auth-msg error';
+          }
+          return;
+        }
+        if (msgBox) {
+          msgBox.textContent = 'Welcome back, ' + acc.nickname + '!';
+          msgBox.className = 'auth-msg success';
+        }
+        setTimeout(() => {
+          loginUser(acc);
+        }, 200);
+      }
+    }
+
+    function loginUser(account) {
+      currentUser = account;
+      activeInventoryUser = account.nickname;
+      try {
+        localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify({
+          nickname: account.nickname,
+          role: account.role
+        }));
+      } catch (e) { }
+
+      // Hide Auth Screen
+      const authScreen = document.getElementById('auth-portal-screen');
+      if (authScreen) authScreen.classList.add('auth-hidden');
+
+      // Update Header User Badge
+      const nameEl = document.getElementById('auth-user-name');
+      const roleEl = document.getElementById('auth-user-role');
+      const iconEl = document.getElementById('auth-user-icon');
+      if (nameEl) nameEl.textContent = account.nickname;
+      if (roleEl) {
+        roleEl.textContent = account.role === 'dm' ? 'Dungeon Master' : 'Player';
+        roleEl.className = 'auth-user-role-tag ' + (account.role === 'dm' ? 'dm' : 'player');
+      }
+      if (iconEl) iconEl.textContent = account.role === 'dm' ? '👑' : '👤';
+
+      // Setup DM Panel or regular view
+      const dmBar = document.getElementById('dm-control-bar');
+      const dmBanner = document.getElementById('dm-inspecting-notice');
+      if (account.role === 'dm') {
+        if (dmBar) dmBar.style.display = 'flex';
+        populateDmPlayerDropdown();
+        if (dmBanner) dmBanner.style.display = 'none';
+      } else {
+        if (dmBar) dmBar.style.display = 'none';
+        if (dmBanner) dmBanner.style.display = 'none';
+      }
+
+      // Load this user's individual inventory
+      load(account.nickname);
+      normalizeState();
+      applyTheme();
+      renderAll();
+
+      // Hook Firebase live listener if available
+      if (typeof window.fbListenToInventory === 'function') {
+        window.fbListenToInventory(account.nickname);
+      }
+    }
+
+    function logoutCurrentUser() {
+      save();
+      try { localStorage.removeItem(STORAGE_SESSION_KEY); } catch (e) { }
+      currentUser = null;
+      activeInventoryUser = null;
+
+      const authScreen = document.getElementById('auth-portal-screen');
+      if (authScreen) authScreen.classList.remove('auth-hidden');
+      const pwInput = document.getElementById('auth-password');
+      if (pwInput) pwInput.value = '';
+      const msgBox = document.getElementById('auth-msg-box');
+      if (msgBox) { msgBox.textContent = ''; msgBox.className = 'auth-msg'; }
+    }
+
+    /* ========================================================
+       DM CONTROLLER: INSPECT & EDIT OTHER PLAYERS' INVENTORIES
+       ======================================================== */
+    function populateDmPlayerDropdown() {
+      const select = document.getElementById('dm-player-dropdown');
+      if (!select) return;
+
+      const accounts = getStoredAccounts();
+      const currentVal = activeInventoryUser || (currentUser ? currentUser.nickname : '__dm__');
+
+      let html = '<option value="__dm__">👑 My DM Master Vault</option>';
+      Object.keys(accounts).sort().forEach(key => {
+        const acc = accounts[key];
+        if (acc.role !== 'dm') {
+          html += '<option value="' + escapeHtml(acc.nickname) + '">👤 Player: ' + escapeHtml(acc.nickname) + '</option>';
+        }
+      });
+      select.innerHTML = html;
+
+      // Restore active selection
+      if (activeInventoryUser && activeInventoryUser.toLowerCase() !== currentUser.nickname.toLowerCase()) {
+        select.value = activeInventoryUser;
+      } else {
+        select.value = '__dm__';
+      }
+    }
+
+    function dmSwitchActivePlayer(targetName) {
+      if (!currentUser || currentUser.role !== 'dm') return;
+
+      // Save changes to current inventory before switching!
+      save();
+
+      const target = (!targetName || targetName === '__dm__') ? currentUser.nickname : targetName;
+      activeInventoryUser = target;
+
+      load(target);
+      normalizeState();
+      applyTheme();
+      renderAll();
+
+      const isInspectingOther = (target.toLowerCase() !== currentUser.nickname.toLowerCase());
+      const banner = document.getElementById('dm-inspecting-notice');
+      const bannerTarget = document.getElementById('dm-inspecting-target-name');
+      const statusTag = document.getElementById('dm-status-tag');
+      const select = document.getElementById('dm-player-dropdown');
+
+      if (banner) banner.style.display = isInspectingOther ? 'flex' : 'none';
+      if (bannerTarget) bannerTarget.textContent = target;
+      if (statusTag) statusTag.textContent = isInspectingOther ? ('Inspecting: ' + target) : 'Viewing: Master Vault';
+      if (select) select.value = isInspectingOther ? target : '__dm__';
+
+      // Switch live Firebase listener to this player's inventory
+      if (typeof window.fbListenToInventory === 'function') {
+        window.fbListenToInventory(target);
+      }
+    }
+
+    function openDmCreatePlayerModal() {
+      const ov = document.getElementById('dm-create-player-overlay');
+      if (ov) ov.classList.add('open');
+      const nickInput = document.getElementById('dm-new-player-nickname');
+      if (nickInput) { nickInput.value = ''; nickInput.focus(); }
+    }
+
+    function closeDmCreatePlayerModal() {
+      const ov = document.getElementById('dm-create-player-overlay');
+      if (ov) ov.classList.remove('open');
+    }
+
+    function dmSubmitCreatePlayer() {
+      const nickInput = document.getElementById('dm-new-player-nickname');
+      const passInput = document.getElementById('dm-new-player-password');
+      const classInput = document.getElementById('dm-new-player-class');
+      const lvlInput = document.getElementById('dm-new-player-level');
+
+      const nickname = (nickInput ? nickInput.value : '').trim();
+      const password = (passInput ? passInput.value : '123').trim() || '123';
+      const charClass = (classInput ? classInput.value : 'Fighter').trim() || 'Fighter';
+      const level = parseInt(lvlInput ? lvlInput.value : '5', 10) || 5;
+
+      if (!nickname) {
+        alert('Please enter a nickname for the player.');
+        return;
+      }
+
+      const accounts = getStoredAccounts();
+      if (accounts[nickname.toLowerCase()]) {
+        alert('An account with this nickname already exists!');
+        return;
+      }
+
+      const newAccount = {
+        nickname: nickname,
+        password: password,
+        role: 'player',
+        createdAt: Date.now()
+      };
+      saveStoredAccount(newAccount);
+
+      // Create initial state for this player
+      const pState = getDefaultState(nickname);
+      pState.characterStats.characterClass = charClass;
+      pState.characterStats.level = level;
+      localStorage.setItem(STORAGE_INV_PREFIX + nickname.toLowerCase(), JSON.stringify(pState));
+
+      if (typeof window.fbSaveInventory === 'function') {
+        window.fbSaveInventory(nickname, pState);
+      }
+
+      populateDmPlayerDropdown();
+      closeDmCreatePlayerModal();
+
+      if (confirm('Player "' + nickname + '" created! Do you want to switch to their inventory now?')) {
+        dmSwitchActivePlayer(nickname);
+      }
+    }
+
+    function openDmGiftLootModal() {
+      const ov = document.getElementById('dm-gift-loot-overlay');
+      const desc = document.getElementById('dm-gift-target-desc');
+      const target = activeInventoryUser || (currentUser ? currentUser.nickname : 'Player');
+      if (desc) desc.textContent = 'Deliver loot or coins directly into ' + target + "\'s inventory.";
+      if (ov) ov.classList.add('open');
+      const nameInput = document.getElementById('dm-gift-item-name');
+      if (nameInput) { nameInput.value = ''; nameInput.focus(); }
+    }
+
+    function closeDmGiftLootModal() {
+      const ov = document.getElementById('dm-gift-loot-overlay');
+      if (ov) ov.classList.remove('open');
+    }
+
+    function dmSubmitGiftLoot() {
+      const nameInput = document.getElementById('dm-gift-item-name');
+      const qtyInput = document.getElementById('dm-gift-item-qty');
+      const raritySelect = document.getElementById('dm-gift-item-rarity');
+      const coinsInput = document.getElementById('dm-gift-coins');
+
+      const itemName = (nameInput ? nameInput.value : '').trim();
+      const qty = parseInt(qtyInput ? qtyInput.value : '1', 10) || 1;
+      const rarity = (raritySelect ? raritySelect.value : 'rare') || 'rare';
+      const coins = parseInt(coinsInput ? coinsInput.value : '0', 10) || 0;
+
+      if (!itemName && coins <= 0) {
+        alert('Please enter an item name or a gold amount to gift.');
+        return;
+      }
+
+      state.items = state.items || [];
+      if (itemName) {
+        state.items.push({
+          id: 'gift_' + uid(),
+          name: itemName,
+          category: 'wondrous',
+          rarity: rarity,
+          qty: qty,
+          weight: 1,
+          value: 100,
+          desc: 'Gifted by the Dungeon Master.'
+        });
+      }
+
+      if (coins > 0) {
+        state.currency = state.currency || { platinum: 0, gold: 0, electrum: 0, silver: 0, copper: 0 };
+        state.currency.gold = (Number(state.currency.gold) || 0) + coins;
+      }
+
+      save();
+      renderAll();
+      closeDmGiftLootModal();
+
+      const target = activeInventoryUser || 'Player';
+      alert('✨ Loot delivered to ' + target + ' successfully!');
     }
 
     function renderAll() {
@@ -8384,10 +9433,28 @@
     });
 
     try {
-      load();
-      normalizeState();
-      applyTheme();
-      renderAll();
+      // Check for saved session
+      let session = null;
+      try {
+        const rawSession = localStorage.getItem(STORAGE_SESSION_KEY);
+        if (rawSession) session = JSON.parse(rawSession);
+      } catch (e) { }
+
+      const allAccounts = getStoredAccounts();
+
+      if (session && session.nickname && allAccounts[session.nickname.toLowerCase()]) {
+        const acc = allAccounts[session.nickname.toLowerCase()];
+        loginUser(acc);
+      } else {
+        // Show login modal
+        const authScreen = document.getElementById('auth-portal-screen');
+        if (authScreen) authScreen.classList.remove('auth-hidden');
+        // Initial fallback render
+        load('DM');
+        normalizeState();
+        applyTheme();
+        renderAll();
+      }
       refreshSpellCatalog();
     } catch (err) {
       console.error("Startup error:", err);
@@ -10037,13 +11104,13 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-analytics.js";
-    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+    import { getDatabase, ref, set, get, onValue, push, off } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
 
-    // Your web app's Firebase configuration
+    // Your web app's Firebase configuration with verified European West1 RTDB region URL
     const firebaseConfig = {
       apiKey: "AIzaSyACV3sk-oG_kFLcrsNXwFnLmHIYisMP6j0",
       authDomain: "mamirockd-d37.firebaseapp.com",
-      databaseURL: "https://mamirockd-d37-default-rtdb.firebaseio.com",
+      databaseURL: "https://mamirockd-d37-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "mamirockd-d37",
       storageBucket: "mamirockd-d37.firebasestorage.app",
       messagingSenderId: "655783304075",
@@ -10051,22 +11118,24 @@
       measurementId: "G-DK8Z13YSGB"
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    let analytics = null;
+    let app = null;
+    let db = null;
     try {
-      analytics = getAnalytics(app);
+      app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+      window.firebaseApp = app;
+      window.firebaseDb = db;
+      console.log("Firebase connected successfully to:", firebaseConfig.databaseURL);
     } catch (e) {
-      console.warn("Firebase Analytics could not be initialized in this environment:", e);
+      console.warn("Firebase initialization warning:", e);
     }
-    const db = getDatabase(app);
 
-    // The path in your database where loot is saved
-    const inventoryRef = ref(db, 'inventory/party_loot');
+    // Party loot legacy ref
+    const inventoryRef = db ? ref(db, 'inventory/party_loot') : null;
+    window.inventoryRef = inventoryRef;
 
-    // This connects to the onclick="window.addLoot(...)" in your HTML button
     window.addLoot = function (itemName) {
-      if (!itemName) return;
+      if (!itemName || !inventoryRef) return;
       const newItemRef = push(inventoryRef);
       set(newItemRef, { name: itemName, addedAt: Date.now() })
         .then(() => {
@@ -10074,42 +11143,127 @@
         })
         .catch((err) => {
           console.error("Firebase write error:", err);
-          alert("Firebase write error: " + err.message);
         });
     };
 
-    // Listen for changes and update your HTML display
-    onValue(inventoryRef, (snapshot) => {
-      const data = snapshot.val();
-      const displayDiv = document.getElementById('inventory-display');
+    if (inventoryRef) {
+      onValue(inventoryRef, (snapshot) => {
+        const data = snapshot.val();
+        const displayDiv = document.getElementById('inventory-display');
+        if (!displayDiv) return;
+        if (!data) {
+          displayDiv.innerHTML = "<p style='color:var(--text-muted); margin:0;'>Inventory is empty.</p>";
+          return;
+        }
+        let html = "<ul style='margin:0; padding-left:20px;'>";
+        for (const itemId in data) {
+          const item = data[itemId];
+          const name = typeof item === 'string' ? item : (item && item.name ? item.name : 'Item');
+          html += `<li style='margin-bottom:4px;'>${name}</li>`;
+        }
+        html += "</ul>";
+        displayDiv.innerHTML = html;
+      }, (error) => {
+        console.error("Firebase Realtime Database error:", error);
+      });
+    }
 
-      if (!displayDiv) return;
+    /* ========================================================
+       FIREBASE ACCOUNT SYNC & REALTIME PER-PLAYER INVENTORY SYNC
+       ======================================================== */
+    // 1. Sync Account to Firebase
+    window.fbSaveAccount = function(acc) {
+      if (!db || !acc || !acc.nickname) return;
+      const key = acc.nickname.toLowerCase();
+      const accountRef = ref(db, 'accounts/' + key);
+      set(accountRef, {
+        nickname: acc.nickname,
+        password: acc.password,
+        role: acc.role || 'player',
+        createdAt: acc.createdAt || Date.now()
+      }).catch(err => console.warn("Firebase save account error:", err));
+    };
 
-      if (!data) {
-        displayDiv.innerHTML = "<p style='color:var(--text-muted); margin:0;'>Inventory is empty.</p>";
-        return;
+    // 2. Sync Inventory to Firebase
+    window.fbSaveInventory = function(targetNickname, invState) {
+      if (!db || !targetNickname || !invState) return;
+      const key = targetNickname.toLowerCase();
+      const invRef = ref(db, 'inventories/' + key);
+      set(invRef, invState).catch(err => console.warn("Firebase save inventory error:", err));
+    };
+
+    // 3. Listen to cloud accounts and auto-discover new players for the DM
+    if (db) {
+      const accountsRef = ref(db, 'accounts');
+      onValue(accountsRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data && typeof data === 'object') {
+          let localAccounts = {};
+          try {
+            const raw = localStorage.getItem('dnd_accounts_v1');
+            if (raw) localAccounts = JSON.parse(raw);
+          } catch(e) {}
+
+          let changed = false;
+          Object.keys(data).forEach(k => {
+            const cloudAcc = data[k];
+            if (cloudAcc && cloudAcc.nickname && !localAccounts[k]) {
+              localAccounts[k] = cloudAcc;
+              changed = true;
+            }
+          });
+
+          if (changed) {
+            localStorage.setItem('dnd_accounts_v1', JSON.stringify(localAccounts));
+            if (window.currentUser && window.currentUser.role === 'dm' && typeof window.populateDmPlayerDropdown === 'function') {
+              window.populateDmPlayerDropdown();
+            }
+          }
+        }
+      });
+    }
+
+    // 4. Live listener for currently active player's inventory
+    let currentActiveInventoryListener = null;
+    let currentListenerPath = null;
+
+    window.fbListenToInventory = function(targetNickname) {
+      if (!db || !targetNickname) return;
+      const pathKey = 'inventories/' + targetNickname.toLowerCase();
+      if (currentListenerPath === pathKey) return; // already listening
+
+      if (currentActiveInventoryListener) {
+        off(currentActiveInventoryListener);
+        currentActiveInventoryListener = null;
       }
 
-      let html = "<ul style='margin:0; padding-left:20px;'>";
-      for (const itemId in data) {
-        const item = data[itemId];
-        const name = typeof item === 'string' ? item : (item && item.name ? item.name : 'Item');
-        html += `<li style='margin-bottom:4px;'>${name}</li>`;
-      }
-      html += "</ul>";
-      displayDiv.innerHTML = html;
-    }, (error) => {
-      console.error("Firebase Realtime Database error:", error);
-      const displayDiv = document.getElementById('inventory-display');
-      if (displayDiv) {
-        displayDiv.innerHTML = `<p style='color:#e06c75; margin:0;'>⚠️ Firebase: ${error.message}</p>`;
-      }
-    });
+      currentListenerPath = pathKey;
+      const targetRef = ref(db, pathKey);
+      currentActiveInventoryListener = targetRef;
 
-    // Attach instances to window for console/macro access
-    window.firebaseApp = app;
-    window.firebaseDb = db;
-    window.inventoryRef = inventoryRef;
+      onValue(targetRef, (snapshot) => {
+        const cloudState = snapshot.val();
+        if (cloudState && window.activeInventoryUser && window.activeInventoryUser.toLowerCase() === targetNickname.toLowerCase()) {
+          // If we received an update from cloud, update local state if newer
+          window.isSyncingFromCloud = true;
+          try {
+            window.state = Object.assign(window.getDefaultState(targetNickname), cloudState);
+            const localKey = 'hoard_inv_user_' + targetNickname.toLowerCase();
+            localStorage.setItem(localKey, JSON.stringify(window.state));
+            if (typeof window.normalizeState === 'function') window.normalizeState();
+            if (typeof window.renderAll === 'function') window.renderAll();
+          } catch(err) {
+            console.warn("Error applying cloud inventory update:", err);
+          }
+          window.isSyncingFromCloud = false;
+        }
+      });
+    };
+
+    // If an inventory is already loaded before Firebase finishes importing, hook listener now
+    if (window.activeInventoryUser) {
+      window.fbListenToInventory(window.activeInventoryUser);
+    }
   </script>
 </body>
 
