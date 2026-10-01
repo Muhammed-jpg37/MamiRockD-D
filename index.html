@@ -5320,12 +5320,39 @@
         },
         spellbook: {
           open: true, query: '', classFilter: '', levelFilter: '', schoolFilter: '', sortBy: 'level-asc',
-          catalogLoaded: false, loading: false, error: '', catalog: [], list: [],
+          catalogLoaded: (Array.isArray(window.GLOBAL_SPELL_CATALOG) && window.GLOBAL_SPELL_CATALOG.length > 0),
+          loading: false, error: '',
+          catalog: (Array.isArray(window.GLOBAL_SPELL_CATALOG) ? window.GLOBAL_SPELL_CATALOG : []),
+          list: [],
           maxPerLevel: { 0: 3, 1: 4, 2: 3, 3: 2, 4: 2, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1 }
         },
         theme: { preset: 'leather', customBg: '#100b08', customAccent: '#c9a227' }
       };
     }
+
+
+    /* ========================================================
+       GLOBAL D&D 5E SPELL CATALOG SYSTEM
+       Shared across all players, DMs, and character sheets
+       ======================================================== */
+    window.GLOBAL_SPELL_CATALOG = window.GLOBAL_SPELL_CATALOG || [];
+    window.GLOBAL_SPELL_MAP = window.GLOBAL_SPELL_MAP || new Map();
+
+    function syncSpellCatalogToState() {
+      if (state && state.spellbook) {
+        if (Array.isArray(window.GLOBAL_SPELL_CATALOG) && window.GLOBAL_SPELL_CATALOG.length > 0) {
+          state.spellbook.catalog = window.GLOBAL_SPELL_CATALOG;
+          state.spellbook.catalogLoaded = true;
+          state.spellbook.loading = false;
+          state.spellbook.error = '';
+        } else if (Array.isArray(window.SPELL_CATALOG) && window.SPELL_CATALOG.length > 0) {
+          buildGlobalCatalog(window.SPELL_CATALOG);
+        } else if (!state.spellbook.loading) {
+          refreshSpellCatalog();
+        }
+      }
+    }
+    window.syncSpellCatalogToState = syncSpellCatalogToState;
 
     let state = getDefaultState('Default');
     window.getState = function() { return state; };
@@ -5342,9 +5369,16 @@
         state.items = incomingItems;
       }
       activeInventoryUser = targetNickname;
+      // Always attach global spell catalog so switching characters never blanks spells
+      syncSpellCatalogToState();
       const localKey = STORAGE_INV_PREFIX + targetNickname.toLowerCase();
       try {
-        localStorage.setItem(localKey, JSON.stringify(state));
+        const persistState = Object.assign({}, state);
+        if (persistState.spellbook) {
+          persistState.spellbook = Object.assign({}, persistState.spellbook);
+          delete persistState.spellbook.catalog;
+        }
+        localStorage.setItem(localKey, JSON.stringify(persistState));
       } catch (e) { }
       normalizeState();
       renderAll();
@@ -5483,20 +5517,29 @@
       while (state.deathSaves.successes.length < 3) state.deathSaves.successes.push(false);
       state.deathSaves.failures = Array.isArray(state.deathSaves.failures) ? state.deathSaves.failures.slice(0, 3).map(Boolean) : [false, false, false];
       while (state.deathSaves.failures.length < 3) state.deathSaves.failures.push(false);
+      syncSpellCatalogToState();
     }
 
     function save() {
       const targetNickname = activeInventoryUser || (currentUser ? currentUser.nickname : 'DM');
       const key = STORAGE_INV_PREFIX + targetNickname.toLowerCase();
+      
+      // Omit static 1.2MB catalog from per-player database/storage records
+      const persistState = Object.assign({}, state);
+      if (persistState.spellbook) {
+        persistState.spellbook = Object.assign({}, persistState.spellbook);
+        delete persistState.spellbook.catalog;
+      }
+
       try {
-        localStorage.setItem(key, JSON.stringify(state));
+        localStorage.setItem(key, JSON.stringify(persistState));
       } catch (err) {
         console.warn("Local storage save error:", err);
       }
 
       // Sync to Firebase Realtime Database if available and not currently processing cloud update
       if (typeof window.fbSaveInventory === 'function' && !isSyncingFromCloud) {
-        window.fbSaveInventory(targetNickname, state);
+        window.fbSaveInventory(targetNickname, persistState);
       }
     }
 
@@ -7226,6 +7269,9 @@
       applyTheme();
       renderAll();
 
+      // Always ensure global spell catalog is attached to logged in player
+      syncSpellCatalogToState();
+
       // Hook Firebase live listener if available
       if (typeof window.fbListenToInventory === 'function') {
         window.fbListenToInventory(account.nickname);
@@ -7297,6 +7343,9 @@
       if (bannerTarget) bannerTarget.textContent = target;
       if (statusTag) statusTag.textContent = isInspectingOther ? ('Inspecting: ' + target) : 'Viewing: Master Vault';
       if (select) select.value = isInspectingOther ? target : '__dm__';
+
+      // Always ensure global spell catalog is attached to target player's state
+      syncSpellCatalogToState();
 
       // Switch live Firebase listener to this player's inventory
       if (typeof window.fbListenToInventory === 'function') {
@@ -7875,7 +7924,15 @@
       const sortBy = sb.sortBy || 'level-asc';
       const maxLimits = sb.maxPerLevel || { 0: 3, 1: 4, 2: 3, 3: 2, 4: 2, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1 };
 
-      let catalog = (sb.catalog || []).slice();
+      // Ensure active player's state is linked to global spell catalog
+      if ((!sb.catalog || sb.catalog.length === 0) && window.GLOBAL_SPELL_CATALOG && window.GLOBAL_SPELL_CATALOG.length > 0) {
+        sb.catalog = window.GLOBAL_SPELL_CATALOG;
+        sb.catalogLoaded = true;
+        sb.loading = false;
+        sb.error = '';
+      }
+
+      let catalog = (sb.catalog && sb.catalog.length > 0) ? sb.catalog.slice() : ((window.GLOBAL_SPELL_CATALOG || []).slice());
 
       if (query) {
         catalog = catalog.filter(function (spell) {
@@ -8448,7 +8505,9 @@
     }
 
     function openSpellDetailModal(spellName) {
-      const catalog = state.spellbook.catalog || [];
+      const catalog = (state.spellbook && state.spellbook.catalog && state.spellbook.catalog.length > 0)
+        ? state.spellbook.catalog
+        : (window.GLOBAL_SPELL_CATALOG || []);
       let spell = catalog.find(function (s) { return s.name === spellName; });
       if (!spell) {
         const userSaved = (state.spellbook.list || []).find(function (s) { return s.name === spellName; });
@@ -8685,79 +8744,7 @@
         }
 
         if (rawCatalog && Array.isArray(rawCatalog)) {
-          const SCHOOL_MAP = {
-            'A': 'Abjuration',
-            'C': 'Conjuration',
-            'D': 'Divination',
-            'E': 'Enchantment',
-            'I': 'Illusion',
-            'N': 'Necromancy',
-            'T': 'Transmutation',
-            'V': 'Evocation'
-          };
-          const mapByName = new Map();
-          const merged = [];
-          rawCatalog.forEach(function (spell) {
-            const name = String(spell?.name || '').trim();
-            if (!name) return;
-            const key = name.toLowerCase();
-            const schoolName = (spell.schoolName && spell.schoolName !== 'Universal') ? spell.schoolName : (SCHOOL_MAP[spell.school] || spell.schoolName || 'Universal');
-            const bestDesc = (spell.quickEffect && spell.quickEffect.length > 25 && !spell.quickEffect.includes('magical spell effect')) ? spell.quickEffect : ((spell.desc && spell.desc.length > 25 && !spell.desc.includes('magical spell effect')) ? spell.desc : '');
-            if (!mapByName.has(key)) {
-              const spellCopy = {
-                name: spell.name,
-                levelNum: spell.levelNum !== undefined ? spell.levelNum : (spell.levelText === 'Cantrip' ? 0 : (parseInt((spell.levelText || '').replace(/\D/g, ''), 10) || 0)),
-                levelText: spell.levelText || 'Spell',
-                source: spell.source || 'PHB',
-                school: spell.school || '',
-                schoolName: schoolName,
-                classes: Array.isArray(spell.classes) ? [...spell.classes] : [],
-                castingTime: spell.castingTime || '1 action',
-                range: spell.range || '60 feet',
-                components: spell.components || 'V, S',
-                duration: spell.duration || 'Instantaneous',
-                quickEffect: bestDesc,
-                desc: bestDesc,
-                higherLevels: spell.higherLevels || '',
-                tags: Array.isArray(spell.tags) ? [...spell.tags] : [],
-                damage: spell.damage || ''
-              };
-              mapByName.set(key, spellCopy);
-              merged.push(spellCopy);
-            } else {
-              const existing = mapByName.get(key);
-              if (Array.isArray(spell.classes)) {
-                spell.classes.forEach(function (c) { if (!existing.classes.includes(c)) existing.classes.push(c); });
-              }
-              if (Array.isArray(spell.tags)) {
-                spell.tags.forEach(function (t) { if (!existing.tags.includes(t)) existing.tags.push(t); });
-              }
-              if (!existing.damage && spell.damage) existing.damage = spell.damage;
-              if ((!existing.desc || existing.desc.length < 25 || existing.desc.includes('magical spell effect')) && bestDesc && bestDesc.length > 25 && !bestDesc.includes('magical spell effect')) {
-                existing.desc = bestDesc;
-                existing.quickEffect = bestDesc;
-              }
-              if (schoolName && schoolName !== 'Universal') existing.schoolName = schoolName;
-            }
-          });
-          merged.sort(function (a, b) { return (a.levelNum - b.levelNum) || String(a.name || '').localeCompare(String(b.name || '')); });
-
-          state.spellbook.catalog = merged;
-          state.spellbook.catalogLoaded = true;
-
-          if (Array.isArray(state.spellbook.list)) {
-            state.spellbook.list.forEach(function (s) {
-              const cat = mapByName.get(s.name.toLowerCase());
-              if (cat) {
-                s.damage = cat.damage || s.damage || '';
-                s.desc = cat.desc || s.desc || '';
-                s.classes = cat.classes || s.classes || [];
-                s.schoolName = cat.schoolName || s.schoolName || '';
-              }
-            });
-          }
-
-          save();
+          buildGlobalCatalog(rawCatalog);
           renderSpellbookMenu();
         } else {
           throw new Error('Spell catalog could not be loaded.');
@@ -8771,6 +8758,89 @@
       }
     }
 
+    function buildGlobalCatalog(rawCatalog) {
+      if (!Array.isArray(rawCatalog) || rawCatalog.length === 0) return [];
+      const SCHOOL_MAP = {
+        'A': 'Abjuration',
+        'C': 'Conjuration',
+        'D': 'Divination',
+        'E': 'Enchantment',
+        'I': 'Illusion',
+        'N': 'Necromancy',
+        'T': 'Transmutation',
+        'V': 'Evocation'
+      };
+      const mapByName = new Map();
+      const merged = [];
+      rawCatalog.forEach(function (spell) {
+        const name = String(spell?.name || '').trim();
+        if (!name) return;
+        const key = name.toLowerCase();
+        const schoolName = (spell.schoolName && spell.schoolName !== 'Universal') ? spell.schoolName : (SCHOOL_MAP[spell.school] || spell.schoolName || 'Universal');
+        const bestDesc = (spell.quickEffect && spell.quickEffect.length > 25 && !spell.quickEffect.includes('magical spell effect')) ? spell.quickEffect : ((spell.desc && spell.desc.length > 25 && !spell.desc.includes('magical spell effect')) ? spell.desc : '');
+        if (!mapByName.has(key)) {
+          const spellCopy = {
+            name: spell.name,
+            levelNum: spell.levelNum !== undefined ? spell.levelNum : (spell.levelText === 'Cantrip' ? 0 : (parseInt((spell.levelText || '').replace(/\D/g, ''), 10) || 0)),
+            levelText: spell.levelText || 'Spell',
+            source: spell.source || 'PHB',
+            school: spell.school || '',
+            schoolName: schoolName,
+            classes: Array.isArray(spell.classes) ? [...spell.classes] : [],
+            castingTime: spell.castingTime || '1 action',
+            range: spell.range || '60 feet',
+            components: spell.components || 'V, S',
+            duration: spell.duration || 'Instantaneous',
+            quickEffect: bestDesc,
+            desc: bestDesc,
+            higherLevels: spell.higherLevels || '',
+            tags: Array.isArray(spell.tags) ? [...spell.tags] : [],
+            damage: spell.damage || ''
+          };
+          mapByName.set(key, spellCopy);
+          merged.push(spellCopy);
+        } else {
+          const existing = mapByName.get(key);
+          if (Array.isArray(spell.classes)) {
+            spell.classes.forEach(function (c) { if (!existing.classes.includes(c)) existing.classes.push(c); });
+          }
+          if (Array.isArray(spell.tags)) {
+            spell.tags.forEach(function (t) { if (!existing.tags.includes(t)) existing.tags.push(t); });
+          }
+          if (!existing.damage && spell.damage) existing.damage = spell.damage;
+          if ((!existing.desc || existing.desc.length < 25 || existing.desc.includes('magical spell effect')) && bestDesc && bestDesc.length > 25 && !bestDesc.includes('magical spell effect')) {
+            existing.desc = bestDesc;
+            existing.quickEffect = bestDesc;
+          }
+          if (schoolName && schoolName !== 'Universal') existing.schoolName = schoolName;
+        }
+      });
+      merged.sort(function (a, b) { return (a.levelNum - b.levelNum) || String(a.name || '').localeCompare(String(b.name || '')); });
+
+      window.GLOBAL_SPELL_CATALOG = merged;
+      window.GLOBAL_SPELL_MAP = mapByName;
+
+      if (state && state.spellbook) {
+        state.spellbook.catalog = merged;
+        state.spellbook.catalogLoaded = true;
+        state.spellbook.loading = false;
+        state.spellbook.error = '';
+
+        if (Array.isArray(state.spellbook.list)) {
+          state.spellbook.list.forEach(function (s) {
+            const cat = mapByName.get(s.name.toLowerCase());
+            if (cat) {
+              s.damage = cat.damage || s.damage || '';
+              s.desc = cat.desc || s.desc || '';
+              s.classes = cat.classes || s.classes || [];
+              s.schoolName = cat.schoolName || s.schoolName || '';
+            }
+          });
+        }
+      }
+      return merged;
+    }
+
     async function toggleSpellFromCatalog(name) {
       const existingIndex = state.spellbook.list.findIndex(function (spell) { return spell.name === name; });
       if (existingIndex >= 0) {
@@ -8779,7 +8849,10 @@
         renderSpellbookMenu();
         return;
       }
-      const catalogSpell = state.spellbook.catalog.find(function (spell) { return spell.name === name; });
+      const catalogList = (state.spellbook && state.spellbook.catalog && state.spellbook.catalog.length > 0)
+        ? state.spellbook.catalog
+        : (window.GLOBAL_SPELL_CATALOG || []);
+      const catalogSpell = catalogList.find(function (spell) { return spell.name === name; });
       if (!catalogSpell) {
         return;
       }
@@ -11435,7 +11508,10 @@
       updateSyncBadge('syncing', '🔄 Syncing to Cloud...');
 
       const doSave = () => {
-        const payload = cleanData(invState);
+        let payload = cleanData(invState);
+        if (payload && payload.spellbook && payload.spellbook.catalog) {
+          delete payload.spellbook.catalog;
+        }
         set(ref(db, 'inventories/' + key), payload)
           .then(() => {
             updateSyncBadge('online', '🟢 Firebase Live');
