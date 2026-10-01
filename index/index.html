@@ -2605,6 +2605,7 @@
       display: flex;
       flex: 1;
       overflow: hidden;
+    min-height: 0;
     }
 
     /* sidebar */
@@ -2949,6 +2950,9 @@
       flex-direction: column;
       overflow: hidden;
       min-width: 0;
+    min-height: 0;
+    height: 100%;
+    position: relative;
     }
 
     .editor-topbar {
@@ -3007,13 +3011,20 @@
     /* write view */
     #write-view {
       flex: 1;
+      min-height: 0;
+      height: 100%;
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
     .note-textarea {
       flex: 1;
+      min-height: 0;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
       padding: 20px 22px;
       background: none;
       border: none;
@@ -3021,12 +3032,41 @@
       font-family: inherit;
       font-size: 14px;
       line-height: 1.8;
-      color: var(--text);
+      color: var(--text) !important;
+      caret-color: var(--gold);
       resize: none;
+      overflow-y: auto !important;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+      word-break: break-word;
+      white-space: pre-wrap;
     }
 
     .note-textarea::placeholder {
       color: var(--text3);
+    }
+
+    .note-textarea::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .note-textarea::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .note-textarea::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 4px;
+    }
+
+    .note-textarea::-webkit-scrollbar-thumb:hover {
+      background: var(--gold);
+    }
+
+    .note-textarea::selection {
+      background: rgba(192, 144, 80, 0.45);
+      color: #ffffff;
     }
 
     /* images view */
@@ -5030,7 +5070,7 @@
     </div>
 
     <!-- D&D CAMPAIGN NOTES WORKSPACE -->
-    <div id="notes-view-container">
+    <div id="notes-view-container" class="fullscreen-notes">
       <div id="bg-layer"></div>
 
       <!-- Background panel -->
@@ -5042,7 +5082,7 @@
           title="Return to Character Inventory & Spells Screen">🎒 Character Screen</button>
         <button class="tbarbtn" onclick="toggleNotesFullscreen()" id="notes-fs-btn"
           style="color:var(--gold); border-color:var(--border2); margin-right:8px;"
-          title="Toggle Fullscreen Notes Workspace">⛶ Fullscreen</button>
+          title="Toggle Fullscreen Notes Workspace">⛶ Exit Fullscreen</button>
         <span style="font-size:20px">⚔️</span>
         <h1>D&D Notes</h1>
         <span class="titlebar-sub" id="session-label"></span>
@@ -5948,6 +5988,10 @@
       } else if (tabName === 'features') {
         renderFeaturesView();
       } else if (tabName === 'notes') {
+        const savedFs = localStorage.getItem('dnd-notes-fs');
+        if (savedFs !== '0') {
+          toggleNotesFullscreen(true);
+        }
         if (typeof initNotesOnce === 'function') initNotesOnce();
         if (typeof render === 'function') render();
         if (typeof applyBg === 'function') applyBg();
@@ -10684,12 +10728,16 @@
        D&D CAMPAIGN NOTES WORKSPACE SCRIPTS
        ======================================================== */
 
-    function toggleNotesFullscreen() {
+    function toggleNotesFullscreen(forceState) {
       const c = document.getElementById('notes-view-container');
       const btn = document.getElementById('notes-fs-btn');
       if (!c) return;
-      const isFs = c.classList.toggle('fullscreen-notes');
+      const isFs = (typeof forceState === 'boolean') ? forceState : !c.classList.contains('fullscreen-notes');
+      c.classList.toggle('fullscreen-notes', isFs);
       if (btn) btn.textContent = isFs ? '⛶ Exit Fullscreen' : '⛶ Fullscreen';
+      try {
+        localStorage.setItem('dnd-notes-fs', isFs ? '1' : '0');
+      } catch (e) {}
       if (typeof currentView !== 'undefined' && currentView === 'draw') {
         setTimeout(() => { if (typeof setupCanvas === 'function') setupCanvas(); if (typeof loadCanvas === 'function') loadCanvas(); }, 50);
       }
@@ -10964,6 +11012,10 @@
       const titleEl = document.getElementById('note-title');
       const bodyEl = document.getElementById('note-body');
       const emptyEl = document.getElementById('empty-write');
+      const writeView = document.getElementById('write-view');
+      const editorEl = document.querySelector('.editor');
+      if (writeView) writeView.scrollTop = 0;
+      if (editorEl) editorEl.scrollTop = 0;
       if (!note) {
         titleEl.value = ''; bodyEl.value = ''; titleEl.disabled = true;
         bodyEl.style.display = 'none'; emptyEl.style.display = 'flex';
@@ -10975,6 +11027,8 @@
       titleEl.disabled = false; bodyEl.style.display = ''; emptyEl.style.display = 'none';
       titleEl.value = note.title || '';
       bodyEl.value = note.body || '';
+      bodyEl.scrollTop = 0;
+      if (writeView) writeView.scrollTop = 0;
       document.getElementById('session-label').textContent = note.title ? `— ${note.title}` : '';
       if (currentView === 'images') renderImages();
       if (currentView === 'sheet') renderSheet();
@@ -10985,7 +11039,17 @@
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
     function updateTitle(v) { const n = activeNote(); if (!n) return; n.title = v; saveNotes(); renderNotesList(); document.getElementById('session-label').textContent = v ? `— ${v}` : ''; }
-    function updateBody(v) { const n = activeNote(); if (!n) return; n.body = v; saveNotes(); }
+    function updateBody(v) {
+      const n = activeNote();
+      if (!n) return;
+      n.body = v;
+      saveNotes();
+      const activeItem = document.querySelector('.note-item.active .note-item-preview');
+      if (activeItem) {
+        const preview = (v || '').replace(/\n/g, ' ').substring(0, 50);
+        activeItem.textContent = preview || 'No content';
+      }
+    }
 
     function addNote() {
       const note = { id: S.nextNoteId++, catId: S.activeCatId, title: 'New note', body: '', drawing: null, images: [], sheet: null, created: Date.now() };
@@ -11835,9 +11899,17 @@
     function initNotesOnce() {
       if (notesInitialized) return;
       notesInitialized = true;
+      const savedFs = localStorage.getItem('dnd-notes-fs');
+      if (savedFs !== '0') {
+        toggleNotesFullscreen(true);
+      }
       buildDrawControls();
       render();
       applyBg();
+      const wv = document.getElementById('write-view');
+      if (wv) {
+        wv.addEventListener('scroll', () => { if (wv.scrollTop !== 0) wv.scrollTop = 0; });
+      }
     }
     window.addEventListener('DOMContentLoaded', () => {
       initNotesOnce();
