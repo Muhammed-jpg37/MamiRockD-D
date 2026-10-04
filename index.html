@@ -2018,7 +2018,7 @@
     /* --- 4-COLUMN DASHBOARD LAYOUT (Stats -> Equipped -> Inventory -> Trackers & Details) --- */
     .layout {
       display: grid;
-      grid-template-columns: 310px 230px 1fr 270px;
+      grid-template-columns: 310px 246px 1fr 270px;
       gap: 12px;
       align-items: start;
       width: 100%;
@@ -2026,7 +2026,7 @@
 
     @media (max-width: 1400px) {
       .layout {
-        grid-template-columns: 290px 210px 1fr 250px;
+        grid-template-columns: 290px 236px 1fr 250px;
       }
     }
 
@@ -2112,11 +2112,14 @@
     /* --- FULL-WIDTH EQUIPPED SLOTS (CATALOG SIZE) --- */
     .equipped-column {
       width: 100%;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+      padding: 14px 10px !important;
     }
 
     .doll {
       display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
       grid-template-areas:
         "head head"
         "neck cloak"
@@ -2125,28 +2128,32 @@
         "ring1 ring2"
         "main off"
         "boots boots" !important;
-      gap: 10px !important;
+      gap: 8px !important;
       width: 100% !important;
       max-width: 100% !important;
-      margin: 10px 0 0 0 !important;
+      box-sizing: border-box !important;
+      margin: 8px 0 0 0 !important;
     }
 
     .slot {
       background: var(--panel-2) !important;
       border: 1px solid var(--border-bright) !important;
       border-radius: 6px !important;
-      min-height: 58px !important;
+      min-height: 54px !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: center !important;
-      padding: 6px 8px !important;
+      padding: 4px 6px !important;
       text-align: center !important;
       cursor: pointer !important;
       position: relative !important;
       transition: all 0.2s ease !important;
       width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
       box-sizing: border-box !important;
+      overflow: hidden !important;
     }
 
     .slot:hover {
@@ -2162,16 +2169,23 @@
     }
 
     .slot .slot-label {
-      font-size: 10px !important;
+      font-size: 9px !important;
       font-weight: 700 !important;
       letter-spacing: 0.5px !important;
       color: var(--gold-bright) !important;
-      margin-bottom: 2px !important;
+      margin-bottom: 1px !important;
       text-transform: uppercase !important;
+      position: absolute !important;
+      top: 3px !important;
+      left: 5px !important;
+      line-height: 1 !important;
+      pointer-events: none !important;
     }
 
     .slot .icon {
-      font-size: 20px !important;
+      font-size: 19px !important;
+      margin-top: 8px !important;
+      line-height: 1 !important;
     }
 
     .slot .item-name {
@@ -2182,7 +2196,12 @@
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
-      max-width: 95% !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      display: block !important;
+      box-sizing: border-box !important;
+      padding: 0 4px !important;
+      line-height: 1.2 !important;
     }
 
     /* --- SMALLER & SLEEK SPELLBOOK PANEL --- */
