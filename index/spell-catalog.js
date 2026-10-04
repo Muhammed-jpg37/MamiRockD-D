@@ -6239,20 +6239,26 @@ window.SPELL_CATALOG = [
     "school": "E",
     "schoolName": "Enchantment",
     "classes": [
-      "Wizard",
       "Bard",
-      "Warlock"
+      "Sorcerer",
+      "Wizard"
     ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 1 magical spell effect.",
-    "desc": "Silvery Barbs is a level 1 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
+    "castingTime": "1 reaction, which you take when a creature you can see within 60 feet of yourself succeeds on an attack roll, an ability check, or a saving throw",
+    "range": "60 feet",
+    "components": "V",
+    "duration": "Instantaneous",
+    "quickEffect": "Reaction when a creature within 60 ft succeeds on an attack roll, ability check, or saving throw: force it to reroll the d20 and use the lower roll. Then choose a creature within 60 ft (can be yourself) to gain advantage on its next attack, ability check, or save within 1 minute.",
+    "desc": "You magically distract the triggering creature and turn its momentary uncertainty into encouragement for another creature.\n\nCasting Time: 1 reaction, which you take when a creature you can see within 60 feet of yourself succeeds on an attack roll, an ability check, or a saving throw.\n\nThe triggering creature must reroll the d20 and use the lower roll.\n\nYou then choose a different creature you can see within 60 feet of yourself (you can choose yourself). The chosen creature has advantage on the next attack roll, ability check, or saving throw it makes within 1 minute. A creature can be empowered by only one use of this spell at a time.",
+    "higherLevels": "No higher level benefit.",
     "tags": [
-      "UTILITY"
-    ]
+      "DEBUFF",
+      "BUFF",
+      "REACTION",
+      "COMBAT",
+      "STRIXHAVEN",
+      "SCC"
+    ],
+    "damage": ""
   },
   {
     "name": "Sleep",
@@ -7584,18 +7590,25 @@ window.SPELL_CATALOG = [
     "school": "D",
     "schoolName": "Divination",
     "classes": [
+      "Bard",
+      "Cleric",
+      "Warlock",
       "Wizard"
     ],
     "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 2 magical spell effect.",
-    "desc": "Borrowed Knowledge is a level 2 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
+    "range": "Touch",
+    "components": "V, S, M (a book worth at least 25 gp)",
+    "duration": "1 hour",
+    "quickEffect": "You touch one creature (or yourself) and draw on spirits of the past to grant proficiency in one chosen skill in which the target lacks proficiency for 1 hour.",
+    "desc": "You draw on knowledge from spirits of the past. Choose one skill in which you lack proficiency. For the duration, you have proficiency in the chosen skill. The spell ends early if you cast it again.",
+    "higherLevels": "No higher level benefit.",
     "tags": [
-      "UTILITY"
-    ]
+      "BUFF",
+      "UTILITY",
+      "STRIXHAVEN",
+      "SCC"
+    ],
+    "damage": ""
   },
   {
     "name": "Branding Smite",
@@ -9284,20 +9297,28 @@ window.SPELL_CATALOG = [
     "school": "T",
     "schoolName": "Transmutation",
     "classes": [
-      "Wizard",
+      "Artificer",
+      "Bard",
       "Sorcerer",
-      "Druid"
+      "Wizard"
     ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
+    "castingTime": "1 bonus action",
+    "range": "Self",
+    "components": "S",
     "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Kinetic Jaunt is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
+    "quickEffect": "Bonus action: Walking speed increases by 10 ft, movement doesn't provoke opportunity attacks, and you can move through other creatures' spaces for up to 1 minute (Concentration).",
+    "desc": "You magically empower your movement with dance-like agility. For the duration, your walking speed increases by 10 feet, and your movement doesn't provoke opportunity attacks.\n\nIn addition, you can move through the space of other creatures, but you cannot end your turn in their space.",
+    "higherLevels": "No higher level benefit.",
     "tags": [
-      "UTILITY"
-    ]
+      "BUFF",
+      "MOVEMENT",
+      "COMBAT",
+      "UTILITY",
+      "BONUS ACTION",
+      "STRIXHAVEN",
+      "SCC"
+    ],
+    "damage": ""
   },
   {
     "name": "Knock",
@@ -11352,20 +11373,26 @@ window.SPELL_CATALOG = [
     "school": "C",
     "schoolName": "Conjuration",
     "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
+      "Artificer",
+      "Sorcerer",
+      "Wizard"
     ],
     "castingTime": "1 action",
-    "range": "30 feet",
+    "range": "90 feet",
     "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Vortex Warp is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
+    "duration": "Instantaneous",
+    "quickEffect": "Teleport a creature within 90 ft to an unoccupied space on a surface or in liquid within range (Constitution save negates; willing creatures can choose to fail). Range +30 ft per slot level above 2nd.",
+    "desc": "You magically twist space around another creature you can see within range. The target must succeed on a Constitution saving throw (the target can choose to fail) or be teleported to an unoccupied space of your choice that you can see within range. The chosen space must be on a surface or in a liquid that can support the target without the target having to squeeze.",
+    "higherLevels": "When you cast this spell using a spell slot of 3rd level or higher, the range of the spell increases by 30 feet for each slot level above 2nd.",
     "tags": [
-      "UTILITY"
-    ]
+      "TELEPORTATION",
+      "CONTROL",
+      "COMBAT",
+      "UTILITY",
+      "STRIXHAVEN",
+      "SCC"
+    ],
+    "damage": ""
   },
   {
     "name": "Warding Bond",
@@ -11554,20 +11581,26 @@ window.SPELL_CATALOG = [
     "school": "N",
     "schoolName": "Necromancy",
     "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
+      "Druid",
+      "Sorcerer",
+      "Wizard"
     ],
     "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 2 magical spell effect.",
-    "desc": "Wither and Bloom is a level 2 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
+    "range": "60 feet",
+    "components": "V, S, M (a withered flower)",
+    "duration": "Instantaneous",
+    "quickEffect": "10-ft sphere within 60 ft: each chosen creature takes 2d6 necrotic damage (Con save half). Nonmagical vegetation withers. One chosen willing creature can spend a Hit Die to heal (roll + casting modifier). Scales +1d6 damage and +1 Hit Die per slot above 2nd.",
+    "desc": "You invoke both death and life upon a 10-foot-radius sphere centered on a point within range. Each creature of your choice in that area must make a Constitution saving throw, taking 2d6 necrotic damage on a failed save, or half as much damage on a successful one. Nonmagical vegetation in that area withers.\n\nIn addition, one willing creature of your choice in that area can immediately spend and roll one of its unspent Hit Dice and regain a number of hit points equal to the roll plus your spellcasting ability modifier.",
+    "higherLevels": "When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d6 for each slot level above 2nd, and the creature can spend one additional Hit Die for each slot level above 2nd.",
     "tags": [
-      "UTILITY"
-    ]
+      "DAMAGE",
+      "HEALING",
+      "COMBAT",
+      "AREA",
+      "STRIXHAVEN",
+      "SCC"
+    ],
+    "damage": "2d6 Necrotic"
   },
   {
     "name": "Wristpocket",
