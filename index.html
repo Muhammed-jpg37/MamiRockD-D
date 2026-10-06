@@ -5635,6 +5635,8 @@
     let currentUser = null;           // Logged in account: { nickname, role, ... }
     let activeInventoryUser = null;    // Nickname of inventory being inspected / modified
     let isSyncingFromCloud = false;    // Prevents feedback loops during Firebase updates
+    let currentNotesOwner = 'guest';   // Logged-in account whose notes are active
+    let S = null;                      // Notes workspace state, initialized later
 
     // Ensure window properties stay 100% synchronized for Firebase module
     Object.defineProperty(window, 'activeInventoryUser', {
@@ -8255,8 +8257,12 @@
     }
 
     function loginUser(account) {
+      if (typeof saveNotes === 'function' && currentUser && currentUser.nickname !== account.nickname) {
+        saveNotes();
+      }
       currentUser = account;
       activeInventoryUser = account.nickname;
+      currentNotesOwner = account.nickname;
       try {
         localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify({
           nickname: account.nickname,
@@ -8293,6 +8299,9 @@
 
       // Load this user's individual inventory
       load(account.nickname);
+      if (typeof loadNotesState === 'function') {
+        loadNotesState(account.nickname);
+      }
       normalizeState();
       applyTheme();
       renderAll();
@@ -8308,9 +8317,13 @@
 
     function logoutCurrentUser() {
       save();
+      if (typeof saveNotes === 'function') {
+        saveNotes();
+      }
       try { localStorage.removeItem(STORAGE_SESSION_KEY); } catch (e) { }
       currentUser = null;
       activeInventoryUser = null;
+      currentNotesOwner = 'guest';
 
       const authScreen = document.getElementById('auth-portal-screen');
       if (authScreen) authScreen.classList.remove('auth-hidden');
@@ -10884,34 +10897,122 @@
     ════════════════════════════════ */
     const ALL_CAT_COLORS = ['#c84b31', '#e07040', '#c09050', '#a0b030', '#4a7c59', '#2c7873', '#2a6080', '#3a5090', '#6e4a8b', '#a03070', '#8b3a3a', '#507050', '#708090', '#c0a060', '#60a0c0', '#9060a0'];
 
-    let S = {
-      cats: [
-        { id: 1, name: 'Session Notes', color: '#c84b31', parentId: null, order: 0, open: true },
-        { id: 2, name: 'NPCs', color: '#2c7873', parentId: null, order: 1, open: true },
-        { id: 3, name: 'Locations', color: '#6e4a8b', parentId: null, order: 2, open: true },
-        { id: 4, name: 'Quests', color: '#2a6080', parentId: null, order: 3, open: true },
-        { id: 5, name: 'Party', color: '#c09050', parentId: null, order: 4, open: true },
-        { id: 6, name: 'Allies', color: '#4a7c59', parentId: 2, order: 0, open: true },
-        { id: 7, name: 'Enemies', color: '#c84b31', parentId: 2, order: 1, open: true },
-      ],
-      notes: [],
-      activeCatId: 1, activeNoteId: null, nextCatId: 8, nextNoteId: 1,
-    };
+    function normalizeNotesOwner(name) {
+      return String(name || 'guest').trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '_') || 'guest';
+    }
 
-    try { const sv = localStorage.getItem('dnd-notes-v2'); if (sv) { const p = JSON.parse(sv); if (p.cats && p.notes) S = p; } } catch (e) { }
+    function getNotesOwnerName() {
+      return (currentUser && currentUser.nickname) ? currentUser.nickname : (activeInventoryUser || 'guest');
+    }
 
-    // Migrate old notes without images array
-    S.notes.forEach(n => { if (!n.images) n.images = []; if (!n.cons) n.cons = []; });
-    S.cats.forEach(c => { if (c.parentId === undefined) c.parentId = null; if (c.order === undefined) c.order = 0; if (c.open === undefined) c.open = true; });
+    function getNotesStorageKey(ownerName) {
+      return 'dnd-notes-v2:' + normalizeNotesOwner(ownerName || getNotesOwnerName());
+    }
+
+    function getNotesCloudPath(ownerName) {
+      return 'campaign_notes/users/' + normalizeNotesOwner(ownerName || getNotesOwnerName());
+    }
+
+    function buildDefaultNotesState() {
+      return {
+        cats: [
+          { id: 1, name: 'Session Notes', color: '#c84b31', parentId: null, order: 0, open: true },
+          { id: 2, name: 'NPCs', color: '#2c7873', parentId: null, order: 1, open: true },
+          { id: 3, name: 'Locations', color: '#6e4a8b', parentId: null, order: 2, open: true },
+          { id: 4, name: 'Quests', color: '#2a6080', parentId: null, order: 3, open: true },
+          { id: 5, name: 'Party', color: '#c09050', parentId: null, order: 4, open: true },
+          { id: 6, name: 'Allies', color: '#4a7c59', parentId: 2, order: 0, open: true },
+          { id: 7, name: 'Enemies', color: '#c84b31', parentId: 2, order: 1, open: true },
+        ],
+        notes: [],
+        activeCatId: 1,
+        activeNoteId: null,
+        nextCatId: 8,
+        nextNoteId: 1,
+      };
+    }
+
+    function normalizeNotesState(state) {
+      const fallback = buildDefaultNotesState();
+      if (!state || typeof state !== 'object') return fallback;
+      if (!Array.isArray(state.cats)) state.cats = fallback.cats;
+      if (!Array.isArray(state.notes)) state.notes = [];
+      state.activeCatId = state.activeCatId || fallback.activeCatId;
+      state.activeNoteId = state.activeNoteId || null;
+
+      const catMax = state.cats.reduce(function (max, cat) { return Math.max(max, Number(cat && cat.id) || 0); }, 0);
+      const noteMax = state.notes.reduce(function (max, note) { return Math.max(max, Number(note && note.id) || 0); }, 0);
+      state.nextCatId = Number(state.nextCatId) || (catMax + 1);
+      state.nextNoteId = Number(state.nextNoteId) || (noteMax + 1);
+
+      state.notes.forEach(function (note) {
+        if (!note.images) note.images = [];
+        if (!note.cons) note.cons = [];
+        if (!note.created) note.created = Date.now();
+        if (note.catId == null && state.cats.length) note.catId = state.cats[0].id;
+      });
+      state.cats.forEach(function (cat) {
+        if (cat.parentId === undefined) cat.parentId = null;
+        if (cat.order === undefined) cat.order = 0;
+        if (cat.open === undefined) cat.open = true;
+      });
+      return state;
+    }
+
+    currentNotesOwner = getNotesOwnerName();
+    S = buildDefaultNotesState();
+
+    function loadNotesState(ownerName) {
+      const owner = ownerName || getNotesOwnerName();
+      const storageKey = getNotesStorageKey(owner);
+      const fallback = buildDefaultNotesState();
+      let loaded = null;
+
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (raw) loaded = JSON.parse(raw);
+      } catch (e) { }
+
+      if (!loaded) {
+        ['dnd-notes-v2', 'dnd_notes_v1'].some(function (legacyKey) {
+          try {
+            const raw = localStorage.getItem(legacyKey);
+            if (raw) {
+              loaded = JSON.parse(raw);
+              return true;
+            }
+          } catch (e) { }
+          return false;
+        });
+      }
+
+      S = normalizeNotesState(Object.assign(fallback, loaded || {}));
+      currentNotesOwner = owner;
+      window.S = S;
+
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(S));
+      } catch (e) { }
+
+      if (typeof window.fbListenToNotes === 'function') {
+        window.fbListenToNotes(owner);
+      }
+
+      return S;
+    }
+
+    loadNotesState(currentNotesOwner);
 
     function saveNotes() {
+      if (!S || typeof S !== 'object') return;
+      const owner = currentNotesOwner || getNotesOwnerName();
       try {
-        localStorage.setItem('dnd-notes-v2', JSON.stringify(S));
+        localStorage.setItem(getNotesStorageKey(owner), JSON.stringify(S));
       } catch (e) {
         toast('Storage full — export to save!', 3000);
       }
       if (typeof window.fbSaveNotes === 'function') {
-        window.fbSaveNotes(S);
+        window.fbSaveNotes(S, owner);
       }
     }
 
@@ -12813,13 +12914,17 @@
        3. CAMPAIGN NOTES SYNCHRONIZATION
        ======================================================== */
     let notesDebounceTimer = null;
-    window.fbSaveNotes = function(notesState) {
+    let currentNotesListener = null;
+    let currentNotesListenerPath = null;
+
+    window.fbSaveNotes = function(notesState, ownerNickname) {
       if (!db || !notesState) return;
+      const owner = ownerNickname || getNotesOwnerName();
       updateSyncBadge('syncing', '🔄 Saving Notes...');
       clearTimeout(notesDebounceTimer);
       notesDebounceTimer = setTimeout(() => {
         const payload = cleanData(notesState);
-        set(ref(db, 'campaign_notes/workspace'), payload)
+        set(ref(db, getNotesCloudPath(owner)), payload)
           .then(() => {
             updateSyncBadge('online', '🟢 Firebase Live');
           })
@@ -12830,24 +12935,54 @@
       }, 400);
     };
 
-    if (db) {
-      const notesRef = ref(db, 'campaign_notes/workspace');
+    window.fbListenToNotes = function(ownerNickname) {
+      if (!db || !ownerNickname) return;
+      const owner = ownerNickname || getNotesOwnerName();
+      const pathKey = getNotesCloudPath(owner);
+      if (currentNotesListenerPath === pathKey) return;
+
+      if (typeof currentNotesListener === 'function') {
+        currentNotesListener();
+        currentNotesListener = null;
+      }
+
+      currentNotesListenerPath = pathKey;
+      const notesRef = ref(db, pathKey);
 
       get(notesRef).then((snapshot) => {
-        if (!snapshot.exists() && window.S && window.S.notes && window.S.notes.length > 0) {
-          set(notesRef, cleanData(window.S));
+        if (snapshot.exists()) {
+          const cloudNotes = snapshot.val();
+          if (cloudNotes && typeof cloudNotes === 'object' && cloudNotes.cats && cloudNotes.notes) {
+            const localStr = JSON.stringify(cleanData(S));
+            const cloudStr = JSON.stringify(cloudNotes);
+            if (localStr !== cloudStr) {
+              S = normalizeNotesState(cloudNotes);
+              window.S = S;
+              try {
+                localStorage.setItem(getNotesStorageKey(owner), JSON.stringify(cloudNotes));
+              } catch (e) { }
+              if (typeof window.render === 'function') window.render();
+              if (typeof window.renderCats === 'function') window.renderCats();
+              if (typeof window.renderNotesList === 'function') window.renderNotesList();
+              updateSyncBadge('online', '⚡ Notes Live Updated');
+              setTimeout(() => updateSyncBadge('online', '🟢 Firebase Live'), 2000);
+            }
+          }
+        } else if (S && S.notes && S.notes.length > 0) {
+          window.fbSaveNotes(S, owner);
         }
       });
 
-      onValue(notesRef, (snapshot) => {
+      currentNotesListener = onValue(notesRef, (snapshot) => {
         const cloudNotes = snapshot.val();
         if (cloudNotes && typeof cloudNotes === 'object' && cloudNotes.cats && cloudNotes.notes) {
-          const localStr = JSON.stringify(cleanData(window.S));
+          const localStr = JSON.stringify(cleanData(S));
           const cloudStr = JSON.stringify(cloudNotes);
           if (localStr !== cloudStr) {
-            window.S = cloudNotes;
+            S = normalizeNotesState(cloudNotes);
+            window.S = S;
             try {
-              localStorage.setItem('dnd-notes-v2', JSON.stringify(cloudNotes));
+              localStorage.setItem(getNotesStorageKey(owner), JSON.stringify(cloudNotes));
             } catch (e) { }
             if (typeof window.render === 'function') window.render();
             if (typeof window.renderCats === 'function') window.renderCats();
@@ -12857,6 +12992,10 @@
           }
         }
       });
+    };
+
+    if (db) {
+      window.fbListenToNotes(currentNotesOwner);
     }
 
     /* ========================================================
