@@ -8742,8 +8742,8 @@
         menu.dataset.initialized = '1';
         menu.innerHTML = '<div class="spell-slots-card" id="spell-slots-container"></div>' +
           '<div class="spellbook-filter-bar">' +
-          '<input type="text" id="spell-search-input" placeholder="🔍 Search spells by name, description, damage, or tags..." value="' + escapeHtml(state.spellbook.query || '') + '" oninput="updateSpellSearch(this.value)">' +
-          '<select id="spell-class-filter" onchange="updateSpellClassFilter(this.value)">' +
+          '<input type="text" id="spell-search-input" class="my-spells-filter" data-my-filter="query" placeholder="🔍 Search my spells by name, description, damage, or tags..." value="' + escapeHtml(mySpellsFilters.query || '') + '" oninput="updateMySpellsSearch(this.value)">' +
+          '<select id="spell-class-filter" class="my-spells-filter" data-my-filter="classFilter" onchange="updateMySpellsClassFilter(this.value)">' +
           '<option value="">All Classes</option>' +
           '<option value="Bard">Bard</option>' +
           '<option value="Cleric">Cleric</option>' +
@@ -8755,7 +8755,7 @@
           '<option value="Wizard">Wizard</option>' +
           '<option value="Artificer">Artificer</option>' +
           '</select>' +
-          '<select id="spell-level-filter" onchange="updateSpellLevelFilter(this.value)">' +
+          '<select id="spell-level-filter" class="my-spells-filter" data-my-filter="levelFilter" onchange="updateMySpellsLevelFilter(this.value)">' +
           '<option value="">All Levels</option>' +
           '<option value="0">Cantrips</option>' +
           '<option value="1">Level 1</option>' +
@@ -8768,7 +8768,7 @@
           '<option value="8">Level 8</option>' +
           '<option value="9">Level 9</option>' +
           '</select>' +
-          '<select id="spell-school-filter" onchange="updateSpellSchoolFilter(this.value)">' +
+          '<select id="spell-school-filter" class="my-spells-filter" data-my-filter="schoolFilter" onchange="updateMySpellsSchoolFilter(this.value)">' +
           '<option value="">All Schools</option>' +
           '<option value="Abjuration">Abjuration</option>' +
           '<option value="Conjuration">Conjuration</option>' +
@@ -8779,7 +8779,7 @@
           '<option value="Necromancy">Necromancy</option>' +
           '<option value="Transmutation">Transmutation</option>' +
           '</select>' +
-          '<select id="spell-source-filter" onchange="updateSpellSourceFilter(this.value)">' +
+          '<select id="spell-source-filter" class="my-spells-filter" data-my-filter="sourceFilter" onchange="updateMySpellsSourceFilter(this.value)">' +
           '<option value="">All Sources</option>' +
           '<option value="SCC">Strixhaven: A Curriculum of Chaos (SCC)</option>' +
           '<option value="PHB">Player\'s Handbook 2014 (PHB)</option>' +
@@ -8791,14 +8791,14 @@
           '<option value="SRD">System Reference (SRD)</option>' +
           '<option value="OTHER">Other Sources</option>' +
           '</select>' +
-          '<select id="spell-sort-by" onchange="updateSpellSortBy(this.value)">' +
+          '<select id="spell-sort-by" class="my-spells-filter" data-my-filter="sortBy" onchange="updateMySpellsSortBy(this.value)">' +
           '<option value="level-asc">Sort: Level (Asc)</option>' +
           '<option value="level-desc">Sort: Level (Desc)</option>' +
           '<option value="name">Sort: Name (A-Z)</option>' +
           '<option value="class">Sort: Class (A-Z)</option>' +
           '<option value="school">Sort: School</option>' +
           '</select>' +
-          '<button class="btn ghost small" onclick="clearSpellFilters()">🧹 Clear Filters</button>' +
+          '<button class="btn ghost small" onclick="clearMySpellsFilters()">🧹 Clear Filters</button>' +
           '<button class="btn ghost small" onclick="openMaxSpellsModal()">⚙️ Max Spells Limits</button>' +
           '<button class="btn ghost small" onclick="refreshSpellCatalog()">Reload Catalog</button>' +
           '</div>' +
@@ -8809,7 +8809,7 @@
           '<div class="spell-status" id="spell-list-status" style="margin-top:2px;">0 saved</div>' +
           '</div>' +
           '<div style="display:flex; gap:8px; align-items:center;">' +
-          '<input type="text" id="my-spells-search" placeholder="🔍 Search my spells..." oninput="updateMySpellsSearch(this.value)" style="padding:6px 12px; font-size:12px; max-width:200px; border-radius:6px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:var(--text);">' +
+          '<input type="text" id="my-spells-search" class="my-spells-filter" data-my-filter="query" placeholder="🔍 Search my spells..." oninput="updateMySpellsSearch(this.value)" style="padding:6px 12px; font-size:12px; max-width:200px; border-radius:6px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:var(--text);">' +
           '<button class="btn small" onclick="openSpellCatalogModal()" style="font-size:12px; font-weight:bold; background:linear-gradient(180deg, var(--gold-bright), #8a641d); color:#000; box-shadow:0 0 8px rgba(234,179,8,0.3);">📜 + Browse & Add Spells (Full Catalog)</button>' +
           '<button class="btn ghost small" onclick="openMaxSpellsModal()">⚙️ Max Limits</button>' +
           '</div>' +
@@ -8817,6 +8817,7 @@
           '<div class="spell-list" id="spell-list"></div>' +
           '</div>';
       }
+      syncMySpellsControls();
       renderSpellSlots();
       renderSpellbookContents();
       const toggleBtn = document.getElementById('spellbook-toggle');
@@ -8830,14 +8831,14 @@
       state.spellbook.schoolFilter = '';
       state.spellbook.sourceFilter = '';
       state.spellbook.sortBy = 'level-asc';
-      mySpellsFilterQuery = '';
-      document.querySelectorAll('#spell-search-input').forEach(function (el) { el.value = ''; });
-      document.querySelectorAll('#my-spells-search').forEach(function (el) { el.value = ''; });
-      document.querySelectorAll('#spell-class-filter').forEach(function (el) { el.value = ''; });
-      document.querySelectorAll('#spell-level-filter').forEach(function (el) { el.value = ''; });
-      document.querySelectorAll('#spell-school-filter').forEach(function (el) { el.value = ''; });
-      document.querySelectorAll('#spell-source-filter').forEach(function (el) { el.value = ''; });
-      document.querySelectorAll('#spell-sort-by').forEach(function (el) { el.value = 'level-asc'; });
+      // Only the add screen's own controls are reset here. The Spells tab's
+      // filter bar belongs to the saved list and reads mySpellsFilters, so it
+      // must be left exactly as it is.
+      document.querySelectorAll('#spell-catalog-overlay .spellbook-filter-bar input').forEach(function (el) { el.value = ''; });
+      document.querySelectorAll('#spell-catalog-overlay .spellbook-filter-bar select').forEach(function (el) {
+        el.value = (el.id.indexOf('sort') >= 0) ? 'level-asc' : '';
+      });
+      syncMySpellsControls();
       save();
       renderSpellbookContents();
     }
@@ -9010,7 +9011,10 @@
 
     function updateSpellSourceFilter(val) {
       if (state && state.spellbook) state.spellbook.sourceFilter = val;
-      document.querySelectorAll('#spell-source-filter').forEach(function(el) { el.value = val; });
+      // The Spells tab's source select belongs to the saved list (mySpellsFilters)
+      // so it is deliberately not touched here; this only mirrors into the add
+      // screen if it ever gets a source control.
+      document.querySelectorAll('#spell-catalog-overlay #spell-source-filter').forEach(function(el) { el.value = val; });
       renderSpellbookContents();
     }
 
@@ -9048,11 +9052,80 @@
     }
 
 
-    let mySpellsFilterQuery = '';
+    /* Filters for "My Spell List" (the Spells tab filter bar + the "search my
+       spells" box). Deliberately separate from the catalog's filters
+       (state.spellbook.query/classFilter/...) which belong to the add screen, so
+       filtering one list never hides spells in the other. */
+    let mySpellsFilters = {
+      query: '',
+      classFilter: '',
+      levelFilter: '',
+      schoolFilter: '',
+      sourceFilter: '',
+      sortBy: 'level-asc'
+    };
 
-    function updateMySpellsSearch(val) {
-      mySpellsFilterQuery = (val || '').toLowerCase().trim();
+    const MY_FILTER_KINDS = { query: 1, classFilter: 1, levelFilter: 1, schoolFilter: 1, sourceFilter: 1, sortBy: 1 };
+
+    function mySpellsHasFilter() {
+      return !!(mySpellsFilters.query || mySpellsFilters.classFilter ||
+        (mySpellsFilters.levelFilter !== '' && mySpellsFilters.levelFilter !== undefined && mySpellsFilters.levelFilter !== null) ||
+        mySpellsFilters.schoolFilter || mySpellsFilters.sourceFilter);
+    }
+
+    /* Keep both saved-list controls (filter bar + header search box) showing the
+       same values. The focused element is skipped so the caret never jumps. */
+    function syncMySpellsControls() {
+      document.querySelectorAll('.my-spells-filter').forEach(function (el) {
+        const kind = el.getAttribute('data-my-filter');
+        if (!MY_FILTER_KINDS[kind]) return;
+        const value = (kind === 'sortBy') ? (mySpellsFilters.sortBy || 'level-asc') : (mySpellsFilters[kind] || '');
+        if (document.activeElement !== el) el.value = value;
+      });
+    }
+
+    function updateMySpellsFilter(kind, val) {
+      if (!MY_FILTER_KINDS[kind]) return;
+      const v = (val === undefined || val === null) ? '' : String(val);
+      mySpellsFilters[kind] = (kind === 'query') ? v.toLowerCase().trim() : v;
+      if (kind === 'sortBy' && !mySpellsFilters.sortBy) mySpellsFilters.sortBy = 'level-asc';
+      syncMySpellsControls();
       renderSpellbookContents();
+    }
+
+    function updateMySpellsSearch(val) { updateMySpellsFilter('query', val); }
+    function updateMySpellsClassFilter(val) { updateMySpellsFilter('classFilter', val); }
+    function updateMySpellsLevelFilter(val) { updateMySpellsFilter('levelFilter', val); }
+    function updateMySpellsSchoolFilter(val) { updateMySpellsFilter('schoolFilter', val); }
+    function updateMySpellsSourceFilter(val) { updateMySpellsFilter('sourceFilter', val); }
+    function updateMySpellsSortBy(val) { updateMySpellsFilter('sortBy', val); }
+
+    /* Clears only the saved list's filters — the add screen's stay untouched. */
+    function clearMySpellsFilters() {
+      mySpellsFilters.query = '';
+      mySpellsFilters.classFilter = '';
+      mySpellsFilters.levelFilter = '';
+      mySpellsFilters.schoolFilter = '';
+      mySpellsFilters.sourceFilter = '';
+      mySpellsFilters.sortBy = 'level-asc';
+      syncMySpellsControls();
+      renderSpellbookContents();
+    }
+
+    /* The catalog's filters only exist inside the add screen now, so make sure its
+       controls show the persisted state whenever the modal is opened. */
+    function syncCatalogFilterControls() {
+      const overlay = document.getElementById('spell-catalog-overlay');
+      if (!overlay) return;
+      const set = function (id, value) {
+        const el = overlay.querySelector('#' + id);
+        if (el) el.value = value;
+      };
+      set('spell-search-input-modal', state.spellbook.query || '');
+      set('spell-class-filter-modal', state.spellbook.classFilter || '');
+      set('spell-level-filter-modal', (state.spellbook.levelFilter === undefined || state.spellbook.levelFilter === null) ? '' : String(state.spellbook.levelFilter));
+      set('spell-school-filter-modal', state.spellbook.schoolFilter || '');
+      set('spell-sort-by-modal', state.spellbook.sortBy || 'level-asc');
     }
 
     function openSpellCatalogModal() {
@@ -9061,6 +9134,7 @@
       if (!state.spellbook.catalogLoaded || !state.spellbook.catalog || state.spellbook.catalog.length === 0) {
         refreshSpellCatalog();
       }
+      syncCatalogFilterControls();
       renderSpellbookContents();
     }
 
@@ -9148,11 +9222,22 @@
 
       const rawList = sb.list || [];
       let list = rawList.slice();
-      const effectiveQuery = (mySpellsFilterQuery || query).trim().toLowerCase();
+      // "My Spell List" is driven by its own filters (the Spells tab filter bar
+      // and the "search my spells" box) — never by the add screen's, otherwise
+      // filtering the catalog would hide spells the player already added.
+      const myQuery = (mySpellsFilters.query || '').trim().toLowerCase();
+      const myClassFilter = mySpellsFilters.classFilter || '';
+      const myLevelFilter = (mySpellsFilters.levelFilter === undefined || mySpellsFilters.levelFilter === null) ? '' : String(mySpellsFilters.levelFilter);
+      const mySchoolFilter = mySpellsFilters.schoolFilter || '';
+      const mySourceFilter = mySpellsFilters.sourceFilter || '';
+      const mySortBy = mySpellsFilters.sortBy || 'level-asc';
+      const findCatalogSpell = function (name) {
+        return (sb.catalog || []).find(function (c) { return c.name === name; });
+      };
 
-      if (effectiveQuery) {
+      if (myQuery) {
         list = list.filter(function (spell) {
-          const catalogSpell = (sb.catalog || []).find(function (c) { return c.name === spell.name; });
+          const catalogSpell = findCatalogSpell(spell.name);
           const fullDesc = catalogSpell ? (catalogSpell.desc || catalogSpell.quickEffect || '') : (spell.desc || '');
           const dmg = catalogSpell ? (catalogSpell.damage || '') : (spell.damage || '');
           const src = catalogSpell ? (catalogSpell.source || '') : (spell.source || '');
@@ -9160,76 +9245,78 @@
           const classesStr = ((catalogSpell && catalogSpell.classes) ? catalogSpell.classes : (spell.classes || [])).join(' ').toLowerCase();
           const schoolStr = ((catalogSpell && (catalogSpell.schoolName || catalogSpell.school)) ? (catalogSpell.schoolName || catalogSpell.school) : (spell.schoolName || spell.school || '')).toLowerCase();
           const castingStr = (catalogSpell ? catalogSpell.castingTime || '' : spell.castingTime || '').toLowerCase();
-          return spell.name.toLowerCase().includes(effectiveQuery) ||
-            fullDesc.toLowerCase().includes(effectiveQuery) ||
-            dmg.toLowerCase().includes(effectiveQuery) ||
-            src.toLowerCase().includes(effectiveQuery) ||
-            srcFull.includes(effectiveQuery) ||
-            classesStr.includes(effectiveQuery) ||
-            schoolStr.includes(effectiveQuery) ||
-            castingStr.includes(effectiveQuery) ||
-            (spell.tags && spell.tags.some(function (t) { return t.toLowerCase().includes(effectiveQuery); }));
+          return spell.name.toLowerCase().includes(myQuery) ||
+            fullDesc.toLowerCase().includes(myQuery) ||
+            dmg.toLowerCase().includes(myQuery) ||
+            src.toLowerCase().includes(myQuery) ||
+            srcFull.includes(myQuery) ||
+            classesStr.includes(myQuery) ||
+            schoolStr.includes(myQuery) ||
+            castingStr.includes(myQuery) ||
+            (spell.tags && spell.tags.some(function (t) { return t.toLowerCase().includes(myQuery); }));
         });
       }
 
-      if (classFilter) {
+      if (myClassFilter) {
         list = list.filter(function (spell) {
-          const catalogSpell = (sb.catalog || []).find(function (c) { return c.name === spell.name; });
+          const catalogSpell = findCatalogSpell(spell.name);
           const classes = (catalogSpell && catalogSpell.classes) ? catalogSpell.classes : (spell.classes || []);
-          return classes.includes(classFilter);
+          return classes.includes(myClassFilter);
         });
       }
 
-      if (levelFilter !== '') {
-        const targetLvl = parseInt(levelFilter, 10);
+      if (myLevelFilter !== '') {
+        const targetLvl = parseInt(myLevelFilter, 10);
         list = list.filter(function (spell) {
           const lvl = spell.levelNum !== undefined ? spell.levelNum : parseLevelNum(spell.levelText);
           return lvl === targetLvl;
         });
       }
 
-      if (schoolFilter) {
+      if (mySchoolFilter) {
         list = list.filter(function (spell) {
-          const catalogSpell = (sb.catalog || []).find(function (c) { return c.name === spell.name; });
+          const catalogSpell = findCatalogSpell(spell.name);
           const sch = catalogSpell ? (catalogSpell.schoolName || catalogSpell.school) : (spell.schoolName || spell.school);
-          return sch === schoolFilter;
+          return sch === mySchoolFilter;
         });
       }
 
-      if (sourceFilter) {
+      if (mySourceFilter) {
         list = list.filter(function (spell) {
-          const catalogSpell = (sb.catalog || []).find(function (c) { return c.name === spell.name; });
+          const catalogSpell = findCatalogSpell(spell.name);
           const src = catalogSpell ? catalogSpell.source : spell.source;
-          if (sourceFilter === 'OTHER') {
+          if (mySourceFilter === 'OTHER') {
             const mainSources = ['SCC', 'PHB', 'XPHB', 'XGE', 'TCE', 'FTD', 'EGW', 'SRD'];
             return !mainSources.includes(src);
           }
-          return src === sourceFilter;
+          return src === mySourceFilter;
         });
       }
 
+      // The saved list sorts itself (default: level, then name). The add screen's
+      // sort dropdown cannot reshuffle it.
       list.sort(function (a, b) {
         const aLvl = a.levelNum !== undefined ? a.levelNum : parseLevelNum(a.levelText);
         const bLvl = b.levelNum !== undefined ? b.levelNum : parseLevelNum(b.levelText);
-        if (sortBy === 'level-asc') return (aLvl - bLvl) || a.name.localeCompare(b.name);
-        if (sortBy === 'level-desc') return (bLvl - aLvl) || a.name.localeCompare(b.name);
-        if (sortBy === 'class') {
-          const aCat = (sb.catalog || []).find(function (c) { return c.name === a.name; });
-          const bCat = (sb.catalog || []).find(function (c) { return c.name === b.name; });
+        if (mySortBy === 'level-desc') return (bLvl - aLvl) || a.name.localeCompare(b.name);
+        if (mySortBy === 'name') return a.name.localeCompare(b.name);
+        if (mySortBy === 'class') {
+          const aCat = findCatalogSpell(a.name);
+          const bCat = findCatalogSpell(b.name);
           const aClasses = (aCat && aCat.classes) ? aCat.classes : (a.classes || []);
           const bClasses = (bCat && bCat.classes) ? bCat.classes : (b.classes || []);
           const aClass = aClasses.length ? aClasses.slice().sort()[0] : 'Universal';
           const bClass = bClasses.length ? bClasses.slice().sort()[0] : 'Universal';
           return aClass.localeCompare(bClass) || (aLvl - bLvl) || a.name.localeCompare(b.name);
         }
-        if (sortBy === 'school') {
-          const aCat = (sb.catalog || []).find(function (c) { return c.name === a.name; });
-          const bCat = (sb.catalog || []).find(function (c) { return c.name === b.name; });
+        if (mySortBy === 'school') {
+          const aCat = findCatalogSpell(a.name);
+          const bCat = findCatalogSpell(b.name);
           const aSch = aCat ? (aCat.schoolName || aCat.school || '') : (a.schoolName || a.school || '');
           const bSch = bCat ? (bCat.schoolName || bCat.school || '') : (b.schoolName || b.school || '');
           return aSch.localeCompare(bSch) || (aLvl - bLvl) || a.name.localeCompare(b.name);
         }
-        return a.name.localeCompare(b.name);
+        return (aLvl - bLvl) || a.name.localeCompare(b.name);
       });
 
       const catalogBox = document.getElementById('spell-catalog-list');
@@ -9255,8 +9342,10 @@
         }
       }
 
-      const hasFilter = query || mySpellsFilterQuery || classFilter || levelFilter !== '' || schoolFilter || sourceFilter;
-      const filterNotice = hasFilter ? ' (' + catalog.length + ' matched active filter)' : ' (574 total spells)';
+      // Each list reports its own filters: the catalog notice reflects the add
+      // screen's filters, the saved-list counter only its own search box.
+      const catalogHasFilter = query || classFilter || levelFilter !== '' || schoolFilter || sourceFilter;
+      const filterNotice = catalogHasFilter ? ' (' + catalog.length + ' matched active filter)' : ' (574 total spells)';
       if (statusBox) statusBox.textContent = sb.loading ? 'Loading...' : catalog.length.toLocaleString() + ' shown' + filterNotice;
       const modalStatus = document.getElementById('spell-catalog-modal-status');
       if (modalStatus) modalStatus.textContent = sb.loading ? 'Loading...' : catalog.length.toLocaleString() + ' spells shown' + filterNotice;
@@ -9265,7 +9354,7 @@
       if (errorBox) errorBox.innerHTML = sb.error ? '<div class="spell-empty">' + escapeHtml(sb.error) + '</div>' : '';
 
       if (listStatusBox) {
-        if (hasFilter && rawList.length > 0) {
+        if (mySpellsHasFilter() && rawList.length > 0) {
           listStatusBox.textContent = list.length + ' shown (' + rawList.length + ' total saved)' + (levelSummary.length ? ' · ' + levelSummary.join(' · ') : '');
         } else {
           listStatusBox.textContent = rawList.length + ' saved' + (levelSummary.length ? ' (' + levelSummary.join(' · ') + ')' : '');
@@ -9308,8 +9397,8 @@
             '</div>';
         } else if (list.length === 0) {
           listBox.innerHTML = '<div class="spell-empty" style="padding:28px 20px; text-align:center; background:rgba(0,0,0,0.2); border:1px dashed var(--border); border-radius:8px;">' +
-            '<div style="font-size:14px; color:var(--text-muted); margin-bottom:10px;">No saved spells match your active filters or search query.</div>' +
-            '<button class="btn ghost small" onclick="clearSpellFilters()">🧹 Clear Filters</button>' +
+            '<div style="font-size:14px; color:var(--text-muted); margin-bottom:10px;">No saved spells match your filters.</div>' +
+            '<button class="btn ghost small" onclick="clearMySpellsFilters()">🧹 Clear Filters</button>' +
             '</div>';
         } else {
           listBox.innerHTML = list.map(function (spell) {
@@ -12457,10 +12546,10 @@
 
       <!-- Filter Bar inside Modal -->
       <div class="spellbook-filter-bar" style="margin-bottom:12px; gap:6px;">
-        <input type="text" id="spell-search-input"
+        <input type="text" id="spell-search-input-modal"
           placeholder="🔍 Search catalog by name, description, damage, or tags..."
           oninput="updateSpellSearch(this.value)">
-        <select id="spell-class-filter" onchange="updateSpellClassFilter(this.value)">
+        <select id="spell-class-filter-modal" onchange="updateSpellClassFilter(this.value)">
           <option value="">All Classes</option>
           <option value="Bard">Bard</option>
           <option value="Cleric">Cleric</option>
@@ -12472,7 +12561,7 @@
           <option value="Wizard">Wizard</option>
           <option value="Artificer">Artificer</option>
         </select>
-        <select id="spell-level-filter" onchange="updateSpellLevelFilter(this.value)">
+        <select id="spell-level-filter-modal" onchange="updateSpellLevelFilter(this.value)">
           <option value="">All Levels</option>
           <option value="0">Cantrips</option>
           <option value="1">Level 1</option>
@@ -12485,7 +12574,7 @@
           <option value="8">Level 8</option>
           <option value="9">Level 9</option>
         </select>
-        <select id="spell-school-filter" onchange="updateSpellSchoolFilter(this.value)">
+        <select id="spell-school-filter-modal" onchange="updateSpellSchoolFilter(this.value)">
           <option value="">All Schools</option>
           <option value="Abjuration">Abjuration</option>
           <option value="Conjuration">Conjuration</option>
@@ -12496,7 +12585,7 @@
           <option value="Necromancy">Necromancy</option>
           <option value="Transmutation">Transmutation</option>
         </select>
-        <select id="spell-sort-by" onchange="updateSpellSortBy(this.value)">
+        <select id="spell-sort-by-modal" onchange="updateSpellSortBy(this.value)">
           <option value="level-asc">Sort: Level (Asc)</option>
           <option value="level-desc">Sort: Level (Desc)</option>
           <option value="name">Sort: Name (A-Z)</option>
