@@ -943,6 +943,8 @@
     .spell-catalog,
     .spell-list {
       display: grid;
+      align-content: start;
+      grid-auto-rows: max-content;
       gap: 8px;
     }
 
@@ -2343,13 +2345,13 @@
     /* --- EXPANDED SPELL LIST HEIGHT --- */
     .spell-catalog {
       max-height: calc(80vh - 160px) !important;
-      min-height: 400px !important;
+      min-height: 0 !important;
       overflow-y: auto !important;
     }
 
     .spell-list {
       max-height: calc(80vh - 180px) !important;
-      min-height: 480px !important;
+      min-height: 0 !important;
       overflow-y: auto !important;
       padding: 6px !important;
     }
