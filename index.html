@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>⚔ MAMİ ROCK D&D - Character Sheet, Inventory, Spells & Campaign Notes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap"
@@ -2528,8 +2528,12 @@
       display: none;
       flex-direction: column;
       width: 100%;
+      /* Never taller than the space actually available on screen: a hard
+         min-height here used to push the bottom of the editor (where you type)
+         off-screen on short windows and behind the mobile keyboard. */
       height: calc(100vh - 120px);
-      min-height: 650px;
+      height: calc(100dvh - 120px);
+      min-height: 0;
       position: relative;
       overflow: hidden;
       background: var(--bg);
@@ -2546,6 +2550,8 @@
       inset: 0 !important;
       width: 100vw !important;
       height: 100vh !important;
+      height: 100dvh !important;
+      min-height: 0 !important;
       max-width: 100vw !important;
       margin: 0 !important;
       z-index: 2000 !important;
@@ -11243,15 +11249,18 @@
     }
 
     /* ── Note editor ── */
+    let lastRenderedNoteId = null;
+
     function renderNote() {
       const note = activeNote();
       const titleEl = document.getElementById('note-title');
       const bodyEl = document.getElementById('note-body');
       const emptyEl = document.getElementById('empty-write');
-      const writeView = document.getElementById('write-view');
-      const editorEl = document.querySelector('.editor');
-      if (writeView) writeView.scrollTop = 0;
-      if (editorEl) editorEl.scrollTop = 0;
+      // Only reset the viewport when we actually switch to a different note.
+      const noteChanged = !note || note.id !== lastRenderedNoteId;
+      lastRenderedNoteId = note ? note.id : null;
+      if (noteChanged) flushNotesSave();
+
       if (!note) {
         titleEl.value = ''; bodyEl.value = ''; titleEl.disabled = true;
         bodyEl.style.display = 'none'; emptyEl.style.display = 'flex';
@@ -11261,11 +11270,24 @@
       }
       const mb = document.getElementById('move-note-btn'); if (mb) mb.style.opacity = '1';
       titleEl.disabled = false; bodyEl.style.display = ''; emptyEl.style.display = 'none';
-      titleEl.value = note.title || '';
-      bodyEl.value = note.body || '';
-      bodyEl.scrollTop = 0;
-      if (writeView) writeView.scrollTop = 0;
       document.getElementById('session-label').textContent = note.title ? `— ${note.title}` : '';
+
+      // Never fight the user: don't rewrite the fields (which resets the
+      // caret and the scroll position) unless the note really changed, or the
+      // buffer is out of date and is not currently being edited.
+      const titleFocused = document.activeElement === titleEl;
+      const bodyFocused = document.activeElement === bodyEl;
+      if (!titleFocused && (noteChanged || titleEl.value !== (note.title || ''))) {
+        titleEl.value = note.title || '';
+      }
+      const bodyValue = note.body || '';
+      if (noteChanged || (!bodyFocused && bodyEl.value !== bodyValue)) {
+        const keepScroll = noteChanged ? 0 : bodyEl.scrollTop;
+        bodyEl.value = bodyValue;
+        bodyEl.scrollTop = keepScroll;
+        if (noteChanged) { try { bodyEl.selectionStart = bodyEl.selectionEnd = 0; } catch (e) { } }
+      }
+
       if (currentView === 'images') renderImages();
       if (currentView === 'sheet') renderSheet();
     }
@@ -11274,12 +11296,44 @@
     function notesIn(catId) { return S.notes.filter(n => n.catId === catId); }
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
-    function updateTitle(v) { const n = activeNote(); if (!n) return; n.title = v; saveNotes(); renderNotesList(); document.getElementById('session-label').textContent = v ? `— ${v}` : ''; }
+    /* Typing fires one input event per keystroke. Persisting the whole notes
+       state (and rebuilding the note list) on every single one of them made
+       typing in a large notebook stutter, so both are debounced. */
+    let notesSaveTimer = null;
+    let notesListRefreshTimer = null;
+
+    function saveNotesSoon() {
+      if (notesSaveTimer) clearTimeout(notesSaveTimer);
+      notesSaveTimer = setTimeout(flushNotesSave, 400);
+    }
+
+    function flushNotesSave() {
+      if (!notesSaveTimer) return;   // nothing pending -> don't rewrite the cloud
+      clearTimeout(notesSaveTimer);
+      notesSaveTimer = null;
+      saveNotes();
+    }
+
+    function refreshNotesListSoon() {
+      if (notesListRefreshTimer) clearTimeout(notesListRefreshTimer);
+      notesListRefreshTimer = setTimeout(() => { notesListRefreshTimer = null; renderNotesList(); }, 300);
+    }
+
+    function updateTitle(v) {
+      const n = activeNote(); if (!n) return;
+      n.title = v;
+      saveNotesSoon();
+      document.getElementById('session-label').textContent = v ? `— ${v}` : '';
+      const activeTitle = document.querySelector('.note-item.active .note-item-title');
+      if (activeTitle) activeTitle.textContent = v || 'Untitled';
+      refreshNotesListSoon();
+    }
+
     function updateBody(v) {
       const n = activeNote();
       if (!n) return;
       n.body = v;
-      saveNotes();
+      saveNotesSoon();
       const activeItem = document.querySelector('.note-item.active .note-item-preview');
       if (activeItem) {
         const preview = (v || '').replace(/\n/g, ' ').substring(0, 50);
@@ -12142,10 +12196,15 @@
       buildDrawControls();
       render();
       applyBg();
-      const wv = document.getElementById('write-view');
-      if (wv) {
-        wv.addEventListener('scroll', () => { if (wv.scrollTop !== 0) wv.scrollTop = 0; });
-      }
+      // Make sure a debounced save is never lost when editing stops.
+      ['note-title', 'note-body'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('blur', flushNotesSave);
+      });
+      window.addEventListener('beforeunload', flushNotesSave);
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) flushNotesSave();
+      });
     }
     window.addEventListener('DOMContentLoaded', () => {
       initNotesOnce();
@@ -12916,6 +12975,32 @@
     let notesDebounceTimer = null;
     let currentNotesListener = null;
     let currentNotesListenerPath = null;
+    let lastSentNotesCanon = null;
+
+    /* Firebase returns object keys in sorted order and silently drops members
+       whose value is null (and empty collections). normalizeNotesState() puts
+       some of those back (e.g. cat.parentId = null), so a plain
+       JSON.stringify(local) vs JSON.stringify(snapshot) comparison can NEVER
+       match for a normal notebook — which made every live-sync echo re-render
+       the editor mid-typing. This builds an order-stable, null-insensitive
+       string so only real changes count as changes. */
+    function notesCanon(value) {
+      if (value === null || value === undefined) return 'null';
+      if (Array.isArray(value)) {
+        if (value.length === 0) return 'null'; // RTDB stores [] as nothing
+        return '[' + value.map(notesCanon).join(',') + ']';
+      }
+      if (typeof value === 'object') {
+        const parts = [];
+        Object.keys(value).sort().forEach(function (k) {
+          const c = notesCanon(value[k]);
+          if (c !== 'null') parts.push(JSON.stringify(k) + ':' + c);
+        });
+        if (!parts.length) return 'null'; // empty object == missing in RTDB
+        return '{' + parts.join(',') + '}';
+      }
+      return JSON.stringify(value);
+    }
 
     window.fbSaveNotes = function(notesState, ownerNickname) {
       if (!db || !notesState) return;
@@ -12923,7 +13008,12 @@
       updateSyncBadge('syncing', '🔄 Saving Notes...');
       clearTimeout(notesDebounceTimer);
       notesDebounceTimer = setTimeout(() => {
-        const payload = cleanData(notesState);
+        // Resolve the state when the write actually happens: the debounce used
+        // to capture the object reference, so a snapshot arriving in between
+        // could get overwritten by the stale copy.
+        const latest = (typeof S !== 'undefined' && S) ? S : notesState;
+        const payload = cleanData(latest);
+        lastSentNotesCanon = notesCanon(payload);
         set(ref(db, getNotesCloudPath(owner)), payload)
           .then(() => {
             updateSyncBadge('online', '🟢 Firebase Live');
@@ -12934,6 +13024,48 @@
           });
       }, 400);
     };
+
+    /* Apply a snapshot arriving from Firebase. Returns true when something
+       actually changed. Never rewrites the note the user is currently editing. */
+    function applyCloudNotes(cloudNotes, owner) {
+      if (!cloudNotes || typeof cloudNotes !== 'object' || !cloudNotes.cats || !cloudNotes.notes) return false;
+      const incoming = notesCanon(cloudNotes);
+      if (incoming === lastSentNotesCanon) return false;      // echo of our own write
+      if (typeof S !== 'undefined' && S && incoming === notesCanon(S)) return false; // already in sync
+
+      // activeCatId/activeNoteId and anything half-typed are this client's UI
+      // state, not cloud data — carry them over so the editor isn't disturbed.
+      const bodyEl = document.getElementById('note-body');
+      const titleEl = document.getElementById('note-title');
+      const editingBody = (bodyEl && document.activeElement === bodyEl) ? bodyEl.value : null;
+      const editingTitle = (titleEl && document.activeElement === titleEl) ? titleEl.value : null;
+      const activeNoteId = S ? S.activeNoteId : null;
+      const activeCatId = S ? S.activeCatId : null;
+
+      S = normalizeNotesState(cloudNotes);
+      window.S = S;
+      if (activeCatId != null) S.activeCatId = activeCatId;
+      if (activeNoteId != null) S.activeNoteId = activeNoteId;
+
+      if (editingBody !== null || editingTitle !== null) {
+        const target = S.notes.find(n => n.id === S.activeNoteId);
+        if (target) {
+          if (editingBody !== null) target.body = editingBody;
+          if (editingTitle !== null) target.title = editingTitle;
+          saveNotesSoon();
+        }
+      }
+
+      try {
+        localStorage.setItem(getNotesStorageKey(owner), JSON.stringify(S));
+      } catch (e) { }
+      if (typeof window.render === 'function') window.render();
+      if (typeof window.renderCats === 'function') window.renderCats();
+      if (typeof window.renderNotesList === 'function') window.renderNotesList();
+      updateSyncBadge('online', '⚡ Notes Live Updated');
+      setTimeout(() => updateSyncBadge('online', '🟢 Firebase Live'), 2000);
+      return true;
+    }
 
     window.fbListenToNotes = function(ownerNickname) {
       if (!db || !ownerNickname) return;
@@ -12951,46 +13083,14 @@
 
       get(notesRef).then((snapshot) => {
         if (snapshot.exists()) {
-          const cloudNotes = snapshot.val();
-          if (cloudNotes && typeof cloudNotes === 'object' && cloudNotes.cats && cloudNotes.notes) {
-            const localStr = JSON.stringify(cleanData(S));
-            const cloudStr = JSON.stringify(cloudNotes);
-            if (localStr !== cloudStr) {
-              S = normalizeNotesState(cloudNotes);
-              window.S = S;
-              try {
-                localStorage.setItem(getNotesStorageKey(owner), JSON.stringify(cloudNotes));
-              } catch (e) { }
-              if (typeof window.render === 'function') window.render();
-              if (typeof window.renderCats === 'function') window.renderCats();
-              if (typeof window.renderNotesList === 'function') window.renderNotesList();
-              updateSyncBadge('online', '⚡ Notes Live Updated');
-              setTimeout(() => updateSyncBadge('online', '🟢 Firebase Live'), 2000);
-            }
-          }
+          applyCloudNotes(snapshot.val(), owner);
         } else if (S && S.notes && S.notes.length > 0) {
           window.fbSaveNotes(S, owner);
         }
       });
 
       currentNotesListener = onValue(notesRef, (snapshot) => {
-        const cloudNotes = snapshot.val();
-        if (cloudNotes && typeof cloudNotes === 'object' && cloudNotes.cats && cloudNotes.notes) {
-          const localStr = JSON.stringify(cleanData(S));
-          const cloudStr = JSON.stringify(cloudNotes);
-          if (localStr !== cloudStr) {
-            S = normalizeNotesState(cloudNotes);
-            window.S = S;
-            try {
-              localStorage.setItem(getNotesStorageKey(owner), JSON.stringify(cloudNotes));
-            } catch (e) { }
-            if (typeof window.render === 'function') window.render();
-            if (typeof window.renderCats === 'function') window.renderCats();
-            if (typeof window.renderNotesList === 'function') window.renderNotesList();
-            updateSyncBadge('online', '⚡ Notes Live Updated');
-            setTimeout(() => updateSyncBadge('online', '🟢 Firebase Live'), 2000);
-          }
-        }
+        applyCloudNotes(snapshot.val(), owner);
       });
     };
 
