@@ -32,6 +32,19 @@
       --veryrare: #a259d9;
       --legendary: #e08a2c;
       --artifact: #d94b3e;
+      /* Tokens consumed by the workspace/modals retro-fit block further down.
+         That block only defines them on a few selectors, so rules outside its
+         scope (notably .modal) resolved them to nothing and silently lost their
+         background and border. Define them globally. */
+      --bg2: #221f1b;
+      --bg3: #2c2822;
+      --bg4: #38332c;
+      --surface: #2a2520;
+      --border2: rgba(255, 255, 255, 0.14);
+      --text2: #a89880;
+      --text3: #6b5e50;
+      --radius: 8px;
+      --radius-lg: 12px;
     }
 
     * {
@@ -1342,8 +1355,9 @@
     }
 
     /* ---------- Spellbook & Spell Slots Enhancements ---------- */
+    /* ---------- Spell slots tracker ---------- */
     .spell-slots-card {
-      background: var(--void);
+      background: var(--panel-2);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 12px 14px;
@@ -1354,38 +1368,96 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
       gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
     }
 
     .spell-slots-title {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
       font-family: 'Cinzel', serif;
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--gold-bright);
     }
 
+    .spell-slots-total {
+      font-family: 'Spectral', serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: .5px;
+      text-transform: none;
+      color: var(--text-dim);
+    }
+
+    .spell-slots-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
     .spell-slots-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
       gap: 10px;
     }
 
     .slot-level-box {
-      background: rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--void);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 6px 8px;
+      padding: 8px 10px;
+      transition: border-color .15s, box-shadow .15s;
     }
 
-    .slot-level-title {
+    .slot-level-box.exhausted {
+      border-color: var(--danger);
+      box-shadow: inset 0 0 0 1px rgba(217, 88, 74, 0.25);
+    }
+
+    .slot-level-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .slot-level-name {
       font-size: 10px;
+      font-weight: 600;
       letter-spacing: 1px;
       text-transform: uppercase;
-      color: var(--text-faint);
-      margin-bottom: 4px;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    .slot-level-count-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slot-level-count {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .slot-level-count b {
+      font-size: 21px;
+      color: var(--gold-bright);
+    }
+
+    .slot-level-box.exhausted .slot-level-count b {
+      color: var(--danger-bright);
     }
 
     .slot-pips {
@@ -1394,6 +1466,7 @@
       flex-wrap: wrap;
     }
 
+    /* Base pip — shared with the Features limited-use tracker. */
     .slot-pip {
       width: 20px;
       height: 20px;
@@ -1418,6 +1491,159 @@
       background: rgba(168, 60, 50, 0.25);
       border-color: var(--danger-bright);
       color: var(--danger-bright);
+    }
+
+    /* Spell slots tracker pips — scoped so the Features tracker keeps its own look.
+       Filled = still available, hollow = spent (never an ✕, which reads as delete). */
+    .spell-slots-grid .slot-pip {
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 70%);
+      box-shadow: 0 0 6px rgba(232, 207, 122, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+      transition: transform .12s, box-shadow .12s, background .12s, border-color .12s, opacity .12s;
+    }
+
+    .spell-slots-grid .slot-pip:hover {
+      transform: scale(1.12);
+      box-shadow: 0 0 10px rgba(232, 207, 122, 0.6);
+    }
+
+    .spell-slots-grid .slot-pip:focus-visible {
+      outline: 2px solid var(--gold-bright);
+      outline-offset: 2px;
+    }
+
+    .spell-slots-grid .slot-pip.spent {
+      background: rgba(168, 60, 50, 0.22);
+      border-color: rgba(217, 88, 74, 0.7);
+      box-shadow: none;
+    }
+
+    .spell-slots-grid .slot-pip.spent:hover {
+      background: rgba(168, 60, 50, 0.38);
+      border-color: var(--danger-bright);
+    }
+
+    .slot-step {
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      line-height: 1;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--gold-bright);
+      cursor: pointer;
+      transition: border-color .12s, color .12s, opacity .12s;
+    }
+
+    .slot-step:hover:not(:disabled) {
+      border-color: var(--gold-bright);
+    }
+
+    .slot-step:disabled {
+      opacity: .3;
+      color: var(--text-faint);
+      cursor: default;
+    }
+
+    .slot-step-label {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .slot-legend {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .legend-pip {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .legend-pip.avail {
+      background: radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 70%);
+      border: 1px solid var(--gold);
+    }
+
+    .legend-pip.spent {
+      background: rgba(168, 60, 50, 0.22);
+      border: 1px solid rgba(217, 88, 74, 0.7);
+    }
+
+    .slot-legend-sep {
+      color: var(--text-faint);
+    }
+
+    .slot-empty {
+      text-align: center;
+      padding: 20px 16px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px dashed var(--border-bright);
+      border-radius: 8px;
+    }
+
+    .slot-empty-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .slot-empty-title {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      color: var(--gold-bright);
+      margin-bottom: 4px;
+    }
+
+    .slot-empty-text {
+      font-size: 12px;
+      color: var(--text-dim);
+      max-width: 460px;
+      margin: 0 auto 12px;
+      line-height: 1.45;
+    }
+
+    .slot-input-sub {
+      display: block;
+      font-size: 9px;
+      color: var(--text-faint);
+    }
+
+    .slot-settings-preview {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .slot-settings-preview-title {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 8px;
+    }
+
+    .slot-preview-empty {
+      font-size: 11px;
+      color: var(--text-dim);
     }
 
     .spellbook-filter-bar {
@@ -2210,51 +2436,6 @@
     .spellbook-panel {
       padding: 12px 16px !important;
       margin-top: 14px !important;
-    }
-
-    .spell-slots-card {
-      padding: 8px 12px !important;
-      margin-bottom: 10px !important;
-      background: var(--panel-2) !important;
-      border: 1px solid var(--border) !important;
-      border-radius: 6px !important;
-    }
-
-    .spell-slots-title {
-      font-size: 13px !important;
-      font-weight: 700 !important;
-      color: var(--gold-bright) !important;
-    }
-
-    .spell-slots-grid {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      gap: 6px !important;
-      margin-top: 6px !important;
-    }
-
-    .slot-level-box {
-      padding: 4px 8px !important;
-      background: var(--void) !important;
-      border: 1px solid var(--border) !important;
-      border-radius: 4px !important;
-    }
-
-    .slot-level-title {
-      font-size: 10px !important;
-      font-weight: 600 !important;
-      color: var(--gold) !important;
-      margin-bottom: 2px !important;
-    }
-
-    .slot-pips {
-      gap: 3px !important;
-    }
-
-    .slot-pip {
-      width: 18px !important;
-      height: 18px !important;
-      font-size: 10px !important;
     }
 
     .spell-list {
@@ -5062,7 +5243,6 @@
       <div class="spellbook-header-row"
         style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
         <div class="panel-title" style="font-size:22px; margin:0;">✨ Spell System & Catalog</div>
-        <div id="spell-slots-header-slot" style="flex:1; min-width:280px;"></div>
       </div>
       <div id="spellbook-menu"></div>
     </div>
@@ -5610,18 +5790,23 @@
 
   <!-- Spell Slot Settings Modal -->
   <div class="overlay" id="slot-settings-overlay">
-    <div class="modal" style="max-width:440px;">
+    <div class="modal" style="max-width:560px;">
       <h2>⚙️ Spell Slot Settings</h2>
-      <div class="hint" style="margin-bottom:14px;">Set your maximum spell slots for each level (0 to 10).</div>
+      <div class="hint" style="margin-bottom:14px;">How many spell slots you have at each level, from 0 to 10. Leave a level at 0 if you can't cast spells of that level yet.</div>
 
       <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr; gap:10px;" id="slot-inputs-grid">
         <!-- Generated via JS -->
       </div>
 
       <div style="display:flex; gap:6px; margin-top:12px; flex-wrap:wrap;">
-        <button type="button" class="btn ghost small" onclick="applySlotPreset('full')">Full Caster (Lvl 5)</button>
-        <button type="button" class="btn ghost small" onclick="applySlotPreset('high')">High Level (Lvl 11)</button>
-        <button type="button" class="btn ghost small" onclick="applySlotPreset('reset')">Clear Slots</button>
+        <button type="button" class="btn ghost small" id="slot-preset-class-level" onclick="applySlotPreset('classLevel')">🎯 Use my class &amp; level</button>
+        <button type="button" class="btn ghost small" onclick="applySlotPreset('full5')">Full caster, Lvl 5 — 4/3/2</button>
+        <button type="button" class="btn ghost small" onclick="applySlotPreset('full11')">Full caster, Lvl 11 — 4/3/3/3/2/1</button>
+        <button type="button" class="btn ghost small" onclick="applySlotPreset('clear')">Clear all</button>
+      </div>
+
+      <div class="slot-settings-preview" id="slot-settings-preview">
+        <!-- Live preview, generated via JS -->
       </div>
 
       <div class="modal-footer">
@@ -6925,6 +7110,7 @@
       save();
       closeCharacterStatsModal();
       renderAll();
+      maybeOfferSpellSlotSync();
     }
 
 
@@ -7443,6 +7629,7 @@
       save();
       closeBackgroundModal();
       renderAll();
+      maybeOfferSpellSlotSync();
     }
 
 
@@ -7991,15 +8178,9 @@
         skillCustomBonuses: {}
       };
 
-      const SPELLCASTER_SLOTS = {
-        1: { 1: 2, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
-        2: { 1: 3, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
-        3: { 1: 4, 2: 2, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
-        4: { 1: 4, 2: 3, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
-        5: { 1: 4, 2: 3, 3: 2, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
-      };
-      const isCaster = ['Bard', 'Cleric', 'Druid', 'Sorcerer', 'Warlock', 'Wizard', 'Artificer', 'Paladin', 'Ranger'].includes(charClass);
-      const spellSlotsMax = (isCaster && SPELLCASTER_SLOTS[Math.min(5, level)]) ? SPELLCASTER_SLOTS[Math.min(5, level)] : { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
+      /* Real per-class slot progression (full, half, and pact casters). */
+      const derivedSlots = deriveSpellSlotsFor(charClass, level);
+      const spellSlotsMax = derivedSlots.max;
 
       const base = getDefaultState(nickname);
       const newPlayerState = Object.assign({}, base, {
@@ -8010,7 +8191,9 @@
         currency: { platinum: 0, gold: 50, electrum: 0, silver: 20, copper: 50 },
         spellSlots: {
           max: spellSlotsMax,
-          used: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
+          used: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
+          pactLevel: derivedSlots.pactLevel || 0,
+          syncedFor: charClass + ':' + level
         },
         spellbook: {
           open: true,
@@ -8843,64 +9026,281 @@
       renderSpellbookContents();
     }
 
+    /* ============================================================
+       SPELL SLOTS — progression tables + tracker
+       ============================================================ */
+
+    /* Standard 5e full-caster slots per character level: [1st, 2nd, ... 9th]. */
+    const SPELL_SLOT_TABLE_FULL = {
+      1: [2], 2: [3], 3: [4, 2], 4: [4, 3], 5: [4, 3, 2], 6: [4, 3, 3],
+      7: [4, 3, 3, 1], 8: [4, 3, 3, 2], 9: [4, 3, 3, 3, 1], 10: [4, 3, 3, 3, 2],
+      11: [4, 3, 3, 3, 2, 1], 12: [4, 3, 3, 3, 2, 1], 13: [4, 3, 3, 3, 2, 1, 1],
+      14: [4, 3, 3, 3, 2, 1, 1], 15: [4, 3, 3, 3, 2, 1, 1, 1], 16: [4, 3, 3, 3, 2, 1, 1, 1],
+      17: [4, 3, 3, 3, 2, 1, 1, 1, 1], 18: [4, 3, 3, 3, 3, 1, 1, 1, 1],
+      19: [4, 3, 3, 3, 3, 2, 1, 1, 1], 20: [4, 3, 3, 3, 3, 2, 2, 1, 1]
+    };
+
+    /* Warlock Pact Magic: [slot count, slot level]. All slots share one level and
+       come back on a short rest, so they render as their own labelled card. */
+    const WARLOCK_PACT_TABLE = {
+      1: [1, 1], 2: [2, 1], 3: [2, 2], 4: [2, 2], 5: [2, 3], 6: [2, 3],
+      7: [2, 4], 8: [2, 4], 9: [2, 5], 10: [2, 5], 11: [3, 5], 12: [3, 5],
+      13: [3, 5], 14: [3, 5], 15: [3, 5], 16: [3, 5], 17: [4, 5], 18: [4, 5],
+      19: [4, 5], 20: [4, 5]
+    };
+
+    const FULL_CASTER_CLASSES = ['Bard', 'Cleric', 'Druid', 'Sorcerer', 'Wizard'];
+    const HALF_CASTER_CLASSES = ['Paladin', 'Ranger'];   /* no slots before level 2 */
+    const ROUND_UP_HALF_CASTER = ['Artificer'];          /* half caster, but starts at level 1 */
+    const PACT_CASTER_CLASSES = ['Warlock'];
+
+    function emptySlotMax() {
+      return { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
+    }
+
+    function fillSlotMax(max, list) {
+      (list || []).forEach(function (count, idx) {
+        if (idx < 9) max[idx + 1] = count;
+      });
+      return max;
+    }
+
+    /* What a class gets at a level, plus the pact-magic spell level (0 if none). */
+    function deriveSpellSlotsFor(className, level) {
+      const cls = className || '';
+      const lvl = Math.max(1, Math.min(20, parseInt(level, 10) || 1));
+      const max = emptySlotMax();
+      let pactLevel = 0;
+
+      if (PACT_CASTER_CLASSES.indexOf(cls) >= 0) {
+        const pact = WARLOCK_PACT_TABLE[lvl];
+        if (pact) { max[pact[1]] = pact[0]; pactLevel = pact[1]; }
+      } else if (FULL_CASTER_CLASSES.indexOf(cls) >= 0) {
+        fillSlotMax(max, SPELL_SLOT_TABLE_FULL[lvl]);
+      } else if (ROUND_UP_HALF_CASTER.indexOf(cls) >= 0) {
+        fillSlotMax(max, SPELL_SLOT_TABLE_FULL[Math.ceil(lvl / 2)]);
+      } else if (HALF_CASTER_CLASSES.indexOf(cls) >= 0) {
+        if (lvl >= 2) fillSlotMax(max, SPELL_SLOT_TABLE_FULL[Math.ceil(lvl / 2)]);
+      }
+      return { max: max, pactLevel: pactLevel };
+    }
+
+    function spellSlotsMaxEqual(a, b) {
+      for (let lvl = 1; lvl <= 9; lvl++) {
+        if ((a[lvl] || 0) !== (b[lvl] || 0)) return false;
+      }
+      return true;
+    }
+
+    function formatSlotSummary(max) {
+      const parts = [];
+      let first = 0, last = 0;
+      for (let lvl = 1; lvl <= 9; lvl++) {
+        if ((max[lvl] || 0) > 0) {
+          if (!first) first = lvl;
+          last = lvl;
+          parts.push(max[lvl]);
+        }
+      }
+      if (!parts.length) return '';
+      const range = (first === last) ? ('Level ' + first) : ('Levels ' + first + '\u2013' + last);
+      return parts.join(' / ') + ' (' + range + ')';
+    }
+
+    function slotLevelName(lvl) {
+      return ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th'][lvl] || (lvl + 'th');
+    }
+
+    /* The per-level slot boxes. opts.interactive === false renders the pips as
+       plain spans, which is how the settings modal previews the result. */
+    function buildSlotGridHtml(slots, opts) {
+      opts = opts || {};
+      const interactive = opts.interactive !== false;
+      const s = slots || {};
+      const max = s.max || {};
+      const used = s.used || {};
+      const pactLevel = s.pactLevel || 0;
+
+      const levels = [];
+      for (let lvl = 1; lvl <= 9; lvl++) {
+        if ((max[lvl] || 0) > 0) levels.push(lvl);
+      }
+      if (!levels.length) return '';
+
+      let html = '<div class="spell-slots-grid">';
+      levels.forEach(function (lvl) {
+        const maxCount = max[lvl] || 0;
+        const usedCount = Math.max(0, Math.min(maxCount, used[lvl] || 0));
+        const remaining = maxCount - usedCount;
+        const isPact = (lvl === pactLevel);
+
+        let pips = '';
+        for (let i = 0; i < maxCount; i++) {
+          const isSpent = i < usedCount;
+          /* Clicking an available pip spends up to it; clicking a spent pip frees it
+             and everything after it. Spent pips are always a prefix, so this maps
+             straight onto the count. */
+          const target = isSpent ? i : (i + 1);
+          const label = (isPact ? 'Pact magic' : 'Level ' + lvl) + ' slot ' + (i + 1) + ' of ' + maxCount +
+            (isSpent ? ' — spent, click to restore' : ' — available, click to spend');
+          if (interactive) {
+            pips += '<button type="button" class="slot-pip' + (isSpent ? ' spent' : '') +
+              '" aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) +
+              '" onclick="setSpellSlotsUsed(' + lvl + ', ' + target + ')"></button>';
+          } else {
+            pips += '<span class="slot-pip' + (isSpent ? ' spent' : '') + '" aria-hidden="true"></span>';
+          }
+        }
+
+        /* + / − sit either side of the count and adjust the REMAINING number, so
+           pressing + makes the number the user is reading go up. */
+        const countGroup = '<span class="slot-level-count-group">' +
+          (interactive
+            ? '<button type="button" class="slot-step" title="Spend one ' + escapeHtml(slotLevelName(lvl)) + '-level slot"' +
+              ' aria-label="Spend one ' + escapeHtml(slotLevelName(lvl)) + '-level slot"' +
+              ' onclick="stepSpellSlot(' + lvl + ', -1)"' + (remaining <= 0 ? ' disabled' : '') + '>\u2212</button>'
+            : '') +
+          '<span class="slot-level-count"><b>' + remaining + '</b>/' + maxCount + '</span>' +
+          (interactive
+            ? '<button type="button" class="slot-step" title="Restore one ' + escapeHtml(slotLevelName(lvl)) + '-level slot"' +
+              ' aria-label="Restore one ' + escapeHtml(slotLevelName(lvl)) + '-level slot"' +
+              ' onclick="stepSpellSlot(' + lvl + ', 1)"' + (remaining >= maxCount ? ' disabled' : '') + '>+</button>'
+            : '') +
+          '</span>';
+
+        html += '<div class="slot-level-box' + (remaining === 0 ? ' exhausted' : '') + '">' +
+          '<div class="slot-level-head">' +
+          '<span class="slot-level-name">' + (isPact ? 'Pact Magic' : 'Level ' + lvl) + '</span>' +
+          countGroup +
+          '</div>' +
+          '<div class="slot-pips">' + pips + '</div>' +
+          (isPact ? '<div class="slot-step-label">' + slotLevelName(lvl) + '-level · short rest</div>' : '') +
+          '</div>';
+      });
+      html += '</div>';
+      return html;
+    }
+
     function renderSpellSlots() {
       const container = document.getElementById('spell-slots-container');
       if (!container) return;
       const slots = state.spellSlots || { max: {}, used: {} };
+      const max = slots.max || {};
+      const used = slots.used || {};
 
-      let activeLevels = [];
+      let totalMax = 0, totalLeft = 0;
       for (let lvl = 1; lvl <= 9; lvl++) {
-        if ((slots.max[lvl] || 0) > 0) activeLevels.push(lvl);
+        const m = max[lvl] || 0;
+        if (m > 0) {
+          totalMax += m;
+          totalLeft += Math.max(0, m - Math.min(m, used[lvl] || 0));
+        }
       }
 
-      let html = '<div class="spell-slots-header">' +
-        '<div class="spell-slots-title">✨ Spell Slots Tracker</div>' +
-        '<div style="display:flex; gap:6px;">' +
-        '<button class="btn ghost small" onclick="restSpellSlots()">✨ Long Rest (Reset Slots)</button>' +
-        '<button class="btn ghost small" onclick="openSlotSettingsModal()">⚙️ Slot Settings</button>' +
+      const header = '<div class="spell-slots-header">' +
+        '<div class="spell-slots-title">✨ Spell Slots' +
+        (totalMax > 0 ? '<span class="spell-slots-total">' + totalLeft + ' of ' + totalMax + ' left</span>' : '') +
+        '</div>' +
+        '<div class="spell-slots-actions">' +
+        '<button class="btn ghost small" onclick="restSpellSlots()">🌙 Long Rest</button>' +
+        '<button class="btn ghost small" onclick="openSlotSettingsModal()">⚙️ Setup Slots</button>' +
         '</div>' +
         '</div>';
 
-      if (activeLevels.length === 0) {
-        html += '<div class="hint">No active spell slots configured. Click "⚙️ Slot Settings" to add spell slots for your level.</div>';
-      } else {
-        html += '<div class="spell-slots-grid">';
-        activeLevels.forEach(function (lvl) {
-          const maxCount = slots.max[lvl] || 0;
-          const usedCount = slots.used[lvl] || 0;
-          let pips = '';
-          for (let i = 0; i < maxCount; i++) {
-            const isUsed = i < usedCount;
-            pips += '<button type="button" class="slot-pip' + (isUsed ? ' used' : '') + '" title="Level ' + lvl + ' slot ' + (i + 1) + '" onclick="toggleSpellSlot(' + lvl + ', ' + i + ')">' + (isUsed ? '✕' : '●') + '</button>';
-          }
-          html += '<div class="slot-level-box">' +
-            '<div class="slot-level-title">Level ' + lvl + ' (' + (maxCount - usedCount) + '/' + maxCount + ')</div>' +
-            '<div class="slot-pips">' + pips + '</div>' +
-            '</div>';
-        });
-        html += '</div>';
+      const grid = buildSlotGridHtml(slots, { interactive: true });
+      if (!grid) {
+        container.innerHTML = header +
+          '<div class="slot-empty">' +
+          '<div class="slot-empty-icon">✨</div>' +
+          '<div class="slot-empty-title">No spell slots set up yet</div>' +
+          '<div class="slot-empty-text">Spell slots are spent when you cast a spell of 1st level or higher, and they all return after a long rest. Tell the tracker how many you have at each level.</div>' +
+          '<button class="btn small" onclick="openSlotSettingsModal()">⚙️ Set Up Spell Slots</button>' +
+          '</div>';
+        return;
       }
 
-      container.innerHTML = html;
+      container.innerHTML = header + grid +
+        '<div class="slot-legend">' +
+        '<span class="legend-pip avail"></span> available' +
+        '<span class="slot-legend-sep">·</span>' +
+        '<span class="legend-pip spent"></span> spent' +
+        '<span class="slot-legend-sep">·</span>' +
+        'click a pip to set the count, or use − / + to spend and restore' +
+        '</div>';
     }
 
-    function toggleSpellSlot(lvl, pipIndex) {
+    /* How many slots of this level are spent (spent pips are a prefix, so a count
+       is all the state we need). */
+    function setSpellSlotsUsed(lvl, count) {
+      if (!state.spellSlots) state.spellSlots = { max: {}, used: {} };
       state.spellSlots.used = state.spellSlots.used || {};
-      const currentUsed = state.spellSlots.used[lvl] || 0;
-      if (pipIndex < currentUsed) {
-        state.spellSlots.used[lvl] = Math.max(0, currentUsed - 1);
-      } else {
-        const maxVal = state.spellSlots.max[lvl] || 0;
-        state.spellSlots.used[lvl] = Math.min(maxVal, currentUsed + 1);
-      }
+      const maxVal = state.spellSlots.max[lvl] || 0;
+      const next = Math.max(0, Math.min(maxVal, parseInt(count, 10) || 0));
+      if (next === (state.spellSlots.used[lvl] || 0)) return;
+      state.spellSlots.used[lvl] = next;
       save();
       renderSpellSlots();
     }
 
+    /* delta applies to the REMAINING count, matching the number on screen:
+       +1 restores a slot, -1 spends one. */
+    function stepSpellSlot(lvl, delta) {
+      const used = (state.spellSlots && state.spellSlots.used) || {};
+      setSpellSlotsUsed(lvl, (used[lvl] || 0) - delta);
+    }
+
     function restSpellSlots() {
-      for (let lvl = 1; lvl <= 9; lvl++) {
-        if (state.spellSlots.used) state.spellSlots.used[lvl] = 0;
+      const slots = state.spellSlots || {};
+      slots.used = slots.used || {};
+      let spent = 0;
+      for (let lvl = 1; lvl <= 9; lvl++) spent += (slots.used[lvl] || 0);
+
+      /* Only guard when there is actually something to lose. */
+      if (spent > 0 && typeof window.confirm === 'function') {
+        const prompt = 'Take a long rest?\n\nThis restores all ' + spent + ' spent spell slot' + (spent === 1 ? '' : 's') + '.';
+        if (!window.confirm(prompt)) return;
       }
+
+      for (let lvl = 1; lvl <= 9; lvl++) slots.used[lvl] = 0;
+      save();
+      renderSpellSlots();
+      if (spent > 0) toast('🌙 Long rest — all spell slots restored');
+    }
+
+    /* Called after the character's class or level changes. Offers to bring the
+       tracker in line with the standard table — never overwrites silently, and
+       only asks once per class+level pair so it cannot nag. */
+    function maybeOfferSpellSlotSync() {
+      const cs = state.characterStats || {};
+      const cls = cs.characterClass || '';
+      const lvl = parseInt(cs.level, 10) || 0;
+      if (!cls || !lvl) return;
+      if (!state.spellSlots) state.spellSlots = { max: emptySlotMax(), used: emptySlotMax() };
+
+      const derived = deriveSpellSlotsFor(cls, lvl);
+      const current = state.spellSlots.max || emptySlotMax();
+      const key = cls + ':' + lvl;
+
+      if (spellSlotsMaxEqual(current, derived.max)) {
+        if (state.spellSlots.syncedFor !== key) { state.spellSlots.syncedFor = key; save(); }
+        return;
+      }
+      if (state.spellSlots.syncedFor === key) return;
+
+      const theirs = formatSlotSummary(current);
+      const standard = formatSlotSummary(derived.max);
+      const prompt = 'Level ' + lvl + ' ' + cls + ' spell slots\n\n' +
+        'Standard for this class and level: ' + (standard || 'none') + '\n' +
+        'Your tracker currently has: ' + (theirs || 'none') + '\n\n' +
+        'Update your spell slots to match? (Spent slots are restored.)';
+
+      if (typeof window.confirm === 'function' && window.confirm(prompt)) {
+        state.spellSlots.max = Object.assign(emptySlotMax(), derived.max);
+        state.spellSlots.pactLevel = derived.pactLevel || 0;
+        state.spellSlots.used = emptySlotMax();
+        toast('✨ Spell slots updated for Level ' + lvl + ' ' + cls);
+      }
+      state.spellSlots.syncedFor = key;
       save();
       renderSpellSlots();
     }
@@ -8913,13 +9313,46 @@
       for (let lvl = 1; lvl <= 9; lvl++) {
         const val = slots.max[lvl] || 0;
         html += '<div class="form-row">' +
-          '<label>Level ' + lvl + ' Slots</label>' +
-          '<input type="number" id="s-slot-' + lvl + '" value="' + val + '" min="0" max="10">' +
+          '<label for="s-slot-' + lvl + '">Level ' + lvl + ' ' +
+          '<span class="slot-input-sub">' + slotLevelName(lvl) + '-level spells</span></label>' +
+          '<input type="number" id="s-slot-' + lvl + '" value="' + val + '" min="0" max="10" oninput="updateSlotSettingsPreview()">' +
           '</div>';
       }
       grid.innerHTML = html;
+
+      /* Name the class/level preset after the actual character. */
+      const cs = state.characterStats || {};
+      const btn = document.getElementById('slot-preset-class-level');
+      if (btn) {
+        const derived = cs.characterClass ? deriveSpellSlotsFor(cs.characterClass, cs.level) : null;
+        const summary = derived ? formatSlotSummary(derived.max) : '';
+        btn.disabled = !cs.characterClass;
+        btn.textContent = (cs.characterClass && summary)
+          ? '🎯 Use my class & level — Lvl ' + (cs.level || '?') + ' ' + cs.characterClass + ' · ' + summary
+          : '🎯 Use my class & level';
+      }
+
+      updateSlotSettingsPreview();
       const overlay = document.getElementById('slot-settings-overlay');
       if (overlay) overlay.classList.add('open');
+    }
+
+    function updateSlotSettingsPreview() {
+      const box = document.getElementById('slot-settings-preview');
+      if (!box) return;
+      const max = emptySlotMax();
+      for (let lvl = 1; lvl <= 9; lvl++) {
+        const el = document.getElementById('s-slot-' + lvl);
+        if (el) max[lvl] = Math.max(0, parseInt(el.value, 10) || 0);
+      }
+      const grid = buildSlotGridHtml({
+        max: max,
+        used: {},
+        pactLevel: (state.spellSlots && state.spellSlots.pactLevel) || 0
+      }, { interactive: false });
+
+      box.innerHTML = '<div class="slot-settings-preview-title">Preview — how the tracker will look</div>' +
+        (grid || '<div class="slot-preview-empty">Every level is 0, so the tracker will show its setup prompt instead.</div>');
     }
 
     function closeSlotSettingsModal() {
@@ -8943,19 +9376,31 @@
       save();
       closeSlotSettingsModal();
       renderSpellSlots();
+      toast('✨ Spell slots saved');
     }
 
     function applySlotPreset(preset) {
       const presets = {
-        full: { 1: 4, 2: 3, 3: 2, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 },
-        high: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 0, 8: 0, 9: 0 },
-        reset: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
+        full5: [4, 3, 2],
+        full11: [4, 3, 3, 3, 2, 1],
+        clear: []
       };
-      const choice = presets[preset] || presets.reset;
+      let list = presets[preset] || [];
+
+      if (preset === 'classLevel') {
+        const cs = state.characterStats || {};
+        if (!cs.characterClass) return;
+        const derived = deriveSpellSlotsFor(cs.characterClass, cs.level);
+        state.spellSlots.pactLevel = derived.pactLevel || 0;
+        list = [];
+        for (let lvl = 1; lvl <= 9; lvl++) list.push(derived.max[lvl] || 0);
+      }
+
       for (let lvl = 1; lvl <= 9; lvl++) {
         const el = document.getElementById('s-slot-' + lvl);
-        if (el) el.value = choice[lvl] || 0;
+        if (el) el.value = list[lvl - 1] || 0;
       }
+      updateSlotSettingsPreview();
     }
 
     
