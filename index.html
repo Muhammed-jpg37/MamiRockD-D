@@ -13894,9 +13894,10 @@
     try {
       if (app) {
         storage = getStorage(app);
-        // The SDK retries failed uploads for up to 10 minutes; give up sooner so the UI can say why.
-        storage.maxUploadRetryTime = 20000;
-        storage.maxOperationRetryTime = 20000;
+        // The SDK retries failed uploads for up to 10 minutes; give up sooner so the VTT can
+        // fall back to sharing the map through the database (vtt.js uploadMap).
+        storage.maxUploadRetryTime = 8000;
+        storage.maxOperationRetryTime = 8000;
       }
     } catch (e) {
       console.warn("Firebase Storage unavailable:", e);

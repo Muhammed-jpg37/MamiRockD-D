@@ -20,6 +20,7 @@
   const FOG_SYNC_MS = 250;                        // a fog brush stroke is written in batches at most this often
   const MAP_MAX_EDGE = 2048;                      // uploaded maps are shrunk to this before going to Storage
   const MAP_MAX_BYTES = 8 * 1024 * 1024;          // refuse anything still bigger after compression
+  const MAP_INLINE_MAX_CHARS = 1500000;           // fallback maps written into the database stay under ~1.5 MB
 
   // Shared table state, mirrored at vtt/<ROOM_ID>.
   const vtt = {
@@ -40,6 +41,7 @@
   let selectedId = null;
   let unsubscribe = null;
   let gridSaveTimer = null;
+  let storageFailed = false;    // a Storage upload failed this session; use the database fallback
   let fogMode = null;           // DM brush: null (move) | 'reveal' | 'hide'
   let fogBrush = 1;             // brush width in cells
   let fogPending = {};          // painted cells not yet written: { "x_y": true | null }
@@ -531,18 +533,26 @@
   }
 
   // Shrinks the picture, puts it in Firebase Storage and shares only its URL.
+  // Fallback while the project has no Storage bucket: share a smaller copy inline through the
+  // database instead. Once Storage works, the first branch takes over again by itself.
   function uploadMap(file) {
     if (!isDm()) return;
-    if (typeof window.fbUploadVttMap !== 'function') {
-      alert('Map upload needs the Firebase connection. You can still paste a link with "Map URL".');
-      return;
-    }
-    setStatus('Uploading map…');
+    setStatus('Preparing map…');
     scaleImageFile(file, MAP_MAX_EDGE)
-      .then((c) => canvasToBlob(c, 'image/webp', 0.82))
-      .then((blob) => {
+      .then(async (c) => {
+        const blob = await canvasToBlob(c, 'image/webp', 0.82);
         if (blob.size > MAP_MAX_BYTES) throw new Error('too-big');
-        return window.fbUploadVttMap(blob);
+        if (!storageFailed && typeof window.fbUploadVttMap === 'function') {
+          setStatus('Uploading map…');
+          try {
+            return await window.fbUploadVttMap(blob);
+          } catch (err) {
+            // Don't make the DM wait for Storage again this session.
+            storageFailed = true;
+            console.warn('VTT: Storage upload failed, sharing the map through the database instead.', err);
+          }
+        }
+        return inlineMapUrl(c);
       })
       .then((url) => {
         setStatus(null);
@@ -550,14 +560,27 @@
       })
       .catch((err) => {
         setStatus(null);
-        if (err && err.message === 'too-big') {
-          alert('This map is still too large after compressing it. Try a smaller image.');
-        } else if (err && /unauthorized|permission/i.test(err.code || err.message || '')) {
-          alert('Firebase Storage refused the upload (check the Storage rules). You can paste a link with "Map URL" meanwhile.');
-        } else {
-          alert('Map upload failed. Either the connection dropped or Firebase Storage is not set up for this project yet. You can paste a link with "Map URL" meanwhile.');
-        }
+        if (err && err.message === 'too-big') alert('This map is too large even after compressing it. Try a smaller image.');
+        else alert('Could not read that image.');
       });
+  }
+
+  // Data URL small enough for the database; steps down size and quality until it fits.
+  function inlineMapUrl(c) {
+    const attempts = [[MAP_MAX_EDGE, 0.75], [1600, 0.7], [1280, 0.65]];
+    for (const [edge, q] of attempts) {
+      let src = c;
+      const k = Math.min(1, edge / Math.max(c.width, c.height));
+      if (k < 1) {
+        src = document.createElement('canvas');
+        src.width = Math.round(c.width * k);
+        src.height = Math.round(c.height * k);
+        src.getContext('2d').drawImage(c, 0, 0, src.width, src.height);
+      }
+      const url = src.toDataURL('image/webp', q);
+      if (url.length <= MAP_INLINE_MAX_CHARS) return url;
+    }
+    throw new Error('too-big');
   }
 
   function setStatus(text) {
