@@ -132,6 +132,29 @@
       .vtt-cat-meta { font-size: 11px; color: var(--text-muted); text-transform: capitalize; }
       .vtt-cat-empty { grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--text-muted); }
       .vtt-dice button { min-width: 0; padding-left: 6px; padding-right: 6px; }
+      .vtt-init {
+        position: absolute; right: 10px; top: 10px; z-index: 14; width: 250px; max-width: calc(100% - 20px); max-height: calc(100% - 20px);
+        display: flex; flex-direction: column;
+        background: color-mix(in srgb, var(--surface-1) 94%, transparent); border: 1px solid var(--line-strong);
+        border-radius: var(--radius); box-shadow: var(--shadow-2);
+      }
+      .vtt-init-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 4px 10px; font-family: var(--font-display); font-size: 12px; color: var(--accent); border-bottom: 1px solid var(--border); }
+      .vtt-init-list { overflow-y: auto; padding: 4px 0; }
+      .vtt-init-row { display: flex; align-items: center; gap: 6px; padding: 3px 8px; font-size: 13px; border-left: 3px solid transparent; }
+      .vtt-init-row.vtt-init-current { background: color-mix(in srgb, var(--accent) 18%, transparent); border-left-color: var(--accent); }
+      .vtt-init-row.vtt-init-hidden { opacity: 0.6; }
+      .vtt-init-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+      .vtt-init-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .vtt-init-val { font-family: var(--font-mono); }
+      .vtt-init-row input, .vtt-init-add input { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 2px 4px; font-family: var(--font-mono); }
+      .vtt-init-row input { width: 46px; }
+      .vtt-init-row .btn { padding: 1px 5px; min-width: 0; }
+      .vtt-init-empty { padding: 10px; font-size: 12px; color: var(--text-muted); text-align: center; }
+      .vtt-init-add { display: flex; gap: 4px; padding: 6px 8px; border-top: 1px solid var(--border); }
+      .vtt-init-add input[type=text] { flex: 1; min-width: 0; font-family: var(--font-body); }
+      .vtt-init-add input[type=number] { width: 50px; }
+      .vtt-init-ctl { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 8px 8px; }
+      .vtt-init-ctl .btn { flex: 1 1 auto; padding-left: 4px; padding-right: 4px; }
       .vtt-log {
         position: absolute; left: 10px; bottom: 10px; z-index: 14; width: 210px; max-height: 45%;
         display: flex; flex-direction: column;
@@ -209,6 +232,9 @@
           </select>
           <button class="btn small ghost" data-act="fog-reset" title="Cover the whole map again">↺</button>
         </div>
+        <div class="vtt-group">
+          <button class="btn small ghost" data-act="initiative" title="Initiative order">⚔ Init</button>
+        </div>
         <div class="vtt-group vtt-tools">
           <button class="btn small ghost" data-tool="ruler" title="Ruler: drag to measure (everyone sees it while you drag)">📏</button>
           <button class="btn small ghost" data-tool="circle" title="Circle / sphere: drag out from the centre">◯</button>
@@ -232,6 +258,7 @@
       <div class="vtt-stage">
         <canvas></canvas>
         <div class="vtt-status" data-el="status" style="display:none"></div>
+        <div class="vtt-init" data-el="init" style="display:none"></div>
         <div class="vtt-log" data-el="log" style="display:none">
           <div class="vtt-log-head">Recent rolls <button class="btn small ghost" data-act="log" title="Hide">✕</button></div>
           <div class="vtt-log-list" data-el="log-list"></div>
@@ -252,6 +279,7 @@
       const toolBtn = e.target.closest('[data-tool]');
       if (toolBtn) { setTool(tool === toolBtn.dataset.tool ? null : toolBtn.dataset.tool); return; }
       if (e.target.closest('[data-act="clear-shapes"]')) { clearMyShapes(); return; }
+      if (e.target.closest('[data-act="initiative"]')) { initOpen = !initOpen; renderInitiative(); return; }
       const toggle = e.target.closest('[data-act="log"]');
       if (toggle) { logOpen = !logOpen; renderLog(); }
     });
@@ -390,6 +418,7 @@
     const title = root.querySelector('[data-el="hint-title"]');
     if (title) title.textContent = dm ? 'Load a map to begin' : 'Waiting for the DM to set up the table';
     if (!dm) { closePopups(); setFogMode(null); }
+    renderInitiative();
   }
 
   function syncGridInputs() {
@@ -1174,6 +1203,7 @@
     vtt.log = room.log || {};
     renderLog();
     applyRemoteTools(room);
+    applyRemoteInitiative(room);
     if (selectedId && !next[selectedId]) selectedId = null;
     // Someone deleted the token we are holding: drop it. Otherwise our drag keeps
     // drawing at the pointer (tokenRect reads drag.px/py), so remote echoes can't yank it.
@@ -1236,6 +1266,249 @@
     if (temp > 0) {
       ctx.fillStyle = cssVar('--info', '#6f9ac4');
       ctx.fillRect(x + w * pct, y, Math.min(w * (1 - pct), w * temp / max), h);
+    }
+  }
+
+  /* ---------- Initiative (DM runs it, everyone sees it) ---------- */
+
+  // vtt/main/initiative: { round, turn: entryId | null, entries: { id: { name, init, tokenId, hidden, at } } }
+  vtt.initiative = { round: 1, turn: null, entries: {} };
+  let initOpen = false;
+  let initRenderPending = false;   // a remote update arrived while the DM was typing in the panel
+
+  function initPath(sub) {
+    return roomPath('initiative' + (sub ? '/' + sub : ''));
+  }
+
+  function saveInit(sub, value) {
+    if (isDm() && typeof window.fbSaveVtt === 'function') window.fbSaveVtt(initPath(sub), value);
+  }
+
+  // Players don't see entries the DM hides, or entries for tokens hidden from them.
+  function initVisible(e) {
+    if (isDm()) return true;
+    if (e.hidden) return false;
+    const t = e.tokenId && vtt.tokens[e.tokenId];
+    return !(t && !isVisible(t));
+  }
+
+  // Highest first; entries without a number go last; ties keep the order they were added.
+  function initOrder() {
+    const entries = vtt.initiative.entries || {};
+    return Object.keys(entries).map((id) => Object.assign({ id: id }, entries[id])).sort((a, b) => {
+      const ai = isFinite(a.init) && a.init !== null ? Number(a.init) : -Infinity;
+      const bi = isFinite(b.init) && b.init !== null ? Number(b.init) : -Infinity;
+      if (bi !== ai) return bi - ai;
+      return (a.at || 0) - (b.at || 0);
+    });
+  }
+
+  function applyRemoteInitiative(room) {
+    const ini = room.initiative || {};
+    const wasRunning = !!vtt.initiative.turn;
+    vtt.initiative = { round: Number(ini.round) || 1, turn: ini.turn || null, entries: ini.entries || {} };
+    // Open the panel for everyone when the DM starts combat.
+    if (!wasRunning && vtt.initiative.turn) initOpen = true;
+    renderInitiative();
+  }
+
+  function newInitId() {
+    return 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  }
+
+  function addInitEntry(entry) {
+    const id = newInitId();
+    const e = { name: entry.name || 'Creature', init: entry.init === undefined ? null : entry.init, tokenId: entry.tokenId || null, hidden: !!entry.hidden, at: Date.now() };
+    vtt.initiative.entries[id] = e;
+    saveInit('entries/' + id, e);
+    return id;
+  }
+
+  // Adds every token on the map that isn't in the list yet.
+  function addTokensToInit() {
+    const have = new Set(Object.values(vtt.initiative.entries).map((e) => e.tokenId).filter(Boolean));
+    let n = 0;
+    Object.values(vtt.tokens).forEach((t) => {
+      if (have.has(t.id)) return;
+      addInitEntry({ name: t.name, tokenId: t.id, hidden: t.hidden });
+      n++;
+    });
+    flashStatus(n ? 'Added ' + n + ' to initiative' : 'Every token is already in the list');
+    renderInitiative();
+  }
+
+  // d20 for the DM's creatures (tokens without an owner) that have no number yet.
+  function rollInitForNpcs() {
+    let n = 0;
+    Object.keys(vtt.initiative.entries).forEach((id) => {
+      const e = vtt.initiative.entries[id];
+      const t = e.tokenId && vtt.tokens[e.tokenId];
+      if (e.init !== null && e.init !== undefined) return;
+      if (t && t.owner) return;
+      e.init = 1 + Math.floor(Math.random() * 20);
+      saveInit('entries/' + id + '/init', e.init);
+      n++;
+    });
+    flashStatus(n ? 'Rolled d20 for ' + n : 'Nothing to roll (players and numbered entries are skipped)');
+    renderInitiative();
+  }
+
+  function stepTurn(dir) {
+    const order = initOrder();
+    if (!order.length) return;
+    const ini = vtt.initiative;
+    let i = order.findIndex((e) => e.id === ini.turn);
+    let round = ini.round || 1;
+    if (i < 0) { i = 0; }
+    else {
+      i += dir;
+      if (i >= order.length) { i = 0; round++; }
+      if (i < 0) { i = order.length - 1; round = Math.max(1, round - 1); }
+    }
+    ini.turn = order[i].id;
+    ini.round = round;
+    saveInit('', { turn: ini.turn, round: round });
+    renderInitiative();
+    requestDraw();
+  }
+
+  function endCombat() {
+    if (!confirm('Clear the initiative list and end combat?')) return;
+    vtt.initiative = { round: 1, turn: null, entries: {} };
+    saveInit('', null);
+    renderInitiative();
+    requestDraw();
+  }
+
+  // The token whose turn it is, if any (for the ring on the map).
+  function currentTurnTokenId() {
+    const e = vtt.initiative.turn && vtt.initiative.entries[vtt.initiative.turn];
+    return e && initVisible(e) ? e.tokenId : null;
+  }
+
+  function renderInitiative() {
+    if (!root) return;
+    const panel = root.querySelector('[data-el="init"]');
+    if (!panel) return;
+    const btn = root.querySelector('[data-act="initiative"]');
+    if (btn) btn.classList.toggle('vtt-on', initOpen);
+    panel.style.display = initOpen ? '' : 'none';
+    if (!initOpen) return;
+    // Don't rebuild under the DM's cursor; catch up when they leave the field.
+    if (panel.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') {
+      initRenderPending = true;
+      return;
+    }
+    initRenderPending = false;
+    // Once focus leaves the panel, apply whatever arrived while it was held (or the DM's own new order).
+    panel.onfocusout = () => setTimeout(() => { if (!panel.contains(document.activeElement)) renderInitiative(); }, 0);
+
+    const dm = isDm();
+    const ini = vtt.initiative;
+    const order = initOrder().filter(initVisible);
+    panel.innerHTML = '';
+
+    const head = document.createElement('div');
+    head.className = 'vtt-init-head';
+    const title = document.createElement('span');
+    title.textContent = ini.turn ? '⚔ Round ' + (ini.round || 1) : '⚔ Initiative';
+    head.appendChild(title);
+    const close = button('✕', () => { initOpen = false; renderInitiative(); });
+    close.title = 'Hide';
+    head.appendChild(close);
+    panel.appendChild(head);
+
+    const list = document.createElement('div');
+    list.className = 'vtt-init-list';
+    if (!order.length) {
+      const empty = document.createElement('div');
+      empty.className = 'vtt-init-empty';
+      empty.textContent = dm ? 'Add tokens from the map or type a name below.' : 'No combat right now.';
+      list.appendChild(empty);
+    }
+    order.forEach((e) => {
+      const row = document.createElement('div');
+      row.className = 'vtt-init-row' + (e.id === ini.turn ? ' vtt-init-current' : '') + (e.hidden ? ' vtt-init-hidden' : '');
+      const t = e.tokenId && vtt.tokens[e.tokenId];
+      const dot = document.createElement('span');
+      dot.className = 'vtt-init-dot';
+      dot.style.background = t ? t.color : 'var(--text-faint)';
+      const name = document.createElement('span');
+      name.className = 'vtt-init-name';
+      name.textContent = (e.hidden ? '👁‍🗨 ' : '') + e.name;
+      row.append(dot, name);
+
+      if (dm) {
+        const num = document.createElement('input');
+        num.type = 'number';
+        num.step = 'any';
+        num.value = e.init === null || e.init === undefined ? '' : e.init;
+        num.placeholder = '—';
+        num.title = 'Initiative';
+        num.addEventListener('change', () => {
+          const v = num.value === '' ? null : Number(num.value);
+          vtt.initiative.entries[e.id].init = v;
+          saveInit('entries/' + e.id + '/init', v);
+        });
+        const hide = button(e.hidden ? '👁' : '🙈', () => {
+          const cur = vtt.initiative.entries[e.id];
+          cur.hidden = !cur.hidden;
+          saveInit('entries/' + e.id + '/hidden', cur.hidden);
+          renderInitiative();
+        });
+        hide.title = e.hidden ? 'Show to players' : 'Hide from players';
+        const del = button('✕', () => {
+          delete vtt.initiative.entries[e.id];
+          if (vtt.initiative.turn === e.id) { vtt.initiative.turn = null; saveInit('turn', null); }
+          saveInit('entries/' + e.id, null);
+          renderInitiative();
+          requestDraw();
+        });
+        del.title = 'Remove';
+        row.append(num, hide, del);
+      } else {
+        const val = document.createElement('b');
+        val.className = 'vtt-init-val';
+        val.textContent = e.init === null || e.init === undefined ? '—' : (+Number(e.init).toFixed(1));
+        row.appendChild(val);
+      }
+      list.appendChild(row);
+    });
+    panel.appendChild(list);
+
+    if (dm) {
+      const add = document.createElement('div');
+      add.className = 'vtt-init-add';
+      const nameIn = document.createElement('input');
+      nameIn.type = 'text';
+      nameIn.maxLength = 40;
+      nameIn.placeholder = 'Name';
+      const valIn = document.createElement('input');
+      valIn.type = 'number';
+      valIn.step = 'any';
+      valIn.placeholder = 'Init';
+      const submit = () => {
+        if (!nameIn.value.trim()) return;
+        addInitEntry({ name: nameIn.value.trim(), init: valIn.value === '' ? null : Number(valIn.value) });
+        nameIn.value = '';
+        valIn.value = '';
+        nameIn.blur();
+        renderInitiative();
+      };
+      [nameIn, valIn].forEach((i) => i.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') submit(); }));
+      add.append(nameIn, valIn, button('+', submit));
+      panel.appendChild(add);
+
+      const ctl = document.createElement('div');
+      ctl.className = 'vtt-init-ctl';
+      ctl.append(
+        button('♟ From map', addTokensToInit),
+        button('🎲 NPCs', rollInitForNpcs),
+        button('◀', () => stepTurn(-1)),
+        button(ini.turn ? 'Next ▶' : 'Start ▶', () => stepTurn(1)),
+        button('End', endCombat)
+      );
+      panel.appendChild(ctl);
     }
   }
 
@@ -1727,11 +2000,32 @@
     return { x: ox + t.x * s, y: oy + t.y * s, w: t.size * s, h: t.size * s };
   }
 
+  // Glowing ring under the token whose turn it is in initiative.
+  function drawTurnRing(t) {
+    const r = tokenRect(t);
+    const cx = r.x + r.w / 2;
+    const cy = r.y + r.h / 2;
+    const color = cssVar('--accent-strong', '#e8cf7a');
+    ctx.save();
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 16 / view.zoom;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4 / view.zoom;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r.w / 2 * 0.9 + 6 / view.zoom, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   function drawTokens() {
     const list = Object.values(vtt.tokens).filter(isVisible);
     // The token being dragged is drawn last so it floats above the others.
     list.sort((a, b) => (drag && drag.id === a.id ? 1 : 0) - (drag && drag.id === b.id ? 1 : 0));
-    list.forEach(drawToken);
+    const turnId = currentTurnTokenId();
+    list.forEach((t) => {
+      if (t.id === turnId) drawTurnRing(t);
+      drawToken(t);
+    });
   }
 
   function drawToken(t) {

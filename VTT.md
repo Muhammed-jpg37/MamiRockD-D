@@ -16,6 +16,7 @@ Sitedeki mevcut sekme sistemine "🗺 VTT" sekmesi eklendi. Kodun neredeyse tama
 | Oyuncu token'ında HP çubuğu (karakter sayfasından okunur) | ✔ | ✔ |
 | Canavar HP'si (token menüsünden) | ✔ | Görmez |
 | Zar atıcı (d4–d100) ve ortak log (son 20 atış) | ✔ | ✔ |
+| Inisiyatif sırası: tur sayacı, sıradaki karakter, haritada sıradaki token'ın etrafında halka | ✔ Yönetir (ekleme, değer girme, NPC'lere d20, ileri/geri, gizleme, bitirme) | Görür. Gizli girişleri ve sisteki düşmanları görmez |
 | Cetvel: sürükleyerek ölçüm (kare ve feet), sürüklerken herkes görür | ✔ | ✔ |
 | Alan şablonları: daire, koni, çizgi, küp. Etkilenen kareler boyanır | ✔ (herkesinkini silebilir) | ✔ (yalnızca kendininkini siler) |
 
@@ -29,6 +30,7 @@ vtt/main/grid           { size, visible, color, opacity, offsetX, offsetY }   of
 vtt/main/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden, hp? }   x/y = ızgara hücresi
 vtt/main/fog            { enabled, revealed: { "x_y": true } }
 vtt/main/log/<key>      { by, die, result, at }   en yeni 20 kayıt tutulur
+vtt/main/initiative     { round, turn, entries: { <id>: { name, init, tokenId, hidden, at } } }   yalnızca DM yazar
 vtt/main/shapes/<id>    { kind, ox, oy, ex, ey, by, color }   kare cinsinden; kind = circle | cone | line | square
 vtt/main/measure/<sekme> { who, ax, ay, bx, by, color, at }   yalnızca sürükleme sürerken var
 ```

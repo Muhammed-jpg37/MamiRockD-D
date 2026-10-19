@@ -97,6 +97,22 @@
             "$other": { ".validate": false }
           }
         },
+        "initiative": {
+          ".write": true,
+          "round": { ".validate": "newData.isNumber() && newData.val() >= 1" },
+          "turn": { ".validate": "newData.isString() && newData.val().length <= 40" },
+          "entries": {
+            "$entry": {
+              "name": { ".validate": "newData.isString() && newData.val().length <= 60" },
+              "init": { ".validate": "newData.isNumber()" },
+              "tokenId": { ".validate": "newData.isString() && newData.val().length <= 40" },
+              "hidden": { ".validate": "newData.isBoolean()" },
+              "at": { ".validate": "newData.isNumber()" },
+              "$other": { ".validate": false }
+            }
+          },
+          "$other": { ".validate": false }
+        },
         "measure": {
           "$session": {
             ".write": true,
