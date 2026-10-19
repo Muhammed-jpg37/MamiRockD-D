@@ -9,42 +9,171 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet">
+  <script>
+    /* Font presets live in the head, not in the main script, for one reason:
+       the saved choice can then be applied — stylesheet and all — before the
+       first pixel, so a reload never flashes the default face first. The main
+       script reads window.FONT_PRESETS. Mono stays JetBrains Mono in every
+       preset (it is already loaded and numeric columns must not shift). */
+    window.FONT_PRESETS = {
+      adventurer: {
+        label: 'Adventurer', families: 'Cinzel · Spectral', web: null,
+        display: "Cinzel, serif", body: "'Spectral', serif", mono: "'JetBrains Mono', monospace"
+      },
+      scribe: {
+        label: 'Scribe', families: 'IM Fell English SC · IM Fell English',
+        web: 'family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1',
+        display: "'IM Fell English SC', serif", body: "'IM Fell English', serif", mono: "'JetBrains Mono', monospace"
+      },
+      chronicler: {
+        label: 'Chronicler', families: 'Marcellus · EB Garamond',
+        web: 'family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400',
+        display: "Marcellus, serif", body: "'EB Garamond', serif", mono: "'JetBrains Mono', monospace"
+      },
+      mercenary: {
+        label: 'Mercenary', families: 'Inter · Inter', web: 'family=Inter:wght@400;500;600;700',
+        display: "'Inter', system-ui, sans-serif", body: "'Inter', system-ui, sans-serif", mono: "'JetBrains Mono', monospace"
+      },
+      runecarver: {
+        label: 'Runecarver', families: 'Uncial Antiqua · Alegreya',
+        web: 'family=Uncial+Antiqua&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400',
+        display: "'Uncial Antiqua', serif", body: "'Alegreya', serif", mono: "'JetBrains Mono', monospace"
+      }
+    };
+    window.DEFAULT_FONT = 'adventurer';
+    (function () {
+      var key = window.DEFAULT_FONT;
+      try { key = localStorage.getItem('dnd-font') || key; } catch (e) { }
+      var p = window.FONT_PRESETS[key] || window.FONT_PRESETS[window.DEFAULT_FONT];
+      var s = document.documentElement.style;
+      s.setProperty('--font-display', p.display);
+      s.setProperty('--font-body', p.body);
+      s.setProperty('--font-mono', p.mono);
+      if (p.web) {
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = 'https://fonts.googleapis.com/css2?' + p.web + '&display=swap';
+        document.head.appendChild(l);
+      }
+    })();
+  </script>
   <script src="spell-catalog.js" defer></script>
   <style>
+    /* ============================================================
+       DESIGN TOKENS
+       Every rule should read these instead of a raw hex. They are
+       overwritten at runtime by applyTheme(); the values here are the
+       "Leather" dark preset so the page looks right before JS boots.
+       ============================================================ */
     :root {
-      --void: #100b08;
-      --panel: #1c150f;
-      --panel-2: #251c14;
-      --panel-3: #2e2318;
-      --border: #4a3a24;
-      --border-bright: #8a6d3b;
-      --gold: #c9a227;
-      --gold-bright: #e8cf7a;
+      /* ---- Surfaces: hierarchy comes from lightness, not hue. The tint is
+             kept low on purpose — see resolveTheme() ---- */
+      --bg: #0e0c0b;
+      --surface-1: #161413;   /* panels */
+      --surface-2: #211e1c;   /* raised: cards, inputs, list rows */
+      --surface-3: #2f2b28;   /* hover / active */
+      --surface-inset: #060505;
+      --page-lift: #2f2b28;   /* soft wash behind the page */
+      --grad-hi: #2f2b28;     /* gradient ends for buttons… */
+      --grad-lo: #211e1c;
+      --panel-hi: #211e1c;    /* …and for large surfaces */
+      --panel-lo: #161413;
+
+      /* ---- Sunken wells: translucent washes for list bodies, chips and
+             inputs. --well-ink is the ink these washes are mixed from and
+             is rewritten per theme by applyTheme(), so a dark theme gets a
+             black wash and a light theme gets a warm one instead of a
+             flat, muddy grey. ---- */
+      --well-ink: #000000;
+      --well-1: color-mix(in srgb, var(--well-ink) 14%, transparent);
+      --well-2: color-mix(in srgb, var(--well-ink) 30%, transparent);
+      --well-3: color-mix(in srgb, var(--well-ink) 50%, transparent);
+
+      /* ---- Lines: neutral and low-contrast so they never compete
+             with the accent hue for attention ---- */
+      --line: rgba(237, 226, 200, 0.10);
+      --line-strong: rgba(237, 226, 200, 0.20);
+
+      /* ---- Text ramp ---- */
       --text: #e9e0c8;
       --text-dim: #a89876;
+      --text-muted: #8b7d60;
       --text-faint: #6e6248;
+      --on-fill: #14100a;     /* text sitting on a saturated fill */
+      --on-status: #ffffff;   /* text sitting on a status fill (red/green) */
+
+      /* ---- Accent 1: primary interactive (buttons, active tab,
+             focus rings, count badges) ---- */
+      --accent: #c9a227;
+      --accent-strong: #e8cf7a;
+
+      /* ---- Accent 2: the second hue. Notes-workspace highlights,
+             secondary actions, links. Deliberately a different
+             temperature from the accent so the UI is not one hue ---- */
+      --accent-2: #b0713f;
+      --accent-2-strong: #d59a6a;
+
+      /* ---- Spells / links / informational ---- */
+      --info: #6f9ac4;
+      --info-strong: #9dbcdd;
+
+      /* ---- Status ---- */
+      --success: #5e9e63;
+      --warn: #c9962f;
       --danger: #a83c32;
-      --danger-bright: #d9584a;
-      --success: #4a8f4f;
+      --danger-strong: #d9584a;
+
+      /* ---- Item rarity ---- */
       --common: #9d9d9d;
-      --uncommon: #3fa34d;
-      --rare: #3b8ec4;
-      --veryrare: #a259d9;
-      --legendary: #e08a2c;
-      --artifact: #d94b3e;
-      /* Tokens consumed by the workspace/modals retro-fit block further down.
-         That block only defines them on a few selectors, so rules outside its
-         scope (notably .modal) resolved them to nothing and silently lost their
-         background and border. Define them globally. */
-      --bg2: #221f1b;
-      --bg3: #2c2822;
-      --bg4: #38332c;
-      --surface: #2a2520;
-      --border2: rgba(255, 255, 255, 0.14);
-      --text2: #a89880;
-      --text3: #6b5e50;
+      --uncommon: #4aa356;
+      --rare: #4a8ec4;
+      --veryrare: #9a6fc4;
+      --legendary: #d08a3c;
+      --artifact: #d9584a;
+
+      /* ---- Effects ---- */
+      --glow: color-mix(in srgb, var(--accent) 25%, transparent);
+      --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+      --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.45);
+
       --radius: 8px;
       --radius-lg: 12px;
+
+      /* ============================================================
+         Typography. One global choice drives all three roles, so a
+         font preset restyles every screen at once. Rewritten at runtime
+         by applyFont(); the values here are the "Adventurer" default so
+         the page looks right before JS boots.
+         ============================================================ */
+      --font-display: Cinzel, serif;                /* headings, tabs, labels */
+      --font-body: 'Spectral', serif;               /* body copy */
+      --font-mono: 'JetBrains Mono', monospace;     /* numbers, hex, code */
+
+      /* ============================================================
+         Legacy names. Hundreds of existing rules reference these, so
+         they stay as aliases onto the tokens above — that is what makes
+         a theme change restyle the whole app without a mass rename.
+         ============================================================ */
+      --void: var(--bg);
+      --panel: var(--surface-1);
+      --panel-2: var(--surface-2);
+      --panel-3: var(--surface-3);
+      --border: var(--line);
+      --border-bright: var(--line-strong);
+      --gold: var(--accent);
+      --gold-bright: var(--accent-strong);
+      --danger-bright: var(--danger-strong);
+
+      /* Namespace used by the notes workspace / modals retro-fit block.
+         Folded onto the same tokens so one theme covers everything. */
+      --bg2: var(--surface-1);
+      --bg3: var(--surface-2);
+      --bg4: var(--surface-3);
+      --surface: var(--surface-2);
+      --border2: var(--line-strong);
+      --text2: var(--text-dim);
+      --text3: var(--text-faint);
+      --accent2: var(--accent-2);
     }
 
     * {
@@ -60,11 +189,11 @@
     }
 
     body {
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
       color: var(--text);
       background:
-        radial-gradient(ellipse at top, var(--panel-3) 0%, var(--void) 55%),
-        var(--void);
+        radial-gradient(ellipse at top, var(--page-lift) 0%, var(--bg) 55%),
+        var(--bg);
       min-height: 100vh;
       overflow-x: hidden;
       transition: background .3s;
@@ -91,13 +220,13 @@
     }
 
     .title-block h1 {
-      font-family: Cinzel, serif;
+      font-family: var(--font-display);
       font-weight: 900;
       font-size: 28px;
       letter-spacing: 2px;
       margin: 0;
       color: var(--gold-bright);
-      text-shadow: 0 0 18px rgba(201, 162, 39, 0.25);
+      text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 25%, transparent);
     }
 
     .title-block .sub {
@@ -132,7 +261,7 @@
     }
 
     .stat-pill .val {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 16px;
       color: var(--gold-bright);
       margin-top: 2px;
@@ -148,7 +277,7 @@
       gap: 6px 8px;
       justify-content: center;
       margin-top: 4px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-dim);
     }
@@ -168,7 +297,7 @@
 
     .weight-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-2-strong));
       transition: width .3s;
     }
 
@@ -177,14 +306,14 @@
     }
 
     button {
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
       cursor: pointer;
     }
 
     .btn {
-      background: linear-gradient(180deg, #3a2c1a, #241a10);
+      background: linear-gradient(180deg, var(--grad-hi), var(--grad-lo));
       border: 1px solid var(--border-bright);
-      color: var(--gold-bright);
+      color: var(--text);
       padding: 9px 18px;
       border-radius: 5px;
       font-size: 13px;
@@ -194,8 +323,8 @@
     }
 
     .btn:hover {
-      background: linear-gradient(180deg, #4a3a20, #2e2318);
-      box-shadow: 0 0 12px rgba(201, 162, 39, 0.25);
+      border-color: var(--gold);
+      box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 25%, transparent);
     }
 
     .btn.small {
@@ -215,12 +344,12 @@
     }
 
     .btn.danger {
-      border-color: #6e2a22;
+      border-color: var(--danger);
       color: var(--danger-bright);
     }
 
     .btn.danger:hover {
-      background: rgba(168, 60, 50, 0.15);
+      background: color-mix(in srgb, var(--danger) 15%, transparent);
     }
 
     /* ---------- Layout ---------- */
@@ -258,18 +387,18 @@
     }
 
     .panel {
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      background: linear-gradient(180deg, var(--panel-hi), var(--panel-lo));
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 16px;
     }
 
     .panel-title {
-      font-family: Cinzel, serif;
+      font-family: var(--font-display);
       font-size: 13px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--text);
       border-bottom: 1px solid var(--border);
       padding-bottom: 8px;
       margin-bottom: 12px;
@@ -444,13 +573,13 @@
       border-radius: 4px;
       margin-bottom: 5px;
       border-left: 3px solid var(--success);
-      background: rgba(74, 143, 79, 0.08);
+      background: color-mix(in srgb, var(--success) 8%, transparent);
       color: var(--text-dim);
     }
 
     .effect-tag.debuff {
       border-left-color: var(--danger);
-      background: rgba(168, 60, 50, 0.08);
+      background: color-mix(in srgb, var(--danger) 8%, transparent);
     }
 
     .effect-tag b {
@@ -489,7 +618,7 @@
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 10px;
-      background: rgba(0, 0, 0, 0.14);
+      background: var(--well-1);
     }
 
     .death-save-grid {
@@ -534,13 +663,13 @@
     }
 
     .death-save-pip.on.success {
-      background: rgba(74, 143, 79, 0.18);
+      background: color-mix(in srgb, var(--success) 18%, transparent);
       color: var(--success);
       border-color: var(--success);
     }
 
     .death-save-pip.on.failure {
-      background: rgba(168, 60, 50, 0.18);
+      background: color-mix(in srgb, var(--danger) 18%, transparent);
       color: var(--danger-bright);
       border-color: var(--danger-bright);
     }
@@ -583,7 +712,7 @@
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 10px;
-      background: rgba(0, 0, 0, 0.14);
+      background: var(--well-1);
     }
 
     .attunement-slots {
@@ -688,7 +817,7 @@
       color: var(--text);
       padding: 8px 10px;
       border-radius: 5px;
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
       font-size: 13px;
     }
 
@@ -734,7 +863,7 @@
 
     .item-card.selected {
       border-color: var(--gold-bright);
-      box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.35);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
     }
 
     .item-card[data-rarity="Common"] {
@@ -769,10 +898,10 @@
       position: absolute;
       bottom: 3px;
       right: 5px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 10px;
-      color: var(--gold-bright);
-      background: rgba(0, 0, 0, 0.6);
+      color: var(--accent-2-strong);
+      background: var(--well-3);
       padding: 0 4px;
       border-radius: 3px;
     }
@@ -782,7 +911,7 @@
       top: 3px;
       left: 3px;
       font-size: 9px;
-      color: var(--gold-bright);
+      color: var(--accent-2-strong);
     }
 
     .item-card .name-strip {
@@ -834,9 +963,9 @@
     }
 
     .detail-name {
-      font-family: Cinzel, serif;
+      font-family: var(--font-display);
       font-size: 16px;
-      color: var(--gold-bright);
+      color: var(--text);
       line-height: 1.2;
     }
 
@@ -894,7 +1023,7 @@
       font-size: 11px;
       color: var(--text-dim);
       margin-bottom: 10px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
     }
 
     .buff-list .effect-tag {
@@ -929,7 +1058,7 @@
       color: var(--text);
       padding: 8px 10px;
       border-radius: 5px;
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
       font-size: 13px;
     }
 
@@ -1034,7 +1163,7 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(6, 4, 2, 0.75);
+      background: var(--bg);
       display: none;
       align-items: center;
       justify-content: center;
@@ -1047,7 +1176,7 @@
     }
 
     .modal {
-      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      background: linear-gradient(180deg, var(--panel-hi), var(--panel-lo));
       border: 1px solid var(--border-bright);
       border-radius: 12px;
       width: 100%;
@@ -1059,8 +1188,8 @@
     }
 
     .modal h2 {
-      font-family: Cinzel, serif;
-      color: var(--gold-bright);
+      font-family: var(--font-display);
+      color: var(--text);
       font-size: 18px;
       letter-spacing: 1px;
       margin: 0 0 16px;
@@ -1089,7 +1218,7 @@
       color: var(--text);
       padding: 9px 10px;
       border-radius: 5px;
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
       font-size: 13px;
     }
 
@@ -1124,7 +1253,7 @@
 
     .emoji-btn:hover {
       border-color: var(--gold-bright);
-      box-shadow: 0 0 10px rgba(201, 162, 39, 0.15);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 15%, transparent);
     }
 
     .emoji-btn.clear {
@@ -1178,19 +1307,19 @@
     .tab-btn.active.buffs {
       border-color: var(--success);
       color: var(--success);
-      background: rgba(74, 143, 79, 0.1);
+      background: color-mix(in srgb, var(--success) 10%, transparent);
     }
 
     .tab-btn.active.debuffs {
       border-color: var(--danger);
       color: var(--danger-bright);
-      background: rgba(168, 60, 50, 0.1);
+      background: color-mix(in srgb, var(--danger) 10%, transparent);
     }
 
     .tab-btn.active.stats {
       border-color: var(--gold);
       color: var(--gold-bright);
-      background: rgba(201, 162, 39, 0.1);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
     }
 
     .stat-bonus-grid {
@@ -1219,7 +1348,7 @@
     }
 
     .item-bonus-tag {
-      color: var(--gold-bright);
+      color: var(--accent-2-strong);
       font-size: 10px;
       font-weight: 700;
       margin-left: 4px;
@@ -1282,37 +1411,79 @@
 
     .swatch-btn.active {
       border-color: var(--gold-bright);
-      box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.35);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
     }
 
-    .swatch-btn .sw-half {
+    .swatch-btn .sw-band {
       position: absolute;
-      inset: 0;
-    }
-
-    .swatch-btn .sw-top {
-      height: 60%;
-    }
-
-    .swatch-btn .sw-bottom {
-      position: absolute;
-      bottom: 0;
       left: 0;
       right: 0;
-      height: 40%;
+      bottom: 0;
+      height: 44%;
+      display: flex;
+    }
+
+    .swatch-btn .sw-band i {
+      flex: 1 1 62%;
+    }
+
+    .swatch-btn .sw-band u {
+      flex: 1 1 38%;
     }
 
     .swatch-btn .sw-label {
       position: absolute;
-      bottom: 2px;
+      top: 3px;
       left: 0;
       right: 0;
-      font-size: 7px;
+      font-size: 8px;
       text-align: center;
-      color: rgba(255, 255, 255, 0.8);
-      text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
       letter-spacing: 0.5px;
       text-transform: uppercase;
+    }
+
+    /* ---------- Font presets ---------- */
+    .font-swatches {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .font-btn {
+      min-width: 104px;
+      padding: 7px 10px;
+      border-radius: 7px;
+      border: 1px solid var(--border2);
+      background: var(--void);
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.3;
+      transition: border-color .15s ease, background .15s ease;
+    }
+
+    .font-btn .fb-name {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .font-btn .fb-sample {
+      display: block;
+      font-size: 11px;
+      color: var(--text-faint);
+      margin-top: 1px;
+    }
+
+    .font-btn:hover {
+      border-color: color-mix(in srgb, var(--accent-2) 55%, var(--border2));
+    }
+
+    .font-btn.active {
+      border-color: var(--gold-bright);
+      background: color-mix(in srgb, var(--accent) 10%, var(--void));
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent);
     }
 
     .form-row input[type=color] {
@@ -1323,6 +1494,78 @@
       border: 1px solid var(--border);
       border-radius: 5px;
       cursor: pointer;
+    }
+
+    /* ---------- Guided custom theme ---------- */
+    .harmony-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .harmony-chip {
+      position: relative;
+      width: 46px;
+      height: 32px;
+      padding: 0;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .harmony-chip:hover {
+      border-color: var(--border-bright);
+    }
+
+    .harmony-chip.active {
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    .harmony-chip i {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+
+    /* the derived second accent, shown as a wedge so you can see both */
+    .harmony-chip u {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 46%;
+      height: 46%;
+      display: block;
+      border-top-left-radius: 6px;
+    }
+
+    .custom-preview {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .custom-preview div {
+      flex: 1 1 46px;
+      min-width: 46px;
+      text-align: center;
+      font-size: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .custom-preview span {
+      display: block;
+      height: 26px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      margin-bottom: 4px;
     }
 
     /* ---------- Drag and drop ---------- */
@@ -1345,7 +1588,7 @@
     .slot.drag-over {
       border-color: var(--gold-bright) !important;
       background: var(--panel-3);
-      box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.4) inset;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent) inset;
     }
 
     .grid.drag-over-unequip {
@@ -1377,16 +1620,16 @@
       display: flex;
       align-items: baseline;
       gap: 8px;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--gold-bright);
+      color: var(--text);
     }
 
     .spell-slots-total {
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
       font-size: 11px;
       font-weight: 400;
       letter-spacing: .5px;
@@ -1419,7 +1662,7 @@
 
     .slot-level-box.exhausted {
       border-color: var(--danger);
-      box-shadow: inset 0 0 0 1px rgba(217, 88, 74, 0.25);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger-strong) 25%, transparent);
     }
 
     .slot-level-head {
@@ -1434,7 +1677,7 @@
       font-weight: 600;
       letter-spacing: 1px;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--accent-2-strong);
       white-space: nowrap;
     }
 
@@ -1445,7 +1688,7 @@
     }
 
     .slot-level-count {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 15px;
       color: var(--text-dim);
       white-space: nowrap;
@@ -1453,7 +1696,7 @@
 
     .slot-level-count b {
       font-size: 21px;
-      color: var(--gold-bright);
+      color: var(--accent-2-strong);
     }
 
     .slot-level-box.exhausted .slot-level-count b {
@@ -1488,7 +1731,7 @@
     }
 
     .slot-pip.used {
-      background: rgba(168, 60, 50, 0.25);
+      background: color-mix(in srgb, var(--danger) 25%, transparent);
       border-color: var(--danger-bright);
       color: var(--danger-bright);
     }
@@ -1501,13 +1744,13 @@
       padding: 0;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 70%);
-      box-shadow: 0 0 6px rgba(232, 207, 122, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 0 6px color-mix(in srgb, var(--accent-strong) 35%, transparent), inset 0 0 0 1px rgba(0, 0, 0, 0.35);
       transition: transform .12s, box-shadow .12s, background .12s, border-color .12s, opacity .12s;
     }
 
     .spell-slots-grid .slot-pip:hover {
       transform: scale(1.12);
-      box-shadow: 0 0 10px rgba(232, 207, 122, 0.6);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--accent-strong) 60%, transparent);
     }
 
     .spell-slots-grid .slot-pip:focus-visible {
@@ -1516,13 +1759,13 @@
     }
 
     .spell-slots-grid .slot-pip.spent {
-      background: rgba(168, 60, 50, 0.22);
-      border-color: rgba(217, 88, 74, 0.7);
+      background: color-mix(in srgb, var(--danger) 22%, transparent);
+      border-color: color-mix(in srgb, var(--danger-strong) 70%, transparent);
       box-shadow: none;
     }
 
     .spell-slots-grid .slot-pip.spent:hover {
-      background: rgba(168, 60, 50, 0.38);
+      background: color-mix(in srgb, var(--danger) 38%, transparent);
       border-color: var(--danger-bright);
     }
 
@@ -1535,7 +1778,7 @@
       justify-content: center;
       font-size: 13px;
       line-height: 1;
-      background: rgba(0, 0, 0, 0.3);
+      background: var(--well-2);
       border: 1px solid var(--border);
       border-radius: 4px;
       color: var(--gold-bright);
@@ -1585,8 +1828,8 @@
     }
 
     .legend-pip.spent {
-      background: rgba(168, 60, 50, 0.22);
-      border: 1px solid rgba(217, 88, 74, 0.7);
+      background: color-mix(in srgb, var(--danger) 22%, transparent);
+      border: 1px solid color-mix(in srgb, var(--danger-strong) 70%, transparent);
     }
 
     .slot-legend-sep {
@@ -1596,7 +1839,7 @@
     .slot-empty {
       text-align: center;
       padding: 20px 16px;
-      background: rgba(0, 0, 0, 0.25);
+      background: var(--well-2);
       border: 1px dashed var(--border-bright);
       border-radius: 8px;
     }
@@ -1607,9 +1850,9 @@
     }
 
     .slot-empty-title {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 14px;
-      color: var(--gold-bright);
+      color: var(--text);
       margin-bottom: 4px;
     }
 
@@ -1660,7 +1903,7 @@
       color: var(--text);
       padding: 7px 10px;
       border-radius: 5px;
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
       font-size: 12px;
     }
 
@@ -1688,10 +1931,10 @@
       font-size: 9px;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       border: 1px solid var(--border);
-      background: rgba(0, 0, 0, 0.3);
-      color: var(--gold-bright);
+      background: var(--well-2);
+      color: var(--accent-2-strong);
     }
 
     .badge.level {
@@ -1700,7 +1943,7 @@
 
     .badge.school {
       border-color: var(--rare);
-      color: #7a9ad9;
+      color: var(--info);
     }
 
     .spell-attr-grid {
@@ -1726,7 +1969,7 @@
 
     .spell-attr-value {
       font-size: 12px;
-      color: var(--gold-bright);
+      color: var(--accent-2-strong);
       font-weight: 500;
       margin-top: 3px;
     }
@@ -1746,16 +1989,16 @@
 
     /* ---------- D&D Beyond Style Spell Card Modal ---------- */
     .dnd-spell-card {
-      background: #191412;
-      border: 1px solid #4a3a24;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
       border-radius: 8px;
       padding: 18px;
-      color: #e9e0c8;
-      font-family: 'Spectral', serif;
+      color: var(--text);
+      font-family: var(--font-body);
     }
 
     .dnd-card-header {
-      border-bottom: 1px solid #3a2c1a;
+      border-bottom: 1px solid var(--line);
       padding-bottom: 10px;
       margin-bottom: 12px;
     }
@@ -1764,7 +2007,7 @@
       font-size: 11px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--gold-bright);
+      color: var(--text);
       font-weight: 700;
     }
 
@@ -1777,10 +2020,10 @@
     }
 
     .dnd-spell-name {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 22px;
       font-weight: 900;
-      color: var(--gold-bright);
+      color: var(--text);
       line-height: 1.1;
     }
 
@@ -1792,7 +2035,7 @@
     }
 
     .dnd-quick-banner {
-      background: rgba(168, 60, 50, 0.12);
+      background: color-mix(in srgb, var(--danger) 12%, transparent);
       border-left: 4px solid var(--danger-bright);
       border-radius: 4px;
       padding: 10px 12px;
@@ -1819,8 +2062,8 @@
       grid-template-columns: 1fr;
       gap: 6px;
       font-size: 12px;
-      border-top: 1px solid #3a2c1a;
-      border-bottom: 1px solid #3a2c1a;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
       padding: 10px 0;
       margin-bottom: 14px;
     }
@@ -1859,7 +2102,7 @@
     }
 
     .dnd-higher-levels b {
-      color: var(--gold-bright);
+      color: var(--accent-2-strong);
     }
 
     .dnd-tags-row {
@@ -1867,7 +2110,7 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
-      border-top: 1px solid #3a2c1a;
+      border-top: 1px solid var(--line);
       padding-top: 10px;
       margin-top: 12px;
     }
@@ -1880,20 +2123,22 @@
       color: var(--text-faint);
     }
 
+    /* Spell tags are the second hue: they are reference data, never the
+       thing you are meant to click, so they must not wear the accent. */
     .tag-chip {
       background: var(--void);
-      border: 1px solid var(--border-bright);
-      color: var(--gold-bright);
+      border: 1px solid color-mix(in srgb, var(--accent-2) 45%, var(--border-bright));
+      color: var(--accent-2-strong);
       padding: 2px 8px;
       border-radius: 4px;
       font-size: 10px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       letter-spacing: 0.5px;
     }
 
     /* Higher Spell Levels Scaling Box */
     .dnd-scaling-box {
-      background: rgba(0, 0, 0, 0.4);
+      background: var(--well-3);
       border: 1px solid var(--border-bright);
       border-radius: 6px;
       padding: 10px 12px;
@@ -1910,10 +2155,10 @@
     }
 
     .dnd-scaling-title {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 11px;
       font-weight: 700;
-      color: var(--gold-bright);
+      color: var(--text);
       letter-spacing: 0.5px;
       display: flex;
       align-items: center;
@@ -1922,9 +2167,9 @@
 
     .dnd-scaling-badge {
       font-size: 10px;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--info);
+      background: color-mix(in srgb, var(--info) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--info) 30%, transparent);
       padding: 1px 6px;
       border-radius: 4px;
       font-weight: 600;
@@ -1953,8 +2198,8 @@
     }
 
     .dnd-scaling-row.base-slot {
-      background: rgba(201, 162, 39, 0.12);
-      border-left: 3px solid var(--gold-bright);
+      background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+      border-left: 3px solid var(--accent-2-strong);
     }
 
     .dnd-scaling-row .level-label {
@@ -1966,9 +2211,9 @@
     }
 
     .dnd-scaling-row .damage-val {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-weight: 700;
-      color: #f87171;
+      color: var(--danger-strong);
       font-size: 12px;
     }
 
@@ -1976,17 +2221,17 @@
       font-size: 10px;
       padding: 1px 6px;
       border-radius: 3px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
     }
 
     .dnd-scaling-row.base-slot .diff-tag {
-      background: rgba(201, 162, 39, 0.2);
-      color: var(--gold-bright);
+      background: color-mix(in srgb, var(--accent-2) 20%, transparent);
+      color: var(--accent-2-strong);
     }
 
     .dnd-scaling-row:not(.base-slot) .diff-tag {
-      background: rgba(34, 197, 94, 0.15);
-      color: #4ade80;
+      background: color-mix(in srgb, var(--success) 15%, transparent);
+      color: var(--success);
     }
 
     /* --- D&D CHARACTER SHEET SIDEBAR PANEL --- */
@@ -2008,10 +2253,10 @@
     }
 
     .dnd-section-title {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 14px;
       font-weight: 700;
-      color: var(--gold-bright);
+      color: var(--text);
       letter-spacing: 1px;
     }
 
@@ -2024,7 +2269,7 @@
     }
 
     .ability-card {
-      background: rgba(0, 0, 0, 0.35);
+      background: var(--well-2);
       border: 1px solid var(--border-bright);
       border-radius: 6px;
       text-align: center;
@@ -2033,25 +2278,25 @@
     }
 
     .ability-card .name {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 9px;
       font-weight: 700;
-      color: var(--gold);
+      color: var(--accent-2-strong);
       text-transform: uppercase;
     }
 
     .ability-card .mod {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 15px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--text);
       margin: 1px 0;
     }
 
     .ability-card .score {
       font-size: 10px;
       color: var(--gold-bright);
-      background: rgba(138, 109, 59, 0.2);
+      background: color-mix(in srgb, var(--accent) 20%, transparent);
       border-radius: 10px;
       display: inline-block;
       padding: 0 6px;
@@ -2066,7 +2311,7 @@
     }
 
     .combat-pill {
-      background: rgba(20, 10, 10, 0.5);
+      background: var(--bg);
       border: 1px solid var(--danger-bright);
       border-radius: 6px;
       text-align: center;
@@ -2074,7 +2319,7 @@
     }
 
     .combat-pill .val {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 14px;
       font-weight: 700;
       color: var(--gold-bright);
@@ -2096,17 +2341,17 @@
     }
 
     .dnd-box {
-      background: rgba(0, 0, 0, 0.25);
+      background: var(--well-2);
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 8px;
     }
 
     .dnd-box-title {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 11px;
       font-weight: 700;
-      color: var(--gold-bright);
+      color: var(--text);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 4px;
       margin-bottom: 6px;
@@ -2126,9 +2371,9 @@
     }
 
     .save-row .val {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-weight: 700;
-      color: var(--gold-bright);
+      color: var(--accent-2-strong);
     }
 
     .sense-row {
@@ -2140,7 +2385,7 @@
     }
 
     .sense-row .val {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-weight: 700;
       color: var(--text);
       background: rgba(255, 255, 255, 0.05);
@@ -2150,7 +2395,7 @@
 
     /* Skills List */
     .skills-list-box {
-      background: rgba(0, 0, 0, 0.25);
+      background: var(--well-2);
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 8px;
@@ -2203,11 +2448,11 @@
     }
 
     .skill-row .bonus {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-weight: 700;
-      color: var(--gold-bright);
+      color: var(--accent-2-strong);
       text-align: right;
-      background: rgba(0, 0, 0, 0.3);
+      background: var(--well-2);
       padding: 1px 4px;
       border-radius: 3px;
       border: 1px solid var(--border);
@@ -2215,7 +2460,7 @@
 
     /* Proficiencies & Training */
     .proficiencies-box {
-      background: rgba(0, 0, 0, 0.25);
+      background: var(--well-2);
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 8px;
@@ -2232,7 +2477,7 @@
     .prof-lbl {
       font-size: 10px;
       font-weight: 700;
-      color: var(--gold);
+      color: var(--accent-2-strong);
       text-transform: uppercase;
     }
 
@@ -2292,7 +2537,7 @@
     .spell-name {
       font-size: 13px !important;
       font-weight: 700;
-      color: var(--gold-bright);
+      color: var(--text);
     }
 
     .spell-meta {
@@ -2318,13 +2563,15 @@
       overflow-y: auto;
     }
 
+    /* A view toggle, not a call to action — second hue, so it never
+       competes with the primary buttons beside it. */
     .catalog-toggle-btn {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-weight: 700;
       letter-spacing: 0.5px;
-      background: rgba(138, 109, 59, 0.15);
-      border: 1px solid var(--border-bright);
-      color: var(--gold-bright);
+      background: color-mix(in srgb, var(--accent-2) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent-2) 45%, var(--border-bright));
+      color: var(--accent-2-strong);
       padding: 4px 12px;
       border-radius: 4px;
       cursor: pointer;
@@ -2332,8 +2579,8 @@
     }
 
     .catalog-toggle-btn:hover {
-      background: rgba(138, 109, 59, 0.35);
-      border-color: var(--gold);
+      background: color-mix(in srgb, var(--accent-2) 35%, transparent);
+      border-color: var(--accent-2);
     }
 
 
@@ -2391,16 +2638,16 @@
     }
 
     .slot.filled {
-      background: rgba(138, 109, 59, 0.2) !important;
+      background: color-mix(in srgb, var(--accent) 20%, transparent) !important;
       border: 1px solid var(--gold) !important;
-      box-shadow: 0 0 8px rgba(201, 162, 39, 0.15) !important;
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 15%, transparent) !important;
     }
 
     .slot .slot-label {
       font-size: 9px !important;
       font-weight: 700 !important;
       letter-spacing: 0.5px !important;
-      color: var(--gold-bright) !important;
+      color: var(--accent-2-strong) !important;
       margin-bottom: 1px !important;
       text-transform: uppercase !important;
       position: absolute !important;
@@ -2555,7 +2802,7 @@
     }
 
     .nav-tab-btn {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-weight: 700;
       font-size: 13px;
       letter-spacing: 1px;
@@ -2573,17 +2820,17 @@
     }
 
     .nav-tab-btn:hover {
-      border-color: var(--border-bright);
+      border-color: color-mix(in srgb, var(--accent-2) 50%, var(--border-bright));
       color: var(--text);
       background: var(--panel-3);
-      box-shadow: 0 0 10px rgba(201, 162, 39, 0.2);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--accent-2) 20%, transparent);
     }
 
     .nav-tab-btn.active {
-      background: linear-gradient(135deg, rgba(201, 162, 39, 0.25) 0%, rgba(46, 35, 24, 0.9) 100%);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 25%, transparent) 0%, var(--surface-3) 100%);
       border-color: var(--gold-bright);
       color: var(--gold-bright);
-      box-shadow: 0 0 14px rgba(201, 162, 39, 0.35);
+      box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 35%, transparent);
     }
 
     /* --- HP TRACKER WIDGET STYLES --- */
@@ -2615,37 +2862,37 @@
     }
 
     .hp-btn.dmg {
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-      border: 1px solid #ef4444;
+      background: color-mix(in srgb, var(--danger) 20%, transparent);
+      color: var(--danger-strong);
+      border: 1px solid var(--danger);
     }
 
     .hp-btn.dmg:hover {
-      background: #ef4444;
-      color: #ffffff;
+      background: var(--danger);
+      color: var(--on-status);
     }
 
     .hp-btn.heal {
-      background: rgba(34, 197, 94, 0.2);
-      color: #4ade80;
-      border: 1px solid #22c55e;
+      background: color-mix(in srgb, var(--success) 20%, transparent);
+      color: var(--success);
+      border: 1px solid var(--success);
     }
 
     .hp-btn.heal:hover {
-      background: #22c55e;
-      color: #ffffff;
+      background: var(--success);
+      color: var(--on-status);
     }
 
 
     .hp-btn.temp {
-      background: rgba(56, 189, 248, 0.2);
-      color: #38bdf8;
-      border: 1px solid #38bdf8;
+      background: color-mix(in srgb, var(--info) 20%, transparent);
+      color: var(--info);
+      border: 1px solid var(--info);
     }
 
     .hp-btn.temp:hover {
-      background: #0284c7;
-      color: #ffffff;
+      background: var(--info);
+      color: var(--on-status);
     }
 
     .hp-temp-bar-fill {
@@ -2653,7 +2900,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      background: linear-gradient(90deg, #38bdf8, #0284c7);
+      background: linear-gradient(90deg, var(--info-strong), var(--info));
       opacity: 0.85;
       transition: width 0.3s ease;
       pointer-events: none;
@@ -2680,32 +2927,9 @@
    D&D CAMPAIGN NOTES WORKSPACE STYLES
    ======================================================== */
 
-    #notes-view-container,
-    .modal-bg,
-    .lightbox,
-    .toast,
-    .bg-panel {
-      --bg: #1a1714;
-      --bg2: #221f1b;
-      --bg3: #2c2822;
-      --bg4: #38332c;
-      --surface: #2a2520;
-      --border: rgba(255, 255, 255, 0.08);
-      --border2: rgba(255, 255, 255, 0.14);
-      --text: #e8e0d4;
-      --text2: #a89880;
-      --text3: #6b5e50;
-      --accent: #c84b31;
-      --accent2: #e06040;
-      --gold: #c09050;
-      --radius: 8px;
-      --radius-lg: 12px;
-      --theme-bg: var(--bg);
-      --theme-bg2: var(--bg2);
-      --theme-bg3: var(--bg3);
-      --theme-bg4: var(--bg4);
-      --theme-surface: var(--surface);
-    }
+    /* The notes workspace, modals, lightbox and toasts used to carry a
+       parallel palette of their own here. They now inherit the app theme
+       tokens from :root, so one theme covers every surface. */
 
     #notes-view-container {
       display: none;
@@ -2721,7 +2945,7 @@
       overflow: hidden;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: var(--font-body);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
@@ -2748,15 +2972,18 @@
       box-sizing: border-box;
     }
 
-    #notes-view-container #bg-layer {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      transition: background-color .3s;
+    /* The wallpaper is a single fixed layer at the top of <body> (#bg-layer) so
+       every screen gets it, not just the notes workspace. Anything that would
+       otherwise paint an opaque slab over it goes translucent glass instead. */
+    body.has-bg-image #notes-view-container {
+      background: color-mix(in srgb, var(--bg) 84%, transparent);
+    }
+
+    body.has-bg-image .panel {
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--panel-hi) 84%, transparent),
+        color-mix(in srgb, var(--panel-lo) 84%, transparent));
+      backdrop-filter: blur(7px);
     }
 
     /* titlebar */
@@ -2775,7 +3002,7 @@
     .titlebar h1 {
       font-size: 15px;
       font-weight: 600;
-      color: var(--gold);
+      color: var(--accent);
       letter-spacing: .03em;
     }
 
@@ -2791,9 +3018,9 @@
 
     .tbarbtn {
       background: none;
-      border: 1px solid var(--border2);
+      border: 1px solid color-mix(in srgb, var(--accent-2) 45%, var(--border2));
       border-radius: 6px;
-      color: var(--text2);
+      color: var(--accent-2-strong);
       font-size: 12px;
       padding: 4px 10px;
       cursor: pointer;
@@ -2804,8 +3031,9 @@
     }
 
     .tbarbtn:hover {
-      background: var(--bg4);
-      color: var(--text);
+      background: color-mix(in srgb, var(--accent-2) 16%, var(--bg4));
+      border-color: var(--accent-2);
+      color: var(--accent-2-strong);
     }
 
     /* layout */
@@ -3033,7 +3261,7 @@
       flex: 1;
       font-size: 12px;
       font-weight: 600;
-      color: var(--gold);
+      color: var(--accent-2);
     }
 
     .notes-list {
@@ -3147,7 +3375,7 @@
     }
 
     .note-del-btn:hover {
-      color: #c84b31;
+      color: var(--danger-strong);
       background: var(--border2);
     }
 
@@ -3273,8 +3501,8 @@
     }
 
     .note-textarea::selection {
-      background: rgba(192, 144, 80, 0.45);
-      color: #ffffff;
+      background: color-mix(in srgb, var(--accent-2) 45%, transparent);
+      color: var(--on-status);
     }
 
     /* images view */
@@ -3301,7 +3529,7 @@
       gap: 6px;
       padding: 5px 12px;
       background: var(--accent);
-      color: #fff;
+      color: var(--on-fill);
       border-radius: 6px;
       cursor: pointer;
       font-size: 12px;
@@ -3366,10 +3594,10 @@
       position: absolute;
       top: 4px;
       right: 4px;
-      background: rgba(180, 40, 20, .85);
+      background: color-mix(in srgb, var(--danger) 85%, transparent);
       border: none;
       border-radius: 4px;
-      color: #fff;
+      color: var(--on-status);
       cursor: pointer;
       padding: 3px 7px;
       font-size: 12px;
@@ -3442,7 +3670,7 @@
 
     .cons-toolbar button:hover {
       background: var(--accent);
-      color: #fff;
+      color: var(--on-fill);
     }
 
     .cons-scroll {
@@ -3528,8 +3756,8 @@
     }
 
     .cons-pip.full {
-      background: var(--accent);
-      border-color: var(--accent);
+      background: var(--accent-2);
+      border-color: var(--accent-2);
     }
 
     .cons-pip.empty {
@@ -3552,8 +3780,8 @@
     }
 
     .cons-del:hover {
-      color: #e55;
-      background: rgba(255, 80, 80, .12);
+      color: var(--danger-strong);
+      background: color-mix(in srgb, var(--danger) 12%, transparent);
     }
 
     .cons-empty {
@@ -3590,7 +3818,7 @@
 
     .sheet-toolbar button:hover {
       background: var(--accent);
-      color: #fff;
+      color: var(--on-fill);
     }
 
     .sheet-scroll {
@@ -3740,7 +3968,7 @@
     }
 
     .cswatch.active {
-      border-color: #fff;
+      border-color: var(--text);
       box-shadow: 0 0 0 1px rgba(255, 255, 255, .3);
     }
 
@@ -3879,7 +4107,7 @@
 
     .btn-p {
       background: var(--accent);
-      color: #fff;
+      color: var(--on-fill);
       border: none;
       border-radius: 6px;
       padding: 7px 18px;
@@ -3892,20 +4120,23 @@
       background: var(--accent2);
     }
 
+    /* Secondary actions carry the second hue, so primary (accent) and
+       secondary (accent 2) read as two distinct ranks instead of one. */
     .btn-s {
       background: none;
-      border: 1px solid var(--border2);
+      border: 1px solid color-mix(in srgb, var(--accent-2) 50%, var(--border2));
       border-radius: 6px;
       padding: 7px 18px;
       font-size: 13px;
       cursor: pointer;
-      color: var(--text2);
+      color: var(--accent-2-strong);
       font-family: inherit;
     }
 
     .btn-s:hover {
-      color: var(--text);
-      background: var(--bg4);
+      color: var(--accent-2-strong);
+      border-color: var(--accent-2);
+      background: color-mix(in srgb, var(--accent-2) 16%, var(--bg4));
     }
 
     /* toast */
@@ -3919,7 +4150,9 @@
       padding: 9px 16px;
       font-size: 13px;
       color: var(--text);
-      z-index: 400;
+      /* Above every in-app surface (notes workspace 2000, overlays <=1000),
+         below the two full-screen gates: auth 99999 and the forge 100000. */
+      z-index: 5000;
       opacity: 0;
       transform: translateY(8px);
       transition: all .25s;
@@ -4008,7 +4241,7 @@
     }
 
     .bg-sw.active {
-      border-color: #fff;
+      border-color: var(--text);
       box-shadow: 0 0 0 1px rgba(255, 255, 255, .25);
     }
 
@@ -4051,8 +4284,8 @@
     }
 
     .bg-abtn.red:hover {
-      border-color: #c84b31;
-      color: #c84b31;
+      border-color: var(--danger-strong);
+      color: var(--danger-strong);
     }
 
     .bg-orow {
@@ -4085,6 +4318,7 @@
       transition: background-color .3s;
     }
 
+    .frame,
     .layout,
     .titlebar {
       position: relative;
@@ -4098,7 +4332,7 @@
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: radial-gradient(ellipse at center, rgba(32, 22, 14, 0.96) 0%, rgba(10, 7, 5, 0.98) 75%, #050302 100%);
+      background: radial-gradient(ellipse at center, var(--surface-2) 0%, var(--bg) 75%, var(--surface-inset) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -4117,17 +4351,17 @@
       background: var(--panel);
       border: 2px solid var(--border-bright);
       border-radius: 12px;
-      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(201, 162, 39, 0.25), inset 0 0 30px rgba(0,0,0,0.7);
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 35px color-mix(in srgb, var(--accent) 25%, transparent), inset 0 0 30px rgba(0,0,0,0.7);
       padding: 32px 36px;
       position: relative;
       color: var(--text);
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
     }
     .auth-card::before {
       content: '';
       position: absolute;
       inset: 4px;
-      border: 1px solid rgba(201, 162, 39, 0.3);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
       border-radius: 8px;
       pointer-events: none;
     }
@@ -4139,19 +4373,19 @@
     .auth-emblem {
       font-size: 38px;
       margin-bottom: 6px;
-      filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.5));
+      filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 50%, transparent));
       animation: authGlow 3s ease-in-out infinite alternate;
     }
     @keyframes authGlow {
-      from { transform: scale(1); filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.4)); }
-      to { transform: scale(1.05); filter: drop-shadow(0 0 16px rgba(232, 207, 122, 0.8)); }
+      from { transform: scale(1); filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 40%, transparent)); }
+      to { transform: scale(1.05); filter: drop-shadow(0 0 16px color-mix(in srgb, var(--accent-strong) 80%, transparent)); }
     }
     .auth-title {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 24px;
       font-weight: 900;
       letter-spacing: 2px;
-      color: var(--gold-bright);
+      color: var(--text);
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
       margin: 0;
     }
@@ -4174,7 +4408,7 @@
       border: none;
       border-bottom: 2px solid transparent;
       color: var(--text-dim);
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 13px;
       font-weight: 700;
       padding: 10px 8px;
@@ -4185,7 +4419,7 @@
     .auth-tab-btn.active {
       color: var(--gold-bright);
       border-bottom-color: var(--gold);
-      background: rgba(201, 162, 39, 0.08);
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
       border-radius: 4px 4px 0 0;
     }
     .auth-form-group {
@@ -4214,11 +4448,11 @@
     }
     .auth-input {
       width: 100%;
-      background: rgba(0, 0, 0, 0.45);
+      background: var(--well-3);
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 10px 12px 10px 38px;
-      font-family: 'Spectral', serif;
+      font-family: var(--font-body);
       font-size: 15px;
       color: var(--text);
       outline: none;
@@ -4226,7 +4460,7 @@
     }
     .auth-input:focus {
       border-color: var(--gold);
-      box-shadow: 0 0 8px rgba(201, 162, 39, 0.4);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
     }
     .auth-pw-toggle {
       position: absolute;
@@ -4249,7 +4483,7 @@
     .auth-role-card {
       flex: 1;
       border: 1px solid var(--border);
-      background: rgba(0,0,0,0.3);
+      background: var(--well-2);
       border-radius: 6px;
       padding: 10px;
       cursor: pointer;
@@ -4258,11 +4492,11 @@
     }
     .auth-role-card.selected {
       border-color: var(--gold);
-      background: rgba(201, 162, 39, 0.15);
-      box-shadow: 0 0 8px rgba(201, 162, 39, 0.3);
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 30%, transparent);
     }
     .auth-role-card .role-title {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 12px;
       font-weight: 700;
       color: var(--gold-bright);
@@ -4275,12 +4509,12 @@
     }
     .auth-btn-submit {
       width: 100%;
-      background: linear-gradient(135deg, #a8811f 0%, #d8b038 50%, #997217 100%);
-      color: #100b08;
-      border: 1px solid #e8cf7a;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 50%, var(--accent) 100%);
+      color: var(--on-fill);
+      border: 1px solid var(--accent-strong);
       border-radius: 6px;
       padding: 12px;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 14px;
       font-weight: 900;
       letter-spacing: 1.5px;
@@ -4292,7 +4526,7 @@
     .auth-btn-submit:hover {
       filter: brightness(1.15);
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
+      box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 40%, transparent);
     }
     .auth-btn-submit:active {
       transform: translateY(1px);
@@ -4307,15 +4541,15 @@
     }
     .auth-msg.error {
       display: block;
-      background: rgba(168, 60, 50, 0.25);
+      background: color-mix(in srgb, var(--danger) 25%, transparent);
       border: 1px solid var(--danger);
       color: var(--danger-bright);
     }
     .auth-msg.success {
       display: block;
-      background: rgba(74, 143, 79, 0.25);
+      background: color-mix(in srgb, var(--success) 25%, transparent);
       border: 1px solid var(--success);
-      color: #4ade80;
+      color: var(--success);
     }
     .auth-quick-demo {
       margin-top: 20px;
@@ -4337,7 +4571,7 @@
       flex-wrap: wrap;
     }
     .auth-demo-pill {
-      background: rgba(0,0,0,0.5);
+      background: var(--well-3);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 4px 10px;
@@ -4348,7 +4582,7 @@
     }
     .auth-demo-pill:hover {
       border-color: var(--gold);
-      background: rgba(201, 162, 39, 0.15);
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
       transform: translateY(-1px);
     }
 
@@ -4357,7 +4591,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(0, 0, 0, 0.4);
+      background: var(--well-3);
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 3px 8px 3px 12px;
@@ -4370,8 +4604,8 @@
       color: var(--text);
     }
     .auth-user-badge strong {
-      color: var(--gold-bright);
-      font-family: 'Cinzel', serif;
+      color: var(--accent-2-strong);
+      font-family: var(--font-display);
     }
     .auth-user-role-tag {
       font-size: 10px;
@@ -4381,20 +4615,22 @@
       border-radius: 10px;
     }
     .auth-user-role-tag.dm {
-      background: rgba(201, 162, 39, 0.25);
-      border: 1px solid var(--gold);
-      color: var(--gold-bright);
+      background: color-mix(in srgb, var(--accent-2) 25%, transparent);
+      border: 1px solid var(--accent-2);
+      color: var(--accent-2-strong);
     }
     .auth-user-role-tag.player {
-      background: rgba(59, 142, 196, 0.25);
+      background: color-mix(in srgb, var(--info) 25%, transparent);
       border: 1px solid var(--rare);
-      color: #7dd3fc;
+      color: var(--info-strong);
     }
 
     /* DM Control Bar */
+    /* DM-only chrome takes the second hue, so a DM's tools are visually
+       separated from the player-facing accent at a glance. */
     .dm-control-bar {
-      background: linear-gradient(90deg, rgba(46, 35, 24, 0.95), rgba(28, 21, 15, 0.95));
-      border: 1px solid var(--gold);
+      background: linear-gradient(90deg, var(--surface-3), var(--surface-1));
+      border: 1px solid var(--accent-2);
       border-radius: 8px;
       padding: 8px 16px;
       margin: 10px 0 16px 0;
@@ -4402,13 +4638,13 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 15px rgba(201,162,39,0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 15px color-mix(in srgb, var(--accent-2) 15%, transparent);
     }
     .dm-control-badge {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 12px;
       font-weight: 900;
-      color: var(--gold-bright);
+      color: var(--accent-2-strong);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -4419,10 +4655,10 @@
       color: var(--text-dim);
     }
     .dm-player-dropdown {
-      background: #150f0a;
-      border: 1px solid var(--border-bright);
-      color: var(--gold-bright);
-      font-family: 'Spectral', serif;
+      background: var(--surface-2);
+      border: 1px solid color-mix(in srgb, var(--accent-2) 45%, var(--border-bright));
+      color: var(--accent-2-strong);
+      font-family: var(--font-body);
       font-size: 13px;
       font-weight: 600;
       padding: 5px 12px;
@@ -4431,31 +4667,42 @@
       cursor: pointer;
     }
     .dm-player-dropdown:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 6px rgba(201, 162, 39, 0.4);
+      border-color: var(--accent-2);
+      box-shadow: 0 0 6px color-mix(in srgb, var(--accent-2) 40%, transparent);
     }
     .dm-status-tag {
       font-size: 11px;
       color: var(--text-dim);
-      background: rgba(0,0,0,0.4);
+      background: var(--well-3);
       padding: 4px 8px;
       border-radius: 4px;
       border: 1px solid rgba(255,255,255,0.08);
     }
     .dm-inspecting-banner {
-      background: linear-gradient(90deg, rgba(201, 162, 39, 0.2), rgba(30, 20, 10, 0.4));
-      border: 1px solid var(--gold);
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent-2) 20%, transparent), var(--surface-1));
+      border: 1px solid var(--accent-2);
       border-radius: 6px;
       padding: 8px 14px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       font-size: 12px;
-      color: var(--gold-bright);
-      box-shadow: 0 0 10px rgba(201,162,39,0.2);
+      color: var(--accent-2-strong);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--accent-2) 20%, transparent);
     }
     .dm-inspecting-banner strong {
-      color: #fff;
+      color: var(--text);
+    }
+    /* the DM bar's own controls light up in the second hue as well, so the
+       whole strip reads as one voice rather than a bronze frame on gold */
+    .dm-control-bar .btn:hover,
+    .dm-control-bar .btn:focus-visible {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 12px color-mix(in srgb, var(--accent-2) 25%, transparent);
+    }
+    .dm-control-bar .btn.ghost:hover {
+      color: var(--accent-2-strong);
+      border-color: var(--accent-2);
     }
 
 
@@ -4466,9 +4713,9 @@
       gap: 6px;
       font-size: 11px;
       font-weight: 600;
-      color: #4ade80;
-      background: rgba(34, 197, 94, 0.12);
-      border: 1px solid rgba(74, 222, 128, 0.3);
+      color: var(--success);
+      background: color-mix(in srgb, var(--success) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
       border-radius: 14px;
       padding: 3px 10px;
       letter-spacing: 0.5px;
@@ -4480,33 +4727,33 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: #22c55e;
-      box-shadow: 0 0 6px #22c55e;
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
       display: inline-block;
       animation: syncPulse 2.5s infinite ease-in-out;
     }
     @keyframes syncPulse {
       0% { opacity: 0.6; transform: scale(0.9); }
-      50% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 10px #4ade80; }
+      50% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 10px var(--success); }
       100% { opacity: 0.6; transform: scale(0.9); }
     }
     .cloud-sync-badge.syncing {
-      color: #facc15;
-      background: rgba(250, 204, 21, 0.15);
-      border-color: rgba(250, 204, 21, 0.4);
+      color: var(--warn);
+      background: color-mix(in srgb, var(--warn) 15%, transparent);
+      border-color: color-mix(in srgb, var(--warn) 40%, transparent);
     }
     .cloud-sync-badge.syncing .sync-dot {
-      background: #eab308;
-      box-shadow: 0 0 8px #facc15;
+      background: var(--warn);
+      box-shadow: 0 0 8px var(--warn);
       animation: spin 0.8s linear infinite;
     }
     .cloud-sync-badge.offline {
-      color: #f87171;
-      background: rgba(248, 113, 113, 0.15);
-      border-color: rgba(248, 113, 113, 0.4);
+      color: var(--danger-strong);
+      background: color-mix(in srgb, var(--danger) 15%, transparent);
+      border-color: color-mix(in srgb, var(--danger) 40%, transparent);
     }
     .cloud-sync-badge.offline .sync-dot {
-      background: #ef4444;
+      background: var(--danger);
       box-shadow: none;
       animation: none;
     }
@@ -4525,30 +4772,30 @@
     display: flex !important;
     flex-direction: column !important;
     padding: 0 !important;
-    background: radial-gradient(ellipse at top, #261910 0%, #120c08 70%) !important;
+    background: radial-gradient(ellipse at top, var(--surface-2) 0%, var(--bg) 70%);
     border: 2px solid var(--border-bright) !important;
-    box-shadow: 0 0 50px rgba(0,0,0,0.9), 0 0 35px rgba(201,162,39,0.25) !important;
+    box-shadow: 0 0 50px rgba(0,0,0,0.9), 0 0 35px color-mix(in srgb, var(--accent) 25%, transparent) !important;
     border-radius: 12px !important;
     overflow: hidden !important;
   }
   .forge-header {
     padding: 16px 22px;
-    background: linear-gradient(180deg, rgba(40,25,15,0.95), rgba(25,16,10,0.9));
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel-lo));
     border-bottom: 2px solid var(--border-bright);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
   .forge-title {
-    font-family: 'Cinzel', serif;
+    font-family: var(--font-display);
     font-size: 20px;
     font-weight: 900;
-    color: var(--gold-bright);
+    color: var(--text);
     letter-spacing: 1px;
     display: flex;
     align-items: center;
     gap: 10px;
-    text-shadow: 0 0 10px rgba(201,162,39,0.4);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 40%, transparent);
   }
   .forge-subtitle {
     font-size: 12px;
@@ -4564,13 +4811,13 @@
     gap: 20px;
   }
   .forge-section {
-    background: rgba(0,0,0,0.3);
+    background: var(--well-2);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 16px;
   }
   .forge-section-title {
-    font-family: 'Cinzel', serif;
+    font-family: var(--font-display);
     font-size: 14px;
     font-weight: 700;
     color: var(--gold);
@@ -4587,7 +4834,7 @@
     gap: 8px;
   }
   .forge-class-card {
-    background: rgba(30,20,12,0.6);
+    background: var(--surface-1);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 10px 8px;
@@ -4598,23 +4845,23 @@
   }
   .forge-class-card:hover {
     border-color: var(--gold);
-    background: rgba(50,30,16,0.8);
+    background: var(--surface-3);
     transform: translateY(-2px);
   }
   .forge-class-card.selected {
     border-color: var(--gold-bright);
-    background: linear-gradient(180deg, rgba(201,162,39,0.25), rgba(40,25,15,0.7));
-    box-shadow: 0 0 12px rgba(201,162,39,0.35);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 25%, transparent), var(--surface-2));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 35%, transparent);
   }
   .forge-class-icon {
     font-size: 26px;
     margin-bottom: 4px;
   }
   .forge-class-name {
-    font-family: 'Cinzel', serif;
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text);
   }
   .forge-class-hitdie {
     font-size: 11px;
@@ -4632,7 +4879,7 @@
     }
   }
   .forge-stat-card {
-    background: rgba(20,14,10,0.8);
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 10px 6px;
@@ -4640,17 +4887,17 @@
     position: relative;
   }
   .forge-stat-label {
-    font-family: 'Cinzel', serif;
+    font-family: var(--font-display);
     font-size: 12px;
     font-weight: 700;
     color: var(--gold-bright);
     text-transform: uppercase;
   }
   .forge-stat-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 24px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text);
     margin: 4px 0;
   }
   .forge-stat-mod {
@@ -4659,14 +4906,14 @@
     padding: 2px 8px;
     border-radius: 12px;
     display: inline-block;
-    background: rgba(74,143,79,0.25);
-    color: #4ade80;
-    border: 1px solid rgba(74,143,79,0.5);
+    background: color-mix(in srgb, var(--success) 25%, transparent);
+    color: var(--success);
+    border: 1px solid color-mix(in srgb, var(--success) 50%, transparent);
   }
   .forge-stat-mod.neg {
-    background: rgba(168,60,50,0.25);
-    color: #f87171;
-    border-color: rgba(168,60,50,0.5);
+    background: color-mix(in srgb, var(--danger) 25%, transparent);
+    color: var(--danger-strong);
+    border-color: color-mix(in srgb, var(--danger) 50%, transparent);
   }
   .forge-stat-controls {
     display: flex;
@@ -4675,7 +4922,7 @@
     margin-top: 8px;
   }
   .forge-stat-btn {
-    background: rgba(0,0,0,0.5);
+    background: var(--well-3);
     border: 1px solid var(--border);
     color: var(--text);
     width: 24px;
@@ -4689,8 +4936,8 @@
     transition: all 0.15s;
   }
   .forge-stat-btn:hover {
-    background: var(--border-bright);
-    color: #fff;
+    background: var(--accent);
+    color: var(--on-fill);
   }
   .forge-skills-grid {
     display: grid;
@@ -4698,7 +4945,7 @@
     gap: 8px;
   }
   .forge-skill-item {
-    background: rgba(25,18,12,0.5);
+    background: var(--surface-1);
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 6px 10px;
@@ -4711,17 +4958,17 @@
     transition: all 0.15s;
   }
   .forge-skill-item:hover {
-    background: rgba(40,28,18,0.8);
+    background: var(--surface-2);
     border-color: var(--gold);
   }
   .forge-skill-item.active {
-    background: rgba(201,162,39,0.2);
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
     border-color: var(--gold-bright);
-    color: #fff;
+    color: var(--accent-strong);
     font-weight: 600;
   }
   .forge-summary-bar {
-    background: linear-gradient(180deg, rgba(30,20,14,0.9), rgba(18,12,8,0.95));
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel-lo));
     border-top: 2px solid var(--border-bright);
     padding: 14px 24px;
     display: flex;
@@ -4737,7 +4984,7 @@
     flex-wrap: wrap;
   }
   .forge-badge {
-    background: rgba(0,0,0,0.5);
+    background: var(--well-3);
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 5px 10px;
@@ -4756,6 +5003,24 @@
 </head>
 
 <body>
+  <!-- Wallpaper: one fixed layer behind every screen. Lives here rather than
+       inside the notes workspace so the inventory, spells and features screens
+       get the same background. -->
+  <div id="bg-layer"></div>
+
+  <!-- Wallpaper controls (floating panel, opened from any screen). The file
+       input rides along at body level: it used to live inside the notes
+       workspace, so opening the picker from the inventory screen relied on
+       a hidden ancestor staying clickable. -->
+  <div class="bg-panel" id="bg-panel"></div>
+  <input type="file" id="bg-img-input" accept="image/*" style="display:none" onchange="handleBgImage(this)" />
+
+  <!-- Toasts belong to the whole app, so they live here. Inside the notes
+       workspace they were invisible on every other screen: that container is
+       display:none unless the Notes tab is open, so "item added" and every
+       other confirmation silently went nowhere. -->
+  <div class="toast" id="toast"></div>
+
   <!-- D&D AUTHENTICATION / LOGIN OVERLAY -->
   <div id="auth-portal-screen">
     <div class="auth-card">
@@ -4834,7 +5099,7 @@
         <div class="forge-section">
           <div class="forge-section-title">
             <span>1. Choose Class</span>
-            <span id="forge-class-selected-label" style="color:var(--gold-bright); font-size:12px;">Fighter</span>
+            <span id="forge-class-selected-label" style="color:var(--accent-2-strong); font-size:12px;">Fighter</span>
           </div>
           <div class="forge-class-grid" id="forge-class-grid"></div>
           <div id="forge-class-description" style="font-size:12px; color:var(--text-dim); margin-top:10px; font-style:italic;"></div>
@@ -4844,7 +5109,7 @@
         <div class="forge-section" style="display:flex; gap:16px; flex-wrap:wrap;">
           <div style="flex:1; min-width:200px;">
             <div class="forge-section-title">2. Choose Species / Race</div>
-            <select id="forge-species-select" onchange="onForgeSpeciesChange(this.value)" style="width:100%; padding:10px; border-radius:6px; background:rgba(0,0,0,0.6); border:1px solid var(--border); color:#fff; font-size:14px; font-family:'Cinzel',serif;">
+            <select id="forge-species-select" onchange="onForgeSpeciesChange(this.value)" style="width:100%; padding:10px; border-radius:6px; background:var(--well-3); border:1px solid var(--border); color:var(--text); font-size:14px; font-family:var(--font-display);">
               <option value="Human">Human (Versatile · 30 ft)</option>
               <option value="Elf">Elf (Keen Senses · Elvish · 30 ft)</option>
               <option value="Dwarf">Dwarf (Dwarven Resilience · 25 ft)</option>
@@ -4858,7 +5123,7 @@
           </div>
           <div style="width:140px;">
             <div class="forge-section-title">Starting Level</div>
-            <select id="forge-level-select" onchange="onForgeLevelChange(this.value)" style="width:100%; padding:10px; border-radius:6px; background:rgba(0,0,0,0.6); border:1px solid var(--border); color:#fff; font-size:14px; font-family:'Cinzel',serif;">
+            <select id="forge-level-select" onchange="onForgeLevelChange(this.value)" style="width:100%; padding:10px; border-radius:6px; background:var(--well-3); border:1px solid var(--border); color:var(--text); font-size:14px; font-family:var(--font-display);">
               <option value="1">Level 1</option>
               <option value="2">Level 2</option>
               <option value="3">Level 3</option>
@@ -4920,7 +5185,7 @@
         </div>
         <div style="display:flex; gap:10px;">
           <button type="button" class="btn ghost" onclick="closeCharacterForgeModal()">Cancel</button>
-          <button type="button" class="btn" onclick="submitCharacterForge()" style="font-family:'Cinzel',serif; font-size:14px; font-weight:bold; background:linear-gradient(180deg, var(--gold-bright), #8a641d); color:#000; box-shadow:0 0 15px rgba(234,179,8,0.4); padding:10px 22px;">✨ FORGE HERO &amp; ENTER REALM</button>
+          <button type="button" class="btn" onclick="submitCharacterForge()" style="font-family:var(--font-display); font-size:14px; font-weight:bold; background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000; box-shadow:0 0 15px color-mix(in srgb, var(--warn) 40%, transparent); padding:10px 22px;">✨ FORGE HERO &amp; ENTER REALM</button>
         </div>
       </div>
     </div>
@@ -4954,7 +5219,7 @@
       <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
         <button class="btn ghost small" onclick="closeDmCreatePlayerModal()">Cancel</button>
         <div style="display:flex; gap:8px;">
-          <button class="btn small" style="background:linear-gradient(180deg, var(--gold-bright), #8a641d); color:#000; font-weight:bold;" onclick="dmOpenHeroForgeForPlayer()">⚔ Hero Forge</button>
+          <button class="btn small" style="background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000; font-weight:bold;" onclick="dmOpenHeroForgeForPlayer()">⚔ Hero Forge</button>
           <button class="btn small" onclick="dmSubmitCreatePlayer()">✨ Quick Create</button>
         </div>
       </div>
@@ -5039,14 +5304,14 @@
           <div
             style="display:flex; justify-content:space-between; align-items:center; font-size:10px; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:2px;">
             <span>❤️ Hit Points</span>
-            <span id="hp-temp-label" style="color:var(--gold-bright); font-size:10px; display:none;">+0 Temp</span>
+            <span id="hp-temp-label" style="color:var(--accent-2-strong); font-size:10px; display:none;">+0 Temp</span>
           </div>
           <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
-            <div style="font-family:'Cinzel',serif; font-size:15px; font-weight:700; color:#fff;" id="hp-display">
-              <span id="hp-cur-val" style="color:#4ade80; cursor:pointer;" title="Click to edit current HP"
+            <div style="font-family:var(--font-display); font-size:15px; font-weight:700; color:var(--on-status);" id="hp-display">
+              <span id="hp-cur-val" style="color:var(--success); cursor:pointer;" title="Click to edit current HP"
                 onclick="quickEditCurrentHP(event)">45</span>
               <span style="font-size:12px; color:var(--text-muted);">/</span>
-              <span id="hp-max-val" style="color:var(--gold-bright); cursor:pointer;" title="Click to edit max HP"
+              <span id="hp-max-val" style="color:var(--accent-2-strong); cursor:pointer;" title="Click to edit max HP"
                 onclick="quickEditMaxHP(event)">45</span>
             </div>
             <div style="display:flex; gap:3px;" onclick="event.stopPropagation();">
@@ -5057,9 +5322,9 @@
             </div>
           </div>
           <div class="hp-bar-bg"
-            style="width:100%; height:6px; background:rgba(0,0,0,0.5); border-radius:3px; margin-top:4px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); position:relative;">
+            style="width:100%; height:6px; background:var(--well-3); border-radius:3px; margin-top:4px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); position:relative;">
             <div class="hp-bar-fill" id="hp-bar-fill"
-              style="width:100%; height:100%; background:linear-gradient(90deg, #22c55e, #16a34a); transition:width 0.3s ease, background 0.3s ease;">
+              style="width:100%; height:100%; background:linear-gradient(90deg, var(--success), var(--success)); transition:width 0.3s ease, background 0.3s ease;">
             </div>
             <div class="hp-temp-bar-fill" id="hp-temp-bar-fill" style="width:0%; display:none;"></div>
           </div>
@@ -5077,6 +5342,7 @@
           </div>
         </div>
         <button class="btn ghost small" onclick="openSettings()">⚙ Settings</button>
+        <button class="btn ghost small bg-trigger" onclick="toggleBgPanel()" title="Wallpaper for this character">🎨 Wallpaper</button>
         <button class="btn" onclick="openItemModal()">+ Add Item</button>
       </div>
     </div>
@@ -5104,13 +5370,13 @@
           <div class="ability-scores-grid" id="ability-scores-grid"></div>
           <div class="combat-stats-bar" id="combat-stats-bar"></div>
           <div id="equipped-item-bonuses-strip"
-            style="display:none; flex-wrap:wrap; gap:4px; align-items:center; font-size:10px; margin-bottom:10px; background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:6px; padding:4px 8px;">
+            style="display:none; flex-wrap:wrap; gap:4px; align-items:center; font-size:10px; margin-bottom:10px; background:var(--well-2); border:1px solid var(--border); border-radius:6px; padding:4px 8px;">
           </div>
           <div class="dnd-sub-grid">
             <div class="dnd-box">
               <div class="dnd-box-title">SAVING THROWS ⚙️</div>
               <div id="saving-throws-list"></div>
-              <div id="save-notes" style="font-size:9px; color:var(--gold); margin-top:4px;"></div>
+              <div id="save-notes" style="font-size:9px; color:var(--accent-2-strong); margin-top:4px;"></div>
             </div>
             <div class="dnd-box">
               <div class="dnd-box-title">SENSES ⚙️</div>
@@ -5123,7 +5389,7 @@
               style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
               <span>SKILLS & BONUSES ⚙️</span>
               <button class="btn ghost small"
-                style="font-size:9px; padding:1px 6px; text-transform:none; font-family:sans-serif;"
+                style="font-size:9px; padding:1px 6px; text-transform:none; font-family:var(--font-body);"
                 onclick="toggleJackOfAllTrades()"
                 title="Jack of All Trades: Toggle half proficiency (0.5x) on unproficient skills">🃏 Jack of All
                 Trades</button>
@@ -5278,28 +5544,24 @@
 
     <!-- D&D CAMPAIGN NOTES WORKSPACE -->
     <div id="notes-view-container" class="fullscreen-notes">
-      <div id="bg-layer"></div>
-
-      <!-- Background panel -->
-      <div class="bg-panel" id="bg-panel"></div>
 
       <div class="titlebar">
         <button class="tbarbtn" onclick="switchMainTab('inventory')"
-          style="font-weight:bold; color:var(--gold); border-color:var(--gold); margin-right:8px;"
+          style="font-weight:bold; color:var(--accent-2); border-color:var(--accent-2); margin-right:8px;"
           title="Return to Character Inventory & Spells Screen">🎒 Character Screen</button>
         <button class="tbarbtn" onclick="toggleNotesFullscreen()" id="notes-fs-btn"
-          style="color:var(--gold); border-color:var(--border2); margin-right:8px;"
+          style="color:var(--accent-2); border-color:var(--border2); margin-right:8px;"
           title="Toggle Fullscreen Notes Workspace">⛶ Exit Fullscreen</button>
         <span style="font-size:20px">⚔️</span>
         <h1>D&D Notes</h1>
         <span class="titlebar-sub" id="session-label"></span>
         <div class="titlebar-spacer"></div>
-        <button class="tbarbtn" onclick="toggleBgPanel()" id="bg-btn" title="Background">🎨 Background</button>
+        <button class="tbarbtn bg-trigger" onclick="toggleBgPanel()" id="bg-btn" title="Background">🎨 Background</button>
         <button class="tbarbtn" onclick="exportNotes()" title="Export Notes JSON Backup">💾 Export Notes</button>
         <button class="tbarbtn" onclick="importNotes()" title="Import Notes JSON Backup">📂 Import Notes</button>
-        <button class="tbarbtn" onclick="exportFullSuiteData()" style="color:var(--gold); border-color:var(--gold);"
+        <button class="tbarbtn" onclick="exportFullSuiteData()" style="color:var(--accent-2); border-color:var(--accent-2);"
           title="Export Complete Suite Backup (Character, Inventory, Spells & Notes)">👑 Export All</button>
-        <button class="tbarbtn" onclick="importFullSuite()" style="color:var(--gold); border-color:var(--gold);"
+        <button class="tbarbtn" onclick="importFullSuite()" style="color:var(--accent-2); border-color:var(--accent-2);"
           title="Import Complete Suite Backup">📥 Import All</button>
       </div>
 
@@ -5427,8 +5689,6 @@
         </div>
       </div>
 
-      <div class="toast" id="toast"></div>
-      <input type="file" id="bg-img-input" accept="image/*" style="display:none" onchange="handleBgImage(this)" />
       <input type="file" id="file-import" accept=".json" style="display:none" onchange="handleImport(this)" />
     </div>
 
@@ -5585,7 +5845,7 @@
 
         <div style="margin-top:14px; border-top:1px solid var(--border); padding-top:10px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <div style="font-family:Cinzel,serif; font-size:11px; font-weight:700; color:var(--gold-bright);">Skill &
+            <div style="font-family:var(--font-display); font-size:11px; font-weight:700; color:var(--accent-2-strong);">Skill &
               Saving Throw Bonuses</div>
             <button type="button" class="btn ghost small" style="font-size:10px; padding:2px 8px;"
               onclick="addItemSkillBonusRow()">+ Add Skill / Save</button>
@@ -5640,20 +5900,33 @@
         <div class="theme-swatches" id="theme-swatches"></div>
       </div>
       <div class="form-row" id="custom-theme-row" style="display:none;">
-        <div class="form-grid">
-          <div>
-            <label>Background</label>
-            <input type="color" id="c-bg" value="#100b08" oninput="updateCustomTheme()">
-          </div>
-          <div>
-            <label>Accent</label>
-            <input type="color" id="c-accent" value="#c9a227" oninput="updateCustomTheme()">
-          </div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
+          <span class="badge" id="custom-mode-tag">Dark</span>
+          <label style="margin:0; font-size:11px; color:var(--text-dim);">Base colour</label>
+          <input type="color" id="c-bg" value="#100b08" oninput="updateCustomTheme()"
+            style="width:64px; height:30px;" title="The page colour. Its lightness decides whether the theme is dark or light.">
+          <span style="font-size:11px; color:var(--text-faint);">→ surfaces, text and contrast derive from it.</span>
+        </div>
+        <label style="font-size:11px; color:var(--text-dim);">Harmonised accents</label>
+        <div class="harmony-row" id="harmony-row"></div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+          <label style="margin:0; font-size:11px; color:var(--text-dim);">Fine-tune</label>
+          <input type="color" id="c-accent" value="#c9a227" oninput="updateCustomTheme()"
+            style="width:64px; height:30px;">
+          <span style="font-size:11px; color:var(--text-faint);">The second accent is derived from this one.</span>
+        </div>
+        <div class="custom-preview" id="custom-preview"></div>
+      </div>
+      <div class="form-row">
+        <label>Font</label>
+        <div class="font-swatches" id="font-swatches"></div>
+        <div style="font-size:10px; color:var(--text-faint); margin-top:6px;">
+          Applies to every screen on all your devices. Fixed-width text stays monospaced.
         </div>
       </div>
       <!-- INVENTORY BACKUP -->
       <div class="form-row" style="margin-top:14px; border-top:1px solid var(--border); padding-top:12px;">
-        <label style="color:var(--gold-bright); font-weight:700;">🎒 Character &amp; Inventory Backup</label>
+        <label style="color:var(--accent-2-strong); font-weight:700;">🎒 Character &amp; Inventory Backup</label>
         <div style="display:flex; gap:8px; margin-top:4px;">
           <button type="button" class="btn ghost small" onclick="exportData()">💾 Export Inventory</button>
           <label class="btn ghost small" style="display:inline-block; cursor:pointer; margin:0;">
@@ -5665,7 +5938,7 @@
 
       <!-- NOTES BACKUP -->
       <div class="form-row" style="margin-top:10px;">
-        <label style="color:var(--gold-bright); font-weight:700;">📓 Campaign Notes Backup</label>
+        <label style="color:var(--accent-2-strong); font-weight:700;">📓 Campaign Notes Backup</label>
         <div style="display:flex; gap:8px; margin-top:4px;">
           <button type="button" class="btn ghost small" onclick="exportNotesFromInventory()">💾 Export Notes</button>
           <label class="btn ghost small" style="display:inline-block; cursor:pointer; margin:0;">
@@ -5677,12 +5950,12 @@
 
       <!-- COMPLETE ALL-IN-ONE BACKUP -->
       <div class="form-row"
-        style="margin-top:10px; background:rgba(201,162,39,0.08); padding:8px 10px; border-radius:6px; border:1px dashed var(--gold);">
-        <label style="color:var(--gold-bright); font-weight:700;">👑 Complete Suite Backup (All-in-One)</label>
+        style="margin-top:10px; background:color-mix(in srgb, var(--accent) 8%, transparent); padding:8px 10px; border-radius:6px; border:1px dashed var(--gold);">
+        <label style="color:var(--accent-2-strong); font-weight:700;">👑 Complete Suite Backup (All-in-One)</label>
         <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Backup or restore character sheet,
           inventory, spells, and notes together in a single file:</div>
         <div style="display:flex; gap:8px;">
-          <button type="button" class="btn small" style="background:var(--gold); color:#100b08; font-weight:700;"
+          <button type="button" class="btn small" style="background:var(--gold); color:var(--on-fill); font-weight:700;"
             onclick="exportFullSuiteData()">📦 Export All</button>
           <label class="btn ghost small"
             style="display:inline-block; cursor:pointer; margin:0; border-color:var(--gold); color:var(--gold);">
@@ -5725,7 +5998,7 @@
 
         <div class="dnd-stats-table">
           <div class="dnd-stat-row" id="sd-damage-row"><span class="dnd-stat-label">Damage / Dice:</span><span
-              class="dnd-stat-val" id="sd-damage" style="color:var(--gold-bright); font-weight:bold;">—</span></div>
+              class="dnd-stat-val" id="sd-damage" style="color:var(--accent-2-strong); font-weight:bold;">—</span></div>
           <div class="dnd-stat-row"><span class="dnd-stat-label">Casting Time:</span><span class="dnd-stat-val"
               id="sd-casting">1 action</span></div>
           <div class="dnd-stat-row"><span class="dnd-stat-label">Range/Area:</span><span class="dnd-stat-val"
@@ -5960,12 +6233,34 @@
       console.log('✅ Applied cloud inventory for:', targetNickname, 'Items count:', (state.items || []).length);
     };
 
+    /* ------------------------------------------------------------
+       A preset is only a *seed*: a mode, a ground, a text colour and two
+       accent hues. Every other token — the surface ramp, the line colours,
+       the text ramp, tints, glows — is derived below in HSL. That is what
+       keeps twelve presets (and the custom picker) looking deliberate
+       instead of like eleven hand-picked hex palettes.
+
+       The two accents are deliberately different temperatures: `accent` is
+       the interactive hue (buttons, active tab, focus, counts) and
+       `accent-2` is the second voice (notes highlights, secondary actions).
+       Status hues are per-preset so a light theme gets darker reds/greens.
+       ------------------------------------------------------------ */
     const THEMES = {
-      leather: { label: 'Leather', void: '#100b08', panel: '#1c150f', panel2: '#251c14', panel3: '#2e2318', border: '#4a3a24', borderBright: '#8a6d3b', gold: '#c9a227', goldBright: '#e8cf7a', text: '#e9e0c8', textDim: '#a89876', textFaint: '#6e6248' },
-      bloodmoon: { label: 'Bloodmoon', void: '#150a0a', panel: '#241012', panel2: '#2e1416', panel3: '#3a1a1d', border: '#5a2020', borderBright: '#8f3535', gold: '#c9424a', goldBright: '#e8707a', text: '#ecdcd7', textDim: '#a98e89', textFaint: '#6e5a56' },
-      arcane: { label: 'Arcane', void: '#0a0d14', panel: '#141a26', panel2: '#1c2433', panel3: '#252e40', border: '#2e3a52', borderBright: '#4a6a9a', gold: '#7a9ad9', goldBright: '#a8c4ef', text: '#dbe6f2', textDim: '#8a9ab0', textFaint: '#5a6a80' },
-      emerald: { label: 'Emerald', void: '#0a120d', panel: '#131f17', panel2: '#1a2b20', panel3: '#22362a', border: '#2e4a38', borderBright: '#4a7a5a', gold: '#5fae6d', goldBright: '#8ed99c', text: '#dcecdf', textDim: '#8fae96', textFaint: '#5a725e' },
-      parchment: { label: 'Parchment', void: '#e8dfc5', panel: '#f3ecd6', panel2: '#eae0c2', panel3: '#e0d3ac', border: '#c4b184', borderBright: '#a8925a', gold: '#8a5a1e', goldBright: '#6e4415', text: '#2e2416', textDim: '#5a4a30', textFaint: '#8a7a5a' },
+      /* --- the original four --- */
+      leather: { label: 'Leather', mode: 'dark', bg: '#100b08', text: '#e9e0c8', accent: '#c9a227', accent2: '#b0713f', info: '#6f9ac4', success: '#5e9e63', warn: '#c9962f', danger: '#a83c32' },
+      bloodmoon: { label: 'Bloodmoon', mode: 'dark', bg: '#150a0a', text: '#ecdcd7', accent: '#c9424a', accent2: '#8a6a52', info: '#9a8fb0', success: '#5e9e63', warn: '#c9a04a', danger: '#c0424a' },
+      arcane: { label: 'Arcane', mode: 'dark', bg: '#0a0d14', text: '#dbe6f2', accent: '#7a9ad9', accent2: '#a07ac4', info: '#6f9ac4', success: '#4fa87a', warn: '#c9a03f', danger: '#c04a4a' },
+      emerald: { label: 'Emerald', mode: 'dark', bg: '#0a120d', text: '#dcecdf', accent: '#5fae6d', accent2: '#c9a227', info: '#5f9eae', success: '#5fae6d', warn: '#c9a63f', danger: '#b0504a' },
+      /* --- new: muted dark fantasy --- */
+      tome: { label: 'Tome', mode: 'dark', bg: '#12131a', text: '#e4ddcc', accent: '#c0a05a', accent2: '#96605a', info: '#8f93b8', success: '#6f9e6a', warn: '#c0a04a', danger: '#a8504a' },
+      moss: { label: 'Moss', mode: 'dark', bg: '#101410', text: '#dfe6d8', accent: '#7f9a5c', accent2: '#b08a4a', info: '#6f9a9a', success: '#7f9a5c', warn: '#b8943f', danger: '#a05540' },
+      oxblood: { label: 'Oxblood', mode: 'dark', bg: '#140f0e', text: '#e8dcd6', accent: '#b0503f', accent2: '#8a7a5a', info: '#8f8fa8', success: '#6f9a63', warn: '#b88a3f', danger: '#c05a4a' },
+      /* --- new: neutral modern --- */
+      graphite: { label: 'Graphite', mode: 'dark', bg: '#101113', text: '#e7e8ea', accent: '#a8adb4', accent2: '#7f97ad', info: '#7f97ad', success: '#6f9a72', warn: '#b09a5f', danger: '#a85a52' },
+      slate: { label: 'Slate', mode: 'dark', bg: '#0d1116', text: '#dfe6ee', accent: '#6f9ac4', accent2: '#9aa4b0', info: '#6f9ac4', success: '#63a07a', warn: '#b39a55', danger: '#a85a52' },
+      /* --- light --- */
+      parchment: { label: 'Parchment', mode: 'light', bg: '#e8dfc5', text: '#2e2416', accent: '#8a5a1e', accent2: '#9a3f2a', info: '#4a6f9a', success: '#4a7f52', warn: '#8a6a1e', danger: '#9a3a30' },
+      bone: { label: 'Bone', mode: 'light', bg: '#f0ede6', text: '#23211d', accent: '#3f5a6a', accent2: '#8a6a4a', info: '#3f6f95', success: '#4a7f57', warn: '#8a6a24', danger: '#9a4038' },
       custom: { label: 'Custom' }
     };
 
@@ -5973,37 +6268,188 @@
       const m = hex.replace('#', '').match(/.{1,2}/g);
       return m ? m.map(h => parseInt(h, 16)) : [16, 11, 8];
     }
-    function shade(hex, amt) {
-      const [r, g, b] = hexToRgb(hex);
-      const f = c => Math.max(0, Math.min(255, Math.round(c + amt)));
-      return 'rgb(' + f(r) + ',' + f(g) + ',' + f(b) + ')';
+    function tClamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+    /* lighten/darken by lightness while keeping hue + saturation */
+    function adjL(hex, dl, ds) {
+      const hsl = hexToHsl(hex);
+      return hslToHex(hsl[0], tClamp(hsl[1] + (ds || 0), 0, 100), tClamp(hsl[2] + dl, 2, 97));
+    }
+    /* A surface step: same hue as the ground, its lightness moved by dl, and
+       its saturation clamped to sat. Surfaces are deliberately near-neutral —
+       see the note in resolveTheme(). */
+    function tone(hsl, dl, sat) {
+      return hslToHex(hsl[0], Math.min(hsl[1], sat), tClamp(hsl[2] + dl, 2, 97));
+    }
+    function mixC(a, b, t) {
+      const A = hexToRgb(a), B = hexToRgb(b);
+      return '#' + [0, 1, 2].map(i => Math.round(A[i] + (B[i] - A[i]) * t).toString(16).padStart(2, '0')).join('');
+    }
+    function rgbaOf(hex, a) { return 'rgba(' + hexToRgb(hex).join(',') + ',' + a + ')'; }
+
+    /* Seed -> the complete token set. Surfaces step in lightness away from
+       the ground, lines are the text colour at low alpha, and the text ramp
+       is the text colour mixed toward the ground. All mode-aware, so a
+       light preset inverts cleanly with no separate light stylesheet. */
+    function resolveTheme(seed) {
+      const dark = seed.mode !== 'light';
+      const text = seed.text, accent = seed.accent;
+      const accent2 = seed.accent2 || adjL(accent, 0, -12);
+      const info = seed.info || (dark ? '#6f9ac4' : '#3f6f9a');
+      const success = seed.success || (dark ? '#5e9e63' : '#4a7f52');
+      const warn = seed.warn || (dark ? '#c9962f' : '#8a6a1e');
+      const danger = seed.danger || (dark ? '#a83c32' : '#9a3a30');
+      const adj = dark ? 0 : -12;
+
+      /* The ground keeps only a tint of its hue, and the panels keep less
+         still. Panels dyed with the accent's own hue are what makes a theme
+         read as one flat colour — the accent has to be the only saturated
+         thing on screen for it to look deliberate. */
+      const ground = hexToHsl(seed.bg);
+      const groundSat = Math.min(ground[1], dark ? 13 : 15);
+      const surfSat = Math.min(ground[1], dark ? 8 : 9);
+      const bg = hslToHex(ground[0], groundSat, ground[2]);
+
+      const s1 = tone(ground, dark ? 3 : 6, surfSat);
+      const s2 = tone(ground, dark ? 7 : 2, surfSat);
+      const s3 = tone(ground, dark ? 12 : -4, surfSat);
+      /* the soft wash behind the page, and the two surface gradients.
+         Both ends of every gradient are named so a light theme does not
+         render them upside down (it used to: light buttons went dark at
+         the top because surface-3 is the darkest step in light mode). */
+      const panelHi = dark ? s2 : s1;
+      const panelLo = dark ? s1 : s2;
+
+      return {
+        'bg': bg,
+        'surface-1': s1,
+        'surface-2': s2,
+        'surface-3': s3,
+        'surface-inset': tone(ground, dark ? -3 : -6, surfSat),
+        'page-lift': dark ? s3 : tone(ground, 2, surfSat),
+        'grad-hi': dark ? s3 : s2,
+        'grad-lo': dark ? s2 : s3,
+        'panel-hi': panelHi,
+        'panel-lo': panelLo,
+        /* ink the --well-* washes mix from: pure black on dark themes
+           (identical to the old rgba(0,0,0,x) washes), a warm ground-
+           derived shadow on light themes so wells read as paper, not slate */
+        'well-ink': dark ? '#000000' : tone(ground, -28, 12),
+        'line': rgbaOf(text, dark ? 0.10 : 0.14),
+        'line-strong': rgbaOf(text, dark ? 0.20 : 0.26),
+        'text': text,
+        /* light themes need a tighter mix or faint text washes out */
+        'text-dim': mixC(text, bg, dark ? 0.33 : 0.30),
+        'text-muted': mixC(text, bg, dark ? 0.46 : 0.42),
+        'text-faint': mixC(text, bg, dark ? 0.60 : 0.55),
+        'on-fill': hexToHsl(accent)[2] > 42 ? '#14110c' : '#ffffff',
+        'accent': accent,
+        'accent-strong': adjL(accent, dark ? 15 : -12),
+        'accent-2': accent2,
+        'accent-2-strong': adjL(accent2, dark ? 15 : -12),
+        'info': info,
+        'info-strong': adjL(info, dark ? 15 : -12),
+        'success': success,
+        'warn': warn,
+        'danger': danger,
+        'danger-strong': adjL(danger, dark ? 15 : -10),
+        'common': dark ? '#9d9d9d' : '#6f6a63',
+        'uncommon': adjL('#4aa356', adj),
+        'rare': adjL('#4a8ec4', adj),
+        'veryrare': adjL('#9a6fc4', adj),
+        'legendary': adjL('#d08a3c', adj),
+        'artifact': adjL('#d9584a', adj),
+        'glow': rgbaOf(accent, 0.25)
+      };
+    }
+
+    /* The custom preset is guided: the user picks a ground and one accent,
+       and the second accent is harmonised from it by rotating the hue. */
+    function customThemeSeed(t) {
+      const bg = t.customBg || '#100b08';
+      const accent = t.customAccent || '#c9a227';
+      const light = hexToHsl(bg)[2] > 55;
+      const ah = hexToHsl(accent);
+      return {
+        mode: light ? 'light' : 'dark',
+        bg: bg,
+        text: light ? '#23211d' : '#e9e0c8',
+        accent: accent,
+        accent2: hslToHex((ah[0] + 156) % 360, Math.min(ah[1], 42), light ? Math.max(ah[2] - 8, 8) : ah[2])
+      };
+    }
+
+    function currentThemeSeed() {
+      const t = state.theme || { preset: 'leather' };
+      if (t.preset === 'custom') return customThemeSeed(t);
+      return THEMES[t.preset] || THEMES.leather;
     }
 
     function applyTheme() {
-      const t = state.theme || { preset: 'leather' };
-      let p = THEMES[t.preset] || THEMES.leather;
-      if (t.preset === 'custom') {
-        const bg = t.customBg || '#100b08';
-        const accent = t.customAccent || '#c9a227';
-        p = {
-          void: bg, panel: shade(bg, 14), panel2: shade(bg, 22), panel3: shade(bg, 30),
-          border: shade(bg, 44), borderBright: shade(bg, 70),
-          gold: accent, goldBright: shade(accent, 40),
-          text: '#e9e0c8', textDim: '#a89876', textFaint: '#6e6248'
-        };
-      }
+      const seed = currentThemeSeed();
+      const tokens = resolveTheme(seed);
       const root = document.documentElement.style;
-      root.setProperty('--void', p.void);
-      root.setProperty('--panel', p.panel);
-      root.setProperty('--panel-2', p.panel2);
-      root.setProperty('--panel-3', p.panel3);
-      root.setProperty('--border', p.border);
-      root.setProperty('--border-bright', p.borderBright);
-      root.setProperty('--gold', p.gold);
-      root.setProperty('--gold-bright', p.goldBright);
-      root.setProperty('--text', p.text);
-      root.setProperty('--text-dim', p.textDim);
-      root.setProperty('--text-faint', p.textFaint);
+      Object.keys(tokens).forEach(function (k) { root.setProperty('--' + k, tokens[k]); });
+      /* the legacy aliases (--void, --panel*, --gold*, --border*) live in
+         :root and resolve to these, so every rule follows automatically */
+      root.colorScheme = seed.mode === 'light' ? 'light' : 'dark';
+    }
+
+    /* --- Guided custom theme ---------------------------------------------
+       Rather than making anyone pick a palette by hand, we take the ground
+       they chose and offer the accent hues that actually harmonise with it:
+       the analogous, complementary and split-complementary positions on the
+       wheel, anchored to the ground's own hue. The second accent is always
+       derived, never asked for. */
+    function harmonyAccents(bgHex, dark) {
+      const gh = hexToHsl(bgHex)[0];
+      return [0, 32, 150, 180, 210, 330].map(function (d) {
+        return hslToHex((gh + d) % 360, dark ? 55 : 52, dark ? 64 : 38);
+      });
+    }
+
+    function renderCustomPreview() {
+      const row = document.getElementById('harmony-row');
+      const prev = document.getElementById('custom-preview');
+      const tag = document.getElementById('custom-mode-tag');
+      const t = state.theme || {};
+      if (!row) return;
+      const seed = customThemeSeed(t);
+      const tk = resolveTheme(seed);
+      const dark = seed.mode !== 'light';
+
+      const chosen = (t.customAccent || '#c9a227').toLowerCase();
+      row.innerHTML = harmonyAccents(seed.bg, dark).map(function (hex) {
+        const alt = customThemeSeed({ customBg: seed.bg, customAccent: hex });
+        const t2 = resolveTheme(alt);
+        return '<button type="button" class="harmony-chip' + (hex.toLowerCase() === chosen ? ' active' : '') + '"' +
+          ' title="' + hex + '" onclick="pickHarmonyAccent(\'' + hex + '\')">' +
+          '<i style="background:' + hex + '"></i>' +
+          '<u style="background:' + t2['accent-2'] + '" title="derived second accent"></u>' +
+          '</button>';
+      }).join('');
+
+      if (tag) {
+        tag.textContent = dark ? 'Dark' : 'Light';
+        tag.title = 'Derived from how light the base colour is';
+      }
+      if (prev) {
+        const cells = [
+          ['Page', tk['bg']], ['Panel', tk['surface-1']], ['Raised', tk['surface-2']],
+          ['Accent', tk['accent']], ['Second', tk['accent-2']], ['Text', tk['text']]
+        ];
+        prev.innerHTML = cells.map(function (c) {
+          return '<div><span style="background:' + c[1] + '"></span>' + c[0] + '</div>';
+        }).join('');
+      }
+    }
+
+    function pickHarmonyAccent(hex) {
+      state.theme = state.theme || {};
+      state.theme.preset = 'custom';
+      state.theme.customAccent = hex;
+      applyTheme();
+      renderThemeSwatches();
+      save();
     }
 
     function renderThemeSwatches() {
@@ -6011,14 +6457,17 @@
       if (!box) return;
       const t = state.theme || { preset: 'leather' };
       box.innerHTML = Object.keys(THEMES).map(function (key) {
-        const p = THEMES[key];
         const isCustom = key === 'custom';
-        const topColor = isCustom ? (t.customBg || '#100b08') : p.panel;
-        const botColor = isCustom ? (t.customAccent || '#c9a227') : p.gold;
-        return '<button class="swatch-btn' + (t.preset === key ? ' active' : '') + '" title="' + p.label + '" onclick="pickTheme(\'' + key + '\')">' +
-          '<span class="sw-half sw-top" style="background:' + topColor + '"></span>' +
-          '<span class="sw-half sw-bottom" style="background:' + botColor + '"></span>' +
-          '<span class="sw-label">' + (isCustom ? '✎' : '') + '</span>' +
+        const tokens = resolveTheme(isCustom ? customThemeSeed(t) : THEMES[key]);
+        const ground = tokens['surface-1'];
+        /* the marker has to sit on this swatch's own ground, not the active theme's */
+        const ink = hexToHsl(ground)[2] > 55 ? '#1a1a1a' : '#ffffff';
+        return '<button class="swatch-btn' + (t.preset === key ? ' active' : '') + '" title="' + THEMES[key].label + '" onclick="pickTheme(\'' + key + '\')" style="background:' + ground + '">' +
+          (isCustom ? '<span class="sw-label" style="color:' + ink + '">✎</span>' : '') +
+          '<span class="sw-band">' +
+          '<i style="background:' + tokens['accent'] + '"></i>' +
+          '<u style="background:' + tokens['accent-2'] + '"></u>' +
+          '</span>' +
           '</button>';
       }).join('');
       const customRow = document.getElementById('custom-theme-row');
@@ -6029,6 +6478,7 @@
         if (cBg) cBg.value = t.customBg || '#100b08';
         if (cAcc) cAcc.value = t.customAccent || '#c9a227';
       }
+      renderCustomPreview();
     }
 
     function pickTheme(key) {
@@ -6053,6 +6503,105 @@
       renderThemeSwatches();
       save();
     }
+
+    /* ========================================================
+       FONTS — one choice, every screen
+       ========================================================
+       A font is an account-level preference, not a per-character one, so it
+       does not ride the inventory blob the way themes and wallpapers do. It
+       lives in its own prefs/<nickname> node with a localStorage cache, which
+       is also what lets the head script paint the right face before the first
+       pixel. Loading is lazy: only the default trio ships in the document
+       head, and a preset's families get a <link> the first time it is picked,
+       so anyone who never changes fonts downloads nothing extra. */
+
+    const FONT_PRESETS = window.FONT_PRESETS || {};
+    const DEFAULT_FONT = window.DEFAULT_FONT || 'adventurer';
+    const FONT_CACHE_KEY = 'dnd-font';
+    let fontKey = DEFAULT_FONT;
+    const fontWebLoaded = {};        // presets whose <link> has been injected
+    window.fontPendingCloud = false; // a local pick not yet confirmed by storage
+    Object.defineProperty(window, 'fontKey', { get() { return fontKey; }, configurable: true });
+
+    function fontPreset(key) { return FONT_PRESETS[key] || FONT_PRESETS[DEFAULT_FONT]; }
+
+    /* Pull in a preset's families the first time it is needed. The default
+       trio is already in the document head. */
+    function ensureFontLoaded(key) {
+      const p = fontPreset(key);
+      if (!p || !p.web || fontWebLoaded[key] || key === DEFAULT_FONT) return;
+      fontWebLoaded[key] = true;
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?' + p.web + '&display=swap';
+      link.onload = function () { renderFontSwatches(); };  // chip upgrades to its own face
+      document.head.appendChild(link);
+    }
+
+    /* Pure render. Every rule in the app reads these three tokens, so one call
+       restyles every screen at once. */
+    function applyFont() {
+      const p = fontPreset(fontKey);
+      if (!p) return;
+      const root = document.documentElement.style;
+      root.setProperty('--font-display', p.display);
+      root.setProperty('--font-body', p.body);
+      root.setProperty('--font-mono', p.mono);
+      ensureFontLoaded(fontKey);
+    }
+    window.applyFont = applyFont;
+
+    /* The cloud had a different answer for this account (another device, or a
+       fresh account with no preference yet). */
+    function applyFontFromCloud(key) {
+      if (!key || !FONT_PRESETS[key] || key === fontKey) return;
+      fontKey = key;
+      try { localStorage.setItem(FONT_CACHE_KEY, key); } catch (e) { }
+      applyFont();
+      renderFontSwatches();
+    }
+    window.applyFontFromCloud = applyFontFromCloud;
+
+    function pickFont(key) {
+      if (!FONT_PRESETS[key] || key === fontKey) return;
+      fontKey = key;
+      try { localStorage.setItem(FONT_CACHE_KEY, key); } catch (e) { }
+      window.fontPendingCloud = true;
+      applyFont();
+      renderFontSwatches();
+      if (typeof window.fbSavePrefs === 'function') window.fbSavePrefs({ font: key });
+    }
+    window.pickFont = pickFont;
+
+    function renderFontSwatches() {
+      const box = document.getElementById('font-swatches');
+      if (!box) return;
+      box.innerHTML = Object.keys(FONT_PRESETS).map(function (key) {
+        const p = FONT_PRESETS[key];
+        /* Previewing a face costs a download, so a chip only wears its own
+           font once that font is actually loaded — which is free for a
+           preset we have used, and never happens for one we have not. */
+        const ready = (key === fontKey) || fontWebLoaded[key] || !p.web;
+        const fd = ready ? 'font-family:' + p.display + ';' : '';
+        const fb = ready ? 'font-family:' + p.body + ';' : '';
+        return '<button type="button" class="font-btn' + (key === fontKey ? ' active' : '') + '"' +
+          ' title="' + p.families + '" onclick="pickFont(\'' + key + '\')">' +
+          '<span class="fb-name" style="' + fd + '">' + p.label + '</span>' +
+          '<span class="fb-sample" style="' + fb + '">Aa Bb Cc 0123</span>' +
+          '</button>';
+      }).join('');
+    }
+    window.renderFontSwatches = renderFontSwatches;
+
+    /* Agree with whatever the head script already painted — including the
+       fact that it has already pulled in that preset's stylesheet. */
+    try {
+      const cachedFont = localStorage.getItem(FONT_CACHE_KEY);
+      if (cachedFont && FONT_PRESETS[cachedFont]) {
+        fontKey = cachedFont;
+        if (FONT_PRESETS[cachedFont].web) fontWebLoaded[cachedFont] = true;
+      }
+    } catch (e) { }
 
     /* ========================================================
        LOAD & SAVE - INDIVIDUAL PER-ACCOUNT INVENTORIES
@@ -6266,7 +6815,7 @@
             });
           }
           if (parts.length > 0) {
-            html += '<div class="effect-tag" style="border-left:2px solid var(--gold);"><span style="color:var(--gold-bright);">★</span><span><b>' + escapeHtml(i.name) + '</b>: <span style="color:var(--gold-bright); font-weight:bold;">' + parts.join(', ') + '</span></span></div>';
+            html += '<div class="effect-tag" style="border-left:2px solid var(--accent-2);"><span style="color:var(--accent-2-strong);">★</span><span><b>' + escapeHtml(i.name) + '</b>: <span style="color:var(--accent-2-strong); font-weight:bold;">' + parts.join(', ') + '</span></span></div>';
           }
         });
       }
@@ -6725,15 +7274,15 @@
       // Render Character Identity Badge in Left Panel
       const identityEl = document.getElementById('character-identity-badge');
       if (identityEl) {
-        identityEl.innerHTML = `<div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-bright); border-radius:6px; padding:6px 10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openCharacterStatsModal()" title="Click to edit Class, Level & Species">
+        identityEl.innerHTML = `<div style="background:var(--well-2); border:1px solid var(--border-bright); border-radius:6px; padding:6px 10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openCharacterStatsModal()" title="Click to edit Class, Level & Species">
         <div>
-          <div style="font-size:10px; text-transform:uppercase; color:var(--gold-bright); font-weight:bold;">Character Identity</div>
-          <div style="font-size:13px; font-weight:bold; color:#fff;">Lvl ${cs.level} ${escapeHtml(cs.characterClass)}${cs.subclass ? ' (' + escapeHtml(cs.subclass) + ')' : ''}</div>
+          <div style="font-size:10px; text-transform:uppercase; color:var(--accent-2-strong); font-weight:bold;">Character Identity</div>
+          <div style="font-size:13px; font-weight:bold; color:var(--text);">Lvl ${cs.level} ${escapeHtml(cs.characterClass)}${cs.subclass ? ' (' + escapeHtml(cs.subclass) + ')' : ''}</div>
           <div style="font-size:11px; color:var(--text-dim);">${escapeHtml(cs.species)}${cs.subrace ? ' (' + escapeHtml(cs.subrace) + ')' : ''}</div>
         </div>
         <div style="display:flex; gap:6px;">
           <button class="btn ghost small" style="padding:2px 8px; font-size:11px;" onclick="event.stopPropagation(); openCharacterStatsModal();" title="Quick edit identity">⚙️ Edit</button>
-          <button class="btn small" style="padding:2px 8px; font-size:11px; background:linear-gradient(180deg, var(--gold-bright), #8a641d); color:#000; font-weight:bold;" onclick="event.stopPropagation(); openCharacterForgeModal({ isEditMode: true });" title="Re-forge Class, Stats & Proficiencies">⚔ Forge</button>
+          <button class="btn small" style="padding:2px 8px; font-size:11px; background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000; font-weight:bold;" onclick="event.stopPropagation(); openCharacterForgeModal({ isEditMode: true });" title="Re-forge Class, Stats & Proficiencies">⚔ Forge</button>
         </div>
       </div>`;
       }
@@ -6799,7 +7348,7 @@
         combatBarEl.innerHTML = `<div class="combat-pill" style="cursor:pointer;" title="Click to change Proficiency Bonus" onclick="quickEditStat('profBonus')"><div class="val">${formatMod(prof)}</div><div class="lbl">Prof</div></div>
       <div class="combat-pill" style="cursor:pointer;" title="Base: ${baseSpeed}ft${speedBonus ? ' (' + (speedBonus > 0 ? '+' : '') + speedBonus + ' item)' : ''}. Click to change Speed" onclick="quickEditStat('speed')"><div class="val">${totalSpeed}ft${speedTag}</div><div class="lbl">Speed</div></div>
       <div class="combat-pill" style="cursor:pointer;" title="Base: ${formatMod(baseInit)}${initBonus ? ' (' + (initBonus > 0 ? '+' : '') + initBonus + ' item)' : ''}. Click to change Initiative Bonus" onclick="quickEditStat('initBonus')"><div class="val">${formatMod(totalInit)}${initTag}</div><div class="lbl">Init</div></div>
-      <div class="combat-pill" style="cursor:pointer;" title="AC: ${acInfo.totalAc} (${acInfo.armorName}: ${acInfo.baseAc} + DEX: ${acInfo.dexContribution >= 0 ? '+' : ''}${acInfo.dexContribution}${acInfo.shieldAc ? ' + Shield: +' + acInfo.shieldAc : ''}${acInfo.magicAc ? ' + Magic: +' + acInfo.magicAc : ''}). Click to configure AC & DEX bonus" onclick="quickEditAC()"><div class="val">${acInfo.totalAc}${acTag}</div><div class="lbl" style="display:flex; align-items:center; justify-content:center; gap:3px;">AC <span onclick="event.stopPropagation(); toggleAcDexMode();" title="${dexBadgeTitle}" style="font-size:8px; padding:1px 4px; border-radius:3px; background:rgba(201,162,39,0.25); color:var(--gold-bright); font-weight:bold; cursor:pointer;">${dexBadgeText}</span></div></div>`;
+      <div class="combat-pill" style="cursor:pointer;" title="AC: ${acInfo.totalAc} (${acInfo.armorName}: ${acInfo.baseAc} + DEX: ${acInfo.dexContribution >= 0 ? '+' : ''}${acInfo.dexContribution}${acInfo.shieldAc ? ' + Shield: +' + acInfo.shieldAc : ''}${acInfo.magicAc ? ' + Magic: +' + acInfo.magicAc : ''}). Click to configure AC & DEX bonus" onclick="quickEditAC()"><div class="val">${acInfo.totalAc}${acTag}</div><div class="lbl" style="display:flex; align-items:center; justify-content:center; gap:3px;">AC <span onclick="event.stopPropagation(); toggleAcDexMode();" title="${dexBadgeTitle}" style="font-size:8px; padding:1px 4px; border-radius:3px; background:color-mix(in srgb, var(--accent) 25%, transparent); color:var(--gold-bright); font-weight:bold; cursor:pointer;">${dexBadgeText}</span></div></div>`;
       }
 
       // Equipped Item Bonuses Summary Strip
@@ -6812,33 +7361,33 @@
             const val = itemBonuses.totals[k];
             const valStr = (val > 0 ? '+' : '') + val + ' ' + statLabels[k];
             const itemsStr = (itemBonuses.breakdown[k] || []).map(function (b) { return b.item; }).join(', ');
-            pills.push(`<span style="background:rgba(201,162,39,0.15); border:1px solid rgba(201,162,39,0.4); color:var(--gold-bright); padding:1px 6px; border-radius:4px; font-weight:bold;" title="${escapeHtml(itemsStr)}">${valStr}</span>`);
+            pills.push(`<span style="background:color-mix(in srgb, var(--accent-2) 15%, transparent); border:1px solid color-mix(in srgb, var(--accent-2) 40%, transparent); color:var(--accent-2-strong); padding:1px 6px; border-radius:4px; font-weight:bold;" title="${escapeHtml(itemsStr)}">${valStr}</span>`);
           }
         });
         if (itemBonuses.baseArmorItem) {
-          pills.push(`<span style="background:rgba(201,162,39,0.15); border:1px solid rgba(201,162,39,0.4); color:var(--gold-bright); padding:1px 6px; border-radius:4px; font-weight:bold;" title="${escapeHtml(itemBonuses.baseArmorItem.name)}">${itemBonuses.baseArmorAc} AC (${escapeHtml(itemBonuses.baseArmorCategory || 'Armor')})</span>`);
+          pills.push(`<span style="background:color-mix(in srgb, var(--accent-2) 15%, transparent); border:1px solid color-mix(in srgb, var(--accent-2) 40%, transparent); color:var(--accent-2-strong); padding:1px 6px; border-radius:4px; font-weight:bold;" title="${escapeHtml(itemBonuses.baseArmorItem.name)}">${itemBonuses.baseArmorAc} AC (${escapeHtml(itemBonuses.baseArmorCategory || 'Armor')})</span>`);
         }
         if (itemBonuses.shieldBonus) {
-          pills.push(`<span style="background:rgba(201,162,39,0.15); border:1px solid rgba(201,162,39,0.4); color:var(--gold-bright); padding:1px 6px; border-radius:4px; font-weight:bold;">+${itemBonuses.shieldBonus} Shield AC</span>`);
+          pills.push(`<span style="background:color-mix(in srgb, var(--accent-2) 15%, transparent); border:1px solid color-mix(in srgb, var(--accent-2) 40%, transparent); color:var(--accent-2-strong); padding:1px 6px; border-radius:4px; font-weight:bold;">+${itemBonuses.shieldBonus} Shield AC</span>`);
         }
         if (itemBonuses.otherAcBonuses) {
-          pills.push(`<span style="background:rgba(201,162,39,0.15); border:1px solid rgba(201,162,39,0.4); color:var(--gold-bright); padding:1px 6px; border-radius:4px; font-weight:bold;">+${itemBonuses.otherAcBonuses} AC</span>`);
+          pills.push(`<span style="background:color-mix(in srgb, var(--accent-2) 15%, transparent); border:1px solid color-mix(in srgb, var(--accent-2) 40%, transparent); color:var(--accent-2-strong); padding:1px 6px; border-radius:4px; font-weight:bold;">+${itemBonuses.otherAcBonuses} AC</span>`);
         }
         if (itemBonuses.skillBonuses) {
           Object.entries(itemBonuses.skillBonuses).forEach(function ([skName, skVal]) {
             if (Number(skVal) !== 0) {
               const itemsStr = (itemBonuses.skillBreakdown[skName] || []).map(function (b) { return b.item; }).join(', ');
-              pills.push(`<span style="background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; padding:1px 6px; border-radius:4px; font-weight:bold;" title="${escapeHtml(itemsStr)}">${Number(skVal) > 0 ? '+' : ''}${skVal} ${escapeHtml(skName)}</span>`);
+              pills.push(`<span style="background:color-mix(in srgb, var(--info) 15%, transparent); border:1px solid color-mix(in srgb, var(--info) 40%, transparent); color:var(--info); padding:1px 6px; border-radius:4px; font-weight:bold;" title="${escapeHtml(itemsStr)}">${Number(skVal) > 0 ? '+' : ''}${skVal} ${escapeHtml(skName)}</span>`);
             }
           });
         }
         if (itemBonuses.saveBonuses) {
           if (itemBonuses.saveBonuses.all) {
-            pills.push(`<span style="background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.4); color:#c084fc; padding:1px 6px; border-radius:4px; font-weight:bold;">+${itemBonuses.saveBonuses.all} All Saves</span>`);
+            pills.push(`<span style="background:color-mix(in srgb, var(--veryrare) 15%, transparent); border:1px solid color-mix(in srgb, var(--veryrare) 40%, transparent); color:var(--veryrare); padding:1px 6px; border-radius:4px; font-weight:bold;">+${itemBonuses.saveBonuses.all} All Saves</span>`);
           }
           ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(function (st) {
             if (itemBonuses.saveBonuses[st]) {
-              pills.push(`<span style="background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.4); color:#c084fc; padding:1px 6px; border-radius:4px; font-weight:bold;">+${itemBonuses.saveBonuses[st]} ${st.toUpperCase()} Save</span>`);
+              pills.push(`<span style="background:color-mix(in srgb, var(--veryrare) 15%, transparent); border:1px solid color-mix(in srgb, var(--veryrare) 40%, transparent); color:var(--veryrare); padding:1px 6px; border-radius:4px; font-weight:bold;">+${itemBonuses.saveBonuses[st]} ${st.toUpperCase()} Save</span>`);
             }
           });
         }
@@ -6865,7 +7414,7 @@
           const itemSaveBonus = ((itemBonuses.saveBonuses && itemBonuses.saveBonuses[st]) || 0) + ((itemBonuses.saveBonuses && itemBonuses.saveBonuses['all']) || 0);
           const mod = getAbilityMod(effScore) + pbSave + customBonus + itemSaveBonus;
           const icon = profVal === 1 ? '●' : (profVal === 0.5 ? '◐' : '○');
-          const iconColor = profVal === 1 ? 'var(--gold-bright)' : (profVal === 0.5 ? '#38bdf8' : 'var(--text-faint)');
+          const iconColor = profVal === 1 ? 'var(--gold-bright)' : (profVal === 0.5 ? 'var(--info)' : 'var(--text-faint)');
           const title = profVal === 1 ? 'Proficient (1x, +' + (cs.profBonus || 2) + ')' : (profVal === 0.5 ? 'Half-Proficient (0.5x, +' + Math.floor((cs.profBonus || 2) / 2) + ')' : 'None');
           const totalItemBonus = (itemBonuses.totals[st] || 0) + itemSaveBonus;
           const itemBonusTag = totalItemBonus !== 0 ? `<span class="item-bonus-tag" style="font-size:9px;">${totalItemBonus > 0 ? '+' : ''}${totalItemBonus}</span>` : '';
@@ -6916,10 +7465,10 @@
           const itemSkillBonus = (itemBonuses.skillBonuses && itemBonuses.skillBonuses[sk.name]) || 0;
           const totalBonus = statMod + pbVal + customBonus + itemSkillBonus;
           const icon = profLevel === 2 ? '★' : (profLevel === 1 ? '●' : (profLevel === 0.5 ? '◐' : '○'));
-          const iconColor = profLevel === 2 ? '#ffcf40' : (profLevel === 1 ? 'var(--gold-bright)' : (profLevel === 0.5 ? '#38bdf8' : 'var(--text-faint)'));
+          const iconColor = profLevel === 2 ? 'var(--legendary)' : (profLevel === 1 ? 'var(--gold-bright)' : (profLevel === 0.5 ? 'var(--info)' : 'var(--text-faint)'));
           const profTitle = profLevel === 2 ? 'Expertise (2x, +' + (prof * 2) + ')' : (profLevel === 1 ? 'Proficient (1x, +' + prof + ')' : (profLevel === 0.5 ? 'Half-Proficient (0.5x, +' + Math.floor(prof / 2) + ')' : 'None'));
           const escapedName = escapeJs(sk.name);
-          const skillBonusTag = itemSkillBonus !== 0 ? `<span class="item-bonus-tag" style="font-size:9px; color:#38bdf8;" title="Item Bonus: ${(itemBonuses.skillBreakdown[sk.name] || []).map(b => b.item + ': ' + (b.value > 0 ? '+' : '') + b.value).join(', ')}">${itemSkillBonus > 0 ? '+' : ''}${itemSkillBonus}</span>` : '';
+          const skillBonusTag = itemSkillBonus !== 0 ? `<span class="item-bonus-tag" style="font-size:9px; color:var(--info);" title="Item Bonus: ${(itemBonuses.skillBreakdown[sk.name] || []).map(b => b.item + ': ' + (b.value > 0 ? '+' : '') + b.value).join(', ')}">${itemSkillBonus > 0 ? '+' : ''}${itemSkillBonus}</span>` : '';
           return `<div class="skill-row" style="cursor:pointer;">
           <span class="pip-btn" style="color:${iconColor}; font-size:12px;" title="Current: ${profTitle}. Click icon to cycle: None -> Half (0.5x) -> Prof (1x) -> Expertise (2x)" onclick="toggleSkillProf('${escapedName}'); event.stopPropagation();">${icon}</span>
           <span class="mod-tag" onclick="quickEditSkillBonus('${escapedName}'); event.stopPropagation();">${sk.stat.toUpperCase()}</span>
@@ -6933,10 +7482,10 @@
       const profEl = document.getElementById('proficiencies-container');
       if (profEl) {
         let items = [];
-        if (cs.armorProf) items.push('<div style="margin-bottom:4px; font-size:11px;"><strong style="color:var(--gold);">Armor:</strong> ' + escapeHtml(cs.armorProf) + '</div>');
-        if (cs.weaponProf) items.push('<div style="margin-bottom:4px; font-size:11px;"><strong style="color:var(--gold);">Weapons:</strong> ' + escapeHtml(cs.weaponProf) + '</div>');
-        if (cs.toolProf) items.push('<div style="margin-bottom:4px; font-size:11px;"><strong style="color:var(--gold);">Tools:</strong> ' + escapeHtml(cs.toolProf) + '</div>');
-        if (cs.languages) items.push('<div style="margin-bottom:4px; font-size:11px;"><strong style="color:var(--gold);">Languages:</strong> ' + escapeHtml(cs.languages) + '</div>');
+        if (cs.armorProf) items.push('<div style="margin-bottom:4px; font-size:11px;"><strong style="color:var(--accent-2);">Armor:</strong> ' + escapeHtml(cs.armorProf) + '</div>');
+        if (cs.weaponProf) items.push('<div style="margin-bottom:4px; font-size:11px;"><strong style="color:var(--accent-2);">Weapons:</strong> ' + escapeHtml(cs.weaponProf) + '</div>');
+        if (cs.toolProf) items.push('<div style="margin-bottom:4px; font-size:11px;"><strong style="color:var(--accent-2);">Tools:</strong> ' + escapeHtml(cs.toolProf) + '</div>');
+        if (cs.languages) items.push('<div style="margin-bottom:4px; font-size:11px;"><strong style="color:var(--accent-2);">Languages:</strong> ' + escapeHtml(cs.languages) + '</div>');
         profEl.innerHTML = items.join('') || '<div style="color:var(--text-dim); font-size:11px;">No proficiencies listed.</div>';
       }
     }
@@ -7154,9 +7703,9 @@
         if (hp.temp > 0) {
           tempLabel.innerHTML = '🛡️ +' + hp.temp + ' Temp';
           tempLabel.style.display = 'inline-block';
-          tempLabel.style.color = '#38bdf8';
-          tempLabel.style.background = 'rgba(56,189,248,0.15)';
-          tempLabel.style.border = '1px solid #38bdf8';
+          tempLabel.style.color = 'var(--info)';
+          tempLabel.style.background = 'color-mix(in srgb, var(--info) 15%, transparent)';
+          tempLabel.style.border = '1px solid var(--info)';
           tempLabel.style.padding = '1px 5px';
           tempLabel.style.borderRadius = '4px';
         } else {
@@ -7181,13 +7730,13 @@
       if (fillEl) {
         fillEl.style.width = pct + '%';
         if (pct > 75) {
-          fillEl.style.background = 'linear-gradient(90deg, #22c55e, #16a34a)';
+          fillEl.style.background = 'var(--success)';
         } else if (pct > 40) {
-          fillEl.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+          fillEl.style.background = 'var(--warn)';
         } else if (pct > 0) {
-          fillEl.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+          fillEl.style.background = 'var(--danger)';
         } else {
-          fillEl.style.background = '#7f1d1d';
+          fillEl.style.background = 'var(--danger)';
         }
       }
 
@@ -7202,9 +7751,9 @@
       const modalFill = document.getElementById('modal-hp-bar-fill');
       if (modalFill) {
         modalFill.style.width = pct + '%';
-        if (pct > 75) modalFill.style.background = 'linear-gradient(90deg, #22c55e, #16a34a)';
-        else if (pct > 40) modalFill.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
-        else modalFill.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+        if (pct > 75) modalFill.style.background = 'var(--success)';
+        else if (pct > 40) modalFill.style.background = 'var(--warn)';
+        else modalFill.style.background = 'var(--danger)';
       }
     }
 
@@ -7386,15 +7935,15 @@
 
       // Render Background & Alignment section if tab is ALL or BG
       if (activeFeaturesTab === 'ALL' || activeFeaturesTab === 'BG') {
-        html += '<div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-bright); border-radius:8px; padding:16px;">' +
+        html += '<div style="background:var(--well-2); border:1px solid var(--border-bright); border-radius:8px; padding:16px;">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
-          '<div style="font-family:Cinzel,serif; font-size:16px; font-weight:700; color:var(--gold-bright);">📜 Character Identity, Background & Alignment</div>' +
+          '<div style="font-family:var(--font-display); font-size:16px; font-weight:700; color:var(--accent-2-strong);">📜 Character Identity, Background & Alignment</div>' +
           '<button class="btn ghost small" onclick="openEditBackgroundModal()">⚙️ Edit</button>' +
           '</div>' +
           '<div class="form-grid" style="grid-template-columns:1fr 1fr 1fr; gap:12px; font-size:13px; margin-bottom:8px;">' +
-          '<div><b>Class & Level:</b> <span style="color:#4ade80; font-weight:bold;">Lvl ' + (cs.level || 5) + ' ' + escapeHtml(cs.characterClass || 'Bard') + (cs.subclass ? ' (' + escapeHtml(cs.subclass) + ')' : '') + '</span></div>' +
-          '<div><b>Race / Species:</b> <span style="color:#38bdf8; font-weight:bold;">' + escapeHtml(cs.species || 'Half-Elf') + (cs.subrace ? ' (' + escapeHtml(cs.subrace) + ')' : '') + '</span></div>' +
-          '<div><b>Alignment:</b> <span style="color:var(--gold-bright); font-weight:bold;">' + escapeHtml(bg.alignment || 'Chaotic Good') + '</span></div>' +
+          '<div><b>Class & Level:</b> <span style="color:var(--success); font-weight:bold;">Lvl ' + (cs.level || 5) + ' ' + escapeHtml(cs.characterClass || 'Bard') + (cs.subclass ? ' (' + escapeHtml(cs.subclass) + ')' : '') + '</span></div>' +
+          '<div><b>Race / Species:</b> <span style="color:var(--info); font-weight:bold;">' + escapeHtml(cs.species || 'Half-Elf') + (cs.subrace ? ' (' + escapeHtml(cs.subrace) + ')' : '') + '</span></div>' +
+          '<div><b>Alignment:</b> <span style="color:var(--accent-2-strong); font-weight:bold;">' + escapeHtml(bg.alignment || 'Chaotic Good') + '</span></div>' +
           '</div>' +
           '<div class="form-grid" style="grid-template-columns:1fr 1fr; gap:12px; font-size:13px;">' +
           '<div><b>Background:</b> ' + escapeHtml(bg.name || 'Entertainer') + (bg.featureName ? ' (' + escapeHtml(bg.featureName) + ')' : '') + '</div>' +
@@ -7431,8 +7980,8 @@
       });
 
       Object.keys(groups).forEach(function (groupTitle) {
-        html += '<div style="background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:8px; padding:16px;">' +
-          '<div style="font-family:Cinzel,serif; font-size:18px; font-weight:700; color:#ef4444; border-bottom:1px solid rgba(239,68,68,0.3); padding-bottom:6px; margin-bottom:12px;">' + escapeHtml(groupTitle) + '</div>' +
+        html += '<div style="background:var(--well-2); border:1px solid var(--border); border-radius:8px; padding:16px;">' +
+          '<div style="font-family:var(--font-display); font-size:18px; font-weight:700; color:var(--danger); border-bottom:1px solid color-mix(in srgb, var(--danger) 30%, transparent); padding-bottom:6px; margin-bottom:12px;">' + escapeHtml(groupTitle) + '</div>' +
           '<div style="display:flex; flex-direction:column; gap:14px;">';
 
         groups[groupTitle].forEach(function (f) {
@@ -7444,7 +7993,7 @@
               const isUsed = u < (f.usedUses || 0);
               pips += '<button type="button" class="slot-pip' + (isUsed ? ' used' : '') + '" style="width:16px; height:16px; font-size:10px;" onclick="toggleFeatureUse(\'' + fid + '\', ' + u + ')">' + (isUsed ? '✕' : '■') + '</button>';
             }
-            pipsHtml = '<div style="display:inline-flex; align-items:center; gap:6px; background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:4px; border:1px solid var(--border); margin-top:6px; font-size:11px;">' +
+            pipsHtml = '<div style="display:inline-flex; align-items:center; gap:6px; background:var(--well-2); padding:4px 8px; border-radius:4px; border:1px solid var(--border); margin-top:6px; font-size:11px;">' +
               '<span style="font-weight:bold;">' + escapeHtml(f.name) + ': ' + (f.maxUses - (f.usedUses || 0)) + '/' + f.maxUses + ' Uses</span> ' +
               '<div style="display:flex; gap:3px;">' + pips + '</div>' +
               '<span style="color:var(--text-muted);">/ ' + escapeHtml(f.resetType || 'Long Rest') + '</span>' +
@@ -7453,7 +8002,7 @@
 
           const descFormatted = escapeHtml(f.desc || '').replace(/\n/g, '<br>');
 
-          html += '<div style="border-left:3px solid var(--gold-bright); padding-left:10px; position:relative;">' +
+          html += '<div style="border-left:3px solid var(--accent-2-strong); padding-left:10px; position:relative;">' +
             '<div style="display:flex; justify-content:space-between; align-items:baseline;">' +
             '<div style="font-weight:bold; font-size:14px; color:var(--text);">' + escapeHtml(f.name) + (f.source ? ' <span style="font-weight:normal; font-size:11px; color:var(--text-muted); font-style:italic;">· ' + escapeHtml(f.source) + '</span>' : '') + '</div>' +
             '<div style="display:flex; gap:4px;">' +
@@ -8504,6 +9053,14 @@
       if (typeof window.fbListenToInventory === 'function') {
         window.fbListenToInventory(account.nickname);
       }
+      // ...and this character's own wallpaper
+      if (typeof loadAppearanceIntoBg === 'function') loadAppearanceIntoBg(account.nickname);
+      if (typeof window.fbListenToBackgroundImage === 'function') {
+        window.fbListenToBackgroundImage(account.nickname);
+      }
+      // The font is account-level, so it follows the login, not the character
+      if (typeof window.fbListenToPrefs === 'function') window.fbListenToPrefs(account.nickname);
+      if (typeof renderFontSwatches === 'function') renderFontSwatches();
     }
 
     function logoutCurrentUser() {
@@ -8582,6 +9139,11 @@
       // Switch live Firebase listener to this player's inventory
       if (typeof window.fbListenToInventory === 'function') {
         window.fbListenToInventory(target);
+      }
+      // ...and swap in this character's wallpaper
+      if (typeof loadAppearanceIntoBg === 'function') loadAppearanceIntoBg(target);
+      if (typeof window.fbListenToBackgroundImage === 'function') {
+        window.fbListenToBackgroundImage(target);
       }
     }
 
@@ -8992,8 +9554,8 @@
           '<div class="spell-status" id="spell-list-status" style="margin-top:2px;">0 saved</div>' +
           '</div>' +
           '<div style="display:flex; gap:8px; align-items:center;">' +
-          '<input type="text" id="my-spells-search" class="my-spells-filter" data-my-filter="query" placeholder="🔍 Search my spells..." oninput="updateMySpellsSearch(this.value)" style="padding:6px 12px; font-size:12px; max-width:200px; border-radius:6px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:var(--text);">' +
-          '<button class="btn small" onclick="openSpellCatalogModal()" style="font-size:12px; font-weight:bold; background:linear-gradient(180deg, var(--gold-bright), #8a641d); color:#000; box-shadow:0 0 8px rgba(234,179,8,0.3);">📜 + Browse & Add Spells (Full Catalog)</button>' +
+          '<input type="text" id="my-spells-search" class="my-spells-filter" data-my-filter="query" placeholder="🔍 Search my spells..." oninput="updateMySpellsSearch(this.value)" style="padding:6px 12px; font-size:12px; max-width:200px; border-radius:6px; background:var(--well-2); border:1px solid var(--border); color:var(--text);">' +
+          '<button class="btn small" onclick="openSpellCatalogModal()" style="font-size:12px; font-weight:bold; background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000; box-shadow:0 0 8px color-mix(in srgb, var(--warn) 30%, transparent);">📜 + Browse & Add Spells (Full Catalog)</button>' +
           '<button class="btn ghost small" onclick="openMaxSpellsModal()">⚙️ Max Limits</button>' +
           '</div>' +
           '</div>' +
@@ -9810,18 +10372,18 @@
         catalogBox.innerHTML = sb.loading ? '<div class="spell-empty">Loading spell catalog...</div>' : catalog.length ? catalog.map(function (spell) {
           const inList = rawList.some(function (s) { return s.name === spell.name; });
           const classesStr = (spell.classes || []).slice(0, 4).join(', ');
-          const classBadge = classesStr ? '<span class="badge" style="border-color:var(--danger-bright); color:var(--gold-bright); background:rgba(40,25,15,0.6);">🧙 ' + escapeHtml(classesStr) + '</span>' : '';
+          const classBadge = classesStr ? '<span class="badge" style="border-color:var(--danger-bright); color:var(--accent-2-strong); background:var(--surface-2);">🧙 ' + escapeHtml(classesStr) + '</span>' : '';
           const schoolBadge = spell.schoolName ? '<span class="badge school">' + escapeHtml(spell.schoolName) + '</span>' : '';
           const levelBadge = '<span class="badge level">' + escapeHtml(spell.levelText || 'Spell') + '</span>';
-          const damageBadge = spell.damage ? '<span class="badge damage" style="border-color:var(--danger-bright); color:#ff6b6b; background:rgba(168,60,50,0.25); font-weight:600;">⚔️ ' + escapeHtml(spell.damage) + '</span>' : '';
+          const damageBadge = spell.damage ? '<span class="badge damage" style="border-color:var(--danger-bright); color:var(--danger-strong); background:color-mix(in srgb, var(--danger) 25%, transparent); font-weight:600;">⚔️ ' + escapeHtml(spell.damage) + '</span>' : '';
           const scaling = computeSpellScaling(spell);
           const escapedName = escapeJs(spell.name);
-          const scalingBadge = (scaling && scaling.type === 'leveled') ? '<span class="badge" style="border-color:#38bdf8; color:#7dd3fc; background:rgba(56,189,248,0.15); font-weight:600; cursor:pointer;" onclick="openSpellDetailModal(\'' + escapedName + '\'); event.stopPropagation();" title="Scales with higher level spell slots (Click to view damage at Lvl ' + (spell.levelNum || 1) + '–9)">⚡ Upcasts</span>' : '';
+          const scalingBadge = (scaling && scaling.type === 'leveled') ? '<span class="badge" style="border-color:var(--info); color:var(--info-strong); background:color-mix(in srgb, var(--info) 15%, transparent); font-weight:600; cursor:pointer;" onclick="openSpellDetailModal(\'' + escapedName + '\'); event.stopPropagation();" title="Scales with higher level spell slots (Click to view damage at Lvl ' + (spell.levelNum || 1) + '–9)">⚡ Upcasts</span>' : '';
           const descText = (spell.quickEffect && spell.quickEffect.length > 25 && !spell.quickEffect.includes('magical spell effect')) ? spell.quickEffect : (spell.desc || '');
           return '<div class="spell-row">' +
             '<div class="spell-row-main">' +
             '<div class="spell-name">' + escapeHtml(spell.name) + '</div>' +
-            '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + schoolBadge + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (spell.source ? ' · <span class="badge" title="' + escapeHtml(typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : spell.source) + '" style="border-color:rgba(201,162,39,0.5); color:var(--gold-bright); background:rgba(0,0,0,0.35); font-size:11px;">📚 ' + escapeHtml(typeof getSourceShortLabel === 'function' ? getSourceShortLabel(spell.source) : spell.source) + '</span>' : '') + '</div>' +
+            '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + schoolBadge + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (spell.source ? ' · <span class="badge" title="' + escapeHtml(typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : spell.source) + '" style="border-color:color-mix(in srgb, var(--accent-2) 50%, transparent); color:var(--accent-2-strong); background:var(--well-2); font-size:11px;">📚 ' + escapeHtml(typeof getSourceShortLabel === 'function' ? getSourceShortLabel(spell.source) : spell.source) + '</span>' : '') + '</div>' +
             (descText ? '<div class="spell-desc-snippet" style="font-size:12px; color:var(--text-dim); margin-top:4px; line-height:1.4;">' + escapeHtml(descText) + '</div>' : '') +
             '</div>' +
             '<div class="spell-actions">' +
@@ -9834,14 +10396,14 @@
 
       if (listBox) {
         if (rawList.length === 0) {
-          listBox.innerHTML = '<div class="spell-empty" style="padding:32px 20px; text-align:center; background:rgba(0,0,0,0.25); border:1px dashed var(--border-bright); border-radius:8px;">' +
+          listBox.innerHTML = '<div class="spell-empty" style="padding:32px 20px; text-align:center; background:var(--well-2); border:1px dashed var(--border-bright); border-radius:8px;">' +
             '<div style="font-size:36px; margin-bottom:8px;">✨</div>' +
-            '<div style="font-size:16px; font-weight:bold; color:var(--gold-bright); font-family:Cinzel,serif;">Your Spellbook is Empty</div>' +
+            '<div style="font-size:16px; font-weight:bold; color:var(--accent-2-strong); font-family:var(--font-display);">Your Spellbook is Empty</div>' +
             '<div style="font-size:13px; color:var(--text-muted); max-width:480px; margin:8px auto 16px; line-height:1.4;">Browse over 1,200 D&D 5e spells from all classes, levels, and schools to add to your character\'s prepared list.</div>' +
-            '<button class="btn" onclick="openSpellCatalogModal()" style="font-size:13px; font-weight:bold; padding:8px 18px; background:linear-gradient(180deg, var(--gold-bright), #8a641d); color:#000;">📜 + Browse & Add Spells (Full Catalog)</button>' +
+            '<button class="btn" onclick="openSpellCatalogModal()" style="font-size:13px; font-weight:bold; padding:8px 18px; background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000;">📜 + Browse & Add Spells (Full Catalog)</button>' +
             '</div>';
         } else if (list.length === 0) {
-          listBox.innerHTML = '<div class="spell-empty" style="padding:28px 20px; text-align:center; background:rgba(0,0,0,0.2); border:1px dashed var(--border); border-radius:8px;">' +
+          listBox.innerHTML = '<div class="spell-empty" style="padding:28px 20px; text-align:center; background:var(--well-2); border:1px dashed var(--border); border-radius:8px;">' +
             '<div style="font-size:14px; color:var(--text-muted); margin-bottom:10px;">No saved spells match your filters.</div>' +
             '<button class="btn ghost small" onclick="clearMySpellsFilters()">🧹 Clear Filters</button>' +
             '</div>';
@@ -9849,20 +10411,20 @@
           listBox.innerHTML = list.map(function (spell) {
             const catalogSpell = (sb.catalog || []).find(function (c) { return c.name === spell.name; });
             const classesStr = catalogSpell && catalogSpell.classes ? catalogSpell.classes.slice(0, 4).join(', ') : '';
-            const classBadge = classesStr ? '<span class="badge" style="border-color:var(--danger-bright); color:var(--gold-bright); background:rgba(40,25,15,0.6);">🧙 ' + escapeHtml(classesStr) + '</span>' : '';
+            const classBadge = classesStr ? '<span class="badge" style="border-color:var(--danger-bright); color:var(--accent-2-strong); background:var(--surface-2);">🧙 ' + escapeHtml(classesStr) + '</span>' : '';
             const schoolBadge = catalogSpell && catalogSpell.schoolName ? catalogSpell.schoolName : '';
             const levelBadge = '<span class="badge level">' + escapeHtml(spell.levelText || 'Added spell') + '</span>';
             const damageVal = catalogSpell && catalogSpell.damage ? catalogSpell.damage : (spell.damage || '');
-            const damageBadge = damageVal ? '<span class="badge damage" style="border-color:var(--danger-bright); color:#ff6b6b; background:rgba(168,60,50,0.25); font-weight:600;">⚔️ ' + escapeHtml(damageVal) + '</span>' : '';
+            const damageBadge = damageVal ? '<span class="badge damage" style="border-color:var(--danger-bright); color:var(--danger-strong); background:color-mix(in srgb, var(--danger) 25%, transparent); font-weight:600;">⚔️ ' + escapeHtml(damageVal) + '</span>' : '';
             const targetSpell = catalogSpell || spell;
             const scaling = computeSpellScaling(targetSpell);
             const escapedName = escapeJs(spell.name);
-            const scalingBadge = (scaling && scaling.type === 'leveled') ? '<span class="badge" style="border-color:#38bdf8; color:#7dd3fc; background:rgba(56,189,248,0.15); font-weight:600; cursor:pointer;" onclick="openSpellDetailModal(\'' + escapedName + '\'); event.stopPropagation();" title="Scales with higher level spell slots (Click to view damage at Lvl ' + (targetSpell.levelNum || 1) + '–9)">⚡ Upcasts</span>' : '';
+            const scalingBadge = (scaling && scaling.type === 'leveled') ? '<span class="badge" style="border-color:var(--info); color:var(--info-strong); background:color-mix(in srgb, var(--info) 15%, transparent); font-weight:600; cursor:pointer;" onclick="openSpellDetailModal(\'' + escapedName + '\'); event.stopPropagation();" title="Scales with higher level spell slots (Click to view damage at Lvl ' + (targetSpell.levelNum || 1) + '–9)">⚡ Upcasts</span>' : '';
             const descText = catalogSpell ? ((catalogSpell.quickEffect && catalogSpell.quickEffect.length > 25 && !catalogSpell.quickEffect.includes('magical spell effect')) ? catalogSpell.quickEffect : catalogSpell.desc) : (spell.desc || '');
             return '<div class="spell-list-item">' +
               '<div style="flex:1;">' +
               '<div class="spell-name">' + escapeHtml(spell.name) + '</div>' +
-              '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + (schoolBadge ? '<span class="badge school">' + escapeHtml(schoolBadge) + '</span>' : '') + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (spell.source ? ' · <span class="badge" title="' + escapeHtml(typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : spell.source) + '" style="border-color:rgba(201,162,39,0.5); color:var(--gold-bright); background:rgba(0,0,0,0.35); font-size:11px;">📚 ' + escapeHtml(typeof getSourceShortLabel === 'function' ? getSourceShortLabel(spell.source) : spell.source) + '</span>' : '') + '</div>' +
+              '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + (schoolBadge ? '<span class="badge school">' + escapeHtml(schoolBadge) + '</span>' : '') + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (spell.source ? ' · <span class="badge" title="' + escapeHtml(typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : spell.source) + '" style="border-color:color-mix(in srgb, var(--accent-2) 50%, transparent); color:var(--accent-2-strong); background:var(--well-2); font-size:11px;">📚 ' + escapeHtml(typeof getSourceShortLabel === 'function' ? getSourceShortLabel(spell.source) : spell.source) + '</span>' : '') + '</div>' +
               (descText ? '<div class="spell-desc-snippet" style="font-size:12px; color:var(--text-dim); margin-top:4px; line-height:1.4;">' + escapeHtml(descText) + '</div>' : '') +
               '</div>' +
               '<div class="spell-actions">' +
@@ -10296,7 +10858,7 @@
             return '<div class="dnd-scaling-row' + (isBase ? ' base-slot' : '') + '">' +
               '<span class="level-label">' +
               escapeHtml(lvlLabel) +
-              (isBase ? ' <span style="font-size:10px; color:var(--gold-bright); font-style:italic;">(Base Slot)</span>' : '') +
+              (isBase ? ' <span style="font-size:10px; color:var(--accent-2-strong); font-style:italic;">(Base Slot)</span>' : '') +
               '</span>' +
               '<div style="display:flex; align-items:center; gap:8px;">' +
               '<span class="damage-val">' + escapeHtml(item.value) + '</span>' +
@@ -10308,7 +10870,7 @@
           scalingContainer.style.display = 'block';
           if (scalingTitle) scalingTitle.innerHTML = '<span>⚡</span> HIGHER SPELL LEVEL SCALING';
           if (scalingBadge) scalingBadge.textContent = 'No Slot Increase';
-          scalingList.innerHTML = '<div style="font-size:12px; color:var(--text-dim); font-style:italic; padding:6px 8px; background:rgba(0,0,0,0.25); border-radius:4px;">' + escapeHtml(scaling.message) + '</div>';
+          scalingList.innerHTML = '<div style="font-size:12px; color:var(--text-dim); font-style:italic; padding:6px 8px; background:var(--well-2); border-radius:4px;">' + escapeHtml(scaling.message) + '</div>';
         } else {
           scalingContainer.style.display = 'none';
           scalingList.innerHTML = '';
@@ -10781,7 +11343,7 @@
           badgeText = '★+' + (bonusEntries.length + skillEntries.length);
         }
         const bonusTag = badgeText
-          ? '<span style="font-size:9px; color:var(--gold-bright); font-weight:bold; margin-left:auto; padding:0 3px; background:rgba(201,162,39,0.15); border-radius:3px;">' + escapeHtml(badgeText) + '</span>'
+          ? '<span style="font-size:9px; color:var(--accent-2-strong); font-weight:bold; margin-left:auto; padding:0 3px; background:color-mix(in srgb, var(--accent-2) 15%, transparent); border-radius:3px;">' + escapeHtml(badgeText) + '</span>'
           : '';
         card.innerHTML = (i.equipped ? '<span class="equipped-badge">●</span>' : '') +
           '<span class="icon">' + (i.icon || '❔') + '</span>' +
@@ -10819,8 +11381,8 @@
         '<div class="detail-meta"><span class="rarity-tag" data-r="' + item.rarity + '" style="color:' + rarityColor(item.rarity) + '">' + item.rarity + '</span> · ' + item.type + (item.slot ? ' · ' + SLOT_LABELS[item.slot] : '') + '</div>' +
         (item.type === 'Weapon' ? (
           isProficientWithWeapon(item)
-            ? '<div style="margin-top:6px; display:inline-flex; align-items:center; gap:4px; background:rgba(34,197,94,0.15); border:1px solid #22c55e; color:#4ade80; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;">✨ Proficient (+' + (state.characterStats ? (state.characterStats.prof || 2) : 2) + ' Atk) [' + (item.proficiencyType || 'Simple') + ']</div>'
-            : '<div style="margin-top:6px; display:inline-flex; align-items:center; gap:4px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#f87171; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;">⚠️ Not Proficient [' + (item.proficiencyType || 'Simple') + ']</div>'
+            ? '<div style="margin-top:6px; display:inline-flex; align-items:center; gap:4px; background:color-mix(in srgb, var(--success) 15%, transparent); border:1px solid var(--success); color:var(--success); padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;">✨ Proficient (+' + (state.characterStats ? (state.characterStats.prof || 2) : 2) + ' Atk) [' + (item.proficiencyType || 'Simple') + ']</div>'
+            : '<div style="margin-top:6px; display:inline-flex; align-items:center; gap:4px; background:color-mix(in srgb, var(--danger) 15%, transparent); border:1px solid var(--danger); color:var(--danger-strong); padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold;">⚠️ Not Proficient [' + (item.proficiencyType || 'Simple') + ']</div>'
         ) : '') +
         '</div>' +
         '</div>' +
@@ -10828,8 +11390,8 @@
         '<div class="detail-stats">' +
         '<span>⚖ ' + (item.weight || 0) + ' lb</span>' +
         '<span>× ' + (item.qty || 1) + '</span>' +
-        (item.equipped ? '<span style="color:var(--gold-bright)">● Equipped</span>' : '') +
-        (item.attunementRequired ? '<span style="color:var(--gold-bright)">' + (attunedSlotIndex(item.id) >= 0 ? '● Attuned' : 'Requires Attunement') + '</span>' : '') +
+        (item.equipped ? '<span style="color:var(--accent-2-strong)">● Equipped</span>' : '') +
+        (item.attunementRequired ? '<span style="color:var(--accent-2-strong)">' + (attunedSlotIndex(item.id) >= 0 ? '● Attuned' : 'Requires Attunement') + '</span>' : '') +
         '</div>' +
         (function () {
           const sb = item.statBonuses || {};
@@ -10840,13 +11402,13 @@
               const val = Number(sb[k]);
               const isBase = k === 'ac' && (val >= 10 || item.slot === 'chest' || item.type === 'Armor');
               const label = isBase ? 'Base AC ' + val : ((val > 0 ? '+' : '') + val + ' ' + (statLabels[k] || k.toUpperCase()));
-              badges.push('<span style="display:inline-flex; align-items:center; gap:3px; background:rgba(201,162,39,0.18); border:1px solid var(--gold); color:var(--gold-bright); padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700;">' + label + '</span>');
+              badges.push('<span style="display:inline-flex; align-items:center; gap:3px; background:color-mix(in srgb, var(--accent-2) 18%, transparent); border:1px solid var(--accent-2); color:var(--accent-2-strong); padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700;">' + label + '</span>');
             }
           });
           if (item.skillBonuses) {
             Object.entries(item.skillBonuses).forEach(function ([skName, skVal]) {
               if (Number(skVal) !== 0) {
-                badges.push('<span style="display:inline-flex; align-items:center; gap:3px; background:rgba(56,189,248,0.18); border:1px solid #38bdf8; color:#38bdf8; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700;">' + (Number(skVal) > 0 ? '+' : '') + skVal + ' ' + escapeHtml(skName) + '</span>');
+                badges.push('<span style="display:inline-flex; align-items:center; gap:3px; background:color-mix(in srgb, var(--info) 18%, transparent); border:1px solid var(--info); color:var(--info); padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700;">' + (Number(skVal) > 0 ? '+' : '') + skVal + ' ' + escapeHtml(skName) + '</span>');
               }
             });
           }
@@ -11167,6 +11729,7 @@
       document.getElementById('s-copper').value = currency.copper || 0;
       document.getElementById('s-capacity').value = state.capacity || 150;
       renderThemeSwatches();
+      renderFontSwatches();
       document.getElementById('settings-overlay').classList.add('open');
     }
     function saveSettings() {
@@ -11358,7 +11921,11 @@
             if (data.bgState) {
               if (typeof BG !== 'undefined') {
                 BG = Object.assign(BG, data.bgState);
+                /* the settings arrived inside characterState.appearance, but the
+                   pixels came in the backup — store them for this character */
+                if (typeof persistBgImage === 'function') persistBgImage(true);
                 if (typeof applyBg === 'function') applyBg();
+                if (typeof renderBgPanel === 'function' && document.getElementById('bg-panel').classList.contains('open')) renderBgPanel();
               } else {
                 localStorage.setItem('dnd-bg', JSON.stringify(data.bgState));
               }
@@ -11973,7 +12540,7 @@
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:12px;color:var(--text3)">Custom:</span>
         <input type="color" id="mi-cpicker" value="${selectedColor}" style="width:36px;height:28px;padding:2px;border:1px solid var(--border2);border-radius:6px;background:var(--bg3);cursor:pointer" oninput="selectColor(this.value,true)" />
-        <span id="mi-hex" style="font-size:12px;color:var(--text2);font-family:monospace">${selectedColor}</span>
+        <span id="mi-hex" style="font-size:12px;color:var(--text2);font-family:var(--font-mono)">${selectedColor}</span>
         <div id="mi-prev" style="width:20px;height:20px;border-radius:50%;background:${selectedColor};border:2px solid var(--border2)"></div>
       </div>`;
         setTimeout(() => document.getElementById('mi-name').focus(), 50);
@@ -11991,7 +12558,7 @@
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:12px;color:var(--text3)">Custom:</span>
         <input type="color" id="mi-cpicker" value="${cat.color}" style="width:36px;height:28px;padding:2px;border:1px solid var(--border2);border-radius:6px;background:var(--bg3);cursor:pointer" oninput="selectColor(this.value,true)" />
-        <span id="mi-hex" style="font-size:12px;color:var(--text2);font-family:monospace">${cat.color}</span>
+        <span id="mi-hex" style="font-size:12px;color:var(--text2);font-family:var(--font-mono)">${cat.color}</span>
         <div id="mi-prev" style="width:20px;height:20px;border-radius:50%;background:${cat.color};border:2px solid var(--border2)"></div>
       </div>`;
         setTimeout(() => { const i = document.getElementById('mi-name'); i.focus(); i.select(); }, 50);
@@ -12491,27 +13058,43 @@
 
 
     /* ════════════════════════════════
-       BACKGROUND
+       BACKGROUND IMAGE
+       The ground colour is now owned by the theme preset (Settings →
+       Theme), so this panel only manages the wallpaper.
     ════════════════════════════════ */
-    const BG_PRESETS = [
-      { label: 'Dark Parchment', color: '#1a1714', bg2: '#221f1b', bg3: '#2c2822', bg4: '#38332c', surface: '#2a2520' },
-      { label: 'Deep Forest', color: '#0f1a12', bg2: '#162010', bg3: '#1e2e18', bg4: '#283d20', surface: '#182818' },
-      { label: 'Dungeon Stone', color: '#141418', bg2: '#1c1c22', bg3: '#25252e', bg4: '#30303c', surface: '#1e1e28' },
-      { label: 'Blood Moon', color: '#1a0f0f', bg2: '#231414', bg3: '#2e1b1b', bg4: '#3a2222', surface: '#281818' },
-      { label: 'Ocean Depths', color: '#0a1220', bg2: '#101828', bg3: '#162032', bg4: '#1e2c40', surface: '#121c30' },
-      { label: 'Royal Purple', color: '#150f1a', bg2: '#1e1425', bg3: '#281c30', bg4: '#34243d', surface: '#201828' },
-      { label: 'Midnight Blue', color: '#0d1220', bg2: '#131828', bg3: '#1a2035', bg4: '#222843', surface: '#141c30' },
-      { label: 'Ember', color: '#1a1208', bg2: '#231a0e', bg3: '#2e2214', bg4: '#3a2c1c', surface: '#281e10' },
-      { label: 'Shadow Green', color: '#0e1410', bg2: '#141c16', bg3: '#1c261e', bg4: '#263228', surface: '#182018' },
-      { label: 'Dark Wine', color: '#180f14', bg2: '#22141e', bg3: '#2c1c28', bg4: '#382434', surface: '#241820' },
-      { label: 'Slate', color: '#111318', bg2: '#181a20', bg3: '#20242c', bg4: '#2a2e38', surface: '#1c2028' },
-      { label: 'Obsidian', color: '#0a0a0a', bg2: '#111111', bg3: '#1a1a1a', bg4: '#242424', surface: '#161616' },
-    ];
 
-    let BG = { color: '#1a1714', bg2: '#221f1b', bg3: '#2c2822', bg4: '#38332c', surface: '#2a2520', image: null, opacity: 0.18, posX: 50, posY: 50, active: 'color' };
-    try { const b = localStorage.getItem('dnd-bg'); if (b) { BG = Object.assign(BG, JSON.parse(b)); } } catch (e) { }
+    /* The wallpaper belongs to the character being viewed and syncs for that
+       user across devices. The small settings ride state.appearance, which is
+       part of the inventory blob and so syncs for free; the image is far too
+       heavy for that blob, so it lives in its own node and is written only
+       when the image itself changes. */
+    let BG = { image: null, opacity: 0.18, posX: 50, posY: 50, id: null };
+    Object.defineProperty(window, 'BG', {
+      get() { return BG; },
+      set(val) { BG = val; },
+      configurable: true
+    });
 
-    /* ── derive UI shades from a hex base colour ── */
+    function bgCacheKey(nickname) { return 'dnd-bg-img:' + String(nickname || '').toLowerCase(); }
+    function bgOwner() { return activeInventoryUser || (currentUser && currentUser.nickname) || 'DM'; }
+    function appearanceOf() { state.appearance = state.appearance || {}; return state.appearance; }
+
+    /* Legacy: the wallpaper used to be one global image kept in localStorage
+       (and mirrored to campaign_background/meta). Read it once so existing
+       setups keep their art, then never touch those keys again. */
+    let LEGACY_BG = null;
+    try {
+      const b = localStorage.getItem('dnd-bg');
+      const m = localStorage.getItem('dnd-bg-meta');
+      const img = localStorage.getItem('dnd-bg-img');
+      const merged = Object.assign({ image: null }, b ? JSON.parse(b) : {}, m ? JSON.parse(m) : {});
+      if (img) merged.image = img;
+      if (merged.image) LEGACY_BG = merged;
+    } catch (e) { }
+    /* the legacy wallpaper is global, so let exactly one character claim it */
+    const LEGACY_BG_CLAIM_KEY = 'dnd-bg-migrated';
+
+    /* ── shared HSL helpers (used by the theme engine) ── */
     function hexToHsl(hex) {
       let r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, b = parseInt(hex.slice(5, 7), 16) / 255;
       const max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2;
@@ -12529,31 +13112,13 @@
       };
       return '#' + f(0) + f(8) + f(4);
     }
-    function shadesFromColor(hex) {
-      const [h, s, l] = hexToHsl(hex);
-      const bl = Math.min(l, 12); // keep it dark
-      return {
-        bg: hslToHex(h, s, bl),
-        bg2: hslToHex(h, Math.max(s - 5, 0), bl + 4),
-        bg3: hslToHex(h, Math.max(s - 5, 0), bl + 7),
-        bg4: hslToHex(h, Math.max(s - 5, 0), bl + 11),
-        surface: hslToHex(h, Math.max(s - 5, 0), bl + 5),
-      };
-    }
 
-    function applyNotesTheme() {
-      const root = document.getElementById('notes-view-container') || document.documentElement;
-      root.style.setProperty('--bg', BG.color);
-      root.style.setProperty('--bg2', BG.bg2);
-      root.style.setProperty('--bg3', BG.bg3);
-      root.style.setProperty('--bg4', BG.bg4);
-      root.style.setProperty('--surface', BG.surface);
-    }
-
+    /* Pure render: draws the wallpaper layer. Never writes anywhere, so the
+       Firebase onValue listener can call it without triggering a save loop. */
     function applyBg() {
-      applyNotesTheme();
       const layer = document.getElementById('bg-layer');
-      if (BG.image && BG.active === 'image') {
+      if (!layer) return;
+      if (BG.image) {
         layer.style.backgroundImage = `url(${BG.image})`;
         layer.style.backgroundPosition = `${BG.posX}% ${BG.posY}%`;
         layer.style.opacity = BG.opacity;
@@ -12563,26 +13128,65 @@
         layer.style.opacity = 0;
         document.body.classList.remove('has-bg-image');
       }
-      try {
-        const toSave = { ...BG };
-        // Don't store image data if too big — store separately
-        delete toSave.image;
-        localStorage.setItem('dnd-bg-meta', JSON.stringify(toSave));
-        if (BG.image) localStorage.setItem('dnd-bg-img', BG.image);
-        else localStorage.removeItem('dnd-bg-img');
-        if (typeof window.fbSaveBackground === 'function') {
-          window.fbSaveBackground(toSave);
-        }
-      } catch (e) { toast('Background too large for storage, will reset on reload'); }
     }
 
-    // Load
-    try {
-      const m = localStorage.getItem('dnd-bg-meta');
-      if (m) { BG = Object.assign(BG, JSON.parse(m)); }
-      const img = localStorage.getItem('dnd-bg-img');
-      if (img) { BG.image = img; }
-    } catch (e) { }
+    /* Settings only (opacity / position). These ride the inventory blob, which
+       already syncs per character, so this is cheap. */
+    function persistBg() {
+      const ap = appearanceOf();
+      ap.bgOpacity = BG.opacity;
+      ap.bgPosX = BG.posX;
+      ap.bgPosY = BG.posY;
+      try {
+        if (BG.image) localStorage.setItem(bgCacheKey(bgOwner()), BG.image);
+        else localStorage.removeItem(bgCacheKey(bgOwner()));
+      } catch (e) { }
+      save();
+    }
+
+    /* Called only when the image itself changes (upload / remove / restore).
+       localOnly keeps an over-large image on this device instead of pushing it
+       to the cloud. */
+    function persistBgImage(localOnly) {
+      const ap = appearanceOf();
+      ap.bgId = BG.image ? ('bg' + Date.now().toString(36)) : null;
+      persistBg();
+      if (!localOnly && typeof window.fbSaveBackgroundImage === 'function') {
+        window.fbSaveBackgroundImage(bgOwner(), BG.image);
+      }
+    }
+
+    /* Point the renderer at the given character's wallpaper. */
+    function loadAppearanceIntoBg(nickname) {
+      const ap = appearanceOf();
+      /* One-time migration from the old global wallpaper. The legacy image is
+         global, so only the first character loaded claims it, and once anyone
+         removes a wallpaper the claim is remembered so it cannot creep back. */
+      let legacyClaimed = false;
+      try { legacyClaimed = !!localStorage.getItem(LEGACY_BG_CLAIM_KEY); } catch (e) { }
+      if (!ap.bgId && !legacyClaimed && LEGACY_BG) {
+        BG.opacity = typeof LEGACY_BG.opacity === 'number' ? LEGACY_BG.opacity : BG.opacity;
+        BG.posX = typeof LEGACY_BG.posX === 'number' ? LEGACY_BG.posX : 50;
+        BG.posY = typeof LEGACY_BG.posY === 'number' ? LEGACY_BG.posY : 50;
+        BG.image = LEGACY_BG.image || null;
+        try { localStorage.setItem(LEGACY_BG_CLAIM_KEY, '1'); } catch (e) { }
+        applyBg();
+        persistBgImage(true);   // adopt on this device; never silently upload an old image
+        return;
+      }
+      BG.opacity = typeof ap.bgOpacity === 'number' ? ap.bgOpacity : 0.18;
+      BG.posX = typeof ap.bgPosX === 'number' ? ap.bgPosX : 50;
+      BG.posY = typeof ap.bgPosY === 'number' ? ap.bgPosY : 50;
+      BG.id = ap.bgId || null;
+      let cached = null;
+      try { cached = localStorage.getItem(bgCacheKey(nickname)); } catch (e) { }
+      BG.image = (ap.bgId && cached) ? cached : null;
+      applyBg();
+      /* this device has the settings but not the pixels yet */
+      if (ap.bgId && !cached && typeof window.fbLoadBackgroundImage === 'function') {
+        window.fbLoadBackgroundImage(nickname);
+      }
+    }
 
     function toggleBgPanel() {
       const panel = document.getElementById('bg-panel');
@@ -12600,18 +13204,6 @@
     </div>
 
     <div class="bg-section">
-      <div class="bg-sl">Colour theme</div>
-      <div class="bg-colors" id="bg-color-grid">
-        ${BG_PRESETS.map(p => `<div class="bg-sw${BG.color === p.color ? ' active' : ''}" style="background:${p.color};outline:1px solid rgba(255,255,255,.1);" title="${p.label}" onclick="setBgPreset('${p.label}')"></div>`).join('')}
-      </div>
-      <div class="bg-row" style="margin-top:8px;align-items:center;gap:8px;">
-        <span style="font-size:11px;color:var(--text3);white-space:nowrap;">Custom:</span>
-        <input type="color" id="bg-custom-color" value="${BG.color}" style="width:36px;height:28px;padding:2px;border:1px solid var(--border2);border-radius:6px;background:var(--bg3);cursor:pointer;" oninput="setBgCustomColor(this.value)" />
-        <span id="bg-hex" style="font-size:11px;color:var(--text2);font-family:monospace;flex:1">${BG.color}</span>
-      </div>
-    </div>
-
-    <div class="bg-section">
       <div class="bg-sl">Background image</div>
       ${BG.image ? `
         <div style="position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--border2);margin-bottom:8px;">
@@ -12623,11 +13215,11 @@
         <div class="bg-sl" style="margin-bottom:6px">Reposition image</div>
         <div style="position:relative;width:100%;height:130px;border-radius:6px;overflow:hidden;border:1px solid var(--border2);margin-bottom:8px;cursor:crosshair;" id="img-pan-area">
           <img src="${BG.image}" id="img-pan-img" style="width:100%;height:100%;object-fit:cover;object-position:${BG.posX}% ${BG.posY}%;display:block;pointer-events:none;" />
-          <div id="img-pan-dot" style="position:absolute;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.9);border:2px solid #c84b31;box-shadow:0 0 6px rgba(0,0,0,.5);pointer-events:none;transform:translate(-50%,-50%);left:${BG.posX}%;top:${BG.posY}%;"></div>
+          <div id="img-pan-dot" style="position:absolute;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.9);border:2px solid var(--accent);box-shadow:0 0 6px rgba(0,0,0,.5);pointer-events:none;transform:translate(-50%,-50%);left:${BG.posX}%;top:${BG.posY}%;"></div>
         </div>
         <div class="bg-orow">
           <label>Opacity</label>
-          <input type="range" min="0.02" max="0.7" step="0.01" value="${BG.opacity}" oninput="setBgOpacity(this.value)" />
+          <input type="range" min="0.02" max="0.7" step="0.01" value="${BG.opacity}" oninput="setBgOpacity(this.value)" onchange="persistBg()" />
           <span id="bg-op-val" style="font-size:11px;color:var(--text2);min-width:34px;">${round1(BG.opacity * 100)}%</span>
         </div>
         <div class="bg-row" style="margin-top:8px;">
@@ -12656,49 +13248,66 @@
         }
         area.addEventListener('mousedown', e => { panning = true; doPan(e); });
         area.addEventListener('mousemove', e => { if (panning) doPan(e); });
-        area.addEventListener('mouseup', () => panning = false);
-        area.addEventListener('mouseleave', () => panning = false);
+        area.addEventListener('mouseup', () => { panning = false; persistBg(); });
+        area.addEventListener('mouseleave', () => { if (panning) persistBg(); panning = false; });
         area.addEventListener('touchstart', e => { panning = true; doPan(e); }, { passive: true });
         area.addEventListener('touchmove', e => { if (panning) doPan(e); }, { passive: true });
-        area.addEventListener('touchend', () => panning = false);
+        area.addEventListener('touchend', () => { panning = false; persistBg(); });
       }
     }
 
     function round1(n) { return Math.round(n * 10) / 10; }
 
-    function setBgPreset(label) {
-      const p = BG_PRESETS.find(x => x.label === label);
-      if (!p) return;
-      BG.color = p.color; BG.bg2 = p.bg2; BG.bg3 = p.bg3; BG.bg4 = p.bg4; BG.surface = p.surface; BG.active = 'color';
-      applyBg();
-      document.querySelectorAll('.bg-sw').forEach(el => el.classList.toggle('active', el.title === label));
-      const hex = document.getElementById('bg-hex'); if (hex) hex.textContent = p.color;
-      const picker = document.getElementById('bg-custom-color'); if (picker) picker.value = p.color;
-    }
-
-    function setBgCustomColor(c) {
-      if (!/^#[0-9a-fA-F]{6}$/.test(c)) return;
-      const sh = shadesFromColor(c);
-      BG.color = sh.bg; BG.bg2 = sh.bg2; BG.bg3 = sh.bg3; BG.bg4 = sh.bg4; BG.surface = sh.surface; BG.active = 'color';
-      applyBg();
-      document.querySelectorAll('.bg-sw').forEach(el => el.classList.remove('active'));
-      const hex = document.getElementById('bg-hex'); if (hex) hex.textContent = BG.color;
+    /* Downscale + re-encode before anything is stored or synced. A raw phone
+       photo is many megabytes, which would bloat every sync forever. */
+    function compressBgImage(file, done) {
+      const MAX_BYTES = 350 * 1024;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const original = e.target.result;
+        const img = new Image();
+        img.onload = function () {
+          try {
+            const maxDim = 1920;
+            const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+            const w = Math.max(1, Math.round(img.width * scale));
+            const h = Math.max(1, Math.round(img.height * scale));
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            c.getContext('2d').drawImage(img, 0, 0, w, h);
+            let q = 0.82;
+            let out = c.toDataURL('image/jpeg', q);
+            while (out.length * 0.75 > MAX_BYTES && q > 0.34) {
+              q -= 0.12;
+              out = c.toDataURL('image/jpeg', q);
+            }
+            done(out, out.length * 0.75 <= MAX_BYTES);
+          } catch (err) {
+            done(original, false);   // canvas refused: keep the original, local only
+          }
+        };
+        img.onerror = function () { done(original, false); };
+        img.src = original;
+      };
+      reader.onerror = function () { done(null, false); };
+      reader.readAsDataURL(file);
     }
 
     function handleBgImage(input) {
       const file = input.files[0]; if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        BG.image = e.target.result; BG.active = 'image'; BG.posX = 50; BG.posY = 50;
-        applyBg(); renderBgPanel(); toast('Background image set ✓');
-      };
-      reader.readAsDataURL(file);
       input.value = '';
+      compressBgImage(file, function (dataUrl, fits) {
+        if (!dataUrl) { toast('Could not read that image'); return; }
+        BG.image = dataUrl; BG.posX = 50; BG.posY = 50;
+        applyBg(); renderBgPanel();
+        persistBgImage(!fits);
+        toast(fits ? 'Background image set ✓' : 'Image is large — kept on this device only');
+      });
     }
 
     function removeBgImage() {
-      BG.image = null; BG.active = 'color';
-      applyBg(); renderBgPanel(); toast('Background image removed');
+      BG.image = null;
+      applyBg(); persistBgImage(false); renderBgPanel(); toast('Background image removed');
     }
 
     function setBgOpacity(v) {
@@ -12707,13 +13316,15 @@
       const lbl = document.getElementById('bg-op-val'); if (lbl) lbl.textContent = round1(parseFloat(v) * 100) + '%';
     }
 
-    // Close panel when clicking outside
+    // Close panel when clicking outside. Any button marked .bg-trigger is
+    // "inside" — the panel is opened from several screens, so keying off a
+    // single button id meant every other trigger opened it and the same
+    // click immediately closed it again.
     document.addEventListener('click', e => {
       const panel = document.getElementById('bg-panel');
-      const btn = document.getElementById('bg-btn');
-      if (panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-        panel.classList.remove('open');
-      }
+      if (!panel || !panel.classList.contains('open')) return;
+      if (panel.contains(e.target) || e.target.closest('.bg-trigger')) return;
+      panel.classList.remove('open');
     });
 
     function goToCharacterScreen() {
@@ -12756,7 +13367,7 @@
     <div class="modal" style="max-width:620px;">
       <div class="panel-title" style="margin-bottom:12px;">⚙️ Edit Character Scores, Saves & Skills</div>
       <div style="max-height:75vh; overflow-y:auto; padding-right:8px;">
-        <div style="font-family:Cinzel,serif; font-size:12px; font-weight:700; color:var(--gold-bright);
+        <div style="font-family:var(--font-display); font-size:12px; font-weight:700; color:var(--accent-2-strong);
           margin-bottom:6px;">Character Class & Species</div>
         <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr; gap:8px;">
           <div class="form-row">
@@ -12813,7 +13424,7 @@
           </div>
         </div>
         <div
-          style="font-family:Cinzel,serif; font-size:12px; font-weight:700; color:var(--gold-bright); margin-bottom:2px;">
+          style="font-family:var(--font-display); font-size:12px; font-weight:700; color:var(--accent-2-strong); margin-bottom:2px;">
           Ability Scores (Base Scores)</div>
         <div class="hint" style="margin-bottom:8px; font-size:11px;">Enter base ability scores. Bonuses from equipped
           magical items (+2 WIS, +1 AC, etc.) are automatically tracked and added on top!</div>
@@ -12829,7 +13440,7 @@
         </div>
 
         <div
-          style="font-family:Cinzel,serif; font-size:12px; font-weight:700; color:var(--gold-bright); margin:12px 0 6px;">
+          style="font-family:var(--font-display); font-size:12px; font-weight:700; color:var(--accent-2-strong); margin:12px 0 6px;">
           Combat & Modifiers</div>
         <div class="form-grid">
           <div class="form-row"><label>Proficiency Bonus</label><input type="number" id="st-prof" min="-99" max="999">
@@ -12859,10 +13470,10 @@
           automatically. Use the DEX option above to add or remove DEX bonus from AC.</div>
 
         <div
-          style="font-family:Cinzel,serif; font-size:12px; font-weight:700; color:var(--gold-bright); margin:12px 0 6px;">
+          style="font-family:var(--font-display); font-size:12px; font-weight:700; color:var(--accent-2-strong); margin:12px 0 6px;">
           Saving Throw Proficiencies</div>
         <div
-          style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; border:1px solid var(--border);">
+          style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; background:var(--well-2); padding:8px; border-radius:6px; border:1px solid var(--border);">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:4px; font-size:11px;">
             <span style="font-weight:bold; color:var(--text);">STR</span>
             <select id="st-save-sel-str"
@@ -12920,24 +13531,24 @@
         </div>
 
         <div
-          style="font-family:Cinzel,serif; font-size:12px; font-weight:700; color:var(--gold-bright); margin:12px 0 6px;">
+          style="font-family:var(--font-display); font-size:12px; font-weight:700; color:var(--accent-2-strong); margin:12px 0 6px;">
           Skills Proficiencies & Expertise</div>
         <div id="modal-skills-grid"
-          style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; border:1px solid var(--border); max-height:200px; overflow-y:auto;">
+          style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:var(--well-2); padding:8px; border-radius:6px; border:1px solid var(--border); max-height:200px; overflow-y:auto;">
         </div>
 
         <div
-          style="font-family:Cinzel,serif; font-size:12px; font-weight:700; color:var(--gold-bright); margin:12px 0 6px;">
+          style="font-family:var(--font-display); font-size:12px; font-weight:700; color:var(--accent-2-strong); margin:12px 0 6px;">
           Proficiencies & Notes</div>
         <div class="form-row">
           <label>Armor Proficiencies</label>
           <input type="text" id="st-armor" placeholder="Light Armor, Medium Armor...">
         </div>
         <div
-          style="font-family:Cinzel,serif; font-size:12px; font-weight:700; color:var(--gold-bright); margin:12px 0 6px;">
+          style="font-family:var(--font-display); font-size:12px; font-weight:700; color:var(--accent-2-strong); margin:12px 0 6px;">
           Weapon Proficiencies</div>
         <div
-          style="display:flex; gap:12px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; border:1px solid var(--border); margin-bottom:8px;">
+          style="display:flex; gap:12px; background:var(--well-2); padding:8px; border-radius:6px; border:1px solid var(--border); margin-bottom:8px;">
           <label style="display:flex; align-items:center; gap:4px; font-size:11px; cursor:pointer;"><input
               type="checkbox" id="st-wp-simple"> Simple Weapons</label>
           <label style="display:flex; align-items:center; gap:4px; font-size:11px; cursor:pointer;"><input
@@ -13062,32 +13673,32 @@
 
       <!-- Health Display Box -->
       <div
-        style="background:rgba(0,0,0,0.3); border:1px solid var(--border-bright); border-radius:8px; padding:16px; margin-bottom:14px;">
-        <div style="font-size:32px; font-weight:900; font-family:Cinzel,serif; color:#4ade80;" id="modal-hp-text">45 /
+        style="background:var(--well-2); border:1px solid var(--border-bright); border-radius:8px; padding:16px; margin-bottom:14px;">
+        <div style="font-size:32px; font-weight:900; font-family:var(--font-display); color:var(--success);" id="modal-hp-text">45 /
           45</div>
-        <div id="modal-temp-hp-text" style="font-size:13px; color:var(--gold-bright); margin-top:4px; display:none;">🛡️
+        <div id="modal-temp-hp-text" style="font-size:13px; color:var(--accent-2-strong); margin-top:4px; display:none;">🛡️
           +0 Temporary HP</div>
         <div
-          style="width:100%; height:10px; background:rgba(0,0,0,0.5); border-radius:5px; margin-top:10px; overflow:hidden; border:1px solid var(--border);">
+          style="width:100%; height:10px; background:var(--well-3); border-radius:5px; margin-top:10px; overflow:hidden; border:1px solid var(--border);">
           <div id="modal-hp-bar-fill"
-            style="width:100%; height:100%; background:linear-gradient(90deg, #22c55e, #16a34a); transition:width 0.3s;">
+            style="width:100%; height:100%; background:linear-gradient(90deg, var(--success), var(--success)); transition:width 0.3s;">
           </div>
         </div>
       </div>
 
       <!-- Quick Action Buttons -->
       <div
-        style="font-size:11px; font-weight:bold; color:var(--gold-bright); text-transform:uppercase; margin-bottom:6px;">
+        style="font-size:11px; font-weight:bold; color:var(--accent-2-strong); text-transform:uppercase; margin-bottom:6px;">
         Quick Damage / Heal</div>
       <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; margin-bottom:14px;">
         <button class="btn danger small" onclick="applyHpChange(-1)">−1 HP</button>
         <button class="btn danger small" onclick="applyHpChange(-5)">−5 HP</button>
         <button class="btn danger small" onclick="applyHpChange(-10)">−10 HP</button>
-        <button class="btn small" style="background:rgba(34,197,94,0.2); border:1px solid #22c55e; color:#4ade80;"
+        <button class="btn small" style="background:color-mix(in srgb, var(--success) 20%, transparent); border:1px solid var(--success); color:var(--success);"
           onclick="applyHpChange(1)">+1 HP</button>
-        <button class="btn small" style="background:rgba(34,197,94,0.2); border:1px solid #22c55e; color:#4ade80;"
+        <button class="btn small" style="background:color-mix(in srgb, var(--success) 20%, transparent); border:1px solid var(--success); color:var(--success);"
           onclick="applyHpChange(5)">+5 HP</button>
-        <button class="btn small" style="background:rgba(34,197,94,0.2); border:1px solid #22c55e; color:#4ade80;"
+        <button class="btn small" style="background:color-mix(in srgb, var(--success) 20%, transparent); border:1px solid var(--success); color:var(--success);"
           onclick="applyHpChange(10)">+10 HP</button>
       </div>
 
@@ -13108,13 +13719,13 @@
       </div>
       <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:4px; margin-bottom:14px;">
         <button class="btn small"
-          style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; color:#38bdf8; font-size:11px;"
+          style="background:color-mix(in srgb, var(--info) 15%, transparent); border:1px solid var(--info); color:var(--info); font-size:11px;"
           onclick="setTempHP(5)">🛡️ +5</button>
         <button class="btn small"
-          style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; color:#38bdf8; font-size:11px;"
+          style="background:color-mix(in srgb, var(--info) 15%, transparent); border:1px solid var(--info); color:var(--info); font-size:11px;"
           onclick="setTempHP(10)">🛡️ +10</button>
         <button class="btn small"
-          style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; color:#38bdf8; font-size:11px;"
+          style="background:color-mix(in srgb, var(--info) 15%, transparent); border:1px solid var(--info); color:var(--info); font-size:11px;"
           onclick="setTempHP(15)">🛡️ +15</button>
         <button class="btn ghost small" style="color:var(--text-muted); font-size:11px;" onclick="setTempHP(0)">🚫
           Clear</button>
@@ -13635,32 +14246,142 @@
     }
 
     /* ========================================================
-       4. CAMPAIGN BACKGROUND & THEME SYNCHRONIZATION
-       ======================================================== */
-    window.fbSaveBackground = function(bgState) {
-      if (!db || !bgState) return;
-      const payload = cleanData(bgState);
-      set(ref(db, 'campaign_background/meta'), payload).catch(err => console.warn("Firebase bg save error:", err));
+       4. PER-CHARACTER WALLPAPER SYNCHRONIZATION
+       ========================================================
+       The wallpaper follows the character being viewed. Its small settings
+       (opacity / position / id) live in the inventory blob, so they ride the
+       normal per-character sync for free. Only the image needs its own node —
+       it is far too heavy to sit in a blob written on every inventory change.
+       The old global campaign_background/meta node is left untouched and is no
+       longer read or written by anything. */
+
+    window.fbSaveBackgroundImage = function(targetNickname, dataUrl) {
+      if (!db || !targetNickname) return;
+      const path = 'inventory_backgrounds/' + String(targetNickname).toLowerCase();
+      if (!dataUrl) {                       // writing null deletes the node
+        set(ref(db, path), null).catch(err => console.warn("Firebase bg image clear error:", err));
+        return;
+      }
+      updateSyncBadge('syncing', '🔄 Uploading background...');
+      set(ref(db, path), dataUrl)
+        .then(() => updateSyncBadge('online', '🟢 Firebase Live'))
+        .catch(err => {
+          console.warn("Firebase bg image save error:", err);
+          updateSyncBadge('offline', '⚠️ Sync Warning');
+        });
     };
 
-    if (db) {
-      const bgRef = ref(db, 'campaign_background/meta');
-      onValue(bgRef, (snapshot) => {
-        const cloudBg = snapshot.val();
-        if (cloudBg && typeof cloudBg === 'object' && window.BG) {
-          if (JSON.stringify(cloudBg) !== JSON.stringify(cleanData(window.BG))) {
-            window.BG = Object.assign(window.BG, cloudBg);
-            if (typeof window.applyBg === 'function') window.applyBg();
-          }
-        }
-      });
-    }
+    /* Adopt an image that arrived from storage. Never writes back, so the
+       listener below can call it freely without echoing. */
+    window.fbApplyBackgroundImage = function(key, val) {
+      if (!window.BG) return;
+      const active = String(window.activeInventoryUser || '').toLowerCase();
+      if (active && active !== key) return;         // user switched away meanwhile
+      const cur = window.BG.image || null;
+      if ((val || null) === cur) return;            // nothing new — skip the repaint
+      window.BG.image = val || null;
+      try {
+        if (val) localStorage.setItem('dnd-bg-img:' + key, val);
+        else localStorage.removeItem('dnd-bg-img:' + key);
+      } catch (e) { }
+      if (typeof window.applyBg === 'function') window.applyBg();
+      const panel = document.getElementById('bg-panel');
+      if (panel && panel.classList.contains('open') && typeof window.renderBgPanel === 'function') {
+        window.renderBgPanel();
+      }
+    };
 
-    // Hook active user listener immediately upon boot
+    window.fbLoadBackgroundImage = function(targetNickname) {
+      if (!db || !targetNickname) return;
+      const key = String(targetNickname).toLowerCase();
+      get(ref(db, 'inventory_backgrounds/' + key))
+        .then(snap => window.fbApplyBackgroundImage(key, snap.val() || null))
+        .catch(err => console.warn("Firebase bg image load error:", err));
+    };
+
+    let bgImageListenerPath = null;
+    let bgImageListenerRef = null;
+
+    window.fbListenToBackgroundImage = function(targetNickname) {
+      if (!db || !targetNickname) return;
+      const key = String(targetNickname).toLowerCase();
+      const path = 'inventory_backgrounds/' + key;
+      if (bgImageListenerPath === path) return;
+      if (bgImageListenerRef) { off(bgImageListenerRef); bgImageListenerRef = null; }
+      bgImageListenerPath = path;
+      bgImageListenerRef = ref(db, path);
+      onValue(bgImageListenerRef, snap => window.fbApplyBackgroundImage(key, snap.val() || null));
+    };
+
+    /* ========================================================
+       ACCOUNT PREFERENCES — app-wide choices, one per user
+       ========================================================
+       Its own node rather than a field on the account record: this is cosmetic
+       data written on every font change, and it must never be able to disturb
+       anything the login flow reads. */
+
+    window.fbSavePrefs = function(prefs) {
+      const nick = window.currentUser ? window.currentUser.nickname
+        : (window.activeInventoryUser || null);
+      if (!db || !nick || !prefs) return;
+      const key = String(nick).toLowerCase();
+      updateSyncBadge('syncing', '🔄 Saving preferences...');
+      set(ref(db, 'prefs/' + key), cleanData(prefs))
+        .then(() => updateSyncBadge('online', '🟢 Firebase Live'))
+        .catch(err => {
+          console.warn("Firebase prefs save error:", err);
+          updateSyncBadge('offline', '⚠️ Sync Warning');
+        });
+    };
+
+    /* Adopt preferences that arrived from storage. Never writes back, so the
+       listener can call it freely without echoing. */
+    window.fbApplyPrefs = function(nickname, val) {
+      const me = window.currentUser ? String(window.currentUser.nickname).toLowerCase() : '';
+      if (me && me !== String(nickname).toLowerCase()) return;   // switched accounts meanwhile
+      const font = val && val.font;
+      if (font && window.FONT_PRESETS && window.FONT_PRESETS[font]) {
+        window.fontPendingCloud = false;                         // storage now agrees with us
+        if (typeof window.applyFontFromCloud === 'function') window.applyFontFromCloud(font);
+      } else if (!val && !window.fontPendingCloud) {
+        /* No preference stored for this account. Reset rather than inherit,
+           so a shared device does not hand one user's font to the next. */
+        if (typeof window.applyFontFromCloud === 'function') {
+          window.applyFontFromCloud(window.DEFAULT_FONT || 'adventurer');
+        }
+      }
+    };
+
+    window.fbLoadPrefs = function(targetNickname) {
+      if (!db || !targetNickname) return;
+      const key = String(targetNickname).toLowerCase();
+      get(ref(db, 'prefs/' + key))
+        .then(snap => window.fbApplyPrefs(key, snap.val() || null))
+        .catch(err => console.warn("Firebase prefs load error:", err));
+    };
+
+    let prefsListenerPath = null;
+    let prefsListenerRef = null;
+
+    window.fbListenToPrefs = function(targetNickname) {
+      if (!db || !targetNickname) return;
+      const key = String(targetNickname).toLowerCase();
+      const path = 'prefs/' + key;
+      if (prefsListenerPath === path) return;
+      if (prefsListenerRef) { off(prefsListenerRef); prefsListenerRef = null; }
+      prefsListenerPath = path;
+      prefsListenerRef = ref(db, path);
+      onValue(prefsListenerRef, snap => window.fbApplyPrefs(key, snap.val() || null));
+    };
+
+    // Hook the active user's listeners immediately upon boot
     const bootTarget = window.activeInventoryUser || (window.currentUser ? window.currentUser.nickname : null);
     if (bootTarget) {
       console.log("Hooking initial Firebase listener for:", bootTarget);
       window.fbListenToInventory(bootTarget);
+      window.fbListenToBackgroundImage(bootTarget);
+      /* preferences are account-level, so prefer the logged-in account */
+      window.fbListenToPrefs(window.currentUser ? window.currentUser.nickname : bootTarget);
     }
   </script>
 </body>
