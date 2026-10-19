@@ -114,6 +114,23 @@
       }
       .vtt-toolbar .btn.vtt-on { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
       .vtt-stage canvas.vtt-painting { cursor: crosshair; }
+      .vtt-catalog { position: absolute; inset: 0; z-index: 25; background: rgba(0,0,0,0.45); display: flex; align-items: flex-start; justify-content: center; padding: 18px 12px; }
+      .vtt-cat-panel { width: min(720px, 100%); max-height: 100%; display: flex; flex-direction: column; background: var(--surface-1); border: 1px solid var(--line-strong); border-radius: var(--radius-lg); box-shadow: var(--shadow-2); overflow: hidden; }
+      .vtt-cat-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+      .vtt-cat-tabs { display: flex; gap: 6px; }
+      .vtt-cat-tabs .btn.vtt-on { border-color: var(--accent); color: var(--accent); }
+      .vtt-cat-filters { display: flex; gap: 8px; padding: 8px 10px; }
+      .vtt-cat-filters input { flex: 1; min-width: 0; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 5px 8px; font-family: var(--font-body); }
+      .vtt-cat-filters select { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 6px; font-family: var(--font-body); }
+      .vtt-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 4px 10px 12px; overflow-y: auto; }
+      .vtt-cat-card { display: flex; flex-direction: column; gap: 4px; padding: 6px; text-align: left; cursor: pointer; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--font-body); }
+      .vtt-cat-card:hover { border-color: var(--line-strong); background: var(--surface-3); }
+      .vtt-cat-card.vtt-on { border-color: var(--accent); }
+      .vtt-cat-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; background: var(--surface-inset); }
+      .vtt-cat-card.vtt-cat-token img { aspect-ratio: 1; object-fit: contain; padding: 10px; }
+      .vtt-cat-name { font-size: 13px; }
+      .vtt-cat-meta { font-size: 11px; color: var(--text-muted); text-transform: capitalize; }
+      .vtt-cat-empty { grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--text-muted); }
       .vtt-dice button { min-width: 0; padding-left: 6px; padding-right: 6px; }
       .vtt-log {
         position: absolute; left: 10px; bottom: 10px; z-index: 14; width: 210px; max-height: 45%;
@@ -180,6 +197,7 @@
         </div>
         <div class="vtt-group vtt-dm-only">
           <button class="btn small ghost" data-act="add-token">➕ Add Token</button>
+          <button class="btn small ghost" data-act="catalog" title="Ready-made maps and tokens">📚 Catalog</button>
           <input type="file" accept="image/*" data-el="token-file" hidden>
         </div>
         <div class="vtt-group vtt-dm-only">
@@ -241,6 +259,7 @@
       else if (act === 'fog-hide') setFogMode(fogMode === 'hide' ? null : 'hide');
       else if (act === 'fog-reset') resetFog();
       else if (act === 'detect-grid') detectGridOnMap(true);
+      else if (act === 'catalog') openCatalog();
     });
 
     el('fog-enabled').addEventListener('change', (e) => {
@@ -373,6 +392,117 @@
     set('grid-ox', 'value', +(Number(vtt.grid.offsetX) || 0).toFixed(1));
     set('grid-oy', 'value', +(Number(vtt.grid.offsetY) || 0).toFixed(1));
     set('grid-color', 'value', vtt.grid.color);
+  }
+
+  /* ---------- Catalog (window.VTT_CATALOG from vtt-catalog.js) ---------- */
+
+  let catalogTab = 'maps';
+
+  function catalogData() {
+    const c = window.VTT_CATALOG || {};
+    return { maps: Array.isArray(c.maps) ? c.maps : [], tokens: Array.isArray(c.tokens) ? c.tokens : [] };
+  }
+
+  function openCatalog() {
+    if (!isDm() || !root) return;
+    closeCatalog();
+    const box = document.createElement('div');
+    box.className = 'vtt-catalog';
+    box.innerHTML = `
+      <div class="vtt-cat-panel" role="dialog" aria-label="Catalog">
+        <div class="vtt-cat-head">
+          <div class="vtt-cat-tabs">
+            <button type="button" class="btn small ghost" data-cat-tab="maps">🗺 Maps</button>
+            <button type="button" class="btn small ghost" data-cat-tab="tokens">♟ Tokens</button>
+          </div>
+          <button type="button" class="btn small ghost" data-cat-close title="Close">✕</button>
+        </div>
+        <div class="vtt-cat-filters">
+          <input type="search" data-cat-q placeholder="Search name or tag…">
+          <select data-cat-category></select>
+        </div>
+        <div class="vtt-cat-grid" data-cat-grid></div>
+      </div>
+    `;
+    root.querySelector('.vtt-stage').appendChild(box);
+    const q = box.querySelector('[data-cat-q]');
+    const cat = box.querySelector('[data-cat-category]');
+
+    const fillCategories = () => {
+      const items = catalogData()[catalogTab];
+      const cats = Array.from(new Set(items.map((i) => i.category).filter(Boolean))).sort();
+      cat.innerHTML = '';
+      [['', 'All categories']].concat(cats.map((c) => [c, c])).forEach(([v, label]) => {
+        const o = document.createElement('option');
+        o.value = v;
+        o.textContent = label;
+        cat.appendChild(o);
+      });
+    };
+
+    const render = () => {
+      box.querySelectorAll('[data-cat-tab]').forEach((b) => b.classList.toggle('vtt-on', b.dataset.catTab === catalogTab));
+      const grid = box.querySelector('[data-cat-grid]');
+      const needle = q.value.trim().toLowerCase();
+      const items = catalogData()[catalogTab].filter((i) => {
+        if (cat.value && i.category !== cat.value) return false;
+        if (!needle) return true;
+        return [i.name, i.category].concat(i.tags || []).some((s) => String(s || '').toLowerCase().includes(needle));
+      });
+      grid.innerHTML = '';
+      if (!items.length) {
+        const empty = document.createElement('div');
+        empty.className = 'vtt-cat-empty';
+        empty.textContent = catalogData()[catalogTab].length ? 'Nothing matches.' : 'The catalog has no ' + catalogTab + ' yet (see vtt-catalog.js).';
+        grid.appendChild(empty);
+        return;
+      }
+      items.forEach((item) => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'vtt-cat-card' + (catalogTab === 'tokens' ? ' vtt-cat-token' : '');
+        if (catalogTab === 'maps' && vtt.map.catalogId === item.id) card.classList.add('vtt-on');
+        const im = document.createElement('img');
+        im.loading = 'lazy';             // only previews load; full maps load when picked
+        im.alt = '';
+        im.src = item.thumb || item.file;
+        const name = document.createElement('span');
+        name.className = 'vtt-cat-name';
+        name.textContent = item.name;
+        const meta = document.createElement('span');
+        meta.className = 'vtt-cat-meta';
+        meta.textContent = item.category + (catalogTab === 'tokens' && item.size > 1 ? ' · ' + item.size + '×' + item.size : '');
+        card.append(im, name, meta);
+        card.onclick = () => pickCatalogItem(item);
+        grid.appendChild(card);
+      });
+    };
+
+    box.querySelectorAll('[data-cat-tab]').forEach((b) => {
+      b.onclick = () => { catalogTab = b.dataset.catTab; q.value = ''; fillCategories(); render(); };
+    });
+    box.querySelector('[data-cat-close]').onclick = closeCatalog;
+    box.addEventListener('pointerdown', (e) => { if (e.target === box) closeCatalog(); });
+    q.addEventListener('input', render);
+    cat.addEventListener('change', render);
+    fillCategories();
+    render();
+    q.focus();
+  }
+
+  function closeCatalog() {
+    if (root) root.querySelectorAll('.vtt-catalog').forEach((n) => n.remove());
+  }
+
+  function pickCatalogItem(item) {
+    if (catalogTab === 'maps') {
+      closeCatalog();
+      setMap(item.file, { grid: item.grid, catalogId: item.id });
+    } else {
+      // Tokens: stay open so several monsters can be added in a row.
+      addToken({ name: item.name, img: item.file, size: item.size || 1, catalogId: item.id });
+      flashStatus('Added ' + item.name);
+    }
   }
 
   /* ---------- Grid detection (finds a square grid drawn into the map image) ---------- */
@@ -762,15 +892,18 @@
     requestDraw();
   }
 
-  /* ---------- Map & tokens (single entry points, so a catalog can plug in later) ---------- */
+  /* ---------- Map & tokens (single entry points for uploads, links and the catalog) ---------- */
 
   // source: an image URL or a data URL from an uploaded file.
-  function setMap(source) {
-    if (source && isDm()) loadMapImage(source, true);
+  // opts.grid: the grid drawn into the picture, when known (catalog maps) — skips detection.
+  // opts.catalogId: which catalog entry it came from.
+  function setMap(source, opts) {
+    if (source && isDm()) loadMapImage(source, true, opts || {});
   }
 
   // isLocal: this device chose the map, so fit it and share it. Remote maps only load.
-  function loadMapImage(url, isLocal) {
+  function loadMapImage(url, isLocal, opts) {
+    opts = opts || {};
     wantedMapUrl = url;
     setStatus('Loading map…');
     const img = new Image();
@@ -779,11 +912,19 @@
       setStatus(null);
       const firstMap = !mapImg;
       mapImg = img;
-      vtt.map = { url: url, width: img.naturalWidth, height: img.naturalHeight };
+      vtt.map = { url: url, width: img.naturalWidth, height: img.naturalHeight, catalogId: opts.catalogId || null };
       if (isLocal || firstMap) fitView();
       if (isLocal) {
         onVttChange({ map: true });
-        detectGridOnMap(false);   // match a grid drawn into the map, if there is one
+        if (opts.grid && opts.grid.size >= 10) {
+          vtt.grid.size = opts.grid.size;
+          vtt.grid.offsetX = opts.grid.offsetX || 0;
+          vtt.grid.offsetY = opts.grid.offsetY || 0;
+          syncGridInputs();
+          onVttChange({ grid: true });
+        } else {
+          detectGridOnMap(false);   // match a grid drawn into the map, if there is one
+        }
       } else {
         requestDraw();
       }
@@ -805,7 +946,7 @@
     const center = screenToWorld(canvasCenter());
     const cell = vtt.grid.size;
     const { ox, oy } = gridOrigin();
-    const spot = freeCellNear(Math.round((center.x - ox) / cell - size / 2), Math.round((center.y - oy) / cell - size / 2));
+    const spot = freeCellNear(Math.round((center.x - ox) / cell - size / 2), Math.round((center.y - oy) / cell - size / 2), size);
     const token = {
       id: id,
       name: (source.name || 'Token').trim() || 'Token',
@@ -813,6 +954,7 @@
       y: spot.y,
       size: size,
       img: source.img || null,
+      catalogId: source.catalogId || null,
       color: source.color || TOKEN_COLORS[0],
       owner: source.owner ? String(source.owner).toLowerCase() : null,
       hp: null,
@@ -824,14 +966,22 @@
     return token;
   }
 
-  // Nearest cell (spiralling outwards) whose top-left no other token sits on, so new tokens don't stack.
-  function freeCellNear(x, y) {
-    const taken = new Set(Object.values(vtt.tokens).map((t) => t.x + '_' + t.y));
+  // Nearest spot (spiralling outwards) where a size×size token overlaps no other token, so new tokens don't stack.
+  function freeCellNear(x, y, size) {
+    size = size || 1;
+    const taken = new Set();
+    Object.values(vtt.tokens).forEach((t) => {
+      for (let dy = 0; dy < t.size; dy++) for (let dx = 0; dx < t.size; dx++) taken.add((t.x + dx) + '_' + (t.y + dy));
+    });
+    const fits = (cx, cy) => {
+      for (let dy = 0; dy < size; dy++) for (let dx = 0; dx < size; dx++) if (taken.has((cx + dx) + '_' + (cy + dy))) return false;
+      return true;
+    };
     for (let r = 0; r < 20; r++) {
       for (let dy = -r; dy <= r; dy++) {
         for (let dx = -r; dx <= r; dx++) {
           if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
-          if (!taken.has((x + dx) + '_' + (y + dy))) return { x: x + dx, y: y + dy };
+          if (fits(x + dx, y + dy)) return { x: x + dx, y: y + dy };
         }
       }
     }
@@ -929,7 +1079,7 @@
     }
     if (change.token && !(vtt.tokens[change.token] ? canEdit(vtt.tokens[change.token]) : isDm())) return;
     if (change.map) {
-      window.fbSaveVtt(roomPath('map'), { url: vtt.map.url, width: vtt.map.width, height: vtt.map.height });
+      window.fbSaveVtt(roomPath('map'), { url: vtt.map.url, width: vtt.map.width, height: vtt.map.height, catalogId: vtt.map.catalogId || null });
     }
     if (change.grid) {
       clearTimeout(gridSaveTimer);
@@ -961,7 +1111,7 @@
     const url = map.url || null;
     if (url !== (wantedMapUrl || null)) {
       if (url) {
-        loadMapImage(url, false);
+        loadMapImage(url, false, { catalogId: map.catalogId });
       } else {
         wantedMapUrl = null;
         setStatus(null);
@@ -1000,6 +1150,7 @@
         y: Number(t.y) || 0,
         size: Number(t.size) || 1,
         img: t.img || null,
+        catalogId: t.catalogId || null,
         color: t.color || TOKEN_COLORS[0],
         owner: t.owner || null,
         hp: (t.hp === undefined) ? null : t.hp,
@@ -1525,6 +1676,7 @@
 
   function onKeyDown(e) {
     if (!root || root.style.display === 'none') return;
+    if (e.key === 'Escape' && root.querySelector('.vtt-catalog')) { closeCatalog(); return; }
     const tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
     if (e.key === 'Escape' && fogMode) { setFogMode(null); return; }

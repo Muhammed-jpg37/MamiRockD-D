@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1050" viewBox="0 0 1400 1050">
+  <defs>
+    <pattern id="tiles" width="70" height="70" patternUnits="userSpaceOnUse">
+      <rect width="70" height="70" fill="#6f6a62"/>
+      <rect x="3" y="3" width="64" height="64" rx="4" fill="#7d776e"/>
+      <path d="M10 22 L28 18 M40 50 L58 46" stroke="#68635b" stroke-width="2"/>
+    </pattern>
+    <pattern id="grid" width="70" height="70" patternUnits="userSpaceOnUse">
+      <path d="M70 0H0V70" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+  <rect width="1400" height="1050" fill="#1b1916"/>
+  <!-- rooms and corridor (multiples of 70 so walls follow the grid) -->
+  <g fill="url(#tiles)">
+    <rect x="140" y="140" width="490" height="420"/>
+    <rect x="630" y="280" width="280" height="140"/>
+    <rect x="910" y="140" width="350" height="770"/>
+    <rect x="280" y="560" width="140" height="350"/>
+    <rect x="280" y="770" width="630" height="140"/>
+  </g>
+  <g fill="none" stroke="#2a2621" stroke-width="14" stroke-linejoin="round">
+    <path d="M140 140 H630 V280 H910 V140 H1260 V910 H910 V770 M630 420 V560 H420 V770 H910 M280 910 V560 H140 V140 M280 910 H910"/>
+  </g>
+  <!-- sarcophagi and pillars -->
+  <g fill="#5a544b" stroke="#2a2621" stroke-width="4">
+    <rect x="1015" y="245" width="140" height="70" rx="10"/>
+    <rect x="1015" y="455" width="140" height="70" rx="10"/>
+    <rect x="1015" y="665" width="140" height="70" rx="10"/>
+  </g>
+  <g fill="#8b857b" stroke="#2a2621" stroke-width="4">
+    <circle cx="245" cy="245" r="24"/><circle cx="525" cy="245" r="24"/>
+    <circle cx="245" cy="455" r="24"/><circle cx="525" cy="455" r="24"/>
+  </g>
+  <rect x="350" y="315" width="70" height="70" fill="#3b2f25" stroke="#2a2621" stroke-width="4"/>
+  <path d="M362 330 h46 M362 350 h46 M362 370 h46" stroke="#5c4a39" stroke-width="5"/>
+  <rect width="1400" height="1050" fill="url(#grid)"/>
+</svg>

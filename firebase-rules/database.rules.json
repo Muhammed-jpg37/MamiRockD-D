@@ -41,6 +41,7 @@
           "url": { ".validate": "newData.isString() && newData.val().length <= 1600000" },
           "width": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
           "height": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+          "catalogId": { ".validate": "newData.isString() && newData.val().length <= 80" },
           "$other": { ".validate": false }
         },
         "grid": {
@@ -62,6 +63,7 @@
             "y": { ".validate": "newData.isNumber()" },
             "size": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4" },
             "img": { ".validate": "newData.isString() && newData.val().length <= 200000" },
+            "catalogId": { ".validate": "newData.isString() && newData.val().length <= 80" },
             "color": { ".validate": "newData.isString() && newData.val().length <= 20" },
             "owner": { ".validate": "newData.isString() && newData.val().length <= 40" },
             "hidden": { ".validate": "newData.isBoolean()" },

@@ -8,6 +8,7 @@ Sitedeki mevcut sekme sistemine "🗺 VTT" sekmesi eklendi. Kodun neredeyse tama
 |---|---|---|
 | Harita yükleme (dosya veya bağlantı), ızgara boyutu/rengi/kaydırması | ✔ | – |
 | Haritada çizili ızgarayı otomatik algılama (yüklemede + "🔍 Detect") | ✔ | – |
+| Katalog: hazır harita ve token seçme (arama, kategori filtresi) | ✔ | – |
 | Pan / zoom (fare, tekerlek, dokunmatik pinch) | ✔ | ✔ |
 | Token ekleme, sürükleme, boyut, yeniden adlandırma, silme | ✔ | Yalnızca sahibi olduğu token'ı taşır |
 | Token sahibi (owner) seçme, oyunculardan gizleme | ✔ | – |
@@ -70,5 +71,5 @@ Projede Storage bucket'ı yok (`mamirockd-d37.firebasestorage.app` 404 döndür�
 - Duvar ve dinamik ışık yok. Fog hücre tabanlı.
 - Tek oda var (`vtt/main`).
 - Telefonda DM araç çubuğu katlanabilir yapılabilir.
-- Adım 11: harita/token kataloğu (`vtt-catalog.js`). `setMap(url)` ve `addToken({...})` buna hazır.
+- Katalog şu an örnek olarak 3 harita ve 6 token içeriyor. Hepsi bu iş için çizilmiş basit SVG'ler (`assets/`), telif sorunu yok. Yeni öğe eklemek için `vtt-catalog.js` başındaki açıklamaya bakın. Yalnızca kendi çizdiğiniz veya lisansı izin veren görselleri ekleyin. Katalog verisi Firebase'e yazılmaz, yalnızca seçilen dosyanın adresi ve `catalogId` yazılır.
 - Sonrası: oyuncular için cetvel ve şekil (AoE) araçları.

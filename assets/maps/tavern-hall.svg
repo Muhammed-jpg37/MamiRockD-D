@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1050" viewBox="0 0 1400 1050">
+  <defs>
+    <pattern id="planks" width="210" height="35" patternUnits="userSpaceOnUse">
+      <rect width="210" height="35" fill="#8a6038"/>
+      <rect y="0" width="210" height="33" fill="#9a6c40"/>
+      <path d="M140 0 V35" stroke="#6e4b2a" stroke-width="2"/>
+    </pattern>
+    <pattern id="grid" width="70" height="70" patternUnits="userSpaceOnUse">
+      <path d="M70 0H0V70" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+  <rect width="1400" height="1050" fill="#2a1d14"/>
+  <rect x="70" y="70" width="1260" height="910" fill="url(#planks)"/>
+  <rect x="70" y="70" width="1260" height="910" fill="none" stroke="#3b2a1d" stroke-width="20"/>
+  <!-- bar counter and shelves -->
+  <path d="M1050 140 H1190 V700 H1050 Z" fill="#5b3b22" stroke="#2f1f12" stroke-width="5"/>
+  <rect x="1225" y="140" width="70" height="560" fill="#4a2f1b" stroke="#2f1f12" stroke-width="4"/>
+  <g fill="#c99a52"><circle cx="1260" cy="180" r="12"/><circle cx="1260" cy="250" r="12"/><circle cx="1260" cy="320" r="12"/><circle cx="1260" cy="390" r="12"/></g>
+  <!-- fireplace -->
+  <rect x="490" y="70" width="280" height="70" fill="#4d4740" stroke="#2a2621" stroke-width="5"/>
+  <rect x="560" y="84" width="140" height="44" fill="#e07a2c"/>
+  <rect x="595" y="94" width="70" height="26" fill="#ffd36b"/>
+  <!-- round tables with stools -->
+  <g fill="#6b4526" stroke="#2f1f12" stroke-width="5">
+    <circle cx="280" cy="350" r="62"/><circle cx="630" cy="420" r="62"/><circle cx="280" cy="700" r="62"/><circle cx="700" cy="770" r="62"/>
+  </g>
+  <g fill="#7a5130" stroke="#2f1f12" stroke-width="3">
+    <circle cx="175" cy="350" r="20"/><circle cx="385" cy="350" r="20"/><circle cx="280" cy="245" r="20"/>
+    <circle cx="525" cy="420" r="20"/><circle cx="735" cy="420" r="20"/><circle cx="630" cy="525" r="20"/>
+    <circle cx="175" cy="700" r="20"/><circle cx="385" cy="700" r="20"/><circle cx="280" cy="805" r="20"/>
+    <circle cx="595" cy="770" r="20"/><circle cx="805" cy="770" r="20"/><circle cx="700" cy="665" r="20"/>
+  </g>
+  <!-- door -->
+  <rect x="630" y="965" width="140" height="30" fill="#5b3b22" stroke="#2f1f12" stroke-width="4"/>
+  <rect width="1400" height="1050" fill="url(#grid)"/>
+</svg>

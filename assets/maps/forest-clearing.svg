@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1050" viewBox="0 0 1400 1050">
+  <defs>
+    <pattern id="grid" width="70" height="70" patternUnits="userSpaceOnUse">
+      <path d="M70 0H0V70" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="1.5"/>
+    </pattern>
+    <radialGradient id="glade" cx="50%" cy="52%" r="45%">
+      <stop offset="0" stop-color="#7f9a4a"/>
+      <stop offset="1" stop-color="#4f6a2e"/>
+    </radialGradient>
+    <radialGradient id="tree" cx="40%" cy="38%" r="65%">
+      <stop offset="0" stop-color="#4c7a35"/>
+      <stop offset=".7" stop-color="#2d5022"/>
+      <stop offset="1" stop-color="#1c3416"/>
+    </radialGradient>
+  </defs>
+  <rect width="1400" height="1050" fill="#3c5726"/>
+  <ellipse cx="700" cy="545" rx="560" ry="400" fill="url(#glade)"/>
+  <path d="M-20 820 C 220 760 380 700 560 640 S 900 520 1080 470 S 1320 360 1420 300" fill="none" stroke="#8a6f47" stroke-width="64" stroke-linecap="round" opacity=".85"/>
+  <path d="M-20 820 C 220 760 380 700 560 640 S 900 520 1080 470 S 1320 360 1420 300" fill="none" stroke="#a3875a" stroke-width="40" stroke-linecap="round" opacity=".7"/>
+  <g fill="#6d6a5f" stroke="#3d3a33" stroke-width="3">
+    <ellipse cx="760" cy="430" rx="46" ry="34"/>
+    <ellipse cx="520" cy="300" rx="28" ry="22"/>
+    <ellipse cx="930" cy="690" rx="36" ry="26"/>
+  </g>
+  <g>
+    <circle cx="700" cy="560" r="44" fill="#4a3a2a" stroke="#2b2118" stroke-width="5"/>
+    <circle cx="700" cy="560" r="22" fill="#e07a2c"/>
+    <circle cx="700" cy="560" r="11" fill="#ffd36b"/>
+  </g>
+  <g fill="url(#tree)" stroke="#142810" stroke-width="4">
+    <circle cx="90" cy="110" r="110"/><circle cx="300" cy="40" r="95"/><circle cx="520" cy="-10" r="90"/>
+    <circle cx="880" cy="10" r="100"/><circle cx="1110" cy="60" r="115"/><circle cx="1330" cy="140" r="120"/>
+    <circle cx="40" cy="380" r="100"/><circle cx="60" cy="620" r="90"/><circle cx="1360" cy="560" r="110"/>
+    <circle cx="1310" cy="820" r="100"/><circle cx="1110" cy="1010" r="120"/><circle cx="820" cy="1060" r="100"/>
+    <circle cx="520" cy="1040" r="95"/><circle cx="240" cy="990" r="110"/><circle cx="1230" cy="330" r="70"/>
+    <circle cx="200" cy="250" r="70"/><circle cx="380" cy="880" r="60"/>
+  </g>
+  <rect width="1400" height="1050" fill="url(#grid)"/>
+</svg>
