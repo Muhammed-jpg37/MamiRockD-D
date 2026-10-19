@@ -83,6 +83,33 @@
           },
           "$other": { ".validate": false }
         },
+        "shapes": {
+          "$shape": {
+            ".write": true,
+            ".validate": "newData.hasChildren(['kind', 'ox', 'oy', 'ex', 'ey'])",
+            "kind": { ".validate": "newData.val() === 'circle' || newData.val() === 'cone' || newData.val() === 'line' || newData.val() === 'square'" },
+            "ox": { ".validate": "newData.isNumber()" },
+            "oy": { ".validate": "newData.isNumber()" },
+            "ex": { ".validate": "newData.isNumber()" },
+            "ey": { ".validate": "newData.isNumber()" },
+            "by": { ".validate": "newData.isString() && newData.val().length <= 40" },
+            "color": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "$other": { ".validate": false }
+          }
+        },
+        "measure": {
+          "$session": {
+            ".write": true,
+            "who": { ".validate": "newData.isString() && newData.val().length <= 40" },
+            "ax": { ".validate": "newData.isNumber()" },
+            "ay": { ".validate": "newData.isNumber()" },
+            "bx": { ".validate": "newData.isNumber()" },
+            "by": { ".validate": "newData.isNumber()" },
+            "color": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "at": { ".validate": "newData.isNumber()" },
+            "$other": { ".validate": false }
+          }
+        },
         "log": {
           "$entry": {
             ".write": true,

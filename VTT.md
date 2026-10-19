@@ -16,6 +16,8 @@ Sitedeki mevcut sekme sistemine "🗺 VTT" sekmesi eklendi. Kodun neredeyse tama
 | Oyuncu token'ında HP çubuğu (karakter sayfasından okunur) | ✔ | ✔ |
 | Canavar HP'si (token menüsünden) | ✔ | Görmez |
 | Zar atıcı (d4–d100) ve ortak log (son 20 atış) | ✔ | ✔ |
+| Cetvel: sürükleyerek ölçüm (kare ve feet), sürüklerken herkes görür | ✔ | ✔ |
+| Alan şablonları: daire, koni, çizgi, küp. Etkilenen kareler boyanır | ✔ (herkesinkini silebilir) | ✔ (yalnızca kendininkini siler) |
 
 Tüm değişiklikler Firebase üzerinden anlık eşleşiyor.
 
@@ -27,6 +29,8 @@ vtt/main/grid           { size, visible, color, opacity, offsetX, offsetY }   of
 vtt/main/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden, hp? }   x/y = ızgara hücresi
 vtt/main/fog            { enabled, revealed: { "x_y": true } }
 vtt/main/log/<key>      { by, die, result, at }   en yeni 20 kayıt tutulur
+vtt/main/shapes/<id>    { kind, ox, oy, ex, ey, by, color }   kare cinsinden; kind = circle | cone | line | square
+vtt/main/measure/<sekme> { who, ax, ay, bx, by, color, at }   yalnızca sürükleme sürerken var
 ```
 
 Oyuncu HP'si ayrıca saklanmıyor, doğrudan `inventories/<nickname>/hp` okunuyor. HP hâlâ yalnızca karakter sayfasından değiştiriliyor.
@@ -72,4 +76,5 @@ Projede Storage bucket'ı yok (`mamirockd-d37.firebasestorage.app` 404 döndür�
 - Tek oda var (`vtt/main`).
 - Telefonda DM araç çubuğu katlanabilir yapılabilir.
 - Katalog şu an örnek olarak 3 harita ve 6 token içeriyor. Hepsi bu iş için çizilmiş basit SVG'ler (`assets/`), telif sorunu yok. Yeni öğe eklemek için `vtt-catalog.js` başındaki açıklamaya bakın. Yalnızca kendi çizdiğiniz veya lisansı izin veren görselleri ekleyin. Katalog verisi Firebase'e yazılmaz, yalnızca seçilen dosyanın adresi ve `catalogId` yazılır.
-- Sonrası: oyuncular için cetvel ve şekil (AoE) araçları.
+- Ölçümler D&D varsayılanını kullanır: çapraz dahil her kare 5 ft. Koni, uzunluğu kadar geniştir. Çizgi 5 ft genişliğindedir. Bir kare, merkezi şablonun içindeyse etkilenmiş sayılır.
+- Şablon silme: masaüstünde sağ tık, dokunmatikte 🧹 butonu (uzun basma menüsü yok).

@@ -209,6 +209,14 @@
           </select>
           <button class="btn small ghost" data-act="fog-reset" title="Cover the whole map again">↺</button>
         </div>
+        <div class="vtt-group vtt-tools">
+          <button class="btn small ghost" data-tool="ruler" title="Ruler: drag to measure (everyone sees it while you drag)">📏</button>
+          <button class="btn small ghost" data-tool="circle" title="Circle / sphere: drag out from the centre">◯</button>
+          <button class="btn small ghost" data-tool="cone" title="Cone: drag from where it starts">◁</button>
+          <button class="btn small ghost" data-tool="line" title="Line (5 ft wide): drag from where it starts">━</button>
+          <button class="btn small ghost" data-tool="square" title="Cube: drag from one corner">▢</button>
+          <button class="btn small ghost" data-act="clear-shapes" title="Remove your templates (the DM removes all). Right-click one to remove just that.">🧹</button>
+        </div>
         <div class="vtt-group vtt-dice" data-el="dice">
           <span title="Roll a die; everyone sees the result">🎲</span>
           ${DICE.map((d) => '<button class="btn small ghost" data-roll="' + d + '">d' + d + '</button>').join('')}
@@ -241,6 +249,9 @@
     root.addEventListener('click', (e) => {
       const die = e.target.closest('[data-roll]');
       if (die) { rollDie(parseInt(die.dataset.roll, 10)); return; }
+      const toolBtn = e.target.closest('[data-tool]');
+      if (toolBtn) { setTool(tool === toolBtn.dataset.tool ? null : toolBtn.dataset.tool); return; }
+      if (e.target.closest('[data-act="clear-shapes"]')) { clearMyShapes(); return; }
       const toggle = e.target.closest('[data-act="log"]');
       if (toggle) { logOpen = !logOpen; renderLog(); }
     });
@@ -789,7 +800,8 @@
     if (!root) return;
     root.querySelector('[data-act="fog-reveal"]').classList.toggle('vtt-on', fogMode === 'reveal');
     root.querySelector('[data-act="fog-hide"]').classList.toggle('vtt-on', fogMode === 'hide');
-    canvas.classList.toggle('vtt-painting', !!fogMode);
+    if (fogMode && tool) setTool(null);
+    canvas.classList.toggle('vtt-painting', !!fogMode || !!tool);
     // Painting only makes sense with fog on.
     if (fogMode && !vtt.fog.enabled) {
       vtt.fog.enabled = true;
@@ -1161,6 +1173,7 @@
     syncHpWatchers();
     vtt.log = room.log || {};
     renderLog();
+    applyRemoteTools(room);
     if (selectedId && !next[selectedId]) selectedId = null;
     // Someone deleted the token we are holding: drop it. Otherwise our drag keeps
     // drawing at the pointer (tokenRect reads drag.px/py), so remote echoes can't yank it.
@@ -1224,6 +1237,328 @@
       ctx.fillStyle = cssVar('--info', '#6f9ac4');
       ctx.fillRect(x + w * pct, y, Math.min(w * (1 - pct), w * temp / max), h);
     }
+  }
+
+  /* ---------- Ruler and area templates (everyone can use them) ---------- */
+
+  const FEET_PER_SQUARE = 5;
+  const MEASURE_SYNC_MS = 100;
+  const MEASURE_STALE_MS = 15000;   // a ruler left behind by a closed tab disappears after this
+  const TOOL_COLORS = ['#e8cf7a', '#6f9ac4', '#e0705f', '#7cc082', '#b48ad8', '#e59a4f', '#4fb3a9'];
+  const sessionId = 's' + Math.random().toString(36).slice(2, 10);
+  vtt.shapes = {};     // vtt/main/shapes/<id>:   { kind, ox, oy, ex, ey, by, color }   in grid squares
+  vtt.measures = {};   // vtt/main/measure/<tab>: { who, ax, ay, bx, by, color, at }   live rulers
+  const measureSeen = {};   // tab -> local time its ruler last changed (other devices' clocks may differ)
+  let tool = null;          // null | 'ruler' | 'circle' | 'cone' | 'line' | 'square'
+
+  function whoAmI() {
+    const u = window.currentUser;
+    return (u && u.nickname) || 'Guest';
+  }
+
+  function userColor(name) {
+    let h = 0;
+    for (const ch of String(name || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return TOOL_COLORS[h % TOOL_COLORS.length];
+  }
+
+  // Map px <-> grid squares measured from the grid origin, so templates follow the grid.
+  function toSquares(w) {
+    const s = vtt.grid.size;
+    const { ox, oy } = gridOrigin();
+    return { x: (w.x - ox) / s, y: (w.y - oy) / s };
+  }
+
+  function toWorld(c) {
+    const s = vtt.grid.size;
+    const { ox, oy } = gridOrigin();
+    return { x: ox + c.x * s, y: oy + c.y * s };
+  }
+
+  const snapCentre = (c) => ({ x: Math.floor(c.x) + 0.5, y: Math.floor(c.y) + 0.5 });
+  const snapCorner = (c) => ({ x: Math.round(c.x), y: Math.round(c.y) });
+
+  function setTool(next) {
+    tool = next || null;
+    if (tool && fogMode) setFogMode(null);
+    if (!root) return;
+    root.querySelectorAll('[data-tool]').forEach((b) => b.classList.toggle('vtt-on', b.dataset.tool === tool));
+    canvas.classList.toggle('vtt-painting', !!tool || !!fogMode);
+  }
+
+  // D&D default: every square, diagonal or not, is 5 ft.
+  function rulerSquares(a, b) {
+    return Math.max(Math.abs(Math.round(b.x - a.x)), Math.abs(Math.round(b.y - a.y)));
+  }
+
+  // Derived size and direction of a template; computed the same way on every device.
+  function shapeGeometry(sh) {
+    const dx = sh.ex - sh.ox;
+    const dy = sh.ey - sh.oy;
+    if (sh.kind === 'square') {
+      const side = Math.max(1, Math.round(Math.max(Math.abs(dx), Math.abs(dy))));
+      const sx = dx < 0 ? -1 : 1;
+      const sy = dy < 0 ? -1 : 1;
+      return {
+        kind: 'square', size: side,
+        x1: Math.min(sh.ox, sh.ox + sx * side), y1: Math.min(sh.oy, sh.oy + sy * side),
+        x2: Math.max(sh.ox, sh.ox + sx * side), y2: Math.max(sh.oy, sh.oy + sy * side),
+        label: side * FEET_PER_SQUARE + ' ft cube'
+      };
+    }
+    const len = Math.max(1, Math.round(Math.hypot(dx, dy)));
+    const ang = (dx || dy) ? Math.atan2(dy, dx) : 0;
+    const word = { circle: ' ft radius', cone: ' ft cone', line: ' ft line' }[sh.kind] || ' ft';
+    return { kind: sh.kind, size: len, ux: Math.cos(ang), uy: Math.sin(ang), label: len * FEET_PER_SQUARE + word };
+  }
+
+  // Is point (x, y), in squares, inside the template? Used for shading squares and for clicks.
+  function inShape(sh, g, x, y) {
+    if (g.kind === 'square') return x >= g.x1 && x <= g.x2 && y >= g.y1 && y <= g.y2;
+    const vx = x - sh.ox;
+    const vy = y - sh.oy;
+    if (g.kind === 'circle') return Math.hypot(vx, vy) <= g.size + 1e-6;
+    const along = vx * g.ux + vy * g.uy;
+    const across = Math.abs(vx * g.uy - vy * g.ux);
+    if (along < 0 || along > g.size + 1e-6) return false;
+    if (g.kind === 'line') return across <= 0.5;
+    return across <= along / 2 + 1e-6;   // cone: as wide as it is long at its end
+  }
+
+  function canEditShape(sh) {
+    return isDm() || String(sh.by || '').toLowerCase() === whoAmI().toLowerCase();
+  }
+
+  function hitShape(p) {
+    const c = toSquares(screenToWorld(p));
+    const list = Object.keys(vtt.shapes).map((id) => Object.assign({ id: id }, vtt.shapes[id]));
+    for (let i = list.length - 1; i >= 0; i--) {
+      const sh = list[i];
+      if (canEditShape(sh) && inShape(sh, shapeGeometry(sh), c.x, c.y)) return sh;
+    }
+    return null;
+  }
+
+  function startToolDrag(p) {
+    const c = toSquares(screenToWorld(p));
+    const a = tool === 'ruler' ? snapCentre(c) : snapCorner(c);
+    drag = { kind: 'tool', tool: tool, a: a, b: tool === 'ruler' ? a : c };
+    if (tool === 'ruler') sendMeasure(true);
+    requestDraw();
+  }
+
+  function moveToolDrag(p) {
+    const c = toSquares(screenToWorld(p));
+    drag.b = drag.tool === 'ruler' ? snapCentre(c) : c;
+    if (drag.tool === 'ruler') sendMeasure(false);
+    requestDraw();
+  }
+
+  function endToolDrag() {
+    const d = drag;
+    drag = null;
+    if (d.tool === 'ruler') {
+      clearMeasure();
+    } else if (Math.hypot(d.b.x - d.a.x, d.b.y - d.a.y) >= 0.5) {   // a plain click places nothing
+      const id = 'sh' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+      const shape = { kind: d.tool, ox: d.a.x, oy: d.a.y, ex: +d.b.x.toFixed(3), ey: +d.b.y.toFixed(3), by: whoAmI(), color: userColor(whoAmI()) };
+      vtt.shapes[id] = shape;
+      if (typeof window.fbSaveVtt === 'function') window.fbSaveVtt(roomPath('shapes/' + id), shape);
+    }
+    requestDraw();
+  }
+
+  function cancelToolDrag() {
+    if (drag && drag.tool === 'ruler') clearMeasure();
+    drag = null;
+  }
+
+  // Others see a ruler while it is being dragged; it's removed when released.
+  function sendMeasure(force) {
+    if (typeof window.fbSaveVtt !== 'function' || !drag) return;
+    const now = Date.now();
+    if (!force && now - (drag.sentAt || 0) < MEASURE_SYNC_MS) return;
+    if (!force && drag.sentB && drag.sentB.x === drag.b.x && drag.sentB.y === drag.b.y) return;
+    drag.sentAt = now;
+    drag.sentB = drag.b;
+    const who = whoAmI();
+    window.fbSaveVtt(roomPath('measure/' + sessionId), { who: who, ax: drag.a.x, ay: drag.a.y, bx: drag.b.x, by: drag.b.y, color: userColor(who), at: now });
+  }
+
+  function clearMeasure() {
+    if (typeof window.fbSaveVtt === 'function') window.fbSaveVtt(roomPath('measure/' + sessionId), null);
+  }
+
+  function removeShapes(ids) {
+    if (!ids.length) return;
+    const patch = {};
+    ids.forEach((id) => { delete vtt.shapes[id]; patch[id] = null; });
+    if (typeof window.fbSaveVtt === 'function') window.fbSaveVtt(roomPath('shapes'), patch);
+    requestDraw();
+  }
+
+  // Players clear their own templates; the DM clears everyone's.
+  function clearMyShapes() {
+    const ids = Object.keys(vtt.shapes).filter((id) => canEditShape(vtt.shapes[id]));
+    if (!ids.length) { flashStatus('No templates to clear'); return; }
+    removeShapes(ids);
+    flashStatus(isDm() ? 'Cleared all templates' : 'Cleared your templates');
+  }
+
+  function openShapeMenu(sh, p) {
+    closePopups();
+    const pop = document.createElement('div');
+    pop.className = 'vtt-pop';
+    const title = document.createElement('div');
+    title.className = 'vtt-pop-title';
+    title.textContent = shapeGeometry(sh).label + ' — ' + (sh.by || '?');
+    pop.appendChild(title);
+    pop.appendChild(button('🗑 Remove', () => { removeShapes([sh.id]); closePopups(); }));
+    placePopup(pop, p);
+  }
+
+  // A label that stays the same size on screen at any zoom.
+  function drawTag(text, x, y, color) {
+    const fs = 13 / view.zoom;
+    ctx.font = '600 ' + fs + 'px ' + cssVar('--font-body', 'serif');
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const w = ctx.measureText(text).width + fs;
+    ctx.fillStyle = 'rgba(10,8,6,0.82)';
+    ctx.fillRect(x - w / 2, y - fs * 0.8, w, fs * 1.6);
+    ctx.fillStyle = color;
+    ctx.fillText(text, x, y);
+  }
+
+  function drawShape(sh, preview) {
+    const g = shapeGeometry(sh);
+    const s = vtt.grid.size;
+    const color = sh.color || userColor(sh.by);
+
+    // Shade every square whose centre the template covers — what the rules count.
+    let minX, minY, maxX, maxY;
+    if (g.kind === 'square') { minX = g.x1; minY = g.y1; maxX = g.x2; maxY = g.y2; }
+    else { minX = sh.ox - g.size; minY = sh.oy - g.size; maxX = sh.ox + g.size; maxY = sh.oy + g.size; }
+    ctx.save();
+    ctx.globalAlpha = preview ? 0.3 : 0.24;
+    ctx.fillStyle = color;
+    for (let cy = Math.floor(minY) - 1; cy <= Math.ceil(maxY); cy++) {
+      for (let cx = Math.floor(minX) - 1; cx <= Math.ceil(maxX); cx++) {
+        if (!inShape(sh, g, cx + 0.5, cy + 0.5)) continue;
+        const w = toWorld({ x: cx, y: cy });
+        ctx.fillRect(w.x, w.y, s, s);
+      }
+    }
+    ctx.restore();
+
+    // Exact outline on top.
+    const o = toWorld({ x: sh.ox, y: sh.oy });
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2 / view.zoom;
+    if (preview) ctx.setLineDash([6 / view.zoom, 4 / view.zoom]);
+    ctx.beginPath();
+    let labelAt;
+    if (g.kind === 'square') {
+      const a = toWorld({ x: g.x1, y: g.y1 });
+      ctx.rect(a.x, a.y, (g.x2 - g.x1) * s, (g.y2 - g.y1) * s);
+      labelAt = toWorld({ x: (g.x1 + g.x2) / 2, y: (g.y1 + g.y2) / 2 });
+    } else if (g.kind === 'circle') {
+      ctx.arc(o.x, o.y, g.size * s, 0, Math.PI * 2);
+      labelAt = { x: o.x, y: o.y - g.size * s * 0.5 };
+    } else {
+      const L = g.size * s;
+      const nx = -g.uy;
+      const ny = g.ux;
+      const half = g.kind === 'line' ? s / 2 : L / 2;
+      const ex = o.x + g.ux * L;
+      const ey = o.y + g.uy * L;
+      if (g.kind === 'line') {
+        ctx.moveTo(o.x + nx * half, o.y + ny * half);
+        ctx.lineTo(ex + nx * half, ey + ny * half);
+        ctx.lineTo(ex - nx * half, ey - ny * half);
+        ctx.lineTo(o.x - nx * half, o.y - ny * half);
+      } else {
+        ctx.moveTo(o.x, o.y);
+        ctx.lineTo(ex + nx * half, ey + ny * half);
+        ctx.lineTo(ex - nx * half, ey - ny * half);
+      }
+      ctx.closePath();
+      labelAt = { x: o.x + g.ux * L * 0.6, y: o.y + g.uy * L * 0.6 };
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(o.x, o.y, 4 / view.zoom, 0, Math.PI * 2);   // point of origin
+    ctx.fill();
+    ctx.restore();
+    drawTag(g.label, labelAt.x, labelAt.y, color);
+  }
+
+  function drawRuler(a, b, color, who) {
+    const pa = toWorld(a);
+    const pb = toWorld(b);
+    const sq = rulerSquares(a, b);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+    ctx.lineWidth = 6 / view.zoom;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pa.x, pa.y);
+    ctx.lineTo(pb.x, pb.y);
+    ctx.stroke();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3 / view.zoom;
+    ctx.stroke();
+    ctx.fillStyle = color;
+    [pa, pb].forEach((pt) => { ctx.beginPath(); ctx.arc(pt.x, pt.y, 5 / view.zoom, 0, Math.PI * 2); ctx.fill(); });
+    ctx.restore();
+    const text = sq * FEET_PER_SQUARE + ' ft (' + sq + ' sq)' + (who ? ' · ' + who : '');
+    drawTag(text, pb.x, pb.y - 18 / view.zoom, color);
+  }
+
+  // After the fog: templates and rulers are table furniture everyone should see.
+  function drawToolsLayer() {
+    // Templates can reach past the map edge; only the part on the map matters.
+    const b = boardSize();
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, b.w, b.h);
+    ctx.clip();
+    Object.keys(vtt.shapes).forEach((id) => drawShape(vtt.shapes[id], false));
+    ctx.restore();
+    const now = Date.now();
+    Object.keys(vtt.measures).forEach((sid) => {
+      if (sid === sessionId) return;   // ours is drawn from the live drag below
+      if (now - (measureSeen[sid] || 0) > MEASURE_STALE_MS) return;
+      const m = vtt.measures[sid] || {};
+      drawRuler({ x: m.ax, y: m.ay }, { x: m.bx, y: m.by }, m.color || userColor(m.who), m.who);
+    });
+    if (drag && drag.kind === 'tool') {
+      if (drag.tool === 'ruler') drawRuler(drag.a, drag.b, userColor(whoAmI()), null);
+      else if (Math.hypot(drag.b.x - drag.a.x, drag.b.y - drag.a.y) >= 0.5) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, b.w, b.h);
+        ctx.clip();
+        drawShape({ kind: drag.tool, ox: drag.a.x, oy: drag.a.y, ex: drag.b.x, ey: drag.b.y, by: whoAmI(), color: userColor(whoAmI()) }, true);
+        ctx.restore();
+      }
+    }
+  }
+
+  // Remote templates and rulers; called from applyRemote.
+  function applyRemoteTools(room) {
+    vtt.shapes = room.shapes || {};
+    const next = room.measure || {};
+    const now = Date.now();
+    Object.keys(next).forEach((sid) => {
+      if (JSON.stringify(next[sid]) !== JSON.stringify(vtt.measures[sid])) measureSeen[sid] = now;
+    });
+    vtt.measures = next;
+    // Redraw once a forgotten ruler has gone stale so it actually disappears.
+    if (Object.keys(next).some((sid) => sid !== sessionId)) setTimeout(requestDraw, MEASURE_STALE_MS + 200);
   }
 
   /* ---------- Dice ---------- */
@@ -1351,6 +1686,7 @@
     if (vtt.grid.visible) drawGrid(b);
     drawTokens();
     drawFog(b);
+    drawToolsLayer();
 
     const hint = root.querySelector('[data-el="hint"]');
     if (hint) hint.style.display = mapImg || Object.values(vtt.tokens).some(isVisible) ? 'none' : '';
@@ -1526,8 +1862,11 @@
     }, { passive: false });
     canvas.addEventListener('contextmenu', (e) => {
       e.preventDefault();
-      const t = isDm() ? hitToken(eventPoint(e)) : null;
-      if (t) openTokenMenu(t, eventPoint(e));
+      const p = eventPoint(e);
+      const t = isDm() ? hitToken(p) : null;
+      if (t) { openTokenMenu(t, p); return; }
+      const shape = hitShape(p);
+      if (shape) openShapeMenu(shape, p);
     });
   }
 
@@ -1542,6 +1881,7 @@
       // Second finger: switch to pinch zoom; any token drag snaps back, a fog stroke is kept.
       cancelLongPress();
       if (drag && drag.kind === 'fog') onVttChange({ fog: 'cells' });
+      if (drag && drag.kind === 'tool') cancelToolDrag();
       const [a, b] = [...pointers.values()];
       drag = { kind: 'pinch', dist: Math.hypot(a.x - b.x, a.y - b.y), mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
       requestDraw();
@@ -1553,6 +1893,11 @@
       // The stroke keeps the mode it started with, even if the toolbar changes mid-stroke.
       drag = { kind: 'fog', mode: fogMode, last: p };
       paintFogStroke(p, p, drag.mode);
+      return;
+    }
+
+    if (tool) {
+      startToolDrag(p);
       return;
     }
 
@@ -1604,6 +1949,8 @@
         drag.flushedAt = now;
         onVttChange({ fog: 'cells' });
       }
+    } else if (drag.kind === 'tool') {
+      moveToolDrag(p);
     } else if (drag.kind === 'pan') {
       view.offsetX += p.x - drag.last.x;
       view.offsetY += p.y - drag.last.y;
@@ -1621,7 +1968,6 @@
     }
   }
 
-  // Shares the cell under a dragged token so others see it move; throttled unless final.
   // Grid cell nearest to where the dragged token is being held.
   function dragCell() {
     const s = vtt.grid.size;
@@ -1629,6 +1975,7 @@
     return { x: Math.round((drag.px - ox) / s), y: Math.round((drag.py - oy) / s) };
   }
 
+  // Shares the cell under a dragged token so others see it move; throttled unless final.
   function sendDragPosition(final) {
     if (!drag || drag.kind !== 'token' || typeof window.fbSaveVtt !== 'function') return;
     if (!canEdit(vtt.tokens[drag.id])) return;
@@ -1650,6 +1997,11 @@
     if (drag.kind === 'fog') {
       drag = null;
       onVttChange({ fog: 'cells' });
+      return;
+    }
+
+    if (drag.kind === 'tool') {
+      endToolDrag();
       return;
     }
 
@@ -1680,6 +2032,7 @@
     const tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
     if (e.key === 'Escape' && fogMode) { setFogMode(null); return; }
+    if (e.key === 'Escape' && tool) { cancelToolDrag(); setTool(null); requestDraw(); return; }
     if (!selectedId) return;
     if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
