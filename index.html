@@ -13862,6 +13862,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-analytics.js";
     import { getDatabase, ref, set, get, onValue, push, off, update } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
 
     // Verified Firebase Realtime Database European configuration
     const firebaseConfig = {
@@ -13887,6 +13888,18 @@
     } catch (e) {
       console.warn("Firebase initialization error:", e);
       updateSyncBadge('offline', '⚠️ Offline Mode');
+    }
+
+    let storage = null;
+    try {
+      if (app) {
+        storage = getStorage(app);
+        // The SDK retries failed uploads for up to 10 minutes; give up sooner so the UI can say why.
+        storage.maxUploadRetryTime = 20000;
+        storage.maxOperationRetryTime = 20000;
+      }
+    } catch (e) {
+      console.warn("Firebase Storage unavailable:", e);
     }
 
     // Deep cleaner: Strips 'undefined' properties so Firebase RTDB never rejects writes
@@ -14144,6 +14157,26 @@
         .catch((err) => {
           console.warn("Firebase VTT save error:", err);
           updateSyncBadge('offline', '⚠️ Sync Warning');
+        });
+    };
+
+    // Uploads a map image (Blob) to Storage at vtt/maps/<time>.<ext> and resolves with its download URL.
+    // Big images stay out of the database; only this URL is written there.
+    window.fbUploadVttMap = function(blob) {
+      if (!storage || !blob) return Promise.reject(new Error('Firebase Storage is not available'));
+      const ext = (blob.type && blob.type.split('/')[1]) || 'webp';
+      const fileRef = sRef(storage, 'vtt/maps/' + Date.now() + '.' + ext);
+      updateSyncBadge('syncing', '🔄 Uploading Map...');
+      return uploadBytes(fileRef, blob, { contentType: blob.type || 'image/webp' })
+        .then((res) => getDownloadURL(res.ref))
+        .then((url) => {
+          updateSyncBadge('online', '🟢 Firebase Live');
+          return url;
+        })
+        .catch((err) => {
+          console.warn("Firebase map upload error:", err);
+          updateSyncBadge('offline', '⚠️ Upload Failed');
+          throw err;
         });
     };
 

@@ -17,9 +17,8 @@
   const ROOM_ID = 'main';
   const DRAG_SYNC_MS = 100;                       // live position updates while dragging, at most this often
   const GRID_SYNC_MS = 250;                       // grid inputs fire per keystroke; write once typing settles
-  const MAP_MAX_EDGE = 2048;
-  // Until Storage lands (Step 7) uploaded maps travel as data URLs in the database, so keep them small.
-  const MAP_SYNC_MAX_CHARS = 2500000;
+  const MAP_MAX_EDGE = 2048;                      // uploaded maps are shrunk to this before going to Storage
+  const MAP_MAX_BYTES = 8 * 1024 * 1024;          // refuse anything still bigger after compression
 
   // Shared table state (what Step 5 will sync).
   const vtt = {
@@ -97,6 +96,12 @@
       .vtt-swatches { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
       .vtt-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
       .vtt-swatch.active { border-color: var(--text); }
+      .vtt-status {
+        position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 15;
+        padding: 5px 14px; border-radius: 999px; pointer-events: none;
+        background: var(--surface-1); border: 1px solid var(--line-strong); box-shadow: var(--shadow-2);
+        font-family: var(--font-display); font-size: 12px; color: var(--accent);
+      }
       #vtt-view-container.vtt-player .vtt-dm-only { display: none !important; }
       .vtt-pop select, .vtt-form select {
         background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
@@ -147,6 +152,7 @@
       </div>
       <div class="vtt-stage">
         <canvas></canvas>
+        <div class="vtt-status" data-el="status" style="display:none"></div>
         <div class="vtt-hint" data-el="hint"><span data-el="hint-title">Load a map to begin</span><br><small>Drag to pan · wheel or pinch to zoom</small></div>
       </div>
     `;
@@ -173,14 +179,7 @@
     el('map-file').addEventListener('change', (e) => {
       const file = e.target.files && e.target.files[0];
       e.target.value = '';
-      if (!file) return;
-      downscaleImage(file, MAP_MAX_EDGE, 'image/webp', 0.82).then((url) => {
-        if (url.length > MAP_SYNC_MAX_CHARS) {
-          alert('This map is too large to share even after compressing it. Try a smaller image, or use "Map URL" with a link.');
-          return;
-        }
-        setMap(url);
-      }, () => alert('Could not read that image.'));
+      if (file) uploadMap(file);
     });
 
     el('grid-visible').addEventListener('change', (e) => {
@@ -311,9 +310,11 @@
   // isLocal: this device chose the map, so fit it and share it. Remote maps only load.
   function loadMapImage(url, isLocal) {
     wantedMapUrl = url;
+    setStatus('Loading map…');
     const img = new Image();
     img.onload = () => {
       if (wantedMapUrl !== url) return;   // a newer map was picked meanwhile
+      setStatus(null);
       const firstMap = !mapImg;
       mapImg = img;
       vtt.map = { url: url, width: img.naturalWidth, height: img.naturalHeight };
@@ -323,6 +324,7 @@
     };
     img.onerror = () => {
       if (wantedMapUrl !== url) return;
+      setStatus(null);
       if (isLocal) { wantedMapUrl = vtt.map.url; alert('Could not load that map image.'); }
       else console.warn('VTT: could not load shared map image', url.slice(0, 80));
     };
@@ -376,6 +378,43 @@
     onVttChange({ token: id });
   }
 
+  // Shrinks the picture, puts it in Firebase Storage and shares only its URL.
+  function uploadMap(file) {
+    if (!isDm()) return;
+    if (typeof window.fbUploadVttMap !== 'function') {
+      alert('Map upload needs the Firebase connection. You can still paste a link with "Map URL".');
+      return;
+    }
+    setStatus('Uploading map…');
+    scaleImageFile(file, MAP_MAX_EDGE)
+      .then((c) => canvasToBlob(c, 'image/webp', 0.82))
+      .then((blob) => {
+        if (blob.size > MAP_MAX_BYTES) throw new Error('too-big');
+        return window.fbUploadVttMap(blob);
+      })
+      .then((url) => {
+        setStatus(null);
+        setMap(url);
+      })
+      .catch((err) => {
+        setStatus(null);
+        if (err && err.message === 'too-big') {
+          alert('This map is still too large after compressing it. Try a smaller image.');
+        } else if (err && /unauthorized|permission/i.test(err.code || err.message || '')) {
+          alert('Firebase Storage refused the upload (check the Storage rules). You can paste a link with "Map URL" meanwhile.');
+        } else {
+          alert('Map upload failed. Either the connection dropped or Firebase Storage is not set up for this project yet. You can paste a link with "Map URL" meanwhile.');
+        }
+      });
+  }
+
+  function setStatus(text) {
+    const s = root && root.querySelector('[data-el="status"]');
+    if (!s) return;
+    s.textContent = text || '';
+    s.style.display = text ? '' : 'none';
+  }
+
   function promptMapUrl() {
     const url = prompt('Paste an image link for the map:');
     if (url && url.trim()) setMap(url.trim());
@@ -427,6 +466,7 @@
         loadMapImage(url, false);
       } else {
         wantedMapUrl = null;
+        setStatus(null);
         mapImg = null;
         vtt.map = { url: null, width: 0, height: 0 };
       }
@@ -986,25 +1026,33 @@
     return b;
   }
 
-  // Shrinks a picture to fit max x max and returns a compressed data URL (keeps sync payloads light).
-  function downscaleImage(file, max, type, quality) {
+  // Draws a picture file onto a canvas no larger than max x max.
+  function scaleImageFile(file, max) {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onerror = reject;
-      reader.onload = () => {
-        const im = new Image();
-        im.onerror = reject;
-        im.onload = () => {
-          const k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
-          const c = document.createElement('canvas');
-          c.width = Math.max(1, Math.round(im.naturalWidth * k));
-          c.height = Math.max(1, Math.round(im.naturalHeight * k));
-          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-          resolve(c.toDataURL(type || 'image/webp', quality || 0.85));
-        };
-        im.src = reader.result;
+      const url = URL.createObjectURL(file);
+      const im = new Image();
+      im.onerror = () => { URL.revokeObjectURL(url); reject(new Error('unreadable')); };
+      im.onload = () => {
+        URL.revokeObjectURL(url);
+        const k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(im.naturalWidth * k));
+        c.height = Math.max(1, Math.round(im.naturalHeight * k));
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        resolve(c);
       };
-      reader.readAsDataURL(file);
+      im.src = url;
     });
+  }
+
+  function canvasToBlob(c, type, quality) {
+    return new Promise((resolve, reject) => {
+      c.toBlob((b) => (b ? resolve(b) : reject(new Error('encode-failed'))), type, quality);
+    });
+  }
+
+  // Small token pictures stay inline as data URLs; they are a few KB each.
+  function downscaleImage(file, max) {
+    return scaleImageFile(file, max).then((c) => c.toDataURL('image/webp', 0.85));
   }
 })();
