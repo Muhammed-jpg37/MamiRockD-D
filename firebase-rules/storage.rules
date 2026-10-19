@@ -1,0 +1,19 @@
+rules_version = '2';
+
+// For when Storage is enabled: anyone may view VTT maps, new uploads must be
+// images under 10 MB, and existing maps can't be overwritten or deleted from
+// the site. Everything else in the bucket is closed.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /vtt/maps/{file} {
+      allow read: if true;
+      allow create: if request.resource.size < 10 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+      allow update, delete: if false;
+    }
+
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

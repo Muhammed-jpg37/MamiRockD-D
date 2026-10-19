@@ -1,0 +1,97 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "accounts": {
+      ".read": true,
+      "$account": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['nickname', 'role']) && (newData.child('role').val() === 'dm' || newData.child('role').val() === 'player')"
+      }
+    },
+
+    "inventories": {
+      ".read": true,
+      "$player": { ".write": true }
+    },
+
+    "inventory_backgrounds": {
+      "$player": { ".read": true, ".write": true }
+    },
+
+    "prefs": {
+      "$player": { ".read": true, ".write": true }
+    },
+
+    "campaign_notes": {
+      "users": {
+        "$owner": { ".read": true, ".write": true }
+      }
+    },
+
+    "campaign_background": { ".read": true },
+    "inventory": { ".read": true },
+
+    "vtt": {
+      ".read": true,
+      "$room": {
+        "map": {
+          ".write": true,
+          "url": { ".validate": "newData.isString() && newData.val().length <= 1600000" },
+          "width": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+          "height": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+          "$other": { ".validate": false }
+        },
+        "grid": {
+          ".write": true,
+          "size": { ".validate": "newData.isNumber() && newData.val() >= 10 && newData.val() <= 400" },
+          "visible": { ".validate": "newData.isBoolean()" },
+          "color": { ".validate": "newData.isString() && newData.val().length <= 20" },
+          "opacity": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+          "$other": { ".validate": false }
+        },
+        "tokens": {
+          "$token": {
+            ".write": true,
+            "name": { ".validate": "newData.isString() && newData.val().length <= 60" },
+            "id": { ".validate": "newData.isString() && newData.val() === $token" },
+            "x": { ".validate": "newData.isNumber()" },
+            "y": { ".validate": "newData.isNumber()" },
+            "size": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4" },
+            "img": { ".validate": "newData.isString() && newData.val().length <= 200000" },
+            "color": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "owner": { ".validate": "newData.isString() && newData.val().length <= 40" },
+            "hidden": { ".validate": "newData.isBoolean()" },
+            "hp": {
+              "current": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+              "max": { ".validate": "newData.isNumber() && newData.val() > 0" },
+              "$other": { ".validate": false }
+            },
+            "$other": { ".validate": false }
+          }
+        },
+        "fog": {
+          "enabled": { ".write": true, ".validate": "newData.isBoolean()" },
+          "revealed": {
+            ".write": true,
+            "$cell": { ".validate": "newData.val() === true && $cell.matches(/^[0-9]+_[0-9]+$/)" }
+          },
+          "$other": { ".validate": false }
+        },
+        "log": {
+          "$entry": {
+            ".write": true,
+            ".validate": "newData.hasChildren(['by', 'die', 'result', 'at'])",
+            "by": { ".validate": "newData.isString() && newData.val().length <= 40" },
+            "die": { ".validate": "newData.isNumber() && newData.val() >= 2 && newData.val() <= 100" },
+            "result": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= newData.parent().child('die').val()" },
+            "at": { ".validate": "newData.isNumber()" },
+            "$other": { ".validate": false }
+          }
+        },
+        "$other": { ".validate": false }
+      }
+    }
+  }
+}
