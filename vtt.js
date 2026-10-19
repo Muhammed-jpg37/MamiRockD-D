@@ -1,0 +1,755 @@
+/* ========================================================
+   VIRTUAL TABLETOP (VTT)
+   Map, pan/zoom, grid and tokens. Everything is local for now;
+   onVttChange() is the single hook where Firebase sync plugs in.
+   ======================================================== */
+(function () {
+  'use strict';
+
+  const DEFAULT_BOARD = { cols: 30, rows: 20 };   // empty board when no map is loaded
+  const MIN_ZOOM = 0.1;
+  const MAX_ZOOM = 6;
+  const LONG_PRESS_MS = 500;
+  const TAP_SLOP = 6;                             // px a pointer may move and still count as a tap
+  const TOKEN_IMG_MAX = 256;                      // token pictures are downscaled to this
+  const TOKEN_COLORS = ['#c9a227', '#a83c32', '#4a8ec4', '#5e9e63', '#9a6fc4', '#d08a3c', '#9d9d9d'];
+
+  // Shared table state (what Step 5 will sync).
+  const vtt = {
+    map: { url: null, width: 0, height: 0 },
+    grid: { size: 70, visible: true, color: '#000000', opacity: 0.35 },
+    tokens: {}   // [id]: { id, name, x, y, size, img, color, owner, hp, hidden } — x/y in grid cells
+  };
+
+  // Local-only view state.
+  const view = { offsetX: 0, offsetY: 0, zoom: 1 };
+
+  let root = null;
+  let canvas = null;
+  let ctx = null;
+  let mapImg = null;
+  let selectedId = null;
+  let drawQueued = false;
+  const imgCache = {};
+
+  /* ---------- Styles ---------- */
+
+  function injectStyles() {
+    if (document.getElementById('vtt-styles')) return;
+    const css = `
+      #vtt-view-container {
+        flex-direction: column;
+        width: 100%;
+        height: calc(100vh - 160px);
+        height: calc(100dvh - 160px);
+        min-height: 420px;
+        margin-top: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-body);
+        overflow: hidden;
+        position: relative;
+      }
+      #vtt-view-container * { box-sizing: border-box; }
+      .vtt-toolbar {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+        padding: 8px 10px;
+        background: linear-gradient(180deg, var(--panel-hi), var(--panel-lo));
+        border-bottom: 1px solid var(--border);
+      }
+      .vtt-group { display: flex; align-items: center; gap: 6px; }
+      .vtt-group + .vtt-group { padding-left: 10px; border-left: 1px solid var(--border); }
+      .vtt-toolbar label { font-family: var(--font-display); font-size: 11px; letter-spacing: .05em; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
+      .vtt-toolbar input[type=number] { width: 58px; }
+      .vtt-toolbar input[type=number], .vtt-toolbar input[type=text], .vtt-form input[type=text] {
+        background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 4px 6px; font-family: var(--font-body);
+      }
+      .vtt-toolbar input[type=color], .vtt-form input[type=color] { width: 28px; height: 24px; padding: 0; border: 1px solid var(--border); background: none; border-radius: 4px; }
+      .vtt-zoom-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); min-width: 44px; text-align: right; }
+      .vtt-stage { position: relative; flex: 1; min-height: 0; background: var(--surface-inset); }
+      .vtt-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: grab; display: block; }
+      .vtt-stage canvas.vtt-grabbing { cursor: grabbing; }
+      .vtt-hint { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--text-faint); font-family: var(--font-display); text-align: center; pointer-events: none; }
+      .vtt-pop {
+        position: absolute; z-index: 20; min-width: 160px;
+        background: var(--surface-1); border: 1px solid var(--line-strong); border-radius: var(--radius);
+        box-shadow: var(--shadow-2); padding: 6px; display: flex; flex-direction: column; gap: 4px;
+      }
+      .vtt-pop button { text-align: left; }
+      .vtt-pop .vtt-pop-title { font-family: var(--font-display); font-size: 12px; color: var(--accent); padding: 2px 4px 4px; border-bottom: 1px solid var(--border); margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .vtt-pop .vtt-row { display: flex; gap: 4px; flex-wrap: wrap; }
+      .vtt-pop .vtt-row button.active { border-color: var(--accent); color: var(--accent); }
+      .vtt-form { gap: 8px; padding: 10px; min-width: 220px; }
+      .vtt-form label { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); }
+      .vtt-swatches { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+      .vtt-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
+      .vtt-swatch.active { border-color: var(--text); }
+      @media (max-width: 640px) {
+        #vtt-view-container { height: calc(100dvh - 120px); min-height: 360px; }
+        .vtt-group + .vtt-group { padding-left: 0; border-left: none; }
+      }
+    `;
+    const style = document.createElement('style');
+    style.id = 'vtt-styles';
+    style.textContent = css;
+    document.head.appendChild(style);
+  }
+
+  /* ---------- Setup ---------- */
+
+  window.initVtt = function () {
+    if (root) { resizeCanvas(); return; }
+    root = document.getElementById('vtt-view-container');
+    if (!root) return;
+    injectStyles();
+
+    root.innerHTML = `
+      <div class="vtt-toolbar">
+        <div class="vtt-group">
+          <button class="btn small ghost" data-act="load-map">🗺 Load Map</button>
+          <button class="btn small ghost" data-act="map-url">🔗 Map URL</button>
+          <input type="file" accept="image/*" data-el="map-file" hidden>
+        </div>
+        <div class="vtt-group">
+          <label><input type="checkbox" data-el="grid-visible" checked> Grid</label>
+          <label>Size <input type="number" min="10" max="400" step="1" data-el="grid-size"></label>
+          <input type="color" data-el="grid-color" title="Grid color">
+        </div>
+        <div class="vtt-group">
+          <button class="btn small ghost" data-act="add-token">➕ Add Token</button>
+          <input type="file" accept="image/*" data-el="token-file" hidden>
+        </div>
+        <div class="vtt-group">
+          <button class="btn small ghost" data-act="zoom-out" title="Zoom out">−</button>
+          <span class="vtt-zoom-label" data-el="zoom-label">100%</span>
+          <button class="btn small ghost" data-act="zoom-in" title="Zoom in">+</button>
+          <button class="btn small ghost" data-act="fit" title="Fit map to screen">⤢ Fit</button>
+        </div>
+      </div>
+      <div class="vtt-stage">
+        <canvas></canvas>
+        <div class="vtt-hint" data-el="hint">Load a map to begin<br><small>Drag to pan · wheel or pinch to zoom</small></div>
+      </div>
+    `;
+
+    canvas = root.querySelector('canvas');
+    ctx = canvas.getContext('2d');
+
+    const el = (name) => root.querySelector('[data-el="' + name + '"]');
+    el('grid-size').value = vtt.grid.size;
+    el('grid-color').value = vtt.grid.color;
+
+    root.querySelector('.vtt-toolbar').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const act = btn.dataset.act;
+      if (act === 'load-map') el('map-file').click();
+      else if (act === 'map-url') promptMapUrl();
+      else if (act === 'add-token') openAddTokenForm(btn);
+      else if (act === 'zoom-in') zoomAt(canvasCenter(), 1.25);
+      else if (act === 'zoom-out') zoomAt(canvasCenter(), 0.8);
+      else if (act === 'fit') fitView();
+    });
+
+    el('map-file').addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => setMap(reader.result);
+      reader.readAsDataURL(file);
+    });
+
+    el('grid-visible').addEventListener('change', (e) => {
+      vtt.grid.visible = e.target.checked;
+      onVttChange();
+    });
+    el('grid-size').addEventListener('input', (e) => {
+      const v = parseFloat(e.target.value);
+      if (!isFinite(v) || v < 10 || v > 400) return;
+      vtt.grid.size = v;
+      onVttChange();
+    });
+    el('grid-color').addEventListener('input', (e) => {
+      vtt.grid.color = e.target.value;
+      onVttChange();
+    });
+
+    bindPointerEvents();
+    window.addEventListener('keydown', onKeyDown);
+
+    new ResizeObserver(resizeCanvas).observe(canvas.parentElement);
+    resizeCanvas();
+    fitView();
+  };
+
+  function resizeCanvas() {
+    if (!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;    // tab hidden
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    requestDraw();
+  }
+
+  /* ---------- Map & tokens (single entry points, so a catalog can plug in later) ---------- */
+
+  // source: an image URL or a data URL from an uploaded file.
+  function setMap(source) {
+    if (!source) return;
+    const img = new Image();
+    img.onload = () => {
+      mapImg = img;
+      vtt.map = { url: source, width: img.naturalWidth, height: img.naturalHeight };
+      fitView();
+      onVttChange();
+    };
+    img.onerror = () => alert('Could not load that map image.');
+    img.src = source;
+  }
+
+  // source: { name, color, img, size } — img is an image URL or data URL (optional).
+  function addToken(source) {
+    const id = 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const size = source.size || 1;
+    const center = screenToWorld(canvasCenter());
+    const cell = vtt.grid.size;
+    const spot = freeCellNear(Math.round(center.x / cell - size / 2), Math.round(center.y / cell - size / 2));
+    const token = {
+      id: id,
+      name: (source.name || 'Token').trim() || 'Token',
+      x: spot.x,
+      y: spot.y,
+      size: size,
+      img: source.img || null,
+      color: source.color || TOKEN_COLORS[0],
+      owner: source.owner || null,
+      hp: null,
+      hidden: false
+    };
+    vtt.tokens[id] = token;
+    selectedId = id;
+    onVttChange();
+    return token;
+  }
+
+  // Nearest cell (spiralling outwards) whose top-left no other token sits on, so new tokens don't stack.
+  function freeCellNear(x, y) {
+    const taken = new Set(Object.values(vtt.tokens).map((t) => t.x + '_' + t.y));
+    for (let r = 0; r < 20; r++) {
+      for (let dy = -r; dy <= r; dy++) {
+        for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          if (!taken.has((x + dx) + '_' + (y + dy))) return { x: x + dx, y: y + dy };
+        }
+      }
+    }
+    return { x: x, y: y };
+  }
+
+  function removeToken(id) {
+    delete vtt.tokens[id];
+    if (selectedId === id) selectedId = null;
+    onVttChange();
+  }
+
+  function promptMapUrl() {
+    const url = prompt('Paste an image link for the map:');
+    if (url && url.trim()) setMap(url.trim());
+  }
+
+  // Every change to the shared table funnels through here. Step 5 adds the Firebase write.
+  function onVttChange() {
+    requestDraw();
+  }
+
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken };
+
+  /* ---------- Coordinates ---------- */
+
+  function boardSize() {
+    if (mapImg) return { w: vtt.map.width, h: vtt.map.height };
+    return { w: DEFAULT_BOARD.cols * vtt.grid.size, h: DEFAULT_BOARD.rows * vtt.grid.size };
+  }
+
+  function canvasCenter() {
+    const rect = canvas.getBoundingClientRect();
+    return { x: rect.width / 2, y: rect.height / 2 };
+  }
+
+  function eventPoint(e) {
+    const rect = canvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  function screenToWorld(p) {
+    return { x: (p.x - view.offsetX) / view.zoom, y: (p.y - view.offsetY) / view.zoom };
+  }
+
+  function zoomAt(p, factor) {
+    const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, view.zoom * factor));
+    const w = screenToWorld(p);
+    view.zoom = next;
+    view.offsetX = p.x - w.x * next;
+    view.offsetY = p.y - w.y * next;
+    requestDraw();
+  }
+
+  function fitView() {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const b = boardSize();
+    const pad = 24;
+    view.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM,
+      Math.min((rect.width - pad * 2) / b.w, (rect.height - pad * 2) / b.h)));
+    view.offsetX = (rect.width - b.w * view.zoom) / 2;
+    view.offsetY = (rect.height - b.h * view.zoom) / 2;
+    requestDraw();
+  }
+
+  /* ---------- Drawing ---------- */
+
+  function requestDraw() {
+    if (drawQueued) return;
+    drawQueued = true;
+    requestAnimationFrame(() => { drawQueued = false; draw(); });
+  }
+
+  // Layers are drawn in order: map, grid, tokens. Fog (Step 8) goes after tokens.
+  function draw() {
+    if (!ctx || !canvas.width) return;
+    const dpr = window.devicePixelRatio || 1;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(dpr * view.zoom, 0, 0, dpr * view.zoom, dpr * view.offsetX, dpr * view.offsetY);
+
+    const b = boardSize();
+    drawMap(b);
+    if (vtt.grid.visible) drawGrid(b);
+    drawTokens();
+
+    const hint = root.querySelector('[data-el="hint"]');
+    if (hint) hint.style.display = mapImg || Object.keys(vtt.tokens).length ? 'none' : '';
+    const zl = root.querySelector('[data-el="zoom-label"]');
+    if (zl) zl.textContent = Math.round(view.zoom * 100) + '%';
+  }
+
+  function drawMap(b) {
+    if (mapImg) {
+      ctx.imageSmoothingEnabled = view.zoom < 1;
+      ctx.drawImage(mapImg, 0, 0, b.w, b.h);
+    } else {
+      ctx.fillStyle = cssVar('--surface-1', '#161413');
+      ctx.fillRect(0, 0, b.w, b.h);
+    }
+  }
+
+  function drawGrid(b) {
+    const s = vtt.grid.size;
+    ctx.save();
+    ctx.globalAlpha = vtt.grid.opacity;
+    ctx.strokeStyle = vtt.grid.color;
+    ctx.lineWidth = 1 / view.zoom;   // stays a hairline at any zoom
+    ctx.beginPath();
+    for (let x = 0; x <= b.w + 0.5; x += s) { ctx.moveTo(x, 0); ctx.lineTo(x, b.h); }
+    for (let y = 0; y <= b.h + 0.5; y += s) { ctx.moveTo(0, y); ctx.lineTo(b.w, y); }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function tokenRect(t) {
+    const s = vtt.grid.size;
+    if (drag && drag.kind === 'token' && drag.id === t.id) {
+      return { x: drag.px, y: drag.py, w: t.size * s, h: t.size * s };
+    }
+    return { x: t.x * s, y: t.y * s, w: t.size * s, h: t.size * s };
+  }
+
+  function drawTokens() {
+    const list = Object.values(vtt.tokens);
+    // The token being dragged is drawn last so it floats above the others.
+    list.sort((a, b) => (drag && drag.id === a.id ? 1 : 0) - (drag && drag.id === b.id ? 1 : 0));
+    list.forEach(drawToken);
+  }
+
+  function drawToken(t) {
+    const r = tokenRect(t);
+    const cx = r.x + r.w / 2;
+    const cy = r.y + r.h / 2;
+    const rad = r.w / 2 * 0.9;
+
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.55)';
+    ctx.shadowBlur = 8 / view.zoom;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+    ctx.fillStyle = t.color || TOKEN_COLORS[0];
+    ctx.fill();
+    ctx.restore();
+
+    const img = t.img ? getImage(t.img) : null;
+    if (img && img.complete && img.naturalWidth) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, rad * 0.92, 0, Math.PI * 2);
+      ctx.clip();
+      const scale = Math.max((rad * 2) / img.naturalWidth, (rad * 2) / img.naturalHeight);
+      const iw = img.naturalWidth * scale;
+      const ih = img.naturalHeight * scale;
+      ctx.drawImage(img, cx - iw / 2, cy - ih / 2, iw, ih);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = readableTextColor(t.color);
+      ctx.font = '600 ' + Math.round(rad * 0.8) + 'px ' + cssVar('--font-display', 'serif');
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(initials(t.name), cx, cy + rad * 0.04);
+    }
+
+    ctx.lineWidth = (t.id === selectedId ? 3 : 1.5) / view.zoom;
+    ctx.strokeStyle = t.id === selectedId ? cssVar('--accent-strong', '#e8cf7a') : 'rgba(0,0,0,0.6)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Name label under the token, kept readable at any zoom.
+    const fs = Math.max(10, 12 / view.zoom);
+    ctx.font = fs + 'px ' + cssVar('--font-body', 'serif');
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const ty = r.y + r.h - r.h * 0.02;
+    const tw = ctx.measureText(t.name).width;
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(cx - tw / 2 - fs * 0.3, ty, tw + fs * 0.6, fs * 1.25);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(t.name, cx, ty + fs * 0.1);
+  }
+
+  function getImage(url) {
+    let img = imgCache[url];
+    if (!img) {
+      img = new Image();
+      img.onload = requestDraw;
+      img.src = url;
+      imgCache[url] = img;
+    }
+    return img;
+  }
+
+  function initials(name) {
+    const parts = String(name || '?').trim().split(/\s+/).filter(Boolean);
+    const letters = parts.length > 1 ? parts[0][0] + parts[1][0] : (parts[0] || '?').slice(0, 2);
+    return letters.toLocaleUpperCase('tr');
+  }
+
+  function readableTextColor(hex) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+    if (!m) return '#fff';
+    const n = parseInt(m[1], 16);
+    const lum = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
+    return lum > 0.6 ? '#14100a' : '#fff';
+  }
+
+  function cssVar(name, fallback) {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return v || fallback;
+  }
+
+  /* ---------- Pointer input: pan, pinch zoom, token drag, long press ---------- */
+
+  const pointers = new Map();   // pointerId -> {x, y}
+  let drag = null;              // { kind: 'pan'|'token'|'pinch', ... }
+  let longPressTimer = null;
+
+  function hitToken(p) {
+    const w = screenToWorld(p);
+    const list = Object.values(vtt.tokens);
+    for (let i = list.length - 1; i >= 0; i--) {
+      const t = list[i];
+      const r = tokenRect(t);
+      const dx = w.x - (r.x + r.w / 2);
+      const dy = w.y - (r.y + r.h / 2);
+      if (dx * dx + dy * dy <= (r.w / 2) * (r.w / 2)) return t;
+    }
+    return null;
+  }
+
+  function bindPointerEvents() {
+    canvas.addEventListener('pointerdown', onPointerDown);
+    canvas.addEventListener('pointermove', onPointerMove);
+    canvas.addEventListener('pointerup', onPointerUp);
+    canvas.addEventListener('pointercancel', onPointerUp);
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      zoomAt(eventPoint(e), Math.exp(-e.deltaY * 0.0015));
+    }, { passive: false });
+    canvas.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      const t = hitToken(eventPoint(e));
+      if (t) openTokenMenu(t, eventPoint(e));
+    });
+  }
+
+  function onPointerDown(e) {
+    if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
+    closePopups();
+    canvas.setPointerCapture(e.pointerId);
+    const p = eventPoint(e);
+    pointers.set(e.pointerId, p);
+
+    if (pointers.size === 2) {
+      // Second finger: switch to pinch zoom; any token drag snaps back.
+      cancelLongPress();
+      const [a, b] = [...pointers.values()];
+      drag = { kind: 'pinch', dist: Math.hypot(a.x - b.x, a.y - b.y), mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
+      requestDraw();
+      return;
+    }
+    if (pointers.size > 2) return;
+
+    const t = hitToken(p);
+    if (t) {
+      selectedId = t.id;
+      const w = screenToWorld(p);
+      const s = vtt.grid.size;
+      drag = { kind: 'token', id: t.id, start: p, moved: false, grabX: w.x - t.x * s, grabY: w.y - t.y * s, px: t.x * s, py: t.y * s };
+      // Mouse users get the menu from right click; long press is for touch and pen.
+      if (e.pointerType !== 'mouse') longPressTimer = setTimeout(() => {
+        if (drag && drag.kind === 'token' && !drag.moved) {
+          const tok = vtt.tokens[drag.id];
+          drag = null;
+          if (tok) openTokenMenu(tok, p);
+          requestDraw();
+        }
+      }, LONG_PRESS_MS);
+    } else {
+      selectedId = null;
+      drag = { kind: 'pan', start: p, last: p };
+      canvas.classList.add('vtt-grabbing');
+    }
+    requestDraw();
+  }
+
+  function onPointerMove(e) {
+    if (!pointers.has(e.pointerId)) return;
+    const p = eventPoint(e);
+    pointers.set(e.pointerId, p);
+    if (!drag) return;
+
+    if (drag.kind === 'pinch' && pointers.size >= 2) {
+      const [a, b] = [...pointers.values()];
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      view.offsetX += mid.x - drag.mid.x;
+      view.offsetY += mid.y - drag.mid.y;
+      if (drag.dist > 0) zoomAt(mid, dist / drag.dist);
+      drag.dist = dist;
+      drag.mid = mid;
+      requestDraw();
+    } else if (drag.kind === 'pan') {
+      view.offsetX += p.x - drag.last.x;
+      view.offsetY += p.y - drag.last.y;
+      drag.last = p;
+      requestDraw();
+    } else if (drag.kind === 'token') {
+      if (!drag.moved && Math.hypot(p.x - drag.start.x, p.y - drag.start.y) < TAP_SLOP) return;
+      drag.moved = true;
+      cancelLongPress();
+      const w = screenToWorld(p);
+      drag.px = w.x - drag.grabX;
+      drag.py = w.y - drag.grabY;
+      requestDraw();
+    }
+  }
+
+  function onPointerUp(e) {
+    pointers.delete(e.pointerId);
+    cancelLongPress();
+    canvas.classList.remove('vtt-grabbing');
+    if (!drag) return;
+
+    if (drag.kind === 'token' && drag.moved) {
+      const t = vtt.tokens[drag.id];
+      if (t) {
+        const s = vtt.grid.size;
+        t.x = Math.round(drag.px / s);
+        t.y = Math.round(drag.py / s);
+        drag = null;
+        onVttChange();
+        return;
+      }
+    }
+    // Lifting one finger of a pinch should not turn into a pan jump.
+    drag = null;
+    requestDraw();
+  }
+
+  function cancelLongPress() {
+    if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+  }
+
+  function onKeyDown(e) {
+    if (!root || root.style.display === 'none' || !selectedId) return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      removeToken(selectedId);
+    } else if (e.key === 'Escape') {
+      selectedId = null;
+      closePopups();
+      requestDraw();
+    }
+  }
+
+  /* ---------- Popups: token menu and add-token form ---------- */
+
+  function closePopups() {
+    if (!root) return;
+    root.querySelectorAll('.vtt-pop').forEach((n) => n.remove());
+  }
+
+  function placePopup(pop, p) {
+    const stage = root.querySelector('.vtt-stage');
+    stage.appendChild(pop);
+    const sw = stage.clientWidth;
+    const sh = stage.clientHeight;
+    pop.style.left = Math.max(4, Math.min(p.x, sw - pop.offsetWidth - 4)) + 'px';
+    pop.style.top = Math.max(4, Math.min(p.y, sh - pop.offsetHeight - 4)) + 'px';
+  }
+
+  function openTokenMenu(t, p) {
+    closePopups();
+    selectedId = t.id;
+    const pop = document.createElement('div');
+    pop.className = 'vtt-pop';
+
+    const title = document.createElement('div');
+    title.className = 'vtt-pop-title';
+    title.textContent = t.name;
+    pop.appendChild(title);
+
+    const rename = button('✏️ Rename', () => {
+      const name = prompt('Token name:', t.name);
+      if (name && name.trim()) { t.name = name.trim(); onVttChange(); }
+      closePopups();
+    });
+    pop.appendChild(rename);
+
+    const sizeRow = document.createElement('div');
+    sizeRow.className = 'vtt-row';
+    [1, 2, 3, 4].forEach((n) => {
+      const b = button(n + 'x' + n, () => { t.size = n; onVttChange(); closePopups(); });
+      if (t.size === n) b.classList.add('active');
+      sizeRow.appendChild(b);
+    });
+    pop.appendChild(sizeRow);
+
+    pop.appendChild(button('🗑 Delete', () => { removeToken(t.id); closePopups(); }));
+
+    placePopup(pop, p);
+    requestDraw();
+  }
+
+  function openAddTokenForm(anchorBtn) {
+    closePopups();
+    const pop = document.createElement('div');
+    pop.className = 'vtt-pop vtt-form';
+    let color = TOKEN_COLORS[Object.keys(vtt.tokens).length % TOKEN_COLORS.length];
+    let img = null;
+
+    pop.innerHTML = `
+      <div class="vtt-pop-title">New Token</div>
+      <label>Name <input type="text" maxlength="40" data-f="name" placeholder="e.g. Goblin"></label>
+      <label>Color <div class="vtt-swatches" data-f="swatches"></div></label>
+      <label>Picture (optional) <button type="button" class="btn small ghost" data-f="pick">📷 Choose image</button></label>
+      <div class="vtt-row"><button type="button" class="btn small" data-f="ok">Add</button><button type="button" class="btn small ghost" data-f="cancel">Cancel</button></div>
+    `;
+    const f = (n) => pop.querySelector('[data-f="' + n + '"]');
+
+    const sw = f('swatches');
+    TOKEN_COLORS.forEach((c) => {
+      const s = document.createElement('button');
+      s.type = 'button';
+      s.className = 'vtt-swatch' + (c === color ? ' active' : '');
+      s.style.background = c;
+      s.onclick = () => {
+        color = c;
+        sw.querySelectorAll('.vtt-swatch').forEach((x) => x.classList.toggle('active', x === s));
+      };
+      sw.appendChild(s);
+    });
+    const custom = document.createElement('input');
+    custom.type = 'color';
+    custom.value = color;
+    custom.title = 'Custom color';
+    custom.oninput = () => {
+      color = custom.value;
+      sw.querySelectorAll('.vtt-swatch').forEach((x) => x.classList.remove('active'));
+    };
+    sw.appendChild(custom);
+
+    const fileInput = root.querySelector('[data-el="token-file"]');
+    f('pick').onclick = () => {
+      fileInput.onchange = () => {
+        const file = fileInput.files && fileInput.files[0];
+        fileInput.value = '';
+        if (!file) return;
+        downscaleImage(file, TOKEN_IMG_MAX).then((url) => {
+          img = url;
+          f('pick').textContent = '✅ ' + file.name.slice(0, 18);
+        });
+      };
+      fileInput.click();
+    };
+
+    const submit = () => {
+      addToken({ name: f('name').value, color: color, img: img });
+      closePopups();
+    };
+    f('ok').onclick = submit;
+    f('cancel').onclick = closePopups;
+    f('name').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+
+    const stageRect = root.querySelector('.vtt-stage').getBoundingClientRect();
+    const btnRect = anchorBtn.getBoundingClientRect();
+    placePopup(pop, { x: btnRect.left - stageRect.left, y: 4 });
+    f('name').focus();
+  }
+
+  function button(label, onClick) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn small ghost';
+    b.textContent = label;
+    b.onclick = onClick;
+    return b;
+  }
+
+  // Shrinks a picture to max x max and returns a small data URL (keeps future sync payloads light).
+  function downscaleImage(file, max) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        const im = new Image();
+        im.onerror = reject;
+        im.onload = () => {
+          const k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+          const c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round(im.naturalWidth * k));
+          c.height = Math.max(1, Math.round(im.naturalHeight * k));
+          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+          resolve(c.toDataURL('image/webp', 0.85));
+        };
+        im.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+})();

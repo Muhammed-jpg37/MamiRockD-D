@@ -58,6 +58,7 @@
     })();
   </script>
   <script src="spell-catalog.js" defer></script>
+  <script src="vtt.js" defer></script>
   <style>
     /* ============================================================
        DESIGN TOKENS
@@ -5280,6 +5281,7 @@
           <button class="nav-tab-btn" id="tab-btn-features" onclick="switchMainTab('features')">📜 Features &
             Traits</button>
           <button class="nav-tab-btn" id="tab-btn-notes" onclick="switchMainTab('notes')">📓 D&D Notes</button>
+          <button class="nav-tab-btn" id="tab-btn-vtt" onclick="switchMainTab('vtt')">🗺 VTT</button>
         </div>
       </div>
       <div class="header-stats">
@@ -5541,6 +5543,9 @@
       <!-- Features Content List -->
       <div id="features-list-content" style="display:flex; flex-direction:column; gap:16px;"></div>
     </div>
+
+    <!-- VIRTUAL TABLETOP (logic and styles live in vtt.js) -->
+    <div id="vtt-view-container" style="display:none"></div>
 
     <!-- D&D CAMPAIGN NOTES WORKSPACE -->
     <div id="notes-view-container" class="fullscreen-notes">
@@ -6734,16 +6739,20 @@
       const btnSpell = document.getElementById('tab-btn-spells');
       const btnFeatures = document.getElementById('tab-btn-features');
       const btnNotes = document.getElementById('tab-btn-notes');
+      const vttView = document.getElementById('vtt-view-container');
+      const btnVtt = document.getElementById('tab-btn-vtt');
 
       if (invView) invView.style.display = (tabName === 'inventory') ? 'grid' : 'none';
       if (spellView) spellView.style.display = (tabName === 'spells') ? 'block' : 'none';
       if (featuresView) featuresView.style.display = (tabName === 'features') ? 'block' : 'none';
       if (notesView) notesView.style.display = (tabName === 'notes') ? 'flex' : 'none';
+      if (vttView) vttView.style.display = (tabName === 'vtt') ? 'flex' : 'none';
 
       if (btnInv) btnInv.classList.toggle('active', tabName === 'inventory');
       if (btnSpell) btnSpell.classList.toggle('active', tabName === 'spells');
       if (btnFeatures) btnFeatures.classList.toggle('active', tabName === 'features');
       if (btnNotes) btnNotes.classList.toggle('active', tabName === 'notes');
+      if (btnVtt) btnVtt.classList.toggle('active', tabName === 'vtt');
 
       if (tabName === 'spells') {
         state.spellbook.open = true;
@@ -6758,6 +6767,8 @@
         if (typeof initNotesOnce === 'function') initNotesOnce();
         if (typeof render === 'function') render();
         if (typeof applyBg === 'function') applyBg();
+      } else if (tabName === 'vtt') {
+        window.initVtt?.();
       }
       save();
     }
