@@ -11965,6 +11965,11 @@
       ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
     });
 
+    /* Restores a saved session or shows the login screen. Called at the very end
+       of this script: logging in touches top-level let/const declared further down
+       (wallpaper, notes, drawing), and using those before their declaration line has
+       run throws "Cannot access ... before initialization". */
+    function runStartup() {
     try {
       // Check for saved session
       let session = null;
@@ -11991,6 +11996,7 @@
       refreshSpellCatalog();
     } catch (err) {
       console.error("Startup error:", err);
+    }
     }
 
     /* ========================================================
@@ -13368,6 +13374,9 @@
     window.addEventListener('DOMContentLoaded', () => {
       initNotesOnce();
     });
+
+    // Last, once every declaration above exists (see runStartup).
+    runStartup();
 
   </script>
   <script id="spell-catalog-data" type="application/json">

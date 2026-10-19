@@ -2564,4 +2564,8 @@
   function downscaleImage(file, max) {
     return scaleImageFile(file, max).then((c) => c.toDataURL('image/webp', 0.85));
   }
+
+  // The VTT tab may already be showing (restored session); its initVtt() call came too early.
+  const container = document.getElementById('vtt-view-container');
+  if (container && container.style.display !== 'none') window.initVtt();
 })();
