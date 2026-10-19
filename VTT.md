@@ -6,7 +6,8 @@ Sitedeki mevcut sekme sistemine "🗺 VTT" sekmesi eklendi. Kodun neredeyse tama
 
 | Özellik | DM | Oyuncu |
 |---|---|---|
-| Harita yükleme (dosya veya bağlantı), ızgara boyutu/rengi | ✔ | – |
+| Harita yükleme (dosya veya bağlantı), ızgara boyutu/rengi/kaydırması | ✔ | – |
+| Haritada çizili ızgarayı otomatik algılama (yüklemede + "🔍 Detect") | ✔ | – |
 | Pan / zoom (fare, tekerlek, dokunmatik pinch) | ✔ | ✔ |
 | Token ekleme, sürükleme, boyut, yeniden adlandırma, silme | ✔ | Yalnızca sahibi olduğu token'ı taşır |
 | Token sahibi (owner) seçme, oyunculardan gizleme | ✔ | – |
@@ -21,7 +22,7 @@ Tüm değişiklikler Firebase üzerinden anlık eşleşiyor.
 
 ```
 vtt/main/map            { url, width, height }
-vtt/main/grid           { size, visible, color, opacity }
+vtt/main/grid           { size, visible, color, opacity, offsetX, offsetY }   offset = haritadaki bir ızgara çizgisinin konumu (px)
 vtt/main/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden, hp? }   x/y = ızgara hücresi
 vtt/main/fog            { enabled, revealed: { "x_y": true } }
 vtt/main/log/<key>      { by, die, result, at }   en yeni 20 kayıt tutulur
@@ -55,6 +56,7 @@ Projede Storage bucket'ı yok (`mamirockd-d37.firebasestorage.app` 404 döndür�
 | Oyuncu başkasının token'ını taşımaya çalışıyor | ✅ Taşınmıyor (harita kayar) |
 | Oyuncu araç çubuğu | ✅ Yalnızca zoom ve zar görünür |
 | Sayfa yenileme | ✅ Harita, token'lar ve fog aynen geliyor |
+| Izgara algılama (60 sentetik harita, 4 tohum) | ✅ 57/60. Boyut ve kaydırma ±0,5 px. 1 yanlış alarm (yoğun gürültü), 1 kaçırma (JPEG), 1 çok soluk ızgara 3 katı olarak bulundu. Tuğla/karo zemin deseni ızgara sanılabilir. Gerçek haritalarla denenmeli |
 | Büyük harita (16,8 MB JPEG) | ✅ 1600×1280 / 0,7 MB'a küçültüldü, zoom akıcı |
 | Eski sekmeler (Inventory, Spells, Features, Notes) | ✅ Geçişler doğru, konsolda hata yok |
 | Telefon genişliği (375 px) | ✅ Yatay kaydırma yok. ⚠️ DM araç çubuğu 6 satıra sarıyor (204 px) |

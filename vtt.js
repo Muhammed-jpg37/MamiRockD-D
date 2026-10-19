@@ -25,7 +25,8 @@
   // Shared table state, mirrored at vtt/<ROOM_ID>.
   const vtt = {
     map: { url: null, width: 0, height: 0 },
-    grid: { size: 70, visible: true, color: '#000000', opacity: 0.35 },
+    // offsetX/Y: where a grid line falls on the map (px), so the grid can match one drawn into the map image.
+    grid: { size: 70, visible: true, color: '#000000', opacity: 0.35, offsetX: 0, offsetY: 0 },
     tokens: {},  // [id]: { id, name, x, y, size, img, color, owner, hp, hidden } — x/y in grid cells
     fog: { enabled: false, revealed: {} }   // revealed: { "x_y": true } (Firebase keys can't hold . or /)
   };
@@ -82,6 +83,7 @@
       .vtt-group + .vtt-group { padding-left: 10px; border-left: 1px solid var(--border); }
       .vtt-toolbar label { font-family: var(--font-display); font-size: 11px; letter-spacing: .05em; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
       .vtt-toolbar input[type=number] { width: 58px; }
+      .vtt-toolbar input[type=number].vtt-num-sm { width: 50px; }
       .vtt-toolbar input[type=number], .vtt-toolbar input[type=text], .vtt-form input[type=text] {
         background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
         border-radius: var(--radius); padding: 4px 6px; font-family: var(--font-body);
@@ -170,8 +172,11 @@
         </div>
         <div class="vtt-group vtt-dm-only">
           <label><input type="checkbox" data-el="grid-visible" checked> Grid</label>
-          <label>Size <input type="number" min="10" max="400" step="1" data-el="grid-size"></label>
+          <label>Size <input type="number" min="10" max="400" step="0.1" data-el="grid-size"></label>
+          <label title="Shift the grid so its lines sit on the map's own grid (px)">X <input type="number" step="0.5" data-el="grid-ox" class="vtt-num-sm"></label>
+          <label title="Shift the grid so its lines sit on the map's own grid (px)">Y <input type="number" step="0.5" data-el="grid-oy" class="vtt-num-sm"></label>
           <input type="color" data-el="grid-color" title="Grid color">
+          <button class="btn small ghost" data-act="detect-grid" title="Find the grid drawn into the map and match it">🔍 Detect</button>
         </div>
         <div class="vtt-group vtt-dm-only">
           <button class="btn small ghost" data-act="add-token">➕ Add Token</button>
@@ -213,8 +218,7 @@
     ctx = canvas.getContext('2d');
 
     const el = (name) => root.querySelector('[data-el="' + name + '"]');
-    el('grid-size').value = vtt.grid.size;
-    el('grid-color').value = vtt.grid.color;
+    syncGridInputs();
 
     root.addEventListener('click', (e) => {
       const die = e.target.closest('[data-roll]');
@@ -236,6 +240,7 @@
       else if (act === 'fog-reveal') setFogMode(fogMode === 'reveal' ? null : 'reveal');
       else if (act === 'fog-hide') setFogMode(fogMode === 'hide' ? null : 'hide');
       else if (act === 'fog-reset') resetFog();
+      else if (act === 'detect-grid') detectGridOnMap(true);
     });
 
     el('fog-enabled').addEventListener('change', (e) => {
@@ -265,6 +270,14 @@
     el('grid-color').addEventListener('input', (e) => {
       vtt.grid.color = e.target.value;
       onVttChange({ grid: true });
+    });
+    ['ox', 'oy'].forEach((axis) => {
+      el('grid-' + axis).addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        if (!isFinite(v)) return;
+        vtt.grid[axis === 'ox' ? 'offsetX' : 'offsetY'] = v;
+        onVttChange({ grid: true });
+      });
     });
 
     bindPointerEvents();
@@ -356,18 +369,274 @@
       if (input && document.activeElement !== input) input[prop] = value;
     };
     set('grid-visible', 'checked', vtt.grid.visible);
-    set('grid-size', 'value', vtt.grid.size);
+    set('grid-size', 'value', +vtt.grid.size.toFixed(2));
+    set('grid-ox', 'value', +(Number(vtt.grid.offsetX) || 0).toFixed(1));
+    set('grid-oy', 'value', +(Number(vtt.grid.offsetY) || 0).toFixed(1));
     set('grid-color', 'value', vtt.grid.color);
+  }
+
+  /* ---------- Grid detection (finds a square grid drawn into the map image) ---------- */
+
+  const DETECT_MAX_EDGE = 1400;    // analyse a downscaled copy; plenty for 1–3 px grid lines
+  const DETECT_MIN_CELL = 24;      // px in the original map; smaller repeats are usually JPEG/WebP block noise
+  const DETECT_MAX_CELL = 400;
+
+  // Runs detection on the current map and applies the result. manual: the DM pressed the button.
+  function detectGridOnMap(manual) {
+    if (!isDm()) return;
+    if (!mapImg) { if (manual) flashStatus('Load a map first'); return; }
+    setStatus('Looking for a grid…');
+    const forUrl = vtt.map.url;
+    // Let the status pill paint before the (short) number crunching.
+    setTimeout(() => {
+      readableImage(mapImg, forUrl)
+        .then((img) => {
+          if (vtt.map.url !== forUrl) return;   // map changed meanwhile
+          const found = findGrid(img);
+          if (!found) {
+            flashStatus(manual ? 'No grid found in this map — set the size by hand' : 'No grid found in this map');
+            return;
+          }
+          vtt.grid.size = found.size;
+          vtt.grid.offsetX = found.offsetX;
+          vtt.grid.offsetY = found.offsetY;
+          syncGridInputs();
+          onVttChange({ grid: true });
+          flashStatus('Grid matched: ' + (+found.size.toFixed(1)) + ' px per square');
+        })
+        .catch(() => flashStatus("Can't analyse this image (its site blocks it) — set the size by hand"));
+    }, 30);
+  }
+
+  // Pixels of maps from other sites can only be read if that site allows it (CORS).
+  function readableImage(img, url) {
+    if (!url || url.startsWith('data:') || url.startsWith('blob:')) return Promise.resolve(img);
+    return new Promise((resolve, reject) => {
+      const im = new Image();
+      im.crossOrigin = 'anonymous';
+      im.onload = () => resolve(im);
+      im.onerror = reject;
+      im.src = url;
+    });
+  }
+
+  // Returns { size, offsetX, offsetY } in map px, or null when no clear square grid is present.
+  function findGrid(img) {
+    const W = img.naturalWidth;
+    const H = img.naturalHeight;
+    const k = Math.min(1, DETECT_MAX_EDGE / Math.max(W, H));
+    const w = Math.max(1, Math.round(W * k));
+    const h = Math.max(1, Math.round(H * k));
+    const c = document.createElement('canvas');
+    c.width = w;
+    c.height = h;
+    const g = c.getContext('2d', { willReadFrequently: true });
+    g.drawImage(img, 0, 0, w, h);
+    const px = g.getImageData(0, 0, w, h).data;   // throws for cross-origin images
+
+    const lum = new Float32Array(w * h);
+    for (let i = 0, j = 0; i < lum.length; i++, j += 4) lum[i] = 0.299 * px[j] + 0.587 * px[j + 1] + 0.114 * px[j + 2];
+
+    // Per column (vertical lines) and per row (horizontal lines):
+    //  - edge energy, good for measuring the spacing;
+    //  - "line" energy (pixel vs. its neighbours two px away), which peaks on a thin line's centre
+    //    and so says where the lines sit without the half-pixel bias of edges.
+    const col = new Float32Array(w);
+    const row = new Float32Array(h);
+    const colLine = new Float32Array(w);
+    const rowLine = new Float32Array(h);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const i = y * w + x;
+        const v = lum[i];
+        if (x > 0) col[x] += Math.abs(v - lum[i - 1]);
+        if (y > 0) row[y] += Math.abs(v - lum[i - w]);
+        if (x > 1 && x < w - 2) colLine[x] += Math.abs(2 * v - lum[i - 2] - lum[i + 2]);
+        if (y > 1 && y < h - 2) rowLine[y] += Math.abs(2 * v - lum[i - 2 * w] - lum[i + 2 * w]);
+      }
+    }
+    const fx = highPass(col);
+    const fy = highPass(row);
+    const lx = highPass(colLine);
+    const ly = highPass(rowLine);
+
+    const minLag = Math.max(5, DETECT_MIN_CELL * k);
+    const ax = findPeriod(fx, minLag, Math.min(fx.length / 2.2, DETECT_MAX_CELL * k));
+    const ay = findPeriod(fy, minLag, Math.min(fy.length / 2.2, DETECT_MAX_CELL * k));
+    if (!ax || !ay) return null;
+
+    // A square grid repeats at the same spacing both ways; allow one axis to have locked onto a multiple.
+    let p0 = null;
+    for (const [m, n] of [[1, 1], [1, 2], [2, 1], [1, 3], [3, 1]]) {
+      const a = ax.lag / m;
+      const b = ay.lag / n;
+      if (Math.abs(a - b) <= Math.max(1.5, 0.04 * a)) { p0 = (a + b) / 2; break; }
+    }
+    if (!p0 || p0 < minLag) return null;
+
+    // Fine-tune the spacing (sub-pixel) using both axes together.
+    const mx = mean(fx) || 1e-6;
+    const my = mean(fy) || 1e-6;
+    const refine = (centre, span) => {
+      let best = null;
+      for (let p = centre - span; p <= centre + span; p += 0.02) {
+        if (p < minLag) continue;
+        const cx = combFit(fx, p, 0.25);
+        const cy = combFit(fy, p, 0.25);
+        // Contrast: how far the comb's teeth stand above the profile's average, per axis.
+        const r = { p: p, cx: cx.score / mx, cy: cy.score / my };
+        r.score = r.cx + r.cy;
+        if (!best || r.score > best.score) best = r;
+      }
+      return best;
+    };
+    let best = refine(p0, 1.5);
+    if (!best) return null;
+
+    // Faint grids can lock onto every 2nd/3rd/4th line. Try the fractions, smallest first, and accept
+    // one only if the extra teeth it adds (the ones between the current lines) land on real lines too.
+    for (const d of [4, 3, 2]) {
+      const q = best.p / d;
+      if (q < minLag) continue;
+      const cand = refine(q, 0.6);
+      if (!cand) continue;
+      const between = (c, b) => (d * c - b) / (d - 1);
+      const bx = between(cand.cx, best.cx);
+      const by = between(cand.cy, best.cy);
+      // Random teeth score about 1 (the profile's average), so ~1.35+ means lines are there.
+      if (bx >= Math.max(1.35, 0.25 * best.cx) && by >= Math.max(1.35, 0.25 * best.cy)) { best = cand; break; }
+    }
+
+    // Lines must clearly stand out from the rest of the picture on both axes.
+    if (best.cx < 2.0 || best.cy < 2.0) return null;
+
+    // Where the lines sit, from the line-centre profiles, in finer steps.
+    const phx = combFit(lx, best.p, 0.1).phase;
+    const phy = combFit(ly, best.p, 0.1).phase;
+
+    // Profile index i is the downscaled pixel whose centre is at i + 0.5.
+    let size = best.p / k;
+    let offsetX = (phx + 0.5) / k;
+    let offsetY = (phy + 0.5) / k;
+
+    // Exported battle maps are usually a whole number of squares wide; snap to that when it's close.
+    const cols = W / size;
+    const rows = H / size;
+    if (Math.abs(cols - Math.round(cols)) < 0.06 && Math.abs(rows - Math.round(rows)) < 0.06) {
+      const snapped = W / Math.round(cols);
+      if (Math.abs(snapped - size) < 0.5) size = snapped;
+    }
+    if (Math.abs(size - Math.round(size)) < 0.12) size = Math.round(size);
+    offsetX = ((offsetX % size) + size) % size;
+    offsetY = ((offsetY % size) + size) % size;
+    // A line within a px or two of the map edge is a grid that starts at the edge.
+    const edge = Math.max(1.5, 0.025 * size);
+    if (offsetX < edge || offsetX > size - edge) offsetX = 0;
+    if (offsetY < edge || offsetY > size - edge) offsetY = 0;
+    return { size: size, offsetX: Math.round(offsetX * 2) / 2, offsetY: Math.round(offsetY * 2) / 2 };
+  }
+
+  function mean(f) {
+    let s = 0;
+    for (let i = 0; i < f.length; i++) s += f[i];
+    return s / Math.max(1, f.length);
+  }
+
+  // Keeps narrow peaks (grid lines) and removes slow changes from the picture itself.
+  function highPass(f) {
+    const n = f.length;
+    const win = 4;
+    const pre = new Float64Array(n + 1);
+    for (let i = 0; i < n; i++) pre[i + 1] = pre[i] + f[i];
+    const out = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const a = Math.max(0, i - win);
+      const b = Math.min(n, i + win + 1);
+      out[i] = Math.max(0, f[i] - (pre[b] - pre[a]) / (b - a));
+    }
+    return out;
+  }
+
+  // Strongest repeat distance by autocorrelation, preferring the shortest one that explains it.
+  function findPeriod(f, minLag, maxLag) {
+    const n = f.length;
+    minLag = Math.max(2, Math.floor(minLag));
+    maxLag = Math.floor(maxLag);
+    if (maxLag <= minLag + 2) return null;
+    const m = mean(f);
+    const c = new Float32Array(n);
+    let ac0 = 0;
+    for (let i = 0; i < n; i++) { c[i] = f[i] - m; ac0 += c[i] * c[i]; }
+    if (ac0 <= 0) return null;
+    const ac = new Float32Array(maxLag + 2);
+    for (let L = 1; L <= maxLag + 1; L++) {
+      let s = 0;
+      for (let i = 0; i + L < n; i++) s += c[i] * c[i + L];
+      ac[L] = (s / ac0) * (n / (n - L));
+    }
+    let bestLag = -1;
+    // Real peaks only: a value that is merely still falling at the start of the range doesn't count.
+    for (let L = minLag + 1; L <= maxLag; L++) {
+      if (ac[L] > ac[L - 1] && ac[L] >= ac[L + 1] && (bestLag < 0 || ac[L] > ac[bestLag])) bestLag = L;
+    }
+    if (bestLag < 0 || ac[bestLag] < 0.08) return null;
+    for (let d = 5; d >= 2; d--) {
+      const L = Math.round(bestLag / d);
+      if (L < minLag) continue;
+      const near = Math.max(ac[L - 1] || 0, ac[L], ac[L + 1] || 0);
+      if (near >= 0.6 * ac[bestLag]) { bestLag = bestLag / d; break; }
+    }
+    return { lag: bestLag, strength: ac[Math.round(bestLag)] };
+  }
+
+  // Average profile value on the comb phase, phase + p, phase + 2p, … for the best phase.
+  function combFit(f, p, step) {
+    const n = f.length;
+    const at = (x) => {
+      const i = Math.floor(x);
+      const t = x - i;
+      return i + 1 < n ? f[i] * (1 - t) + f[i + 1] * t : f[n - 1];
+    };
+    let best = { score: -1, phase: 0 };
+    for (let phase = 0; phase < p; phase += step) {
+      let s = 0;
+      let cnt = 0;
+      for (let x = phase; x < n - 1; x += p) { s += at(x); cnt++; }
+      if (cnt >= 2 && s / cnt > best.score) best = { score: s / cnt, phase: phase };
+    }
+    return best;
+  }
+
+  function flashStatus(text) {
+    setStatus(text);
+    const shown = text;
+    setTimeout(() => {
+      const s = root && root.querySelector('[data-el="status"]');
+      if (s && s.textContent === shown) setStatus(null);
+    }, 3500);
   }
 
   /* ---------- Fog of war (cell based) ---------- */
 
   const cellKey = (x, y) => x + '_' + y;
 
+  // Top-left corner of cell (0, 0) in map px. Normalised into (-size, 0] so cell 0 also covers the
+  // partial strip at the map's top/left edge and every visible cell has a non-negative index.
+  function gridOrigin() {
+    const s = vtt.grid.size;
+    const norm = (o) => {
+      let v = (((Number(o) || 0) % s) + s) % s;
+      if (v > 0.001) v -= s;
+      return v;
+    };
+    return { ox: norm(vtt.grid.offsetX), oy: norm(vtt.grid.offsetY) };
+  }
+
   function boardCells() {
     const b = boardSize();
     const s = vtt.grid.size;
-    return { cols: Math.max(1, Math.ceil(b.w / s - 0.001)), rows: Math.max(1, Math.ceil(b.h / s - 0.001)) };
+    const { ox, oy } = gridOrigin();
+    return { cols: Math.max(1, Math.ceil((b.w - ox) / s - 0.001)), rows: Math.max(1, Math.ceil((b.h - oy) / s - 0.001)) };
   }
 
   function isRevealed(x, y) {
@@ -437,13 +706,14 @@
   // Fills every cell between two pointer samples so fast strokes leave no gaps.
   function paintFogStroke(from, to, mode) {
     const s = vtt.grid.size;
+    const { ox, oy } = gridOrigin();
     const a = screenToWorld(from);
     const b = screenToWorld(to);
     const steps = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / (s / 2)));
     for (let i = 0; i <= steps; i++) {
       const wx = a.x + (b.x - a.x) * i / steps;
       const wy = a.y + (b.y - a.y) * i / steps;
-      paintFogAt(Math.floor(wx / s), Math.floor(wy / s), mode);
+      paintFogAt(Math.floor((wx - ox) / s), Math.floor((wy - oy) / s), mode);
     }
   }
 
@@ -472,9 +742,13 @@
       fogMaskKey = key;
     }
     const s = vtt.grid.size;
+    const { ox, oy } = gridOrigin();
     ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, b.w, b.h);   // edge cells overhang the map; keep the fog on it
+    ctx.clip();
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(fogMask, 0, 0, cols * s, rows * s);
+    ctx.drawImage(fogMask, ox, oy, cols * s, rows * s);
     ctx.restore();
   }
 
@@ -507,8 +781,12 @@
       mapImg = img;
       vtt.map = { url: url, width: img.naturalWidth, height: img.naturalHeight };
       if (isLocal || firstMap) fitView();
-      if (isLocal) onVttChange({ map: true });
-      else requestDraw();
+      if (isLocal) {
+        onVttChange({ map: true });
+        detectGridOnMap(false);   // match a grid drawn into the map, if there is one
+      } else {
+        requestDraw();
+      }
     };
     img.onerror = () => {
       if (wantedMapUrl !== url) return;
@@ -526,7 +804,8 @@
     const size = source.size || 1;
     const center = screenToWorld(canvasCenter());
     const cell = vtt.grid.size;
-    const spot = freeCellNear(Math.round(center.x / cell - size / 2), Math.round(center.y / cell - size / 2));
+    const { ox, oy } = gridOrigin();
+    const spot = freeCellNear(Math.round((center.x - ox) / cell - size / 2), Math.round((center.y - oy) / cell - size / 2));
     const token = {
       id: id,
       name: (source.name || 'Token').trim() || 'Token',
@@ -698,6 +977,8 @@
       if (typeof g.visible === 'boolean') vtt.grid.visible = g.visible;
       if (g.color) vtt.grid.color = g.color;
       if (isFinite(g.opacity)) vtt.grid.opacity = g.opacity;
+      vtt.grid.offsetX = Number(g.offsetX) || 0;
+      vtt.grid.offsetY = Number(g.offsetY) || 0;
       syncGridInputs();
     }
 
@@ -852,7 +1133,7 @@
     });
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie };
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, findGrid: findGrid };
 
   /* ---------- Coordinates ---------- */
 
@@ -938,13 +1219,14 @@
 
   function drawGrid(b) {
     const s = vtt.grid.size;
+    const { ox, oy } = gridOrigin();
     ctx.save();
     ctx.globalAlpha = vtt.grid.opacity;
     ctx.strokeStyle = vtt.grid.color;
     ctx.lineWidth = 1 / view.zoom;   // stays a hairline at any zoom
     ctx.beginPath();
-    for (let x = 0; x <= b.w + 0.5; x += s) { ctx.moveTo(x, 0); ctx.lineTo(x, b.h); }
-    for (let y = 0; y <= b.h + 0.5; y += s) { ctx.moveTo(0, y); ctx.lineTo(b.w, y); }
+    for (let x = ox; x <= b.w + 0.5; x += s) { if (x >= -0.5) { ctx.moveTo(x, 0); ctx.lineTo(x, b.h); } }
+    for (let y = oy; y <= b.h + 0.5; y += s) { if (y >= -0.5) { ctx.moveTo(0, y); ctx.lineTo(b.w, y); } }
     ctx.stroke();
     ctx.restore();
   }
@@ -954,7 +1236,8 @@
     if (drag && drag.kind === 'token' && drag.id === t.id) {
       return { x: drag.px, y: drag.py, w: t.size * s, h: t.size * s };
     }
-    return { x: t.x * s, y: t.y * s, w: t.size * s, h: t.size * s };
+    const { ox, oy } = gridOrigin();
+    return { x: ox + t.x * s, y: oy + t.y * s, w: t.size * s, h: t.size * s };
   }
 
   function drawTokens() {
@@ -1126,8 +1409,8 @@
     if (t) {
       selectedId = t.id;
       const w = screenToWorld(p);
-      const s = vtt.grid.size;
-      drag = { kind: 'token', id: t.id, start: p, moved: false, grabX: w.x - t.x * s, grabY: w.y - t.y * s, px: t.x * s, py: t.y * s };
+      const r0 = tokenRect(t);
+      drag = { kind: 'token', id: t.id, start: p, moved: false, grabX: w.x - r0.x, grabY: w.y - r0.y, px: r0.x, py: r0.y };
       // Mouse users get the menu from right click; long press is for touch and pen.
       if (e.pointerType !== 'mouse' && isDm()) longPressTimer = setTimeout(() => {
         if (drag && drag.kind === 'token' && !drag.moved) {
@@ -1188,12 +1471,17 @@
   }
 
   // Shares the cell under a dragged token so others see it move; throttled unless final.
+  // Grid cell nearest to where the dragged token is being held.
+  function dragCell() {
+    const s = vtt.grid.size;
+    const { ox, oy } = gridOrigin();
+    return { x: Math.round((drag.px - ox) / s), y: Math.round((drag.py - oy) / s) };
+  }
+
   function sendDragPosition(final) {
     if (!drag || drag.kind !== 'token' || typeof window.fbSaveVtt !== 'function') return;
     if (!canEdit(vtt.tokens[drag.id])) return;
-    const s = vtt.grid.size;
-    const x = Math.round(drag.px / s);
-    const y = Math.round(drag.py / s);
+    const { x, y } = dragCell();
     const now = Date.now();
     if (!final && (now - (drag.sentAt || 0) < DRAG_SYNC_MS || (x === drag.sentX && y === drag.sentY))) return;
     drag.sentAt = now;
@@ -1217,9 +1505,9 @@
     if (drag.kind === 'token' && drag.moved) {
       const t = vtt.tokens[drag.id];
       if (t) {
-        const s = vtt.grid.size;
-        t.x = Math.round(drag.px / s);
-        t.y = Math.round(drag.py / s);
+        const cellPos = dragCell();
+        t.x = cellPos.x;
+        t.y = cellPos.y;
         sendDragPosition(true);
         drag = null;
         requestDraw();

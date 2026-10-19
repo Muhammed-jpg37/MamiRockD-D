@@ -49,6 +49,8 @@
           "visible": { ".validate": "newData.isBoolean()" },
           "color": { ".validate": "newData.isString() && newData.val().length <= 20" },
           "opacity": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+          "offsetX": { ".validate": "newData.isNumber() && newData.val() > -10000 && newData.val() < 10000" },
+          "offsetY": { ".validate": "newData.isNumber() && newData.val() > -10000 && newData.val() < 10000" },
           "$other": { ".validate": false }
         },
         "tokens": {
