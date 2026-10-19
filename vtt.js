@@ -17,14 +17,16 @@
   const ROOM_ID = 'main';
   const DRAG_SYNC_MS = 100;                       // live position updates while dragging, at most this often
   const GRID_SYNC_MS = 250;                       // grid inputs fire per keystroke; write once typing settles
+  const FOG_SYNC_MS = 250;                        // a fog brush stroke is written in batches at most this often
   const MAP_MAX_EDGE = 2048;                      // uploaded maps are shrunk to this before going to Storage
   const MAP_MAX_BYTES = 8 * 1024 * 1024;          // refuse anything still bigger after compression
 
-  // Shared table state (what Step 5 will sync).
+  // Shared table state, mirrored at vtt/<ROOM_ID>.
   const vtt = {
     map: { url: null, width: 0, height: 0 },
     grid: { size: 70, visible: true, color: '#000000', opacity: 0.35 },
-    tokens: {}   // [id]: { id, name, x, y, size, img, color, owner, hp, hidden } — x/y in grid cells
+    tokens: {},  // [id]: { id, name, x, y, size, img, color, owner, hp, hidden } — x/y in grid cells
+    fog: { enabled: false, revealed: {} }   // revealed: { "x_y": true } (Firebase keys can't hold . or /)
   };
 
   // Local-only view state.
@@ -38,6 +40,12 @@
   let selectedId = null;
   let unsubscribe = null;
   let gridSaveTimer = null;
+  let fogMode = null;           // DM brush: null (move) | 'reveal' | 'hide'
+  let fogBrush = 1;             // brush width in cells
+  let fogPending = {};          // painted cells not yet written: { "x_y": true | null }
+  let fogMask = null;           // 1 px per cell canvas, stretched over the board
+  let fogMaskKey = '';          // what fogMask was built for, so it's rebuilt only on change
+  let fogVersion = 0;           // bumped whenever revealed cells change
   let drawQueued = false;
   const imgCache = {};
 
@@ -96,6 +104,12 @@
       .vtt-swatches { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
       .vtt-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
       .vtt-swatch.active { border-color: var(--text); }
+      .vtt-toolbar select {
+        background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 3px 4px; font-family: var(--font-body);
+      }
+      .vtt-toolbar .btn.vtt-on { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+      .vtt-stage canvas.vtt-painting { cursor: crosshair; }
       .vtt-status {
         position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 15;
         padding: 5px 14px; border-radius: 999px; pointer-events: none;
@@ -143,6 +157,15 @@
           <button class="btn small ghost" data-act="add-token">➕ Add Token</button>
           <input type="file" accept="image/*" data-el="token-file" hidden>
         </div>
+        <div class="vtt-group vtt-dm-only">
+          <label title="Hide unexplored areas from players"><input type="checkbox" data-el="fog-enabled"> Fog</label>
+          <button class="btn small ghost" data-act="fog-reveal" title="Paint to reveal cells">☀ Reveal</button>
+          <button class="btn small ghost" data-act="fog-hide" title="Paint to cover cells">🌑 Cover</button>
+          <select data-el="fog-brush" title="Brush size">
+            <option value="1">1×1</option><option value="3">3×3</option><option value="5">5×5</option>
+          </select>
+          <button class="btn small ghost" data-act="fog-reset" title="Cover the whole map again">↺</button>
+        </div>
         <div class="vtt-group">
           <button class="btn small ghost" data-act="zoom-out" title="Zoom out">−</button>
           <span class="vtt-zoom-label" data-el="zoom-label">100%</span>
@@ -174,6 +197,17 @@
       else if (act === 'zoom-in') zoomAt(canvasCenter(), 1.25);
       else if (act === 'zoom-out') zoomAt(canvasCenter(), 0.8);
       else if (act === 'fit') fitView();
+      else if (act === 'fog-reveal') setFogMode(fogMode === 'reveal' ? null : 'reveal');
+      else if (act === 'fog-hide') setFogMode(fogMode === 'hide' ? null : 'hide');
+      else if (act === 'fog-reset') resetFog();
+    });
+
+    el('fog-enabled').addEventListener('change', (e) => {
+      vtt.fog.enabled = e.target.checked;
+      onVttChange({ fog: 'enabled' });
+    });
+    el('fog-brush').addEventListener('change', (e) => {
+      fogBrush = parseInt(e.target.value, 10) || 1;
     });
 
     el('map-file').addEventListener('change', (e) => {
@@ -228,9 +262,9 @@
     return !!(token && me && token.owner && String(token.owner).toLowerCase() === me);
   }
 
-  // Hidden tokens are invisible (and untouchable) for players.
+  // Hidden tokens, and enemies standing in fog, are invisible (and untouchable) for players.
   function isVisible(token) {
-    return isDm() || !token.hidden;
+    return isDm() || (!token.hidden && !hiddenByFog(token));
   }
 
   // Non-DM accounts as [{ key, nickname }]; key is the lowercase nickname stored in token.owner.
@@ -276,7 +310,7 @@
     root.classList.toggle('vtt-player', !dm);
     const title = root.querySelector('[data-el="hint-title"]');
     if (title) title.textContent = dm ? 'Load a map to begin' : 'Waiting for the DM to set up the table';
-    if (!dm) closePopups();
+    if (!dm) { closePopups(); setFogMode(null); }
   }
 
   function syncGridInputs() {
@@ -288,6 +322,124 @@
     set('grid-visible', 'checked', vtt.grid.visible);
     set('grid-size', 'value', vtt.grid.size);
     set('grid-color', 'value', vtt.grid.color);
+  }
+
+  /* ---------- Fog of war (cell based) ---------- */
+
+  const cellKey = (x, y) => x + '_' + y;
+
+  function boardCells() {
+    const b = boardSize();
+    const s = vtt.grid.size;
+    return { cols: Math.max(1, Math.ceil(b.w / s - 0.001)), rows: Math.max(1, Math.ceil(b.h / s - 0.001)) };
+  }
+
+  function isRevealed(x, y) {
+    return !!vtt.fog.revealed[cellKey(x, y)];
+  }
+
+  // Players don't see unowned (enemy/NPC) tokens standing wholly in fog; party tokens always show.
+  function hiddenByFog(t) {
+    if (!vtt.fog.enabled || t.owner) return false;
+    for (let dy = 0; dy < t.size; dy++) {
+      for (let dx = 0; dx < t.size; dx++) {
+        if (isRevealed(t.x + dx, t.y + dy)) return false;
+      }
+    }
+    return true;
+  }
+
+  function setFogMode(mode) {
+    fogMode = isDm() ? mode : null;
+    if (!root) return;
+    root.querySelector('[data-act="fog-reveal"]').classList.toggle('vtt-on', fogMode === 'reveal');
+    root.querySelector('[data-act="fog-hide"]').classList.toggle('vtt-on', fogMode === 'hide');
+    canvas.classList.toggle('vtt-painting', !!fogMode);
+    // Painting only makes sense with fog on.
+    if (fogMode && !vtt.fog.enabled) {
+      vtt.fog.enabled = true;
+      syncFogInputs();
+      onVttChange({ fog: 'enabled' });
+    }
+  }
+
+  function resetFog() {
+    if (!isDm() || !confirm('Cover the whole map with fog again?')) return;
+    vtt.fog.revealed = {};
+    fogPending = {};
+    fogVersion++;
+    onVttChange({ fog: 'reset' });
+  }
+
+  function syncFogInputs() {
+    if (!root) return;
+    const box = root.querySelector('[data-el="fog-enabled"]');
+    if (box) box.checked = vtt.fog.enabled;
+  }
+
+  // Applies the brush centred on cell (cx, cy); changes are queued in fogPending until the stroke ends.
+  function paintFogAt(cx, cy, mode) {
+    if (mode !== 'reveal' && mode !== 'hide') return;
+    const { cols, rows } = boardCells();
+    const half = Math.floor(fogBrush / 2);
+    const reveal = mode === 'reveal';
+    let changed = false;
+    for (let y = cy - half; y <= cy + half; y++) {
+      for (let x = cx - half; x <= cx + half; x++) {
+        if (x < 0 || y < 0 || x >= cols || y >= rows) continue;
+        const k = cellKey(x, y);
+        if (!!vtt.fog.revealed[k] === reveal) continue;
+        if (reveal) vtt.fog.revealed[k] = true;
+        else delete vtt.fog.revealed[k];
+        fogPending[k] = reveal ? true : null;
+        changed = true;
+      }
+    }
+    if (changed) { fogVersion++; requestDraw(); }
+  }
+
+  // Fills every cell between two pointer samples so fast strokes leave no gaps.
+  function paintFogStroke(from, to, mode) {
+    const s = vtt.grid.size;
+    const a = screenToWorld(from);
+    const b = screenToWorld(to);
+    const steps = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / (s / 2)));
+    for (let i = 0; i <= steps; i++) {
+      const wx = a.x + (b.x - a.x) * i / steps;
+      const wy = a.y + (b.y - a.y) * i / steps;
+      paintFogAt(Math.floor(wx / s), Math.floor(wy / s), mode);
+    }
+  }
+
+  // Drawn after tokens so it covers them. One pixel per cell, stretched without smoothing,
+  // so neighbouring fog cells join without hairline seams at any zoom.
+  function drawFog(b) {
+    if (!vtt.fog.enabled) return;
+    const { cols, rows } = boardCells();
+    const dm = isDm();
+    const key = cols + 'x' + rows + '|' + dm + '|' + fogVersion;
+    if (!fogMask || key !== fogMaskKey) {
+      fogMask = fogMask || document.createElement('canvas');
+      fogMask.width = cols;
+      fogMask.height = rows;
+      const mctx = fogMask.getContext('2d');
+      const data = mctx.createImageData(cols, rows);
+      const alpha = dm ? 140 : 255;   // DM sees through the fog, players don't
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (isRevealed(x, y)) continue;
+          const i = (y * cols + x) * 4;
+          data.data[i] = 6; data.data[i + 1] = 5; data.data[i + 2] = 8; data.data[i + 3] = alpha;
+        }
+      }
+      mctx.putImageData(data, 0, 0);
+      fogMaskKey = key;
+    }
+    const s = vtt.grid.size;
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(fogMask, 0, 0, cols * s, rows * s);
+    ctx.restore();
   }
 
   function resizeCanvas() {
@@ -429,7 +581,16 @@
   function onVttChange(change) {
     requestDraw();
     if (!change || typeof window.fbSaveVtt !== 'function') return;
-    if ((change.map || change.grid) && !isDm()) return;
+    if ((change.map || change.grid || change.fog) && !isDm()) return;
+    if (change.fog === 'enabled') {
+      window.fbSaveVtt(roomPath('fog'), { enabled: vtt.fog.enabled });
+    } else if (change.fog === 'cells') {
+      // One batched update per brush stroke; null entries close cells again.
+      if (Object.keys(fogPending).length) window.fbSaveVtt(roomPath('fog/revealed'), fogPending);
+      fogPending = {};
+    } else if (change.fog === 'reset') {
+      window.fbSaveVtt(roomPath('fog/revealed'), null);
+    }
     if (change.token && !(vtt.tokens[change.token] ? canEdit(vtt.tokens[change.token]) : isDm())) return;
     if (change.map) {
       window.fbSaveVtt(roomPath('map'), { url: vtt.map.url, width: vtt.map.width, height: vtt.map.height });
@@ -482,6 +643,14 @@
       syncGridInputs();
     }
 
+    // Cells painted in a stroke that hasn't been sent yet stay as painted.
+    const fog = room.fog || {};
+    const revealed = Object.assign({}, fog.revealed || {});
+    Object.keys(fogPending).forEach((k) => { if (fogPending[k]) revealed[k] = true; else delete revealed[k]; });
+    vtt.fog = { enabled: !!fog.enabled, revealed: revealed };
+    fogVersion++;
+    syncFogInputs();
+
     const next = {};
     Object.keys(room.tokens || {}).forEach((id) => {
       const t = room.tokens[id] || {};
@@ -509,7 +678,7 @@
     requestDraw();
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken };
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t) };
 
   /* ---------- Coordinates ---------- */
 
@@ -575,6 +744,7 @@
     drawMap(b);
     if (vtt.grid.visible) drawGrid(b);
     drawTokens();
+    drawFog(b);
 
     const hint = root.querySelector('[data-el="hint"]');
     if (hint) hint.style.display = mapImg || Object.values(vtt.tokens).some(isVisible) ? 'none' : '';
@@ -614,7 +784,6 @@
   }
 
   function drawTokens() {
-    // Fog (Step 8) will also hide enemy tokens in unrevealed cells here.
     const list = Object.values(vtt.tokens).filter(isVisible);
     // The token being dragged is drawn last so it floats above the others.
     list.sort((a, b) => (drag && drag.id === a.id ? 1 : 0) - (drag && drag.id === b.id ? 1 : 0));
@@ -739,6 +908,9 @@
     canvas.addEventListener('pointermove', onPointerMove);
     canvas.addEventListener('pointerup', onPointerUp);
     canvas.addEventListener('pointercancel', onPointerUp);
+    // If capture is lost without a pointerup (tab switch, alert), still finish the gesture
+    // so a fog stroke or token drag isn't left half done. After a normal pointerup this is a no-op.
+    canvas.addEventListener('lostpointercapture', onPointerUp);
     canvas.addEventListener('wheel', (e) => {
       e.preventDefault();
       zoomAt(eventPoint(e), Math.exp(-e.deltaY * 0.0015));
@@ -758,14 +930,22 @@
     pointers.set(e.pointerId, p);
 
     if (pointers.size === 2) {
-      // Second finger: switch to pinch zoom; any token drag snaps back.
+      // Second finger: switch to pinch zoom; any token drag snaps back, a fog stroke is kept.
       cancelLongPress();
+      if (drag && drag.kind === 'fog') onVttChange({ fog: 'cells' });
       const [a, b] = [...pointers.values()];
       drag = { kind: 'pinch', dist: Math.hypot(a.x - b.x, a.y - b.y), mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
       requestDraw();
       return;
     }
     if (pointers.size > 2) return;
+
+    if (fogMode && isDm()) {
+      // The stroke keeps the mode it started with, even if the toolbar changes mid-stroke.
+      drag = { kind: 'fog', mode: fogMode, last: p };
+      paintFogStroke(p, p, drag.mode);
+      return;
+    }
 
     const t = hitToken(p);
     if (t) {
@@ -806,6 +986,15 @@
       drag.dist = dist;
       drag.mid = mid;
       requestDraw();
+    } else if (drag.kind === 'fog') {
+      paintFogStroke(drag.last, p, drag.mode);
+      drag.last = p;
+      // Long strokes go out in batches so players see the reveal as it happens.
+      const now = Date.now();
+      if (now - (drag.flushedAt || 0) > FOG_SYNC_MS) {
+        drag.flushedAt = now;
+        onVttChange({ fog: 'cells' });
+      }
     } else if (drag.kind === 'pan') {
       view.offsetX += p.x - drag.last.x;
       view.offsetY += p.y - drag.last.y;
@@ -844,6 +1033,12 @@
     canvas.classList.remove('vtt-grabbing');
     if (!drag) return;
 
+    if (drag.kind === 'fog') {
+      drag = null;
+      onVttChange({ fog: 'cells' });
+      return;
+    }
+
     if (drag.kind === 'token' && drag.moved) {
       const t = vtt.tokens[drag.id];
       if (t) {
@@ -866,9 +1061,11 @@
   }
 
   function onKeyDown(e) {
-    if (!root || root.style.display === 'none' || !selectedId) return;
+    if (!root || root.style.display === 'none') return;
     const tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+    if (e.key === 'Escape' && fogMode) { setFogMode(null); return; }
+    if (!selectedId) return;
     if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
       removeToken(selectedId);
