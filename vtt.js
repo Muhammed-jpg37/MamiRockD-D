@@ -1,7 +1,8 @@
 /* ========================================================
    VIRTUAL TABLETOP (VTT)
-   Map, pan/zoom, grid and tokens. Everything is local for now;
-   onVttChange() is the single hook where Firebase sync plugs in.
+   Map, pan/zoom, grid and tokens, synced live through Firebase
+   at vtt/<ROOM_ID>. Local edits go out through onVttChange();
+   remote changes come in through applyRemote().
    ======================================================== */
 (function () {
   'use strict';
@@ -13,6 +14,12 @@
   const TAP_SLOP = 6;                             // px a pointer may move and still count as a tap
   const TOKEN_IMG_MAX = 256;                      // token pictures are downscaled to this
   const TOKEN_COLORS = ['#c9a227', '#a83c32', '#4a8ec4', '#5e9e63', '#9a6fc4', '#d08a3c', '#9d9d9d'];
+  const ROOM_ID = 'main';
+  const DRAG_SYNC_MS = 100;                       // live position updates while dragging, at most this often
+  const GRID_SYNC_MS = 250;                       // grid inputs fire per keystroke; write once typing settles
+  const MAP_MAX_EDGE = 2048;
+  // Until Storage lands (Step 7) uploaded maps travel as data URLs in the database, so keep them small.
+  const MAP_SYNC_MAX_CHARS = 2500000;
 
   // Shared table state (what Step 5 will sync).
   const vtt = {
@@ -28,7 +35,10 @@
   let canvas = null;
   let ctx = null;
   let mapImg = null;
+  let wantedMapUrl = null;      // map URL being loaded or shown; guards against out-of-order loads
   let selectedId = null;
+  let unsubscribe = null;
+  let gridSaveTimer = null;
   let drawQueued = false;
   const imgCache = {};
 
@@ -158,24 +168,28 @@
       const file = e.target.files && e.target.files[0];
       e.target.value = '';
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => setMap(reader.result);
-      reader.readAsDataURL(file);
+      downscaleImage(file, MAP_MAX_EDGE, 'image/webp', 0.82).then((url) => {
+        if (url.length > MAP_SYNC_MAX_CHARS) {
+          alert('This map is too large to share even after compressing it. Try a smaller image, or use "Map URL" with a link.');
+          return;
+        }
+        setMap(url);
+      }, () => alert('Could not read that image.'));
     });
 
     el('grid-visible').addEventListener('change', (e) => {
       vtt.grid.visible = e.target.checked;
-      onVttChange();
+      onVttChange({ grid: true });
     });
     el('grid-size').addEventListener('input', (e) => {
       const v = parseFloat(e.target.value);
       if (!isFinite(v) || v < 10 || v > 400) return;
       vtt.grid.size = v;
-      onVttChange();
+      onVttChange({ grid: true });
     });
     el('grid-color').addEventListener('input', (e) => {
       vtt.grid.color = e.target.value;
-      onVttChange();
+      onVttChange({ grid: true });
     });
 
     bindPointerEvents();
@@ -184,7 +198,19 @@
     new ResizeObserver(resizeCanvas).observe(canvas.parentElement);
     resizeCanvas();
     fitView();
+    startSync();
   };
+
+  function syncGridInputs() {
+    if (!root) return;
+    const set = (name, prop, value) => {
+      const input = root.querySelector('[data-el="' + name + '"]');
+      if (input && document.activeElement !== input) input[prop] = value;
+    };
+    set('grid-visible', 'checked', vtt.grid.visible);
+    set('grid-size', 'value', vtt.grid.size);
+    set('grid-color', 'value', vtt.grid.color);
+  }
 
   function resizeCanvas() {
     if (!canvas) return;
@@ -200,16 +226,28 @@
 
   // source: an image URL or a data URL from an uploaded file.
   function setMap(source) {
-    if (!source) return;
+    if (source) loadMapImage(source, true);
+  }
+
+  // isLocal: this device chose the map, so fit it and share it. Remote maps only load.
+  function loadMapImage(url, isLocal) {
+    wantedMapUrl = url;
     const img = new Image();
     img.onload = () => {
+      if (wantedMapUrl !== url) return;   // a newer map was picked meanwhile
+      const firstMap = !mapImg;
       mapImg = img;
-      vtt.map = { url: source, width: img.naturalWidth, height: img.naturalHeight };
-      fitView();
-      onVttChange();
+      vtt.map = { url: url, width: img.naturalWidth, height: img.naturalHeight };
+      if (isLocal || firstMap) fitView();
+      if (isLocal) onVttChange({ map: true });
+      else requestDraw();
     };
-    img.onerror = () => alert('Could not load that map image.');
-    img.src = source;
+    img.onerror = () => {
+      if (wantedMapUrl !== url) return;
+      if (isLocal) { wantedMapUrl = vtt.map.url; alert('Could not load that map image.'); }
+      else console.warn('VTT: could not load shared map image', url.slice(0, 80));
+    };
+    img.src = url;
   }
 
   // source: { name, color, img, size } — img is an image URL or data URL (optional).
@@ -233,7 +271,7 @@
     };
     vtt.tokens[id] = token;
     selectedId = id;
-    onVttChange();
+    onVttChange({ token: id });
     return token;
   }
 
@@ -254,7 +292,7 @@
   function removeToken(id) {
     delete vtt.tokens[id];
     if (selectedId === id) selectedId = null;
-    onVttChange();
+    onVttChange({ token: id });
   }
 
   function promptMapUrl() {
@@ -262,8 +300,89 @@
     if (url && url.trim()) setMap(url.trim());
   }
 
-  // Every change to the shared table funnels through here. Step 5 adds the Firebase write.
-  function onVttChange() {
+  /* ---------- Sync ---------- */
+
+  const roomPath = (sub) => ROOM_ID + '/' + sub;
+
+  // Every change to the shared table funnels through here.
+  // change: { map: true } | { grid: true } | { token: id } (a missing token means it was deleted).
+  function onVttChange(change) {
+    requestDraw();
+    if (!change || typeof window.fbSaveVtt !== 'function') return;
+    if (change.map) {
+      window.fbSaveVtt(roomPath('map'), { url: vtt.map.url, width: vtt.map.width, height: vtt.map.height });
+    }
+    if (change.grid) {
+      clearTimeout(gridSaveTimer);
+      gridSaveTimer = setTimeout(() => {
+        gridSaveTimer = null;
+        window.fbSaveVtt(roomPath('grid'), Object.assign({}, vtt.grid));
+      }, GRID_SYNC_MS);
+    }
+    if (change.token) {
+      const t = vtt.tokens[change.token];
+      window.fbSaveVtt(roomPath('tokens/' + change.token), t ? Object.assign({}, t) : null);
+    }
+  }
+
+  function startSync(tries) {
+    if (unsubscribe) return;
+    if (typeof window.fbListenToVtt !== 'function') {
+      // The Firebase module loads after this script; give it a moment.
+      if ((tries || 0) < 20) setTimeout(() => startSync((tries || 0) + 1), 500);
+      return;
+    }
+    unsubscribe = window.fbListenToVtt(ROOM_ID, applyRemote);
+  }
+
+  // The listener also echoes our own writes back; applying them again is harmless.
+  function applyRemote(room) {
+    const map = room.map || {};
+    const url = map.url || null;
+    if (url !== (wantedMapUrl || null)) {
+      if (url) {
+        loadMapImage(url, false);
+      } else {
+        wantedMapUrl = null;
+        mapImg = null;
+        vtt.map = { url: null, width: 0, height: 0 };
+      }
+    }
+
+    // While a local grid edit is waiting to be written, keep it instead of the older cloud value.
+    if (room.grid && !gridSaveTimer) {
+      const g = room.grid;
+      if (isFinite(g.size) && g.size >= 10) vtt.grid.size = g.size;
+      if (typeof g.visible === 'boolean') vtt.grid.visible = g.visible;
+      if (g.color) vtt.grid.color = g.color;
+      if (isFinite(g.opacity)) vtt.grid.opacity = g.opacity;
+      syncGridInputs();
+    }
+
+    const next = {};
+    Object.keys(room.tokens || {}).forEach((id) => {
+      const t = room.tokens[id] || {};
+      next[id] = {
+        id: id,
+        name: t.name || 'Token',
+        x: Number(t.x) || 0,
+        y: Number(t.y) || 0,
+        size: Number(t.size) || 1,
+        img: t.img || null,
+        color: t.color || TOKEN_COLORS[0],
+        owner: t.owner || null,
+        hp: (t.hp === undefined) ? null : t.hp,
+        hidden: !!t.hidden
+      };
+    });
+    vtt.tokens = next;
+    if (selectedId && !next[selectedId]) selectedId = null;
+    // Someone deleted the token we are holding: drop it. Otherwise our drag keeps
+    // drawing at the pointer (tokenRect reads drag.px/py), so remote echoes can't yank it.
+    if (drag && drag.kind === 'token' && !next[drag.id]) drag = null;
+    if (root) {
+      root.querySelectorAll('.vtt-pop[data-token-id]').forEach((n) => { if (!next[n.dataset.tokenId]) n.remove(); });
+    }
     requestDraw();
   }
 
@@ -563,8 +682,23 @@
       const w = screenToWorld(p);
       drag.px = w.x - drag.grabX;
       drag.py = w.y - drag.grabY;
+      sendDragPosition(false);
       requestDraw();
     }
+  }
+
+  // Shares the cell under a dragged token so others see it move; throttled unless final.
+  function sendDragPosition(final) {
+    if (!drag || drag.kind !== 'token' || typeof window.fbSaveVtt !== 'function') return;
+    const s = vtt.grid.size;
+    const x = Math.round(drag.px / s);
+    const y = Math.round(drag.py / s);
+    const now = Date.now();
+    if (!final && (now - (drag.sentAt || 0) < DRAG_SYNC_MS || (x === drag.sentX && y === drag.sentY))) return;
+    drag.sentAt = now;
+    drag.sentX = x;
+    drag.sentY = y;
+    window.fbSaveVtt(roomPath('tokens/' + drag.id), { x: x, y: y });
   }
 
   function onPointerUp(e) {
@@ -579,8 +713,9 @@
         const s = vtt.grid.size;
         t.x = Math.round(drag.px / s);
         t.y = Math.round(drag.py / s);
+        sendDragPosition(true);
         drag = null;
-        onVttChange();
+        requestDraw();
         return;
       }
     }
@@ -628,6 +763,13 @@
     selectedId = t.id;
     const pop = document.createElement('div');
     pop.className = 'vtt-pop';
+    pop.dataset.tokenId = t.id;
+    // Remote updates replace token objects, so always edit the current one.
+    const edit = (fn) => {
+      const cur = vtt.tokens[t.id];
+      if (cur) { fn(cur); onVttChange({ token: t.id }); }
+      closePopups();
+    };
 
     const title = document.createElement('div');
     title.className = 'vtt-pop-title';
@@ -636,15 +778,15 @@
 
     const rename = button('✏️ Rename', () => {
       const name = prompt('Token name:', t.name);
-      if (name && name.trim()) { t.name = name.trim(); onVttChange(); }
-      closePopups();
+      if (name && name.trim()) edit((cur) => { cur.name = name.trim(); });
+      else closePopups();
     });
     pop.appendChild(rename);
 
     const sizeRow = document.createElement('div');
     sizeRow.className = 'vtt-row';
     [1, 2, 3, 4].forEach((n) => {
-      const b = button(n + 'x' + n, () => { t.size = n; onVttChange(); closePopups(); });
+      const b = button(n + 'x' + n, () => edit((cur) => { cur.size = n; }));
       if (t.size === n) b.classList.add('active');
       sizeRow.appendChild(b);
     });
@@ -731,8 +873,8 @@
     return b;
   }
 
-  // Shrinks a picture to max x max and returns a small data URL (keeps future sync payloads light).
-  function downscaleImage(file, max) {
+  // Shrinks a picture to fit max x max and returns a compressed data URL (keeps sync payloads light).
+  function downscaleImage(file, max, type, quality) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onerror = reject;
@@ -745,7 +887,7 @@
           c.width = Math.max(1, Math.round(im.naturalWidth * k));
           c.height = Math.max(1, Math.round(im.naturalHeight * k));
           c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-          resolve(c.toDataURL('image/webp', 0.85));
+          resolve(c.toDataURL(type || 'image/webp', quality || 0.85));
         };
         im.src = reader.result;
       };

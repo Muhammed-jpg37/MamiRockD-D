@@ -14128,6 +14128,38 @@
     };
 
     /* ========================================================
+       VTT (VIRTUAL TABLETOP) SYNC — vtt/<roomId>/{map,grid,tokens}
+       ======================================================== */
+    // path is relative to vtt/, e.g. 'main/tokens/t123'. Objects are merged with update()
+    // (null fields are removed), so two people moving different tokens never overwrite each other.
+    window.fbSaveVtt = function(path, value) {
+      if (!db || !path) return Promise.resolve();
+      const target = ref(db, 'vtt/' + path);
+      updateSyncBadge('syncing', '🔄 Syncing Table...');
+      const write = (value !== null && typeof value === 'object')
+        ? update(target, cleanData(value))
+        : set(target, cleanData(value));
+      return write
+        .then(() => updateSyncBadge('online', '🟢 Firebase Live'))
+        .catch((err) => {
+          console.warn("Firebase VTT save error:", err);
+          updateSyncBadge('offline', '⚠️ Sync Warning');
+        });
+    };
+
+    // Calls callback(roomState) now and on every change. Returns an unsubscribe function.
+    window.fbListenToVtt = function(roomId, callback) {
+      if (!db || !roomId || typeof callback !== 'function') return () => {};
+      return onValue(ref(db, 'vtt/' + roomId), (snapshot) => {
+        try {
+          callback(snapshot.val() || {});
+        } catch (err) {
+          console.warn("Error applying VTT update:", err);
+        }
+      });
+    };
+
+    /* ========================================================
        3. CAMPAIGN NOTES SYNCHRONIZATION
        ======================================================== */
     let notesDebounceTimer = null;
