@@ -97,6 +97,12 @@
       .vtt-swatches { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
       .vtt-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
       .vtt-swatch.active { border-color: var(--text); }
+      #vtt-view-container.vtt-player .vtt-dm-only { display: none !important; }
+      .vtt-pop select, .vtt-form select {
+        background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 4px 6px; font-family: var(--font-body);
+      }
+      .vtt-pop .vtt-owner { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
       @media (max-width: 640px) {
         #vtt-view-container { height: calc(100dvh - 120px); min-height: 360px; }
         .vtt-group + .vtt-group { padding-left: 0; border-left: none; }
@@ -111,24 +117,24 @@
   /* ---------- Setup ---------- */
 
   window.initVtt = function () {
-    if (root) { resizeCanvas(); return; }
+    if (root) { refreshRoleUi(); resizeCanvas(); return; }
     root = document.getElementById('vtt-view-container');
     if (!root) return;
     injectStyles();
 
     root.innerHTML = `
       <div class="vtt-toolbar">
-        <div class="vtt-group">
+        <div class="vtt-group vtt-dm-only">
           <button class="btn small ghost" data-act="load-map">🗺 Load Map</button>
           <button class="btn small ghost" data-act="map-url">🔗 Map URL</button>
           <input type="file" accept="image/*" data-el="map-file" hidden>
         </div>
-        <div class="vtt-group">
+        <div class="vtt-group vtt-dm-only">
           <label><input type="checkbox" data-el="grid-visible" checked> Grid</label>
           <label>Size <input type="number" min="10" max="400" step="1" data-el="grid-size"></label>
           <input type="color" data-el="grid-color" title="Grid color">
         </div>
-        <div class="vtt-group">
+        <div class="vtt-group vtt-dm-only">
           <button class="btn small ghost" data-act="add-token">➕ Add Token</button>
           <input type="file" accept="image/*" data-el="token-file" hidden>
         </div>
@@ -141,7 +147,7 @@
       </div>
       <div class="vtt-stage">
         <canvas></canvas>
-        <div class="vtt-hint" data-el="hint">Load a map to begin<br><small>Drag to pan · wheel or pinch to zoom</small></div>
+        <div class="vtt-hint" data-el="hint"><span data-el="hint-title">Load a map to begin</span><br><small>Drag to pan · wheel or pinch to zoom</small></div>
       </div>
     `;
 
@@ -196,10 +202,83 @@
     window.addEventListener('keydown', onKeyDown);
 
     new ResizeObserver(resizeCanvas).observe(canvas.parentElement);
+    refreshRoleUi();
     resizeCanvas();
     fitView();
     startSync();
   };
+
+  /* ---------- Roles ---------- */
+  // The site keeps the signed-in account in window.currentUser ({ nickname, role: 'dm' | 'player' }).
+  // These checks only shape the UI: database rules can't verify roles without Firebase Auth (see Step 10).
+
+  function myNick() {
+    const u = window.currentUser;
+    return u && u.nickname ? String(u.nickname).toLowerCase() : null;
+  }
+
+  function isDm() {
+    const u = window.currentUser;
+    return !!(u && u.role === 'dm');
+  }
+
+  // DM edits everything; a player only moves tokens they own.
+  function canEdit(token) {
+    if (isDm()) return true;
+    const me = myNick();
+    return !!(token && me && token.owner && String(token.owner).toLowerCase() === me);
+  }
+
+  // Hidden tokens are invisible (and untouchable) for players.
+  function isVisible(token) {
+    return isDm() || !token.hidden;
+  }
+
+  // Non-DM accounts as [{ key, nickname }]; key is the lowercase nickname stored in token.owner.
+  function playerAccounts() {
+    let accounts = {};
+    try { accounts = (typeof getStoredAccounts === 'function') ? getStoredAccounts() : {}; } catch (e) { }
+    return Object.keys(accounts)
+      .filter((k) => accounts[k] && accounts[k].role !== 'dm')
+      .map((k) => ({ key: String(accounts[k].nickname || k).toLowerCase(), nickname: accounts[k].nickname || k }))
+      .sort((a, b) => a.nickname.localeCompare(b.nickname));
+  }
+
+  function ownerName(key) {
+    if (!key) return null;
+    const acc = playerAccounts().find((a) => a.key === String(key).toLowerCase());
+    return acc ? acc.nickname : key;
+  }
+
+  function ownerSelect(selected) {
+    const sel = document.createElement('select');
+    const none = document.createElement('option');
+    none.value = '';
+    none.textContent = '— DM / none —';
+    sel.appendChild(none);
+    const players = playerAccounts();
+    if (selected && !players.some((p) => p.key === selected)) players.push({ key: selected, nickname: selected });
+    players.forEach((p) => {
+      const o = document.createElement('option');
+      o.value = p.key;
+      o.textContent = '👤 ' + p.nickname;
+      sel.appendChild(o);
+    });
+    sel.value = selected || '';
+    return sel;
+  }
+
+  let lastRoleDm = null;
+  function refreshRoleUi() {
+    if (!root) return;
+    const dm = isDm();
+    if (dm === lastRoleDm) return;
+    lastRoleDm = dm;
+    root.classList.toggle('vtt-player', !dm);
+    const title = root.querySelector('[data-el="hint-title"]');
+    if (title) title.textContent = dm ? 'Load a map to begin' : 'Waiting for the DM to set up the table';
+    if (!dm) closePopups();
+  }
 
   function syncGridInputs() {
     if (!root) return;
@@ -226,7 +305,7 @@
 
   // source: an image URL or a data URL from an uploaded file.
   function setMap(source) {
-    if (source) loadMapImage(source, true);
+    if (source && isDm()) loadMapImage(source, true);
   }
 
   // isLocal: this device chose the map, so fit it and share it. Remote maps only load.
@@ -252,7 +331,8 @@
 
   // source: { name, color, img, size } — img is an image URL or data URL (optional).
   function addToken(source) {
-    const id = 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    if (!isDm()) return null;
+    const id ='t' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     const size = source.size || 1;
     const center = screenToWorld(canvasCenter());
     const cell = vtt.grid.size;
@@ -265,9 +345,9 @@
       size: size,
       img: source.img || null,
       color: source.color || TOKEN_COLORS[0],
-      owner: source.owner || null,
+      owner: source.owner ? String(source.owner).toLowerCase() : null,
       hp: null,
-      hidden: false
+      hidden: !!source.hidden
     };
     vtt.tokens[id] = token;
     selectedId = id;
@@ -290,6 +370,7 @@
   }
 
   function removeToken(id) {
+    if (!isDm()) return;
     delete vtt.tokens[id];
     if (selectedId === id) selectedId = null;
     onVttChange({ token: id });
@@ -309,6 +390,8 @@
   function onVttChange(change) {
     requestDraw();
     if (!change || typeof window.fbSaveVtt !== 'function') return;
+    if ((change.map || change.grid) && !isDm()) return;
+    if (change.token && !(vtt.tokens[change.token] ? canEdit(vtt.tokens[change.token]) : isDm())) return;
     if (change.map) {
       window.fbSaveVtt(roomPath('map'), { url: vtt.map.url, width: vtt.map.width, height: vtt.map.height });
     }
@@ -442,6 +525,7 @@
   // Layers are drawn in order: map, grid, tokens. Fog (Step 8) goes after tokens.
   function draw() {
     if (!ctx || !canvas.width) return;
+    refreshRoleUi();   // cheap; catches logins and account switches
     const dpr = window.devicePixelRatio || 1;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -453,7 +537,7 @@
     drawTokens();
 
     const hint = root.querySelector('[data-el="hint"]');
-    if (hint) hint.style.display = mapImg || Object.keys(vtt.tokens).length ? 'none' : '';
+    if (hint) hint.style.display = mapImg || Object.values(vtt.tokens).some(isVisible) ? 'none' : '';
     const zl = root.querySelector('[data-el="zoom-label"]');
     if (zl) zl.textContent = Math.round(view.zoom * 100) + '%';
   }
@@ -490,7 +574,8 @@
   }
 
   function drawTokens() {
-    const list = Object.values(vtt.tokens);
+    // Fog (Step 8) will also hide enemy tokens in unrevealed cells here.
+    const list = Object.values(vtt.tokens).filter(isVisible);
     // The token being dragged is drawn last so it floats above the others.
     list.sort((a, b) => (drag && drag.id === a.id ? 1 : 0) - (drag && drag.id === b.id ? 1 : 0));
     list.forEach(drawToken);
@@ -501,6 +586,10 @@
     const cx = r.x + r.w / 2;
     const cy = r.y + r.h / 2;
     const rad = r.w / 2 * 0.9;
+
+    // Only the DM ever sees hidden tokens; they show faded with a dashed ring.
+    ctx.save();
+    if (t.hidden) ctx.globalAlpha = 0.45;
 
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,0.55)';
@@ -530,11 +619,15 @@
       ctx.fillText(initials(t.name), cx, cy + rad * 0.04);
     }
 
-    ctx.lineWidth = (t.id === selectedId ? 3 : 1.5) / view.zoom;
-    ctx.strokeStyle = t.id === selectedId ? cssVar('--accent-strong', '#e8cf7a') : 'rgba(0,0,0,0.6)';
+    // Selected tokens get a gold ring; a player's own tokens a thinner one so they can find them.
+    const mine = !isDm() && canEdit(t);
+    ctx.lineWidth = (t.id === selectedId ? 3 : (mine ? 2 : 1.5)) / view.zoom;
+    ctx.strokeStyle = (t.id === selectedId || mine) ? cssVar('--accent-strong', '#e8cf7a') : 'rgba(0,0,0,0.6)';
+    if (t.hidden) ctx.setLineDash([4 / view.zoom, 3 / view.zoom]);
     ctx.beginPath();
     ctx.arc(cx, cy, rad, 0, Math.PI * 2);
     ctx.stroke();
+    ctx.setLineDash([]);
 
     // Name label under the token, kept readable at any zoom.
     const fs = Math.max(10, 12 / view.zoom);
@@ -542,11 +635,13 @@
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     const ty = r.y + r.h - r.h * 0.02;
-    const tw = ctx.measureText(t.name).width;
+    const label = t.hidden ? '👁‍🗨 ' + t.name : t.name;
+    const tw = ctx.measureText(label).width;
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
     ctx.fillRect(cx - tw / 2 - fs * 0.3, ty, tw + fs * 0.6, fs * 1.25);
     ctx.fillStyle = '#fff';
-    ctx.fillText(t.name, cx, ty + fs * 0.1);
+    ctx.fillText(label, cx, ty + fs * 0.1);
+    ctx.restore();
   }
 
   function getImage(url) {
@@ -585,9 +680,10 @@
   let drag = null;              // { kind: 'pan'|'token'|'pinch', ... }
   let longPressTimer = null;
 
+  // Topmost token under p that this user may grab; others' tokens let the pointer pan through.
   function hitToken(p) {
     const w = screenToWorld(p);
-    const list = Object.values(vtt.tokens);
+    const list = Object.values(vtt.tokens).filter((t) => isVisible(t) && canEdit(t));
     for (let i = list.length - 1; i >= 0; i--) {
       const t = list[i];
       const r = tokenRect(t);
@@ -609,7 +705,7 @@
     }, { passive: false });
     canvas.addEventListener('contextmenu', (e) => {
       e.preventDefault();
-      const t = hitToken(eventPoint(e));
+      const t = isDm() ? hitToken(eventPoint(e)) : null;
       if (t) openTokenMenu(t, eventPoint(e));
     });
   }
@@ -638,7 +734,7 @@
       const s = vtt.grid.size;
       drag = { kind: 'token', id: t.id, start: p, moved: false, grabX: w.x - t.x * s, grabY: w.y - t.y * s, px: t.x * s, py: t.y * s };
       // Mouse users get the menu from right click; long press is for touch and pen.
-      if (e.pointerType !== 'mouse') longPressTimer = setTimeout(() => {
+      if (e.pointerType !== 'mouse' && isDm()) longPressTimer = setTimeout(() => {
         if (drag && drag.kind === 'token' && !drag.moved) {
           const tok = vtt.tokens[drag.id];
           drag = null;
@@ -690,6 +786,7 @@
   // Shares the cell under a dragged token so others see it move; throttled unless final.
   function sendDragPosition(final) {
     if (!drag || drag.kind !== 'token' || typeof window.fbSaveVtt !== 'function') return;
+    if (!canEdit(vtt.tokens[drag.id])) return;
     const s = vtt.grid.size;
     const x = Math.round(drag.px / s);
     const y = Math.round(drag.py / s);
@@ -792,6 +889,17 @@
     });
     pop.appendChild(sizeRow);
 
+    const ownerWrap = document.createElement('label');
+    ownerWrap.className = 'vtt-owner';
+    ownerWrap.textContent = 'Owner (can move it)';
+    const owner = ownerSelect(t.owner);
+    owner.onchange = () => edit((cur) => { cur.owner = owner.value || null; });
+    ownerWrap.appendChild(owner);
+    pop.appendChild(ownerWrap);
+
+    pop.appendChild(button(t.hidden ? '👁 Show to players' : '🙈 Hide from players',
+      () => edit((cur) => { cur.hidden = !cur.hidden; })));
+
     pop.appendChild(button('🗑 Delete', () => { removeToken(t.id); closePopups(); }));
 
     placePopup(pop, p);
@@ -810,6 +918,8 @@
       <label>Name <input type="text" maxlength="40" data-f="name" placeholder="e.g. Goblin"></label>
       <label>Color <div class="vtt-swatches" data-f="swatches"></div></label>
       <label>Picture (optional) <button type="button" class="btn small ghost" data-f="pick">📷 Choose image</button></label>
+      <label data-f="owner-wrap">Owner (can move it)</label>
+      <label style="flex-direction:row; align-items:center; gap:6px;"><input type="checkbox" data-f="hidden"> Hidden from players</label>
       <div class="vtt-row"><button type="button" class="btn small" data-f="ok">Add</button><button type="button" class="btn small ghost" data-f="cancel">Cancel</button></div>
     `;
     const f = (n) => pop.querySelector('[data-f="' + n + '"]');
@@ -850,8 +960,11 @@
       fileInput.click();
     };
 
+    const owner = ownerSelect(null);
+    f('owner-wrap').appendChild(owner);
+
     const submit = () => {
-      addToken({ name: f('name').value, color: color, img: img });
+      addToken({ name: f('name').value, color: color, img: img, owner: owner.value || null, hidden: f('hidden').checked });
       closePopups();
     };
     f('ok').onclick = submit;
