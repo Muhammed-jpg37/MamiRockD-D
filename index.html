@@ -14181,6 +14181,15 @@
         });
     };
 
+    // Read-only view of a player's HP from their character sheet (inventories/<nick>/hp), so the VTT
+    // never keeps a second copy. Calls callback({ current, max, temp } | null). Returns an unsubscribe function.
+    window.fbListenToVttHp = function(nickname, callback) {
+      if (!db || !nickname || typeof callback !== 'function') return () => {};
+      return onValue(ref(db, 'inventories/' + String(nickname).toLowerCase() + '/hp'), (snapshot) => {
+        callback(snapshot.val());
+      });
+    };
+
     // Calls callback(roomState) now and on every change. Returns an unsubscribe function.
     window.fbListenToVtt = function(roomId, callback) {
       if (!db || !roomId || typeof callback !== 'function') return () => {};

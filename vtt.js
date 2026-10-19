@@ -112,6 +112,24 @@
       }
       .vtt-toolbar .btn.vtt-on { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
       .vtt-stage canvas.vtt-painting { cursor: crosshair; }
+      .vtt-dice button { min-width: 0; padding-left: 6px; padding-right: 6px; }
+      .vtt-log {
+        position: absolute; left: 10px; bottom: 10px; z-index: 14; width: 210px; max-height: 45%;
+        display: flex; flex-direction: column;
+        background: color-mix(in srgb, var(--surface-1) 92%, transparent); border: 1px solid var(--line-strong);
+        border-radius: var(--radius); box-shadow: var(--shadow-2);
+      }
+      .vtt-log-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 4px 10px; font-family: var(--font-display); font-size: 11px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+      .vtt-log-list { overflow-y: auto; padding: 4px 0; }
+      .vtt-log-row { display: grid; grid-template-columns: 1fr auto 34px; gap: 8px; align-items: baseline; padding: 2px 10px; font-size: 13px; }
+      .vtt-log-row b { font-family: var(--font-mono); text-align: right; color: var(--text); }
+      .vtt-log-row.vtt-log-new { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+      .vtt-log-who { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-dim); }
+      .vtt-log-row b.vtt-crit { color: var(--success); }
+      .vtt-log-row b.vtt-fumble { color: var(--danger-strong); }
+      .vtt-hp { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
+      .vtt-hp .vtt-row { align-items: center; }
+      .vtt-hp input { width: 56px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px 5px; font-family: var(--font-mono); }
       .vtt-status {
         position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 15;
         padding: 5px 14px; border-radius: 999px; pointer-events: none;
@@ -168,6 +186,11 @@
           </select>
           <button class="btn small ghost" data-act="fog-reset" title="Cover the whole map again">↺</button>
         </div>
+        <div class="vtt-group vtt-dice" data-el="dice">
+          <span title="Roll a die; everyone sees the result">🎲</span>
+          ${DICE.map((d) => '<button class="btn small ghost" data-roll="' + d + '">d' + d + '</button>').join('')}
+          <button class="btn small ghost" data-act="log" title="Show or hide recent rolls">📜</button>
+        </div>
         <div class="vtt-group">
           <button class="btn small ghost" data-act="zoom-out" title="Zoom out">−</button>
           <span class="vtt-zoom-label" data-el="zoom-label">100%</span>
@@ -178,6 +201,10 @@
       <div class="vtt-stage">
         <canvas></canvas>
         <div class="vtt-status" data-el="status" style="display:none"></div>
+        <div class="vtt-log" data-el="log" style="display:none">
+          <div class="vtt-log-head">Recent rolls <button class="btn small ghost" data-act="log" title="Hide">✕</button></div>
+          <div class="vtt-log-list" data-el="log-list"></div>
+        </div>
         <div class="vtt-hint" data-el="hint"><span data-el="hint-title">Load a map to begin</span><br><small>Drag to pan · wheel or pinch to zoom</small></div>
       </div>
     `;
@@ -188,6 +215,13 @@
     const el = (name) => root.querySelector('[data-el="' + name + '"]');
     el('grid-size').value = vtt.grid.size;
     el('grid-color').value = vtt.grid.color;
+
+    root.addEventListener('click', (e) => {
+      const die = e.target.closest('[data-roll]');
+      if (die) { rollDie(parseInt(die.dataset.roll, 10)); return; }
+      const toggle = e.target.closest('[data-act="log"]');
+      if (toggle) { logOpen = !logOpen; renderLog(); }
+    });
 
     root.querySelector('.vtt-toolbar').addEventListener('click', (e) => {
       const btn = e.target.closest('[data-act]');
@@ -626,6 +660,7 @@
       }, GRID_SYNC_MS);
     }
     if (change.token) {
+      syncHpWatchers();
       const t = vtt.tokens[change.token];
       window.fbSaveVtt(roomPath('tokens/' + change.token), t ? Object.assign({}, t) : null);
     }
@@ -691,6 +726,9 @@
       };
     });
     vtt.tokens = next;
+    syncHpWatchers();
+    vtt.log = room.log || {};
+    renderLog();
     if (selectedId && !next[selectedId]) selectedId = null;
     // Someone deleted the token we are holding: drop it. Otherwise our drag keeps
     // drawing at the pointer (tokenRect reads drag.px/py), so remote echoes can't yank it.
@@ -701,7 +739,120 @@
     requestDraw();
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t) };
+  /* ---------- HP (read from the character sheet; monsters keep their own) ---------- */
+
+  const hpWatch = {};   // ownerKey -> { unsub, hp }
+
+  // Keeps exactly one live HP listener per player who owns a token on the table.
+  function syncHpWatchers() {
+    if (typeof window.fbListenToVttHp !== 'function') return;
+    const owners = new Set(Object.values(vtt.tokens).map((t) => t.owner).filter(Boolean));
+    owners.forEach((key) => {
+      if (hpWatch[key]) return;
+      const entry = { unsub: null, hp: null };
+      hpWatch[key] = entry;
+      entry.unsub = window.fbListenToVttHp(key, (hp) => { entry.hp = hp; requestDraw(); });
+    });
+    Object.keys(hpWatch).forEach((key) => {
+      if (owners.has(key)) return;
+      hpWatch[key].unsub && hpWatch[key].unsub();
+      delete hpWatch[key];
+    });
+  }
+
+  // { current, max, temp } to show under a token, or null when this viewer shouldn't see one.
+  function tokenHp(t) {
+    if (t.owner) {
+      const w = hpWatch[t.owner];
+      return w && w.hp && Number(w.hp.max) > 0 ? w.hp : null;
+    }
+    // Monster HP is the DM's business only.
+    if (!isDm() || !t.hp || !(Number(t.hp.max) > 0)) return null;
+    return t.hp;
+  }
+
+  function drawHpBar(t, r) {
+    const hp = tokenHp(t);
+    if (!hp) return;
+    const max = Number(hp.max);
+    const cur = Math.max(0, Math.min(max, Number(hp.current) || 0));
+    const temp = Math.max(0, Number(hp.temp) || 0);
+    const pct = cur / max;
+    // Sits just under the name label (same metrics as drawToken), readable at any zoom.
+    const fs = Math.max(10, 12 / view.zoom);
+    const w = r.w * 0.8;
+    const h = Math.max(r.h * 0.07, 6 / view.zoom);
+    const x = r.x + (r.w - w) / 2;
+    const y = r.y + r.h * 0.98 + fs * 1.25 + 2 / view.zoom;
+    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    ctx.fillRect(x - 1 / view.zoom, y - 1 / view.zoom, w + 2 / view.zoom, h + 2 / view.zoom);
+    ctx.fillStyle = pct > 0.5 ? cssVar('--success', '#5e9e63') : pct > 0.25 ? cssVar('--warn', '#c9962f') : cssVar('--danger-strong', '#d9584a');
+    ctx.fillRect(x, y, w * pct, h);
+    if (temp > 0) {
+      ctx.fillStyle = cssVar('--info', '#6f9ac4');
+      ctx.fillRect(x + w * pct, y, Math.min(w * (1 - pct), w * temp / max), h);
+    }
+  }
+
+  /* ---------- Dice ---------- */
+
+  const DICE = [4, 6, 8, 10, 12, 20, 100];
+  const LOG_KEEP = 20;
+  vtt.log = {};        // vtt/main/log: { key: { by, die, result, at } }, keys sort by time
+  let logOpen = false;
+  let lastLogKey = null;
+
+  function rollDie(sides) {
+    const result = 1 + Math.floor(Math.random() * sides);
+    const u = window.currentUser;
+    const entry = { by: (u && u.nickname) || 'Guest', die: sides, result: result, at: Date.now() };
+    // Zero-padded time first so keys sort chronologically; random tail avoids clashes.
+    const key = String(entry.at).padStart(15, '0') + Math.random().toString(36).slice(2, 6);
+    vtt.log[key] = entry;
+    logOpen = true;
+    renderLog();
+    if (typeof window.fbSaveVtt !== 'function') return;
+    window.fbSaveVtt(roomPath('log/' + key), entry);
+    // Keep only the newest LOG_KEEP rolls in the database.
+    const keys = Object.keys(vtt.log).sort();
+    if (keys.length > LOG_KEEP) {
+      const drop = {};
+      keys.slice(0, keys.length - LOG_KEEP).forEach((k) => { drop[k] = null; delete vtt.log[k]; });
+      window.fbSaveVtt(roomPath('log'), drop);
+    }
+  }
+
+  function renderLog() {
+    if (!root) return;
+    const panel = root.querySelector('[data-el="log"]');
+    const list = root.querySelector('[data-el="log-list"]');
+    if (!panel || !list) return;
+    const keys = Object.keys(vtt.log || {}).sort().slice(-LOG_KEEP);
+    const newest = keys[keys.length - 1] || null;
+    const fresh = newest && newest !== lastLogKey && lastLogKey !== null;
+    lastLogKey = newest;
+    if (fresh) logOpen = true;   // someone rolled: show it
+    panel.style.display = logOpen && keys.length ? '' : 'none';
+    list.innerHTML = '';
+    keys.slice().reverse().forEach((k, i) => {
+      const e = vtt.log[k] || {};
+      const row = document.createElement('div');
+      row.className = 'vtt-log-row' + (i === 0 ? ' vtt-log-new' : '');
+      const who = document.createElement('span');
+      who.className = 'vtt-log-who';
+      who.textContent = e.by || '?';
+      const what = document.createElement('span');
+      what.textContent = 'd' + e.die;
+      const res = document.createElement('b');
+      res.textContent = e.result;
+      if (e.die === 20 && e.result === 20) res.className = 'vtt-crit';
+      if (e.die === 20 && e.result === 1) res.className = 'vtt-fumble';
+      row.append(who, what, res);
+      list.appendChild(row);
+    });
+  }
+
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie };
 
   /* ---------- Coordinates ---------- */
 
@@ -873,6 +1024,7 @@
     ctx.fillRect(cx - tw / 2 - fs * 0.3, ty, tw + fs * 0.6, fs * 1.25);
     ctx.fillStyle = '#fff';
     ctx.fillText(label, cx, ty + fs * 0.1);
+    drawHpBar(t, r);
     ctx.restore();
   }
 
@@ -1149,6 +1301,8 @@
     });
     pop.appendChild(sizeRow);
 
+    pop.appendChild(hpSection(t));
+
     const ownerWrap = document.createElement('label');
     ownerWrap.className = 'vtt-owner';
     ownerWrap.textContent = 'Owner (can move it)';
@@ -1164,6 +1318,54 @@
 
     placePopup(pop, p);
     requestDraw();
+  }
+
+  // Player tokens: HP is read from the character sheet and only changed there.
+  // Monster tokens: the DM keeps HP on the token itself (tokens/<id>/hp).
+  function hpSection(t) {
+    const wrap = document.createElement('div');
+    wrap.className = 'vtt-hp';
+    if (t.owner) {
+      const hp = tokenHp(t);
+      wrap.textContent = hp
+        ? '❤️ ' + (Number(hp.current) || 0) + ' / ' + hp.max + (Number(hp.temp) > 0 ? ' (+' + hp.temp + ' temp)' : '') + ' — from ' + ownerName(t.owner) + "'s sheet"
+        : '❤️ No HP on ' + ownerName(t.owner) + "'s sheet yet";
+      return wrap;
+    }
+    const hp = t.hp || {};
+    wrap.appendChild(document.createTextNode('❤️ HP (only you see this)'));
+    const row = document.createElement('div');
+    row.className = 'vtt-row';
+    const num = (value, title) => {
+      const i = document.createElement('input');
+      i.type = 'number';
+      i.min = '0';
+      i.title = title;
+      i.value = value === undefined || value === null ? '' : value;
+      return i;
+    };
+    const cur = num(hp.current, 'Current HP');
+    const max = num(hp.max, 'Max HP');
+    const save = () => {
+      const tok = vtt.tokens[t.id];
+      if (!tok) return;
+      const m = Math.max(0, parseInt(max.value, 10) || 0);
+      const c = cur.value === '' ? m : Math.max(0, parseInt(cur.value, 10) || 0);
+      tok.hp = m > 0 ? { current: Math.min(c, m), max: m } : null;
+      if (tok.hp) cur.value = tok.hp.current;
+      onVttChange({ token: t.id });
+    };
+    // Quick damage / healing without retyping the number.
+    const bump = (d) => () => {
+      if (!(parseInt(max.value, 10) > 0)) return;
+      cur.value = Math.max(0, (parseInt(cur.value, 10) || 0) + d);
+      save();
+    };
+    cur.addEventListener('change', save);
+    max.addEventListener('change', save);
+    row.append(button('−5', bump(-5)), button('−1', bump(-1)), cur, document.createTextNode('/'), max, button('+1', bump(1)));
+    wrap.appendChild(row);
+    return wrap;
   }
 
   function openAddTokenForm(anchorBtn) {
