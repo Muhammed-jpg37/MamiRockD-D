@@ -58,6 +58,7 @@
     })();
   </script>
   <script src="spell-catalog.js" defer></script>
+  <script src="campaign.js" defer></script>
   <script src="vtt-catalog.js" defer></script>
   <script src="vtt.js" defer></script>
   <style>
@@ -9073,6 +9074,9 @@
       // The font is account-level, so it follows the login, not the character
       if (typeof window.fbListenToPrefs === 'function') window.fbListenToPrefs(account.nickname);
       if (typeof renderFontSwatches === 'function') renderFontSwatches();
+
+      // Campaign set-up (campaign.js; a restored session runs it once that file loads)
+      if (window.Campaigns) window.Campaigns.onLogin(account);
     }
 
     function logoutCurrentUser() {
@@ -14189,6 +14193,57 @@
           updateSyncBadge('offline', '⚠️ Upload Failed');
           throw err;
         });
+    };
+
+    /* ========================================================
+       CAMPAIGNS — campaigns/, invites/, characters/, users/<nick>/campaigns
+       Used by campaign.js. Only these top-level paths are allowed here.
+       ======================================================== */
+    const CAMPAIGN_ROOTS = ['campaigns/', 'invites/', 'characters/', 'users/'];
+    const campaignPathOk = (p) => typeof p === 'string' && CAMPAIGN_ROOTS.some((root) => p.startsWith(root));
+
+    // One-shot read; resolves with the value or null.
+    window.fbCampaignGet = function(path) {
+      if (!db || !campaignPathOk(path)) return Promise.resolve(null);
+      return get(ref(db, path)).then((snap) => snap.val());
+    };
+
+    // Several paths written together in one atomic update: { 'campaigns/main/name': 'X', ... }.
+    window.fbCampaignUpdate = function(patch) {
+      if (!db || !patch) return Promise.resolve();
+      const paths = Object.keys(patch);
+      if (!paths.length || !paths.every(campaignPathOk)) {
+        return Promise.reject(new Error('fbCampaignUpdate: path outside campaign data'));
+      }
+      updateSyncBadge('syncing', '🔄 Saving Campaign...');
+      return update(ref(db), cleanData(patch))
+        .then(() => updateSyncBadge('online', '🟢 Firebase Live'))
+        .catch((err) => {
+          console.warn("Firebase campaign save error:", err);
+          updateSyncBadge('offline', '⚠️ Sync Warning');
+          throw err;
+        });
+    };
+
+    // Account list for campaign set-up: { key: { nickname, role, createdAt } }. Passwords are dropped
+    // here so campaign code never handles them.
+    window.fbAccountDirectory = function() {
+      if (!db) return Promise.resolve({});
+      return get(ref(db, 'accounts')).then((snap) => {
+        const out = {};
+        const all = snap.val() || {};
+        Object.keys(all).forEach((k) => {
+          const a = all[k] || {};
+          out[k] = { nickname: a.nickname || k, role: a.role === 'dm' ? 'dm' : 'player', createdAt: a.createdAt || 0 };
+        });
+        return out;
+      });
+    };
+
+    // Live view of one campaign path. Returns an unsubscribe function.
+    window.fbCampaignListen = function(path, callback) {
+      if (!db || !campaignPathOk(path) || typeof callback !== 'function') return () => {};
+      return onValue(ref(db, path), (snap) => callback(snap.val()));
     };
 
     // Read-only view of a player's HP from their character sheet (inventories/<nick>/hp), so the VTT
