@@ -9126,12 +9126,20 @@
       const currentVal = activeInventoryUser || (currentUser ? currentUser.nickname : '__dm__');
 
       let html = '<option value="__dm__">👑 My DM Master Vault</option>';
-      Object.keys(accounts).sort().forEach(key => {
-        const acc = accounts[key];
-        if (acc.role !== 'dm') {
-          html += '<option value="' + escapeHtml(acc.nickname) + '">👤 Player: ' + escapeHtml(acc.nickname) + '</option>';
-        }
-      });
+      if (window.activeCampaign && window.Campaigns && typeof window.Campaigns.memberList === 'function') {
+        // In a campaign: only its players, by the character they play there (value = that sheet's key).
+        window.Campaigns.memberList().forEach(m => {
+          if (m.role === 'dm' || !m.character) return;
+          html += '<option value="' + escapeHtml(m.character) + '">👤 ' + escapeHtml(m.characterName || m.character) + ' (' + escapeHtml(m.nick) + ')</option>';
+        });
+      } else {
+        Object.keys(accounts).sort().forEach(key => {
+          const acc = accounts[key];
+          if (acc.role !== 'dm') {
+            html += '<option value="' + escapeHtml(acc.nickname) + '">👤 Player: ' + escapeHtml(acc.nickname) + '</option>';
+          }
+        });
+      }
       select.innerHTML = html;
 
       // Restore active selection
@@ -9141,6 +9149,11 @@
         select.value = '__dm__';
       }
     }
+
+    // The campaign's member list (campaign.js) arrives and changes live; keep the DM's list in step.
+    window.addEventListener('campaignmembers', () => {
+      if (currentUser && currentUser.role === 'dm') populateDmPlayerDropdown();
+    });
 
     function dmSwitchActivePlayer(targetName) {
       if (!currentUser || currentUser.role !== 'dm') return;
@@ -9162,9 +9175,11 @@
       const statusTag = document.getElementById('dm-status-tag');
       const select = document.getElementById('dm-player-dropdown');
 
+      // Character ids ('ch…') read badly; show the character's name when the campaign knows it.
+      const targetLabel = (window.Campaigns && typeof window.Campaigns.characterName === 'function' && window.Campaigns.characterName(target)) || target;
       if (banner) banner.style.display = isInspectingOther ? 'flex' : 'none';
-      if (bannerTarget) bannerTarget.textContent = target;
-      if (statusTag) statusTag.textContent = isInspectingOther ? ('Inspecting: ' + target) : 'Viewing: Master Vault';
+      if (bannerTarget) bannerTarget.textContent = targetLabel;
+      if (statusTag) statusTag.textContent = isInspectingOther ? ('Inspecting: ' + targetLabel) : 'Viewing: Master Vault';
       if (select) select.value = isInspectingOther ? target : '__dm__';
 
       // Always ensure global spell catalog is attached to target player's state

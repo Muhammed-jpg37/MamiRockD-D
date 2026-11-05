@@ -1,8 +1,9 @@
 /* ========================================================
    VIRTUAL TABLETOP (VTT)
    Map, pan/zoom, grid and tokens, synced live through Firebase
-   at vtt/<ROOM_ID>. Local edits go out through onVttChange();
-   remote changes come in through applyRemote().
+   at vtt/<campaign id> (each campaign has its own table). Local
+   edits go out through onVttChange(); remote changes come in
+   through applyRemote().
    ======================================================== */
 (function () {
   'use strict';
@@ -14,7 +15,6 @@
   const TAP_SLOP = 6;                             // px a pointer may move and still count as a tap
   const TOKEN_IMG_MAX = 256;                      // token pictures are downscaled to this
   const TOKEN_COLORS = ['#c9a227', '#a83c32', '#4a8ec4', '#5e9e63', '#9a6fc4', '#d08a3c', '#9d9d9d'];
-  const ROOM_ID = 'main';
   const DRAG_SYNC_MS = 100;                       // live position updates while dragging, at most this often
   const GRID_SYNC_MS = 250;                       // grid inputs fire per keystroke; write once typing settles
   const FOG_SYNC_MS = 250;                        // a fog brush stroke is written in batches at most this often
@@ -22,7 +22,7 @@
   const MAP_MAX_BYTES = 8 * 1024 * 1024;          // refuse anything still bigger after compression
   const MAP_INLINE_MAX_CHARS = 1500000;           // fallback maps written into the database stay under ~1.5 MB
 
-  // Shared table state, mirrored at vtt/<ROOM_ID>.
+  // Shared table state, mirrored at vtt/<roomId>.
   const vtt = {
     map: { url: null, width: 0, height: 0 },
     // offsetX/Y: where a grid line falls on the map (px), so the grid can match one drawn into the map image.
@@ -375,7 +375,14 @@
   }
 
   // Non-DM accounts as [{ key, nickname }]; key is the lowercase nickname stored in token.owner.
+  // Accounts a token can belong to: the active campaign's players (shown with their character),
+  // or, before campaigns are set up, every player account.
   function playerAccounts() {
+    if (window.activeCampaign && window.Campaigns && typeof window.Campaigns.memberList === 'function') {
+      return window.Campaigns.memberList()
+        .filter((m) => m.role === 'player')
+        .map((m) => ({ key: m.nick, nickname: m.characterName ? m.characterName + ' (' + m.nick + ')' : m.nick }));
+    }
     let accounts = {};
     try { accounts = (typeof getStoredAccounts === 'function') ? getStoredAccounts() : {}; } catch (e) { }
     return Object.keys(accounts)
@@ -1101,7 +1108,15 @@
 
   /* ---------- Sync ---------- */
 
-  const roomPath = (sub) => ROOM_ID + '/' + sub;
+  // The active campaign's id (campaign.js); null until one is chosen, and then nothing is shared.
+  let roomId = (window.activeCampaign && window.activeCampaign.id) || null;
+  const roomPath = (sub) => roomId + '/' + sub;
+
+  // Every write to the shared table goes through here, so none can land without a room.
+  function vttSave(path, value) {
+    if (!roomId || typeof window.fbSaveVtt !== 'function') return Promise.resolve();
+    return window.fbSaveVtt(path, value);
+  }
 
   // Every change to the shared table funnels through here.
   // change: { map: true } | { grid: true } | { token: id } (a missing token means it was deleted).
@@ -1110,41 +1125,69 @@
     if (!change || typeof window.fbSaveVtt !== 'function') return;
     if ((change.map || change.grid || change.fog) && !isDm()) return;
     if (change.fog === 'enabled') {
-      window.fbSaveVtt(roomPath('fog'), { enabled: vtt.fog.enabled });
+      vttSave(roomPath('fog'), { enabled: vtt.fog.enabled });
     } else if (change.fog === 'cells') {
       // One batched update per brush stroke; null entries close cells again.
-      if (Object.keys(fogPending).length) window.fbSaveVtt(roomPath('fog/revealed'), fogPending);
+      if (Object.keys(fogPending).length) vttSave(roomPath('fog/revealed'), fogPending);
       fogPending = {};
     } else if (change.fog === 'reset') {
-      window.fbSaveVtt(roomPath('fog/revealed'), null);
+      vttSave(roomPath('fog/revealed'), null);
     }
     if (change.token && !(vtt.tokens[change.token] ? canEdit(vtt.tokens[change.token]) : isDm())) return;
     if (change.map) {
-      window.fbSaveVtt(roomPath('map'), { url: vtt.map.url, width: vtt.map.width, height: vtt.map.height, catalogId: vtt.map.catalogId || null });
+      vttSave(roomPath('map'), { url: vtt.map.url, width: vtt.map.width, height: vtt.map.height, catalogId: vtt.map.catalogId || null });
     }
     if (change.grid) {
       clearTimeout(gridSaveTimer);
       gridSaveTimer = setTimeout(() => {
         gridSaveTimer = null;
-        window.fbSaveVtt(roomPath('grid'), Object.assign({}, vtt.grid));
+        vttSave(roomPath('grid'), Object.assign({}, vtt.grid));
       }, GRID_SYNC_MS);
     }
     if (change.token) {
       syncHpWatchers();
       const t = vtt.tokens[change.token];
-      window.fbSaveVtt(roomPath('tokens/' + change.token), t ? Object.assign({}, t) : null);
+      vttSave(roomPath('tokens/' + change.token), t ? Object.assign({}, t) : null);
     }
   }
 
   function startSync(tries) {
-    if (unsubscribe) return;
+    if (unsubscribe || !roomId) return;
     if (typeof window.fbListenToVtt !== 'function') {
       // The Firebase module loads after this script; give it a moment.
       if ((tries || 0) < 20) setTimeout(() => startSync((tries || 0) + 1), 500);
       return;
     }
-    unsubscribe = window.fbListenToVtt(ROOM_ID, applyRemote);
+    unsubscribe = window.fbListenToVtt(roomId, applyRemote);
   }
+
+  // Another campaign was chosen: leave this table and show that campaign's one.
+  function switchRoom(next) {
+    next = next || null;
+    if (next === roomId) return;
+    if (drag && drag.kind === 'tool') cancelToolDrag();   // removes our live ruler from the old table
+    drag = null;
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    roomId = next;
+    // Start from an empty table; the new room's data arrives through applyRemote.
+    fogPending = {};
+    clearTimeout(gridSaveTimer);
+    gridSaveTimer = null;
+    selectedId = null;
+    Object.assign(vtt.grid, { size: 70, visible: true, color: '#000000', opacity: 0.35, offsetX: 0, offsetY: 0 });
+    applyRemote({});
+    if (root) {
+      closePopups();
+      closeCatalog();
+      syncGridInputs();
+      fitView();
+      startSync();   // only once the VTT has been opened; initVtt() starts it otherwise
+    }
+  }
+
+  window.addEventListener('campaignchange', (e) => switchRoom(e.detail && e.detail.id));
+  // Members joined, left or changed character: HP sources and owner names follow.
+  window.addEventListener('campaignmembers', () => { syncHpWatchers(); requestDraw(); });
 
   // The listener also echoes our own writes back; applying them again is harmless.
   function applyRemote(room) {
@@ -1219,14 +1262,23 @@
   const hpWatch = {};   // ownerKey -> { unsub, hp }
 
   // Keeps exactly one live HP listener per player who owns a token on the table.
+  // A token's owner is an account; its HP lives on the character that account plays in this
+  // campaign. Accounts from before campaigns use their nickname as that character.
+  function hpSheetOf(owner) {
+    const c = window.Campaigns && typeof window.Campaigns.characterOf === 'function' ? window.Campaigns.characterOf(owner) : null;
+    return c || owner;
+  }
+
   function syncHpWatchers() {
     if (typeof window.fbListenToVttHp !== 'function') return;
     const owners = new Set(Object.values(vtt.tokens).map((t) => t.owner).filter(Boolean));
     owners.forEach((key) => {
-      if (hpWatch[key]) return;
-      const entry = { unsub: null, hp: null };
+      const sheet = hpSheetOf(key);
+      if (hpWatch[key] && hpWatch[key].sheet === sheet) return;
+      if (hpWatch[key] && hpWatch[key].unsub) hpWatch[key].unsub();   // they switched character
+      const entry = { unsub: null, hp: null, sheet: sheet };
       hpWatch[key] = entry;
-      entry.unsub = window.fbListenToVttHp(key, (hp) => { entry.hp = hp; requestDraw(); });
+      entry.unsub = window.fbListenToVttHp(sheet, (hp) => { entry.hp = hp; requestDraw(); });
     });
     Object.keys(hpWatch).forEach((key) => {
       if (owners.has(key)) return;
@@ -1281,7 +1333,7 @@
   }
 
   function saveInit(sub, value) {
-    if (isDm() && typeof window.fbSaveVtt === 'function') window.fbSaveVtt(initPath(sub), value);
+    if (isDm() && typeof window.fbSaveVtt === 'function') vttSave(initPath(sub), value);
   }
 
   // Players don't see entries the DM hides, or entries for tokens hidden from them.
@@ -1636,7 +1688,7 @@
       const id = 'sh' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
       const shape = { kind: d.tool, ox: d.a.x, oy: d.a.y, ex: +d.b.x.toFixed(3), ey: +d.b.y.toFixed(3), by: whoAmI(), color: userColor(whoAmI()) };
       vtt.shapes[id] = shape;
-      if (typeof window.fbSaveVtt === 'function') window.fbSaveVtt(roomPath('shapes/' + id), shape);
+      if (typeof window.fbSaveVtt === 'function') vttSave(roomPath('shapes/' + id), shape);
     }
     requestDraw();
   }
@@ -1655,18 +1707,18 @@
     drag.sentAt = now;
     drag.sentB = drag.b;
     const who = whoAmI();
-    window.fbSaveVtt(roomPath('measure/' + sessionId), { who: who, ax: drag.a.x, ay: drag.a.y, bx: drag.b.x, by: drag.b.y, color: userColor(who), at: now });
+    vttSave(roomPath('measure/' + sessionId), { who: who, ax: drag.a.x, ay: drag.a.y, bx: drag.b.x, by: drag.b.y, color: userColor(who), at: now });
   }
 
   function clearMeasure() {
-    if (typeof window.fbSaveVtt === 'function') window.fbSaveVtt(roomPath('measure/' + sessionId), null);
+    if (typeof window.fbSaveVtt === 'function') vttSave(roomPath('measure/' + sessionId), null);
   }
 
   function removeShapes(ids) {
     if (!ids.length) return;
     const patch = {};
     ids.forEach((id) => { delete vtt.shapes[id]; patch[id] = null; });
-    if (typeof window.fbSaveVtt === 'function') window.fbSaveVtt(roomPath('shapes'), patch);
+    if (typeof window.fbSaveVtt === 'function') vttSave(roomPath('shapes'), patch);
     requestDraw();
   }
 
@@ -1852,13 +1904,13 @@
     logOpen = true;
     renderLog();
     if (typeof window.fbSaveVtt !== 'function') return;
-    window.fbSaveVtt(roomPath('log/' + key), entry);
+    vttSave(roomPath('log/' + key), entry);
     // Keep only the newest LOG_KEEP rolls in the database.
     const keys = Object.keys(vtt.log).sort();
     if (keys.length > LOG_KEEP) {
       const drop = {};
       keys.slice(0, keys.length - LOG_KEEP).forEach((k) => { drop[k] = null; delete vtt.log[k]; });
-      window.fbSaveVtt(roomPath('log'), drop);
+      vttSave(roomPath('log'), drop);
     }
   }
 
@@ -2279,7 +2331,7 @@
     drag.sentAt = now;
     drag.sentX = x;
     drag.sentY = y;
-    window.fbSaveVtt(roomPath('tokens/' + drag.id), { x: x, y: y });
+    vttSave(roomPath('tokens/' + drag.id), { x: x, y: y });
   }
 
   function onPointerUp(e) {

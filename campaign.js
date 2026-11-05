@@ -281,6 +281,8 @@
     }
     closePicker();
     renderChip();
+    if (c.character && c.characterName) charNames[c.character] = c.characterName;
+    watchMembers(c.id);
     window.dispatchEvent(new CustomEvent('campaignchange', { detail: window.activeCampaign }));
 
     // A player needs a character in the campaign: show it, or ask which one to bring.
@@ -365,6 +367,44 @@
         });
       });
     }).catch((err) => showPickerMessage(err.message || String(err), true));
+  }
+
+  /* ---------- Members of the active campaign (live) ---------- */
+
+  let members = {};          // nick -> { role, character, joinedAt }
+  const charNames = {};      // character id -> display name
+  let membersUnsub = null;
+
+  function watchMembers(campId) {
+    if (membersUnsub) membersUnsub();
+    membersUnsub = null;
+    members = {};
+    if (!campId || typeof window.fbCampaignListen !== 'function') return;
+    membersUnsub = window.fbCampaignListen('campaigns/' + campId + '/members', (m) => {
+      members = m || {};
+      const missing = Object.values(members).map((x) => x && x.character).filter((id) => id && !charNames[id]);
+      Promise.all(missing.map((id) => window.fbCampaignGet('characters/' + id).then((c) => { charNames[id] = (c && c.name) || id; })))
+        .catch(() => {})
+        .then(() => window.dispatchEvent(new CustomEvent('campaignmembers', { detail: memberList() })));
+    });
+  }
+
+  // [{ nick, role, character, characterName }] sorted by character (or nick).
+  function memberList() {
+    return Object.keys(members).map((nick) => {
+      const m = members[nick] || {};
+      return { nick: nick, role: m.role === 'dm' ? 'dm' : 'player', character: m.character || null, characterName: m.character ? (charNames[m.character] || m.character) : null };
+    }).sort((a, b) => (a.characterName || a.nick).localeCompare(b.characterName || b.nick));
+  }
+
+  // The character a member plays in the active campaign (an inventory key), or null.
+  function characterOf(nick) {
+    const m = members[String(nick || '').toLowerCase()];
+    return (m && m.character) || null;
+  }
+
+  function characterName(id) {
+    return id ? (charNames[id] || id) : null;
   }
 
   /* ---------- Picker screen ---------- */
@@ -620,6 +660,8 @@
   function onLogout() {
     active = null;
     window.activeCampaign = null;
+    watchMembers(null);
+    window.dispatchEvent(new CustomEvent('campaignchange', { detail: null }));
     closePicker();
     renderChip();
   }
@@ -638,6 +680,9 @@
     joinCampaign: joinCampaign,
     openPicker: openPicker,
     active: () => active,
+    memberList: memberList,
+    characterOf: characterOf,
+    characterName: characterName,
     onLogin: onLogin,
     onLogout: onLogout
   };
