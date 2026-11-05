@@ -7917,9 +7917,12 @@
       }
       if (!state.features.backgroundInfo) {
         if (!state.characterStats) state.characterStats = {};
-        if (document.getElementById('bg-class')) state.characterStats.characterClass = document.getElementById('bg-class').value.trim() || 'Bard';
-        if (document.getElementById('bg-species')) state.characterStats.species = document.getElementById('bg-species').value.trim() || 'Half-Elf';
-        if (document.getElementById('bg-level')) state.characterStats.level = parseInt(document.getElementById('bg-level').value, 10) || 5;
+        // Only fill gaps: these inputs still show the previously rendered sheet, so copying them
+        // over existing values gave a new character the last character's class, species and level.
+        const cs = state.characterStats;
+        if (!cs.characterClass && document.getElementById('bg-class')) cs.characterClass = document.getElementById('bg-class').value.trim() || 'Bard';
+        if (!cs.species && document.getElementById('bg-species')) cs.species = document.getElementById('bg-species').value.trim() || 'Half-Elf';
+        if (!cs.level && document.getElementById('bg-level')) cs.level = parseInt(document.getElementById('bg-level').value, 10) || 5;
         renderCharacterStats();
         state.features.backgroundInfo = {
           name: 'Entertainer',
@@ -8446,12 +8449,19 @@
     let forgeStats = { str: 15, dex: 14, con: 14, int: 10, wis: 12, cha: 8 };
     let forgeSkills = new Set(['athletics', 'acrobatics', 'perception', 'survival']);
 
+    // Extra character for an existing account (campaign.js): the sheet is stored under
+    // forgeCharacterId instead of the nickname, no account is created, and forgeOnDone(id) runs after.
+    let forgeCharacterId = null;
+    let forgeOnDone = null;
+
     function openCharacterForgeModal(options = {}) {
       forgeNickname = options.nickname || (activeInventoryUser || (currentUser ? currentUser.nickname : 'Adventurer'));
       forgePassword = options.password || '123';
       forgeRole = options.role || 'player';
       forgeIsDmCreation = !!options.isDmCreation;
       forgeIsEditMode = !!options.isEditMode;
+      forgeCharacterId = options.characterId || null;
+      forgeOnDone = typeof options.onDone === 'function' ? options.onDone : null;
 
       if (forgeIsEditMode && state && state.characterStats) {
         const cs = state.characterStats;
@@ -8773,8 +8783,8 @@
         }
       });
 
-      // Save account credentials if newly registering
-      if (!forgeIsEditMode) {
+      // Save account credentials if newly registering (not for an extra character of a logged-in account)
+      if (!forgeIsEditMode && !forgeCharacterId) {
         const newAccount = {
           nickname: nickname,
           password: password,
@@ -8790,18 +8800,25 @@
         persistState.spellbook = Object.assign({}, persistState.spellbook);
         delete persistState.spellbook.catalog;
       }
-      const key = STORAGE_INV_PREFIX + nickname.toLowerCase();
+      const invKey = forgeCharacterId || nickname;
+      const key = STORAGE_INV_PREFIX + invKey.toLowerCase();
       try {
         localStorage.setItem(key, JSON.stringify(persistState));
       } catch(e) {}
 
       if (typeof window.fbSaveInventory === 'function') {
-        window.fbSaveInventory(nickname, persistState);
+        window.fbSaveInventory(invKey, persistState, true);
       }
 
+      const onDone = forgeOnDone;
+      const doneId = forgeCharacterId;
       closeCharacterForgeModal();
+      forgeCharacterId = null;
+      forgeOnDone = null;
 
-      if (forgeIsDmCreation) {
+      if (onDone) {
+        onDone(doneId);
+      } else if (forgeIsDmCreation) {
         populateDmPlayerDropdown();
         if (confirm('Player "' + nickname + '" forged! Switch to inspect their sheet now?')) {
           dmSwitchActivePlayer(nickname);
@@ -9163,6 +9180,24 @@
         window.fbListenToBackgroundImage(target);
       }
     }
+
+    // Shows one of the logged-in account's own characters (campaign.js picks which one).
+    // characterId is the character's inventory key; for characters from before campaigns that's the nickname.
+    function switchActiveCharacter(characterId) {
+      if (!currentUser || !characterId) return;
+      if (activeInventoryUser && activeInventoryUser.toLowerCase() === String(characterId).toLowerCase()) return;
+      save();   // keep edits to the sheet being left
+      activeInventoryUser = characterId;
+      load(characterId);
+      normalizeState();
+      applyTheme();
+      renderAll();
+      syncSpellCatalogToState();
+      if (typeof window.fbListenToInventory === 'function') window.fbListenToInventory(characterId);
+      if (typeof loadAppearanceIntoBg === 'function') loadAppearanceIntoBg(characterId);
+      if (typeof window.fbListenToBackgroundImage === 'function') window.fbListenToBackgroundImage(characterId);
+    }
+    window.switchActiveCharacter = switchActiveCharacter;
 
     function openDmCreatePlayerModal() {
       const ov = document.getElementById('dm-create-player-overlay');

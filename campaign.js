@@ -174,6 +174,70 @@
     return window.fbCampaignGet('characters/' + nick).then((c) => (c ? nick : null));
   }
 
+  /* ---------- Characters (an account can have several) ---------- */
+
+  // [{ id, name }] for this account. Characters from before campaigns have the nickname as id and
+  // aren't in users/<nick>/characters yet; they're added to it the first time they're seen.
+  function loadMyCharacters(nick) {
+    return Promise.all([
+      window.fbCampaignGet('users/' + nick + '/characters'),
+      window.fbCampaignGet('characters/' + nick)
+    ]).then(([index, legacy]) => {
+      const ids = Object.keys(index || {});
+      if (legacy && legacy.owner === nick && !ids.includes(nick)) {
+        ids.unshift(nick);
+        window.fbCampaignUpdate({ ['users/' + nick + '/characters/' + nick]: true }).catch(() => {});
+      }
+      return Promise.all(ids.map((id) => (id === nick && legacy ? Promise.resolve(legacy) : window.fbCampaignGet('characters/' + id))
+        .then((c) => (c && c.owner === nick ? { id: id, name: c.name || id } : null))));
+    }).then((list) => list.filter(Boolean));
+  }
+
+  // Opens the character forge for a new character of this account; resolves with its id once
+  // the sheet is saved. Nothing is written if the forge is closed without finishing.
+  function createCharacter(name) {
+    const nick = myKey();
+    name = String(name || '').trim().slice(0, 40);
+    if (!nick) return Promise.reject(new Error('Log in first'));
+    if (!name) return Promise.reject(new Error('Give the character a name'));
+    if (typeof window.openCharacterForgeModal !== 'function') return Promise.reject(new Error('Character forge not available'));
+    const id = 'ch' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    return new Promise((resolve, reject) => {
+      closePicker();   // the forge opens underneath the picker otherwise
+      window.openCharacterForgeModal({
+        nickname: name,
+        characterId: id,
+        onDone: () => {
+          const patch = {};
+          patch['characters/' + id] = { name: name, owner: nick, createdAt: Date.now() };
+          patch['users/' + nick + '/characters/' + id] = true;
+          window.fbCampaignUpdate(patch).then(() => resolve(id), reject);
+        }
+      });
+    });
+  }
+
+  // Sets which of this account's characters it plays in a campaign.
+  function setCampaignCharacter(campId, charId) {
+    const nick = myKey();
+    if (!nick) return Promise.reject(new Error('Log in first'));
+    return window.fbCampaignUpdate({ ['campaigns/' + campId + '/members/' + nick + '/character']: charId }).then(() => {
+      if (active && active.id === campId) {
+        active.character = charId;
+        window.activeCampaign = Object.assign({}, active);
+        showActiveCharacter();
+        renderChip();
+        window.dispatchEvent(new CustomEvent('campaignchange', { detail: window.activeCampaign }));
+      }
+    });
+  }
+
+  // Puts the active campaign's character on screen. DMs keep their own vault.
+  function showActiveCharacter() {
+    if (!active || active.role !== 'player' || !active.character) return;
+    if (typeof window.switchActiveCharacter === 'function') window.switchActiveCharacter(active.character);
+  }
+
   // The campaigns this account belongs to, with its role and character in each.
   function loadMyCampaigns(nick) {
     return window.fbCampaignGet('users/' + nick + '/campaigns').then((index) => {
@@ -181,15 +245,21 @@
       return Promise.all(ids.map((id) => window.fbCampaignGet('campaigns/' + id).then((c) => {
         const me = c && c.members && c.members[nick];
         if (!me) return null;   // deleted, or this account was removed from it
-        return {
+        const entry = {
           id: id,
           name: c.name || 'Campaign',
           owner: c.owner,
           inviteCode: c.inviteCode,
           role: me.role === 'dm' ? 'dm' : 'player',
           character: me.character || null,
+          characterName: null,
           memberCount: Object.keys(c.members).length
         };
+        if (!entry.character) return entry;
+        return window.fbCampaignGet('characters/' + entry.character).then((ch) => {
+          entry.characterName = (ch && ch.name) || entry.character;
+          return entry;
+        });
       })));
     }).then((list) => list.filter(Boolean).sort((a, b) => a.name.localeCompare(b.name)));
   }
@@ -212,6 +282,10 @@
     closePicker();
     renderChip();
     window.dispatchEvent(new CustomEvent('campaignchange', { detail: window.activeCampaign }));
+
+    // A player needs a character in the campaign: show it, or ask which one to bring.
+    if (c.role === 'player' && !c.character) openCharacterChooser(c, 'Pick the character you play in ' + c.name + '.');
+    else showActiveCharacter();
   }
 
   // After login: a pending invite first, else the remembered campaign, else the only one, else ask.
@@ -382,10 +456,17 @@
         const enter = el('button', 'camp-enter' + (active && active.id === c.id ? ' camp-current' : ''));
         enter.type = 'button';
         enter.appendChild(el('span', 'camp-name', c.name));
-        const who = c.role === 'dm' ? (c.owner === nick ? '👑 DM (owner)' : '👑 Co-DM') : '👤 Player' + (c.character ? ' · ' + c.character : '');
+        const who = c.role === 'dm' ? (c.owner === nick ? '👑 DM (owner)' : '👑 Co-DM') : '👤 Player' + (c.character ? ' · ' + (c.characterName || c.character) : ' · no character yet');
         enter.appendChild(el('span', 'camp-meta', who + ' · ' + c.memberCount + ' member' + (c.memberCount === 1 ? '' : 's')));
         enter.onclick = () => activate(c);
         row.appendChild(enter);
+        if (c.role === 'player') {
+          const pickChar = el('button', 'btn ghost small', '🎭');
+          pickChar.type = 'button';
+          pickChar.title = 'Change the character you play here';
+          pickChar.onclick = () => openCharacterChooser(c);
+          row.appendChild(pickChar);
+        }
         if (c.role === 'dm' && c.inviteCode) {
           const share = el('button', 'btn ghost small', '🔗 ' + c.inviteCode);
           share.type = 'button';
@@ -417,6 +498,69 @@
       foot.appendChild(out);
       card.appendChild(foot);
 
+      document.body.appendChild(wrap);
+    });
+  }
+
+  // Character choice for one campaign: one of this account's characters, or a new one via the forge.
+  function openCharacterChooser(c, intro) {
+    const nick = myKey();
+    if (!nick) return Promise.resolve();
+    injectStyles();
+    return loadMyCharacters(nick).then((chars) => {
+      closePicker();
+      const wrap = el('div');
+      wrap.id = 'campaign-picker';
+      const card = el('div', 'auth-card');
+      wrap.appendChild(card);
+
+      if (c.character || (active && active.id !== c.id)) {
+        const back = el('button', 'btn ghost small camp-close', '← Back');
+        back.type = 'button';
+        back.onclick = () => openPicker();
+        card.appendChild(back);
+      }
+
+      const head = el('div', 'auth-header');
+      head.appendChild(el('div', 'auth-emblem', '🎭'));
+      head.appendChild(el('h2', 'auth-title', 'CHARACTER'));
+      head.appendChild(el('div', 'auth-subtitle', intro || 'Who do you play in ' + c.name + '?'));
+      card.appendChild(head);
+
+      card.appendChild(el('div', 'camp-section', 'Your characters'));
+      const listBox = el('div', 'camp-list');
+      if (!chars.length) listBox.appendChild(el('div', 'camp-empty', 'No characters yet — forge one below.'));
+      chars.forEach((ch) => {
+        const b = el('button', 'camp-enter' + (c.character === ch.id ? ' camp-current' : ''));
+        b.type = 'button';
+        b.appendChild(el('span', 'camp-name', ch.name));
+        b.appendChild(el('span', 'camp-meta', c.character === ch.id ? 'Playing in ' + c.name : 'Play this character in ' + c.name));
+        b.onclick = () => {
+          showPickerMessage('Saving…');
+          setCampaignCharacter(c.id, ch.id)
+            .then(() => {
+              const updated = Object.assign({}, c, { character: ch.id, characterName: ch.name });
+              if (active && active.id === c.id) closePicker();
+              else activate(updated);
+            })
+            .catch((err) => showPickerMessage(err.message || String(err), true));
+        };
+        listBox.appendChild(b);
+      });
+      card.appendChild(listBox);
+
+      card.appendChild(el('div', 'camp-section', 'Forge a new character'));
+      card.appendChild(form('Character name', 'Forge', (name) => {
+        createCharacter(name)
+          .then((id) => setCampaignCharacter(c.id, id).then(() => {
+            const updated = Object.assign({}, c, { character: id, characterName: name });
+            if (active && active.id === c.id) showActiveCharacter();
+            else activate(updated);
+          }))
+          .catch((err) => { openCharacterChooser(c).then(() => showPickerMessage(err.message || String(err), true)); });
+      }, 40));
+
+      card.appendChild(el('div', 'auth-msg'));
       document.body.appendChild(wrap);
     });
   }
@@ -487,6 +631,9 @@
     previewMigration: previewMigration,
     migrateIfNeeded: migrateIfNeeded,
     loadMyCampaigns: loadMyCampaigns,
+    loadMyCharacters: loadMyCharacters,
+    createCharacter: createCharacter,
+    setCampaignCharacter: setCampaignCharacter,
     createCampaign: createCampaign,
     joinCampaign: joinCampaign,
     openPicker: openPicker,
