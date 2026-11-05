@@ -25,14 +25,14 @@ Tüm değişiklikler Firebase üzerinden anlık eşleşiyor.
 ## Veri şeması (Realtime Database)
 
 ```
-vtt/main/map            { url, width, height }
-vtt/main/grid           { size, visible, color, opacity, offsetX, offsetY }   offset = haritadaki bir ızgara çizgisinin konumu (px)
-vtt/main/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden, hp? }   x/y = ızgara hücresi
-vtt/main/fog            { enabled, revealed: { "x_y": true } }
-vtt/main/log/<key>      { by, die, result, at }   en yeni 20 kayıt tutulur
-vtt/main/initiative     { round, turn, entries: { <id>: { name, init, tokenId, hidden, at } } }   yalnızca DM yazar
-vtt/main/shapes/<id>    { kind, ox, oy, ex, ey, by, color }   kare cinsinden; kind = circle | cone | line | square
-vtt/main/measure/<sekme> { who, ax, ay, bx, by, color, at }   yalnızca sürükleme sürerken var
+vtt/<kampanya>/map            { url, width, height }
+vtt/<kampanya>/grid           { size, visible, color, opacity, offsetX, offsetY }   offset = haritadaki bir ızgara çizgisinin konumu (px)
+vtt/<kampanya>/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden, hp? }   x/y = ızgara hücresi
+vtt/<kampanya>/fog            { enabled, revealed: { "x_y": true } }
+vtt/<kampanya>/log/<key>      { by, die, result, at }   en yeni 20 kayıt tutulur
+vtt/<kampanya>/initiative     { round, turn, entries: { <id>: { name, init, tokenId, hidden, at } } }   yalnızca DM yazar
+vtt/<kampanya>/shapes/<id>    { kind, ox, oy, ex, ey, by, color }   kare cinsinden; kind = circle | cone | line | square
+vtt/<kampanya>/measure/<sekme> { who, ax, ay, bx, by, color, at }   yalnızca sürükleme sürerken var
 ```
 
 Oyuncu HP'si ayrıca saklanmıyor, doğrudan `inventories/<nickname>/hp` okunuyor. HP hâlâ yalnızca karakter sayfasından değiştiriliyor.
@@ -75,7 +75,7 @@ Projede Storage bucket'ı yok (`mamirockd-d37.firebasestorage.app` 404 döndür�
 ## Bilinen sınırlar / sonraki işler
 
 - Duvar ve dinamik ışık yok. Fog hücre tabanlı.
-- Tek oda var (`vtt/main`).
+- Her kampanyanın kendi masası var (`vtt/<kampanya id>`; MamiRock = `main`). Ayrıntı: CAMPAIGNS.md.
 - Telefonda DM araç çubuğu katlanabilir yapılabilir.
 - Katalog şu an örnek olarak 3 harita ve 6 token içeriyor. Hepsi bu iş için çizilmiş basit SVG'ler (`assets/`), telif sorunu yok. Yeni öğe eklemek için `vtt-catalog.js` başındaki açıklamaya bakın. Yalnızca kendi çizdiğiniz veya lisansı izin veren görselleri ekleyin. Katalog verisi Firebase'e yazılmaz, yalnızca seçilen dosyanın adresi ve `catalogId` yazılır.
 - Ölçümler D&D varsayılanını kullanır: çapraz dahil her kare 5 ft. Koni, uzunluğu kadar geniştir. Çizgi 5 ft genişliğindedir. Bir kare, merkezi şablonun içindeyse etkilenmiş sayılır.

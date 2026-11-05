@@ -33,9 +33,70 @@
     "campaign_background": { ".read": true },
     "inventory": { ".read": true },
 
+    "campaigns": {
+      "$campaign": {
+        ".read": true,
+        ".write": true,
+        "name": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60" },
+        "owner": { ".validate": "newData.isString() && newData.val().length <= 40" },
+        "inviteCode": { ".validate": "newData.isString() && newData.val().matches(/^[A-Z0-9]{6}$/)" },
+        "createdAt": { ".validate": "newData.isNumber()" },
+        "members": {
+          "$nick": {
+            ".validate": "newData.hasChildren(['role'])",
+            "role": { ".validate": "newData.val() === 'dm' || newData.val() === 'player'" },
+            "character": { ".validate": "newData.isString() && newData.val().length <= 60" },
+            "joinedAt": { ".validate": "newData.isNumber()" },
+            "$other": { ".validate": false }
+          }
+        },
+        "notes": {
+          "$note": {
+            ".validate": "newData.hasChildren(['title', 'updatedAt'])",
+            "title": { ".validate": "newData.isString() && newData.val().length <= 120" },
+            "body": { ".validate": "newData.isString() && newData.val().length <= 20000" },
+            "visibleTo": { ".validate": "newData.val() === 'all' || newData.hasChildren()" },
+            "by": { ".validate": "newData.isString() && newData.val().length <= 40" },
+            "createdAt": { ".validate": "newData.isNumber()" },
+            "updatedAt": { ".validate": "newData.isNumber()" },
+            "$other": { ".validate": false }
+          }
+        },
+        "$other": { ".validate": false }
+      }
+    },
+
+    "invites": {
+      "$code": {
+        ".read": true,
+        ".write": true,
+        ".validate": "$code.matches(/^[A-Z0-9]{6}$/) && newData.isString() && newData.val().length <= 40"
+      }
+    },
+
+    "characters": {
+      "$character": {
+        ".read": true,
+        ".write": true,
+        "name": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60" },
+        "owner": { ".validate": "newData.isString() && newData.val().length <= 40" },
+        "createdAt": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
+      }
+    },
+
+    "users": {
+      "$nick": {
+        ".read": true,
+        "campaigns": { "$campaign": { ".write": true, ".validate": "newData.val() === true" } },
+        "characters": { "$character": { ".write": true, ".validate": "newData.val() === true" } }
+      }
+    },
+
     "vtt": {
-      ".read": true,
       "$room": {
+        ".read": true,
+        ".write": "!newData.exists()",
         "map": {
           ".write": true,
           "url": { ".validate": "newData.isString() && newData.val().length <= 1600000" },
