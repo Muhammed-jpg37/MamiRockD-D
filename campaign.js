@@ -283,6 +283,7 @@
     renderChip();
     if (c.character && c.characterName) charNames[c.character] = c.characterName;
     watchMembers(c.id);
+    watchNotes(c.id);
     window.dispatchEvent(new CustomEvent('campaignchange', { detail: window.activeCampaign }));
 
     // A player needs a character in the campaign: show it, or ask which one to bring.
@@ -560,6 +561,8 @@
     window.activeCampaign = null;
     try { if (nick) localStorage.removeItem(ACTIVE_KEY_PREFIX + nick); } catch (e) { }
     watchMembers(null);
+    watchNotes(null);
+    closeJournal();
     renderChip();
     window.dispatchEvent(new CustomEvent('campaignchange', { detail: null }));
   }
@@ -618,6 +621,241 @@
     return id ? (charNames[id] || id) : null;
   }
 
+  /* ---------- Campaign journal (DMs write, players read) ---------- */
+  // campaigns/<id>/notes/<noteId>: { title, body, visibleTo: 'all' | { nick: true }, by, createdAt, updatedAt }
+  // "Only for" hides a note in the app; without Firebase Auth the database itself stays readable.
+
+  let notes = {};
+  let notesUnsub = null;
+  let journalEditing = null;   // note id being edited, 'new', or null
+
+  function watchNotes(campId) {
+    if (notesUnsub) notesUnsub();
+    notesUnsub = null;
+    notes = {};
+    renderJournalButton();
+    if (!campId || typeof window.fbCampaignListen !== 'function') return;
+    notesUnsub = window.fbCampaignListen('campaigns/' + campId + '/notes', (n) => {
+      notes = n || {};
+      renderJournalButton();
+      // Keep an open journal current, but never under the DM's typing.
+      if (document.getElementById('campaign-journal') && !journalEditing) openJournal();
+    });
+  }
+
+  function noteVisible(n) {
+    if (!n) return false;
+    if (active && active.role === 'dm') return true;
+    if (n.visibleTo === 'all' || !n.visibleTo) return true;
+    return !!n.visibleTo[myKey()];
+  }
+
+  // Newest first.
+  function visibleNotes() {
+    return Object.keys(notes).map((id) => Object.assign({ id: id }, notes[id]))
+      .filter(noteVisible)
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  }
+
+  const seenKey = () => 'dnd-journal-seen:' + (active ? active.id : '') + ':' + (myKey() || '');
+
+  function hasUnread() {
+    let seen = 0;
+    try { seen = Number(localStorage.getItem(seenKey())) || 0; } catch (e) { }
+    return visibleNotes().some((n) => (n.updatedAt || 0) > seen && n.by !== myKey());
+  }
+
+  function markJournalSeen() {
+    const newest = visibleNotes().reduce((m, n) => Math.max(m, n.updatedAt || 0), 0);
+    try { localStorage.setItem(seenKey(), String(Math.max(newest, Date.now()))); } catch (e) { }
+    renderJournalButton();
+  }
+
+  function saveNote(id, data) {
+    if (!active || active.role !== 'dm') return Promise.reject(new Error('Only DMs write campaign notes'));
+    const now = Date.now();
+    const noteId = id || ('n' + now.toString(36) + Math.random().toString(36).slice(2, 5));
+    const prev = notes[noteId] || {};
+    const record = {
+      title: String(data.title || '').trim().slice(0, 120) || 'Untitled',
+      body: String(data.body || '').slice(0, 20000),
+      visibleTo: data.visibleTo === 'all' || !data.visibleTo || !Object.keys(data.visibleTo).length ? 'all' : data.visibleTo,
+      by: prev.by || myKey(),
+      createdAt: prev.createdAt || now,
+      updatedAt: now
+    };
+    return window.fbCampaignUpdate({ ['campaigns/' + active.id + '/notes/' + noteId]: record }).then(() => noteId);
+  }
+
+  function deleteNote(id) {
+    if (!active || active.role !== 'dm') return Promise.reject(new Error('Only DMs delete campaign notes'));
+    return window.fbCampaignUpdate({ ['campaigns/' + active.id + '/notes/' + id]: null });
+  }
+
+  function closeJournal() {
+    journalEditing = null;
+    const j = document.getElementById('campaign-journal');
+    if (j) j.remove();
+  }
+
+  function fmtDate(t) {
+    try { return new Date(t).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+    catch (e) { return ''; }
+  }
+
+  function visibilityLabel(n) {
+    if (n.visibleTo === 'all' || !n.visibleTo) return '👁 Everyone';
+    const who = Object.keys(n.visibleTo).map((nick) => {
+      const c = characterOf(nick);
+      return (c && characterName(c)) || nick;
+    });
+    return '🔒 Only ' + who.join(', ');
+  }
+
+  function openJournal(editId) {
+    if (!active) return;
+    injectStyles();
+    journalEditing = editId || null;
+    const isDmView = active.role === 'dm';
+    const prevScroll = (document.querySelector('#campaign-journal .journal-list') || {}).scrollTop || 0;
+    const openIds = new Set([...document.querySelectorAll('#campaign-journal .journal-note.open')].map((n) => n.dataset.id));
+    const existing = document.getElementById('campaign-journal');
+    if (existing) existing.remove();
+
+    const wrap = el('div');
+    wrap.id = 'campaign-journal';
+    wrap.addEventListener('pointerdown', (e) => { if (e.target === wrap && !journalEditing) closeJournal(); });
+    const card = el('div', 'auth-card journal-card');
+    wrap.appendChild(card);
+
+    const x = el('button', 'btn ghost small camp-close', '✕');
+    x.type = 'button';
+    x.onclick = closeJournal;
+    card.appendChild(x);
+
+    const head = el('div', 'auth-header');
+    head.appendChild(el('div', 'auth-emblem', '📖'));
+    head.appendChild(el('h2', 'auth-title', 'JOURNAL'));
+    head.appendChild(el('div', 'auth-subtitle', active.name + (isDmView ? ' · you write, players read' : ' · shared by your DM')));
+    card.appendChild(head);
+
+    if (journalEditing) {
+      card.appendChild(noteEditor(journalEditing === 'new' ? null : journalEditing));
+    } else {
+      if (isDmView) {
+        const add = el('button', 'btn small', '＋ New note');
+        add.type = 'button';
+        add.onclick = () => openJournal('new');
+        card.appendChild(add);
+      }
+      const list = el('div', 'journal-list');
+      const items = visibleNotes();
+      if (!items.length) list.appendChild(el('div', 'camp-empty', isDmView ? 'No notes yet. Write session recaps, handouts or secrets for one player.' : 'Your DM has not shared any notes yet.'));
+      items.forEach((n) => {
+        const box = el('div', 'journal-note' + (openIds.has(n.id) || items.length === 1 ? ' open' : ''));
+        box.dataset.id = n.id;
+        const top = el('button', 'journal-top');
+        top.type = 'button';
+        top.appendChild(el('span', 'camp-name', n.title));
+        top.appendChild(el('span', 'camp-meta', fmtDate(n.updatedAt) + (isDmView ? ' · ' + visibilityLabel(n) : (n.visibleTo === 'all' || !n.visibleTo ? '' : ' · 🔒 just for you'))));
+        top.onclick = () => box.classList.toggle('open');
+        box.appendChild(top);
+        const body = el('div', 'journal-body', n.body || '');
+        box.appendChild(body);
+        if (isDmView) {
+          const acts = el('div', 'journal-acts');
+          const ed = el('button', 'btn ghost small', '✏️ Edit');
+          ed.type = 'button';
+          ed.onclick = () => openJournal(n.id);
+          const del = el('button', 'btn ghost small camp-danger', '🗑 Delete');
+          del.type = 'button';
+          del.onclick = () => { if (confirm('Delete "' + n.title + '"?')) deleteNote(n.id).catch((err) => alert(err.message || String(err))); };
+          acts.append(ed, del);
+          box.appendChild(acts);
+        }
+        list.appendChild(box);
+      });
+      card.appendChild(list);
+      setTimeout(() => { list.scrollTop = prevScroll; }, 0);
+      markJournalSeen();
+    }
+    document.body.appendChild(wrap);
+  }
+
+  function noteEditor(id) {
+    const n = id ? notes[id] || {} : {};
+    const f = el('form', 'journal-editor');
+    const title = el('input', 'auth-input');
+    title.type = 'text';
+    title.maxLength = 120;
+    title.placeholder = 'Title, e.g. Session 4 recap';
+    title.value = n.title || '';
+    const body = el('textarea', 'auth-input journal-text');
+    body.placeholder = 'What happened, a handout, a secret…';
+    body.value = n.body || '';
+
+    // Visibility: everyone, or only the ticked players.
+    const vis = el('div', 'journal-vis');
+    vis.appendChild(el('div', 'camp-section', 'Who can read it'));
+    const players = memberList().filter((m) => m.role === 'player');
+    const picked = n.visibleTo && n.visibleTo !== 'all' ? n.visibleTo : {};
+    const boxes = players.map((m) => {
+      const lab = el('label', 'journal-who');
+      const cb = el('input');
+      cb.type = 'checkbox';
+      cb.value = m.nick;
+      cb.checked = !!picked[m.nick];
+      lab.append(cb, document.createTextNode(' ' + (m.characterName ? m.characterName + ' (' + m.nick + ')' : m.nick)));
+      vis.appendChild(lab);
+      return cb;
+    });
+    vis.appendChild(el('div', 'camp-meta', 'Tick nobody to share with everyone. Hidden notes are hidden in the app only: without Firebase Auth the database can still be read directly.'));
+
+    const acts = el('div', 'journal-acts');
+    const save = el('button', 'btn small', id ? 'Save' : 'Share');
+    save.type = 'submit';
+    const cancel = el('button', 'btn ghost small', 'Cancel');
+    cancel.type = 'button';
+    cancel.onclick = () => openJournal();
+    acts.append(save, cancel);
+
+    f.append(title, body, vis, acts, el('div', 'auth-msg'));
+    f.onsubmit = (e) => {
+      e.preventDefault();
+      const ticked = boxes.filter((b) => b.checked).map((b) => b.value);
+      const visibleTo = ticked.length ? Object.fromEntries(ticked.map((k) => [k, true])) : 'all';
+      save.disabled = true;
+      saveNote(id, { title: title.value, body: body.value, visibleTo: visibleTo })
+        .then(() => openJournal())
+        .catch((err) => {
+          save.disabled = false;
+          const m = f.querySelector('.auth-msg');
+          m.textContent = err.message || String(err);
+          m.className = 'auth-msg error';
+        });
+    };
+    setTimeout(() => title.focus(), 0);
+    return f;
+  }
+
+  // "📖" next to the campaign chip, with a dot when there's something new.
+  function renderJournalButton() {
+    let btn = document.getElementById('campaign-journal-btn');
+    const chip = document.getElementById('campaign-chip');
+    if (!active || !chip) { if (btn) btn.remove(); return; }
+    if (!btn) {
+      btn = el('button', 'btn ghost small camp-chip journal-btn');
+      btn.id = 'campaign-journal-btn';
+      btn.type = 'button';
+      btn.onclick = () => openJournal();
+      chip.after(btn);
+    }
+    const unread = hasUnread();
+    btn.textContent = '📖' + (unread ? ' •' : '');
+    btn.classList.toggle('journal-unread', unread);
+    btn.title = unread ? 'Campaign journal — new notes' : 'Campaign journal';
+  }
+
   /* ---------- Picker screen ---------- */
 
   function injectStyles() {
@@ -650,6 +888,24 @@
       .camp-form .btn { white-space: nowrap; }
       .camp-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 6px; }
       .camp-block { margin-bottom: 14px; }
+      #campaign-journal {
+        position: fixed; inset: 0; z-index: 99997; display: flex; align-items: flex-start; justify-content: center;
+        padding: 30px 16px; overflow-y: auto; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+      }
+      #campaign-journal .journal-card { max-width: 720px; }
+      .journal-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; max-height: 60vh; overflow-y: auto; }
+      .journal-note { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); }
+      .journal-top { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 12px; background: none; border: none; color: var(--text); cursor: pointer; text-align: left; font-family: var(--font-body); }
+      .journal-body { display: none; padding: 0 12px 10px; white-space: pre-wrap; font-size: 14px; line-height: 1.5; color: var(--text); }
+      .journal-note.open .journal-body { display: block; }
+      .journal-acts { display: none; gap: 6px; padding: 0 12px 10px; }
+      .journal-note.open .journal-acts, .journal-editor .journal-acts { display: flex; }
+      .journal-editor { display: flex; flex-direction: column; gap: 10px; }
+      .journal-editor .auth-input { padding-left: 12px; }
+      .journal-text { min-height: 200px; resize: vertical; font-family: var(--font-body); line-height: 1.5; }
+      .journal-vis { display: flex; flex-direction: column; gap: 4px; }
+      .journal-who { font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 6px; }
+      .journal-btn.journal-unread { border-color: var(--accent); color: var(--accent-strong); }
       .camp-code { flex: 1; font-family: var(--font-mono); font-size: 20px; letter-spacing: 4px; color: var(--accent-strong); padding: 6px 10px; background: var(--surface-inset); border: 1px solid var(--border); border-radius: var(--radius); text-align: center; }
       .camp-member { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); }
       .camp-member-who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -867,6 +1123,7 @@
     }
     chip.textContent = '🏰 ' + active.name;
     chip.title = 'Campaign: ' + active.name + ' — click to switch';
+    renderJournalButton();
   }
 
   /* ---------- Hooks ---------- */
@@ -886,6 +1143,8 @@
     active = null;
     window.activeCampaign = null;
     watchMembers(null);
+    watchNotes(null);
+    closeJournal();
     window.dispatchEvent(new CustomEvent('campaignchange', { detail: null }));
     closePicker();
     renderChip();
@@ -906,6 +1165,10 @@
     openPicker: openPicker,
     active: () => active,
     openManage: openManage,
+    openJournal: openJournal,
+    saveNote: saveNote,
+    deleteNote: deleteNote,
+    visibleNotes: visibleNotes,
     renewInvite: renewInvite,
     renameCampaign: renameCampaign,
     setMemberRole: setMemberRole,
