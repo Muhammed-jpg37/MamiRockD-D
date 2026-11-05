@@ -9088,6 +9088,7 @@
       currentUser = null;
       activeInventoryUser = null;
       currentNotesOwner = 'guest';
+      if (window.Campaigns) window.Campaigns.onLogout();
 
       const authScreen = document.getElementById('auth-portal-screen');
       if (authScreen) authScreen.classList.remove('auth-hidden');

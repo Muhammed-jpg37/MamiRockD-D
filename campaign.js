@@ -135,11 +135,349 @@
       .finally(() => { migrating = false; });
   }
 
+  /* ---------- Active campaign ---------- */
+
+  const ACTIVE_KEY_PREFIX = 'dnd-active-campaign:';   // + nickname, in localStorage
+  const PENDING_JOIN_KEY = 'dnd-pending-join';        // invite code from a ?join= link, in sessionStorage
+  let active = null;          // { id, name, owner, inviteCode, role, character, memberCount }
+  let applyingRole = false;   // true while we re-run loginUser() with the campaign role
+
+  // An invite link (?join=CODE) is remembered until the visitor has logged in.
+  (function captureJoinLink() {
+    try {
+      const params = new URLSearchParams(location.search);
+      const code = params.get('join');
+      if (!code) return;
+      sessionStorage.setItem(PENDING_JOIN_KEY, normaliseCode(code));
+      params.delete('join');
+      const rest = params.toString();
+      history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+    } catch (e) { }
+  })();
+
+  function normaliseCode(code) {
+    return String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  }
+
+  function myKey() {
+    const u = window.currentUser;
+    return u && u.nickname ? String(u.nickname).toLowerCase() : null;
+  }
+
+  function inviteLink(code) {
+    return location.origin + location.pathname + '?join=' + code;
+  }
+
+  // The character an account brings when it joins. Until accounts can hold several characters
+  // (step 3), that is the account's own character, if it has one.
+  function defaultCharacterFor(nick) {
+    return window.fbCampaignGet('characters/' + nick).then((c) => (c ? nick : null));
+  }
+
+  // The campaigns this account belongs to, with its role and character in each.
+  function loadMyCampaigns(nick) {
+    return window.fbCampaignGet('users/' + nick + '/campaigns').then((index) => {
+      const ids = Object.keys(index || {});
+      return Promise.all(ids.map((id) => window.fbCampaignGet('campaigns/' + id).then((c) => {
+        const me = c && c.members && c.members[nick];
+        if (!me) return null;   // deleted, or this account was removed from it
+        return {
+          id: id,
+          name: c.name || 'Campaign',
+          owner: c.owner,
+          inviteCode: c.inviteCode,
+          role: me.role === 'dm' ? 'dm' : 'player',
+          character: me.character || null,
+          memberCount: Object.keys(c.members).length
+        };
+      })));
+    }).then((list) => list.filter(Boolean).sort((a, b) => a.name.localeCompare(b.name)));
+  }
+
+  // Makes c the active campaign and switches the session to this account's role in it.
+  function activate(c) {
+    const nick = myKey();
+    if (!nick) return;
+    active = c;
+    window.activeCampaign = Object.assign({}, c);
+    try { localStorage.setItem(ACTIVE_KEY_PREFIX + nick, c.id); } catch (e) { }
+
+    // The rest of the site reads currentUser.role (DM bar, VTT rights...): give it the campaign role.
+    const u = window.currentUser;
+    if (u && u.role !== c.role && typeof loginUser === 'function') {
+      applyingRole = true;
+      try { loginUser(Object.assign({}, u, { role: c.role })); }
+      finally { applyingRole = false; }
+    }
+    closePicker();
+    renderChip();
+    window.dispatchEvent(new CustomEvent('campaignchange', { detail: window.activeCampaign }));
+  }
+
+  // After login: a pending invite first, else the remembered campaign, else the only one, else ask.
+  function chooseCampaign() {
+    const nick = myKey();
+    if (!nick) return Promise.resolve();
+    let pending = null;
+    try { pending = sessionStorage.getItem(PENDING_JOIN_KEY); } catch (e) { }
+    if (pending) {
+      try { sessionStorage.removeItem(PENDING_JOIN_KEY); } catch (e) { }
+      return openPicker().then(() => joinCampaign(pending));
+    }
+    return loadMyCampaigns(nick).then((list) => {
+      let remembered = null;
+      try { remembered = localStorage.getItem(ACTIVE_KEY_PREFIX + nick); } catch (e) { }
+      const pick = list.find((c) => c.id === remembered) || (list.length === 1 ? list[0] : null);
+      if (pick) activate(pick);
+      else openPicker(list);
+    });
+  }
+
+  function createCampaign(name) {
+    const nick = myKey();
+    name = String(name || '').trim().slice(0, 60);
+    if (!nick) return Promise.reject(new Error('Log in first'));
+    if (!name) return Promise.reject(new Error('Give the campaign a name'));
+    const id = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const now = Date.now();
+    return freeInviteCode().then((code) => {
+      const patch = {};
+      patch['campaigns/' + id] = { name: name, owner: nick, createdAt: now, inviteCode: code, members: { [nick]: { role: 'dm', joinedAt: now } } };
+      patch['invites/' + code] = id;
+      patch['users/' + nick + '/campaigns/' + id] = true;
+      return window.fbCampaignUpdate(patch).then(() => {
+        activate({ id: id, name: name, owner: nick, inviteCode: code, role: 'dm', character: null, memberCount: 1 });
+      });
+    });
+  }
+
+  // A code no other campaign uses (6 characters from 31 makes clashes rare; check anyway).
+  function freeInviteCode(tries) {
+    const code = newInviteCode();
+    return window.fbCampaignGet('invites/' + code).then((taken) => {
+      if (!taken) return code;
+      if ((tries || 0) > 5) throw new Error('Could not make an invite code, try again');
+      return freeInviteCode((tries || 0) + 1);
+    });
+  }
+
+  function joinCampaign(rawCode) {
+    const nick = myKey();
+    const code = normaliseCode(rawCode);
+    if (!nick) return Promise.reject(new Error('Log in first'));
+    if (code.length !== INVITE_LENGTH) {
+      showPickerMessage('Invite codes are ' + INVITE_LENGTH + ' letters/digits.', true);
+      return Promise.resolve();
+    }
+    showPickerMessage('Looking up ' + code + '…');
+    return window.fbCampaignGet('invites/' + code).then((id) => {
+      if (!id) throw new Error('No campaign uses the code ' + code + ' (it may have been renewed).');
+      return window.fbCampaignGet('campaigns/' + id).then((c) => {
+        if (!c) throw new Error('That campaign no longer exists.');
+        if (c.inviteCode !== code) throw new Error('That invite code has been replaced. Ask your DM for the new one.');
+        const existing = c.members && c.members[nick];
+        const summary = { id: id, name: c.name || 'Campaign', owner: c.owner, inviteCode: c.inviteCode, memberCount: Object.keys(c.members || {}).length };
+        if (existing) {
+          activate(Object.assign(summary, { role: existing.role === 'dm' ? 'dm' : 'player', character: existing.character || null }));
+          return;
+        }
+        return defaultCharacterFor(nick).then((character) => {
+          const patch = {};
+          patch['campaigns/' + id + '/members/' + nick] = { role: 'player', character: character, joinedAt: Date.now() };
+          patch['users/' + nick + '/campaigns/' + id] = true;
+          return window.fbCampaignUpdate(patch).then(() => {
+            activate(Object.assign(summary, { role: 'player', character: character, memberCount: summary.memberCount + 1 }));
+          });
+        });
+      });
+    }).catch((err) => showPickerMessage(err.message || String(err), true));
+  }
+
+  /* ---------- Picker screen ---------- */
+
+  function injectStyles() {
+    if (document.getElementById('campaign-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'campaign-styles';
+    style.textContent = `
+      #campaign-picker {
+        position: fixed; inset: 0; z-index: 99998; display: flex; align-items: center; justify-content: center; padding: 20px;
+        background: radial-gradient(ellipse at center, var(--surface-2) 0%, var(--bg) 75%, var(--surface-inset) 100%);
+        overflow-y: auto;
+      }
+      #campaign-picker .auth-card { max-width: 520px; }
+      .camp-close { position: absolute; top: 12px; right: 12px; }
+      .camp-list { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 18px; }
+      .camp-row { display: flex; align-items: center; gap: 8px; }
+      .camp-enter {
+        flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; cursor: pointer;
+        padding: 10px 12px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius);
+        font-family: var(--font-body);
+      }
+      .camp-enter:hover { border-color: var(--accent); background: var(--surface-3); }
+      .camp-enter.camp-current { border-color: var(--accent); }
+      .camp-name { font-family: var(--font-display); font-size: 15px; color: var(--accent-strong); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .camp-meta { font-size: 12px; color: var(--text-dim); }
+      .camp-empty { padding: 14px; text-align: center; color: var(--text-muted); font-size: 13px; border: 1px dashed var(--border); border-radius: var(--radius); }
+      .camp-section { font-family: var(--font-display); font-size: 12px; letter-spacing: 1px; color: var(--text-dim); margin: 0 0 6px; text-transform: uppercase; }
+      .camp-form { display: flex; gap: 8px; margin-bottom: 14px; }
+      .camp-form .auth-input { flex: 1; min-width: 0; padding-left: 12px; }
+      .camp-form .btn { white-space: nowrap; }
+      .camp-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 6px; }
+      .camp-chip { padding: 3px 8px; font-size: 11px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  }
+
+  function closePicker() {
+    const p = document.getElementById('campaign-picker');
+    if (p) p.remove();
+  }
+
+  function showPickerMessage(text, isError) {
+    const box = document.querySelector('#campaign-picker .auth-msg');
+    if (!box) return;
+    box.textContent = text || '';
+    box.className = 'auth-msg' + (text ? (isError ? ' error' : ' success') : '');
+  }
+
+  // list: campaigns to show; loaded here when not given.
+  function openPicker(list) {
+    const nick = myKey();
+    if (!nick) return Promise.resolve();
+    injectStyles();
+    return (list ? Promise.resolve(list) : loadMyCampaigns(nick)).then((camps) => {
+      closePicker();
+      const wrap = el('div');
+      wrap.id = 'campaign-picker';
+      const card = el('div', 'auth-card');
+      wrap.appendChild(card);
+
+      if (active) {
+        const x = el('button', 'btn ghost small camp-close', '✕');
+        x.type = 'button';
+        x.title = 'Back to ' + active.name;
+        x.onclick = closePicker;
+        card.appendChild(x);
+      }
+
+      const head = el('div', 'auth-header');
+      head.appendChild(el('div', 'auth-emblem', '🏰'));
+      head.appendChild(el('h2', 'auth-title', 'CAMPAIGNS'));
+      head.appendChild(el('div', 'auth-subtitle', 'Signed in as ' + window.currentUser.nickname));
+      card.appendChild(head);
+
+      card.appendChild(el('div', 'camp-section', 'Your campaigns'));
+      const listBox = el('div', 'camp-list');
+      if (!camps.length) listBox.appendChild(el('div', 'camp-empty', "You're not in a campaign yet. Create one, or join with your DM's invite code."));
+      camps.forEach((c) => {
+        const row = el('div', 'camp-row');
+        const enter = el('button', 'camp-enter' + (active && active.id === c.id ? ' camp-current' : ''));
+        enter.type = 'button';
+        enter.appendChild(el('span', 'camp-name', c.name));
+        const who = c.role === 'dm' ? (c.owner === nick ? '👑 DM (owner)' : '👑 Co-DM') : '👤 Player' + (c.character ? ' · ' + c.character : '');
+        enter.appendChild(el('span', 'camp-meta', who + ' · ' + c.memberCount + ' member' + (c.memberCount === 1 ? '' : 's')));
+        enter.onclick = () => activate(c);
+        row.appendChild(enter);
+        if (c.role === 'dm' && c.inviteCode) {
+          const share = el('button', 'btn ghost small', '🔗 ' + c.inviteCode);
+          share.type = 'button';
+          share.title = 'Copy the invite link';
+          share.onclick = () => copyText(inviteLink(c.inviteCode)).then(
+            () => showPickerMessage('Invite link copied: ' + inviteLink(c.inviteCode)),
+            () => showPickerMessage('Invite link: ' + inviteLink(c.inviteCode)));
+          row.appendChild(share);
+        }
+        listBox.appendChild(row);
+      });
+      card.appendChild(listBox);
+
+      card.appendChild(el('div', 'camp-section', 'Join with an invite code'));
+      card.appendChild(form('e.g. CP5NCN', 'Join', (v) => joinCampaign(v), INVITE_LENGTH + 2));
+
+      card.appendChild(el('div', 'camp-section', 'Start a new campaign (you are its DM)'));
+      card.appendChild(form('Campaign name', 'Create', (v) => {
+        showPickerMessage('Creating…');
+        return createCampaign(v).catch((err) => showPickerMessage(err.message || String(err), true));
+      }, 60));
+
+      card.appendChild(el('div', 'auth-msg'));
+
+      const foot = el('div', 'camp-foot');
+      const out = el('button', 'btn ghost small', '🚪 Log out');
+      out.type = 'button';
+      out.onclick = () => { closePicker(); if (typeof logoutCurrentUser === 'function') logoutCurrentUser(); };
+      foot.appendChild(out);
+      card.appendChild(foot);
+
+      document.body.appendChild(wrap);
+    });
+  }
+
+  function form(placeholder, label, onSubmit, maxLength) {
+    const f = el('form', 'camp-form');
+    const input = el('input', 'auth-input');
+    input.type = 'text';
+    input.placeholder = placeholder;
+    input.maxLength = maxLength;
+    const btn = el('button', 'btn small', label);
+    btn.type = 'submit';
+    f.append(input, btn);
+    f.onsubmit = (e) => {
+      e.preventDefault();
+      if (input.value.trim()) onSubmit(input.value.trim());
+    };
+    return f;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+    return Promise.reject(new Error('no clipboard'));
+  }
+
+  // "🏰 Campaign name" next to the user badge; opens the picker.
+  function renderChip() {
+    let chip = document.getElementById('campaign-chip');
+    const bar = document.getElementById('auth-user-bar');
+    if (!bar) return;
+    if (!active || !window.currentUser) { if (chip) chip.remove(); return; }
+    injectStyles();
+    if (!chip) {
+      chip = el('button', 'btn ghost small camp-chip');
+      chip.id = 'campaign-chip';
+      chip.type = 'button';
+      chip.onclick = () => openPicker();
+      bar.insertBefore(chip, bar.firstChild);
+    }
+    chip.textContent = '🏰 ' + active.name;
+    chip.title = 'Campaign: ' + active.name + ' — click to switch';
+  }
+
   /* ---------- Hooks ---------- */
 
-  // Called by loginUser(); also below, for a session restored before this file loaded.
+  // Called at the end of loginUser(); also below, for a session restored before this file loaded.
   function onLogin() {
-    migrateIfNeeded();
+    if (applyingRole) return;   // our own re-login with the campaign role
+    active = null;
+    window.activeCampaign = null;
+    migrateIfNeeded()
+      .then(() => firebaseReady())
+      .then(() => chooseCampaign())
+      .catch((err) => console.warn('Campaign selection failed:', err));
+  }
+
+  function onLogout() {
+    active = null;
+    window.activeCampaign = null;
+    closePicker();
+    renderChip();
   }
 
   window.Campaigns = {
@@ -148,7 +486,13 @@
     buildMigration: buildMigration,
     previewMigration: previewMigration,
     migrateIfNeeded: migrateIfNeeded,
-    onLogin: onLogin
+    loadMyCampaigns: loadMyCampaigns,
+    createCampaign: createCampaign,
+    joinCampaign: joinCampaign,
+    openPicker: openPicker,
+    active: () => active,
+    onLogin: onLogin,
+    onLogout: onLogout
   };
 
   if (window.currentUser) onLogin();
