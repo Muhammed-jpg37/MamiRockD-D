@@ -369,6 +369,201 @@
     }).catch((err) => showPickerMessage(err.message || String(err), true));
   }
 
+  /* ---------- Managing a campaign (its DMs) ---------- */
+  // These only shape the UI: without Firebase Auth the database can't check who is a DM.
+
+  function renewInvite(campId) {
+    return window.fbCampaignGet('campaigns/' + campId + '/inviteCode').then((old) =>
+      freeInviteCode().then((code) => {
+        const patch = {};
+        if (old) patch['invites/' + old] = null;
+        patch['invites/' + code] = campId;
+        patch['campaigns/' + campId + '/inviteCode'] = code;
+        return window.fbCampaignUpdate(patch).then(() => {
+          if (active && active.id === campId) { active.inviteCode = code; window.activeCampaign = Object.assign({}, active); }
+          return code;
+        });
+      }));
+  }
+
+  function renameCampaign(campId, name) {
+    name = String(name || '').trim().slice(0, 60);
+    if (!name) return Promise.reject(new Error('Give the campaign a name'));
+    return window.fbCampaignUpdate({ ['campaigns/' + campId + '/name']: name }).then(() => {
+      if (active && active.id === campId) { active.name = name; window.activeCampaign = Object.assign({}, active); renderChip(); }
+    });
+  }
+
+  function setMemberRole(campId, nick, role) {
+    return window.fbCampaignUpdate({ ['campaigns/' + campId + '/members/' + nick + '/role']: role === 'dm' ? 'dm' : 'player' });
+  }
+
+  // Removing someone also renews the invite code, so the old link can't bring them back.
+  function removeMember(campId, nick, opts) {
+    const patch = {};
+    patch['campaigns/' + campId + '/members/' + nick] = null;
+    patch['users/' + nick + '/campaigns/' + campId] = null;
+    return window.fbCampaignUpdate(patch).then(() => (opts && opts.keepCode ? null : renewInvite(campId)));
+  }
+
+  // Deletes the campaign, its invite and its VTT table. Characters and their sheets are kept.
+  function deleteCampaign(campId) {
+    return window.fbCampaignGet('campaigns/' + campId).then((c) => {
+      if (!c) return;
+      const patch = {};
+      patch['campaigns/' + campId] = null;
+      if (c.inviteCode) patch['invites/' + c.inviteCode] = null;
+      Object.keys(c.members || {}).forEach((nick) => { patch['users/' + nick + '/campaigns/' + campId] = null; });
+      return window.fbCampaignUpdate(patch).then(() => {
+        if (typeof window.fbSaveVtt === 'function') return window.fbSaveVtt(campId, null);
+      });
+    });
+  }
+
+  // A DM created a player account (quick create or the forge): make it a member of the
+  // active campaign, playing the character that came with the account.
+  function addCreatedPlayer(nickname) {
+    const nick = String(nickname || '').toLowerCase();
+    if (!nick || !active || active.role !== 'dm') return Promise.resolve();
+    const now = Date.now();
+    const patch = {};
+    patch['characters/' + nick] = { name: String(nickname), owner: nick, createdAt: now };
+    patch['users/' + nick + '/characters/' + nick] = true;
+    patch['users/' + nick + '/campaigns/' + active.id] = true;
+    patch['campaigns/' + active.id + '/members/' + nick] = { role: 'player', character: nick, joinedAt: now };
+    return window.fbCampaignUpdate(patch).catch((err) => console.warn('Could not add the new player to the campaign:', err));
+  }
+
+  function openManage(campId) {
+    const nick = myKey();
+    if (!nick) return Promise.resolve();
+    injectStyles();
+    return window.fbCampaignGet('campaigns/' + campId).then((c) => {
+      if (!c) { showPickerMessage('That campaign no longer exists.', true); return; }
+      const me = c.members && c.members[nick];
+      if (!me || me.role !== 'dm') { showPickerMessage('Only the campaign\'s DMs can manage it.', true); return; }
+      const isOwner = c.owner === nick;
+      const nicks = Object.keys(c.members || {});
+      return Promise.all(nicks.map((n) => {
+        const ch = c.members[n].character;
+        return ch ? window.fbCampaignGet('characters/' + ch).then((r) => [n, (r && r.name) || ch]) : Promise.resolve([n, null]);
+      })).then((pairs) => {
+        const names = Object.fromEntries(pairs);
+        closePicker();
+        const wrap = el('div');
+        wrap.id = 'campaign-picker';
+        const card = el('div', 'auth-card');
+        wrap.appendChild(card);
+
+        const back = el('button', 'btn ghost small camp-close', '← Back');
+        back.type = 'button';
+        back.onclick = () => openPicker();
+        card.appendChild(back);
+
+        const head = el('div', 'auth-header');
+        head.appendChild(el('div', 'auth-emblem', '⚙️'));
+        head.appendChild(el('h2', 'auth-title', 'MANAGE'));
+        head.appendChild(el('div', 'auth-subtitle', c.name + (isOwner ? ' · you own it' : ' · you are a co-DM')));
+        card.appendChild(head);
+
+        const reopen = (msg, isError) => openManage(campId).then(() => { if (msg) showPickerMessage(msg, isError); });
+        const fail = (err) => showPickerMessage(err.message || String(err), true);
+
+        card.appendChild(el('div', 'camp-section', 'Name'));
+        const nameForm = form('Campaign name', 'Rename', (v) => renameCampaign(campId, v).then(() => reopen('Renamed.'), fail), 60);
+        nameForm.querySelector('input').value = c.name || '';
+        card.appendChild(nameForm);
+
+        card.appendChild(el('div', 'camp-section', 'Invite'));
+        const inv = el('div', 'camp-row camp-block');
+        const codeBox = el('div', 'camp-code', c.inviteCode || '—');
+        const copy = el('button', 'btn small', '🔗 Copy link');
+        copy.type = 'button';
+        copy.onclick = () => copyText(inviteLink(c.inviteCode)).then(
+          () => showPickerMessage('Invite link copied: ' + inviteLink(c.inviteCode)),
+          () => showPickerMessage('Invite link: ' + inviteLink(c.inviteCode)));
+        const renew = el('button', 'btn ghost small', '↻ New code');
+        renew.type = 'button';
+        renew.title = 'Make a new code; the old code and link stop working';
+        renew.onclick = () => renewInvite(campId).then((code) => reopen('New code ' + code + '. The old one no longer works.'), fail);
+        inv.append(codeBox, copy, renew);
+        card.appendChild(inv);
+
+        card.appendChild(el('div', 'camp-section', 'Members (' + nicks.length + ')'));
+        const list = el('div', 'camp-list');
+        nicks.sort((a, b) => {
+          const ra = a === c.owner ? 0 : c.members[a].role === 'dm' ? 1 : 2;
+          const rb = b === c.owner ? 0 : c.members[b].role === 'dm' ? 1 : 2;
+          return ra - rb || (names[a] || a).localeCompare(names[b] || b);
+        }).forEach((n) => {
+          const m = c.members[n];
+          const row = el('div', 'camp-member');
+          const who = el('div', 'camp-member-who');
+          who.appendChild(el('span', 'camp-name', names[n] || n));
+          const roleTxt = n === c.owner ? '👑 Owner' : m.role === 'dm' ? '👑 Co-DM' : '👤 Player';
+          who.appendChild(el('span', 'camp-meta', roleTxt + ' · ' + n + (m.role !== 'dm' && !m.character ? ' · no character yet' : '')));
+          row.appendChild(who);
+          const acts = el('div', 'camp-member-acts');
+          const act = (label, title, fn) => {
+            const b = el('button', 'btn ghost small', label);
+            b.type = 'button';
+            b.title = title;
+            b.onclick = fn;
+            acts.appendChild(b);
+          };
+          if (n !== c.owner) {
+            if (isOwner && m.role !== 'dm') act('⬆ Co-DM', 'Make ' + n + ' a co-DM', () => setMemberRole(campId, n, 'dm').then(() => reopen(n + ' is now a co-DM.'), fail));
+            if (isOwner && m.role === 'dm') act('⬇ Player', 'Make ' + n + ' a player again', () => setMemberRole(campId, n, 'player').then(() => reopen(n + ' is a player again.'), fail));
+            if (n === nick) {
+              act('Leave', 'Leave this campaign', () => {
+                if (!confirm('Leave "' + c.name + '"?')) return;
+                removeMember(campId, n, { keepCode: true }).then(() => openPicker(), fail);
+              });
+            } else if (isOwner || m.role !== 'dm') {
+              act('Remove', 'Remove ' + n + ' from the campaign', () => {
+                if (!confirm('Remove ' + (names[n] || n) + ' (' + n + ') from "' + c.name + '"?\nThe invite code is renewed so the old link stops working.')) return;
+                removeMember(campId, n).then((code) => reopen('Removed ' + n + '. New invite code: ' + code + '.'), fail);
+              });
+            }
+          }
+          row.appendChild(acts);
+          list.appendChild(row);
+        });
+        card.appendChild(list);
+
+        if (isOwner) {
+          card.appendChild(el('div', 'camp-section', 'Danger zone'));
+          const del = el('button', 'btn ghost small camp-danger', '🗑 Delete campaign');
+          del.type = 'button';
+          del.onclick = () => {
+            const typed = prompt('This deletes "' + c.name + '", its members list, invite and VTT table for everyone. Characters are kept.\n\nType the campaign name to confirm:');
+            if (typed === null) return;
+            if (typed.trim() !== String(c.name).trim()) { showPickerMessage('The name did not match; nothing was deleted.', true); return; }
+            deleteCampaign(campId).then(() => {
+              if (active && active.id === campId) leaveActive();
+              openPicker().then(() => showPickerMessage('Deleted "' + c.name + '".'));
+            }, fail);
+          };
+          card.appendChild(del);
+        }
+
+        card.appendChild(el('div', 'auth-msg'));
+        document.body.appendChild(wrap);
+      });
+    });
+  }
+
+  // The active campaign is gone for this account (left, removed or deleted).
+  function leaveActive() {
+    const nick = myKey();
+    active = null;
+    window.activeCampaign = null;
+    try { if (nick) localStorage.removeItem(ACTIVE_KEY_PREFIX + nick); } catch (e) { }
+    watchMembers(null);
+    renderChip();
+    window.dispatchEvent(new CustomEvent('campaignchange', { detail: null }));
+  }
+
   /* ---------- Members of the active campaign (live) ---------- */
 
   let members = {};          // nick -> { role, character, joinedAt }
@@ -382,6 +577,22 @@
     if (!campId || typeof window.fbCampaignListen !== 'function') return;
     membersUnsub = window.fbCampaignListen('campaigns/' + campId + '/members', (m) => {
       members = m || {};
+      if (active && active.id === campId) {
+        const me = members[myKey()];
+        if (!me) {
+          // Removed by a DM, left in another tab, or the campaign was deleted.
+          const name = active.name;
+          leaveActive();
+          openPicker().then(() => showPickerMessage('You are no longer in "' + name + '".', true));
+          return;
+        }
+        const role = me.role === 'dm' ? 'dm' : 'player';
+        if (role !== active.role) {
+          // Promoted to co-DM or made a player again: switch the session over.
+          activate(Object.assign({}, active, { role: role, character: me.character || null }));
+          return;
+        }
+      }
       const missing = Object.values(members).map((x) => x && x.character).filter((id) => id && !charNames[id]);
       Promise.all(missing.map((id) => window.fbCampaignGet('characters/' + id).then((c) => { charNames[id] = (c && c.name) || id; })))
         .catch(() => {})
@@ -438,6 +649,13 @@
       .camp-form .auth-input { flex: 1; min-width: 0; padding-left: 12px; }
       .camp-form .btn { white-space: nowrap; }
       .camp-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 6px; }
+      .camp-block { margin-bottom: 14px; }
+      .camp-code { flex: 1; font-family: var(--font-mono); font-size: 20px; letter-spacing: 4px; color: var(--accent-strong); padding: 6px 10px; background: var(--surface-inset); border: 1px solid var(--border); border-radius: var(--radius); text-align: center; }
+      .camp-member { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); }
+      .camp-member-who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+      .camp-member-acts { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+      .camp-member-acts .btn { padding: 2px 6px; }
+      .camp-danger { color: var(--danger-strong); border-color: color-mix(in srgb, var(--danger) 60%, transparent); }
       .camp-chip { padding: 3px 8px; font-size: 11px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     `;
     document.head.appendChild(style);
@@ -506,6 +724,13 @@
           pickChar.title = 'Change the character you play here';
           pickChar.onclick = () => openCharacterChooser(c);
           row.appendChild(pickChar);
+        }
+        if (c.role === 'dm') {
+          const manage = el('button', 'btn ghost small', '⚙');
+          manage.type = 'button';
+          manage.title = 'Manage: name, invite code, members';
+          manage.onclick = () => openManage(c.id);
+          row.appendChild(manage);
         }
         if (c.role === 'dm' && c.inviteCode) {
           const share = el('button', 'btn ghost small', '🔗 ' + c.inviteCode);
@@ -680,6 +905,13 @@
     joinCampaign: joinCampaign,
     openPicker: openPicker,
     active: () => active,
+    openManage: openManage,
+    renewInvite: renewInvite,
+    renameCampaign: renameCampaign,
+    setMemberRole: setMemberRole,
+    removeMember: removeMember,
+    deleteCampaign: deleteCampaign,
+    addCreatedPlayer: addCreatedPlayer,
     memberList: memberList,
     characterOf: characterOf,
     characterName: characterName,

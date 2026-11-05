@@ -8819,6 +8819,7 @@
       if (onDone) {
         onDone(doneId);
       } else if (forgeIsDmCreation) {
+        if (window.Campaigns) window.Campaigns.addCreatedPlayer(nickname);
         populateDmPlayerDropdown();
         if (confirm('Player "' + nickname + '" forged! Switch to inspect their sheet now?')) {
           dmSwitchActivePlayer(nickname);
@@ -9298,6 +9299,8 @@
         window.fbSaveInventory(nickname, pState);
       }
 
+      // ...and into the DM's active campaign (the dropdown refreshes when the member list does)
+      if (window.Campaigns) window.Campaigns.addCreatedPlayer(nickname);
       populateDmPlayerDropdown();
       closeDmCreatePlayerModal();
 
