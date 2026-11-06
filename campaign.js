@@ -237,7 +237,7 @@
           name: ch.name,
           legacy: ch.id === nick,          // the account's own first character, used at login
           builder: !!build,
-          portrait: build && build.details ? build.details.portrait || null : null,
+          portrait: (build && build.details && build.details.portrait) || (sheet && sheet.portrait) || null,
           summary: [cs.level ? 'Lvl ' + cs.level : '', cs.characterClass || '', cs.subrace || cs.species || ''].filter(Boolean).join(' · '),
           campaigns: camps.filter((c) => c.character === ch.id).map((c) => c.name)
         };
@@ -295,6 +295,42 @@
     });
   }
 
+  // Lets the owner pick a picture; it is centre-cropped to a 256px square and becomes the VTT token too.
+  function pickCharacterPortrait(id) {
+    return new Promise((resolve, reject) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          const side = Math.min(img.naturalWidth, img.naturalHeight);
+          const c = document.createElement('canvas');
+          c.width = c.height = Math.min(256, side);
+          c.getContext('2d').drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, c.width, c.height);
+          resolve(setCharacterPortrait(id, c.toDataURL('image/webp', 0.85)));
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read that picture')); };
+        img.src = url;
+      };
+      input.click();
+    });
+  }
+
+  function setCharacterPortrait(id, dataUrl) {
+    const nick = myKey();
+    if (!nick) return Promise.reject(new Error('Log in first'));
+    if (typeof window.fbSetCharacterPortrait !== 'function') return Promise.reject(new Error('Not connected yet'));
+    return window.fbCampaignGet('characters/' + id).then((c) => {
+      if (!c || c.owner !== nick) throw new Error('That is not your character');
+      return window.fbSetCharacterPortrait(id, dataUrl);
+    });
+  }
+
   function openCharacters(message, isError) {
     const nick = myKey();
     if (!nick) return Promise.resolve();
@@ -338,6 +374,8 @@
           who.appendChild(f);
           f.querySelector('input').focus();
         });
+        act('🖼', ch.portrait ? 'Change portrait (also the map token)' : 'Add a portrait (also the map token)', () => pickCharacterPortrait(ch.id).then(() => openCharacters('Portrait saved for "' + ch.name + '".'), fail));
+        if (ch.portrait) act('🚫', 'Remove portrait', () => setCharacterPortrait(ch.id, null).then(() => openCharacters('Portrait removed.'), fail));
         act('📄', 'Make a copy', () => copyCharacter(ch.id).then(() => openCharacters('Copied "' + ch.name + '".'), fail));
         act('🗑', ch.legacy ? "Your account's own character can't be deleted" : 'Delete', () => {
           if (ch.legacy) { say("This is your account's own character (it opens when you log in), so it can't be deleted.", true); return; }

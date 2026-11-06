@@ -14561,6 +14561,28 @@
       });
     };
 
+    // A character's portrait: builder sheets keep it in build/details/portrait, older sheets in /portrait.
+    // Calls callback(dataUrl | null) now and on every change. Returns an unsubscribe function.
+    window.fbListenToCharacterPortrait = function(key, callback) {
+      if (!db || !sheetKeyOk(key) || typeof callback !== 'function') return () => {};
+      const base = 'inventories/' + key.toLowerCase();
+      let fromBuild = null, plain = null;
+      const emit = () => callback(fromBuild || plain || null);
+      const u1 = onValue(ref(db, base + '/build/details/portrait'), (s) => { fromBuild = s.val(); emit(); });
+      const u2 = onValue(ref(db, base + '/portrait'), (s) => { plain = s.val(); emit(); });
+      return () => { u1(); u2(); };
+    };
+
+    window.fbSetCharacterPortrait = function(key, dataUrl) {
+      if (!db || !sheetKeyOk(key)) return Promise.reject(new Error('Bad character id'));
+      if (dataUrl && (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/'))) return Promise.reject(new Error('That is not a picture'));
+      if (dataUrl && dataUrl.length > 200000) return Promise.reject(new Error('That picture is too large'));
+      const path = 'inventories/' + key.toLowerCase();
+      return get(ref(db, path + '/build')).then((b) => b.exists()
+        ? update(ref(db, path), { 'build/details/portrait': dataUrl || null, portrait: null })
+        : update(ref(db, path), { portrait: dataUrl || null }));
+    };
+
     window.fbDeleteCharacterSheet = function(key) {
       if (!db || !sheetKeyOk(key)) return Promise.reject(new Error('Bad character id'));
       return Promise.all([

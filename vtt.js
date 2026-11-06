@@ -220,6 +220,7 @@
         </div>
         <div class="vtt-group vtt-dm-only">
           <button class="btn small ghost" data-act="add-token">➕ Add Token</button>
+          <button class="btn small ghost" data-act="add-party" title="A token for each player in this campaign who is not on the map yet">👥 Party</button>
           <button class="btn small ghost" data-act="catalog" title="Ready-made maps and tokens">📚 Catalog</button>
           <input type="file" accept="image/*" data-el="token-file" hidden>
         </div>
@@ -291,6 +292,7 @@
       if (act === 'load-map') el('map-file').click();
       else if (act === 'map-url') promptMapUrl();
       else if (act === 'add-token') openAddTokenForm(btn);
+      else if (act === 'add-party') addPartyTokens();
       else if (act === 'zoom-in') zoomAt(canvasCenter(), 1.25);
       else if (act === 'zoom-out') zoomAt(canvasCenter(), 0.8);
       else if (act === 'fit') fitView();
@@ -1036,6 +1038,18 @@
     return { x: x, y: y };
   }
 
+  // One token per player of the active campaign who has none yet, named after their character.
+  // No picture is set: the token shows the character's portrait (tokenImage).
+  function addPartyTokens() {
+    if (!isDm()) return;
+    const members = window.Campaigns && typeof window.Campaigns.memberList === 'function' ? window.Campaigns.memberList() : [];
+    const onMap = new Set(Object.values(vtt.tokens).map((t) => t.owner).filter(Boolean));
+    const missing = members.filter((m) => m.role === 'player' && m.character && !onMap.has(m.nick));
+    if (!missing.length) { flashStatus(members.some((m) => m.role === 'player') ? 'Every player already has a token' : 'No players in this campaign yet'); return; }
+    missing.forEach((m, i) => addToken({ name: m.characterName || m.nick, owner: m.nick, color: TOKEN_COLORS[(Object.keys(vtt.tokens).length + i) % TOKEN_COLORS.length] }));
+    flashStatus('Added ' + missing.length + ' player token' + (missing.length > 1 ? 's' : ''));
+  }
+
   function removeToken(id) {
     if (!isDm()) return;
     delete vtt.tokens[id];
@@ -1272,19 +1286,31 @@
   function syncHpWatchers() {
     if (typeof window.fbListenToVttHp !== 'function') return;
     const owners = new Set(Object.values(vtt.tokens).map((t) => t.owner).filter(Boolean));
+    // Each owner's character sheet gives the token its HP bar and, without a picture of its own, its portrait.
+    const stop = (e) => { if (e.unsub) e.unsub(); if (e.portraitUnsub) e.portraitUnsub(); };
     owners.forEach((key) => {
       const sheet = hpSheetOf(key);
       if (hpWatch[key] && hpWatch[key].sheet === sheet) return;
-      if (hpWatch[key] && hpWatch[key].unsub) hpWatch[key].unsub();   // they switched character
-      const entry = { unsub: null, hp: null, sheet: sheet };
+      if (hpWatch[key]) stop(hpWatch[key]);   // they switched character
+      const entry = { unsub: null, hp: null, sheet: sheet, portrait: null, portraitUnsub: null };
       hpWatch[key] = entry;
       entry.unsub = window.fbListenToVttHp(sheet, (hp) => { entry.hp = hp; requestDraw(); });
+      if (typeof window.fbListenToCharacterPortrait === 'function') {
+        entry.portraitUnsub = window.fbListenToCharacterPortrait(sheet, (url) => { entry.portrait = url; requestDraw(); });
+      }
     });
     Object.keys(hpWatch).forEach((key) => {
       if (owners.has(key)) return;
-      hpWatch[key].unsub && hpWatch[key].unsub();
+      stop(hpWatch[key]);
       delete hpWatch[key];
     });
+  }
+
+  // The picture a token shows: its own, else its owner's character portrait.
+  function tokenImage(t) {
+    if (t.img) return t.img;
+    const w = t.owner && hpWatch[t.owner];
+    return (w && w.portrait) || null;
   }
 
   // { current, max, temp } to show under a token, or null when this viewer shouldn't see one.
@@ -2099,7 +2125,8 @@
     ctx.fill();
     ctx.restore();
 
-    const img = t.img ? getImage(t.img) : null;
+    const imgUrl = tokenImage(t);
+    const img = imgUrl ? getImage(imgUrl) : null;
     if (img && img.complete && img.naturalWidth) {
       ctx.save();
       ctx.beginPath();
