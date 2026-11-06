@@ -88,8 +88,8 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 6. Spells tab reads the new data, ruleset and book filters: done.
 7. Saved spells refreshed from the catalog (`spell-saved.js`): done.
 8. Class rules in `rules/srd5.js` (on each class's `spellcasting`: `cantrips`, `known`, `prepared`, `replaceOnLevelUp`, `ritual`, `spellbook`, `mysticArcanum`, `magicalSecrets`; Lore's `additionalMagicalSecrets`): done. Data only; the engine starts using it in step 10.
-9. Subclass and race spells (Domain, Oath, Circle, Fiend, High Elf, Tiefling). **Next.**
-10. Engine: spell picks as pending choices, counts, highest level, multiclass lists.
+9. Subclass and race spells in `rules/srd5.js`: Life `alwaysPrepared`, Devotion `alwaysPrepared`, Land `bonusCantrips` + `circleSpells` (8 lands), Fiend `expandedSpells`, High Elf and Tiefling `spells` (the old unused `cantrip: 'wizard'` is replaced): done. Data only; no tests yet (the user wants tests at the end, step 14).
+10. Engine: spell picks as pending choices, counts, highest level, multiclass lists. **Next.** Also needs a build choice for the Circle of the Land's land.
 11. Builder UI: a Spells step in the wizard and in level up, written to the Spells tab.
 12. Homebrew spells in the campaign homebrew editor.
 13. Licence switch: a setting that hides `license: none` spells.

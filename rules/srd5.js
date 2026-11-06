@@ -45,7 +45,23 @@
      mysticArcanum        warlock: { classLevel: spellLevel }, one spell each, once per
                           long rest, not counted in spells known
      magicalSecrets       bard: { classLevel: count } spells from any class's list; they
-                          count as bard spells and are part of `known` */
+                          count as bard spells and are part of `known`
+
+     Spells that come from a subclass or a species (spell ids from rules/srd5-spells.js):
+     alwaysPrepared       subclass { classLevel: [ids] }: Domain and Oath spells. Always
+                          prepared, never counted in the number prepared, cast as spells
+                          of that class
+     circleSpells         Circle of the Land: { land: { name, spells: { classLevel: [ids] } } };
+                          the druid picks one land when taking the circle, then works
+                          like alwaysPrepared
+     bonusCantrips        subclass { classLevel: count }: extra cantrips from the class
+                          list, on top of the class table
+     expandedSpells       warlock patron { spellLevel: [ids] }: added to the warlock spell
+                          list to choose from as spells known; not granted
+     species/subrace `spells`: { ability, cantrips: { choose, from: classId },
+                          innate: [{ level, spell, castAt?, per? }] } — `level` is the
+                          character level the spell arrives at; `per: 'long rest'` means
+                          once per long rest without a slot, at `castAt` spell level */
 
   const SRD5 = {
     id: 'srd5.1',
@@ -173,7 +189,13 @@
           17: ['Destroy Undead (CR 4)'], 18: ['Channel Divinity (3/rest)'], 20: ['Divine Intervention Improvement']
         },
         subclasses: {
-          life: { name: 'Life Domain', armor: 'Heavy Armor', features: { 1: ['Bonus Proficiency', 'Disciple of Life'], 2: ['Channel Divinity: Preserve Life'], 6: ['Blessed Healer'], 8: ['Divine Strike'], 17: ['Supreme Healing'] } }
+          life: {
+            name: 'Life Domain', armor: 'Heavy Armor',
+            alwaysPrepared: {
+              1: ['bless', 'cure_wounds'], 3: ['lesser_restoration', 'spiritual_weapon'], 5: ['beacon_of_hope', 'revivify'],
+              7: ['death_ward', 'guardian_of_faith'], 9: ['mass_cure_wounds', 'raise_dead']
+            },
+            features: { 1: ['Bonus Proficiency', 'Disciple of Life'], 2: ['Channel Divinity: Preserve Life'], 6: ['Blessed Healer'], 8: ['Divine Strike'], 17: ['Supreme Healing'] } }
         }
       },
       druid: {
@@ -195,7 +217,20 @@
           18: ['Timeless Body', 'Beast Spells'], 20: ['Archdruid']
         },
         subclasses: {
-          land: { name: 'Circle of the Land', features: { 2: ['Bonus Cantrip', 'Natural Recovery'], 3: ['Circle Spells'], 6: ["Land's Stride"], 10: ["Nature's Ward"], 14: ["Nature's Sanctuary"] } }
+          land: {
+            name: 'Circle of the Land',
+            bonusCantrips: { 2: 1 },
+            circleSpells: {
+              arctic: { name: 'Arctic', spells: { 3: ['hold_person', 'spike_growth'], 5: ['sleet_storm', 'slow'], 7: ['freedom_of_movement', 'ice_storm'], 9: ['commune_with_nature', 'cone_of_cold'] } },
+              coast: { name: 'Coast', spells: { 3: ['mirror_image', 'misty_step'], 5: ['water_breathing', 'water_walk'], 7: ['control_water', 'freedom_of_movement'], 9: ['conjure_elemental', 'scrying'] } },
+              desert: { name: 'Desert', spells: { 3: ['blur', 'silence'], 5: ['create_food_and_water', 'protection_from_energy'], 7: ['blight', 'hallucinatory_terrain'], 9: ['insect_plague', 'wall_of_stone'] } },
+              forest: { name: 'Forest', spells: { 3: ['barkskin', 'spider_climb'], 5: ['call_lightning', 'plant_growth'], 7: ['divination', 'freedom_of_movement'], 9: ['commune_with_nature', 'tree_stride'] } },
+              grassland: { name: 'Grassland', spells: { 3: ['invisibility', 'pass_without_trace'], 5: ['daylight', 'haste'], 7: ['divination', 'freedom_of_movement'], 9: ['dream', 'insect_plague'] } },
+              mountain: { name: 'Mountain', spells: { 3: ['spider_climb', 'spike_growth'], 5: ['lightning_bolt', 'meld_into_stone'], 7: ['stone_shape', 'stoneskin'], 9: ['passwall', 'wall_of_stone'] } },
+              swamp: { name: 'Swamp', spells: { 3: ['acid_arrow', 'darkness'], 5: ['water_walk', 'stinking_cloud'], 7: ['freedom_of_movement', 'locate_creature'], 9: ['insect_plague', 'scrying'] } },
+              underdark: { name: 'Underdark', spells: { 3: ['spider_climb', 'web'], 5: ['gaseous_form', 'stinking_cloud'], 7: ['greater_invisibility', 'stone_shape'], 9: ['cloudkill', 'insect_plague'] } }
+            },
+            features: { 2: ['Bonus Cantrip', 'Natural Recovery'], 3: ['Circle Spells'], 6: ["Land's Stride"], 10: ["Nature's Ward"], 14: ["Nature's Sanctuary"] } }
         }
       },
       fighter: {
@@ -256,7 +291,13 @@
           5: ['Extra Attack'], 6: ['Aura of Protection'], 10: ['Aura of Courage'], 11: ['Improved Divine Smite'], 14: ['Cleansing Touch'], 18: ['Aura Improvements']
         },
         subclasses: {
-          devotion: { name: 'Oath of Devotion', features: { 3: ['Oath Spells', 'Channel Divinity'], 7: ['Aura of Devotion'], 15: ['Purity of Spirit'], 20: ['Holy Nimbus'] } }
+          devotion: {
+            name: 'Oath of Devotion',
+            alwaysPrepared: {
+              3: ['protection_from_evil_and_good', 'sanctuary'], 5: ['lesser_restoration', 'zone_of_truth'], 9: ['beacon_of_hope', 'dispel_magic'],
+              13: ['freedom_of_movement', 'guardian_of_faith'], 17: ['commune', 'flame_strike']
+            },
+            features: { 3: ['Oath Spells', 'Channel Divinity'], 7: ['Aura of Devotion'], 15: ['Purity of Spirit'], 20: ['Holy Nimbus'] } }
         }
       },
       ranger: {
@@ -348,7 +389,13 @@
           13: ['Mystic Arcanum (7th level)'], 15: ['Mystic Arcanum (8th level)'], 17: ['Mystic Arcanum (9th level)'], 20: ['Eldritch Master']
         },
         subclasses: {
-          fiend: { name: 'The Fiend', features: { 1: ["Dark One's Blessing"], 6: ["Dark One's Own Luck"], 10: ['Fiendish Resilience'], 14: ['Hurl Through Hell'] } }
+          fiend: {
+            name: 'The Fiend',
+            expandedSpells: {
+              1: ['burning_hands', 'command'], 2: ['blindness_deafness', 'scorching_ray'], 3: ['fireball', 'stinking_cloud'],
+              4: ['fire_shield', 'wall_of_fire'], 5: ['flame_strike', 'hallow']
+            },
+            features: { 1: ["Dark One's Blessing"], 6: ["Dark One's Own Luck"], 10: ['Fiendish Resilience'], 14: ['Hurl Through Hell'] } }
         }
       },
       wizard: {
@@ -386,7 +433,9 @@
         languages: ['Common', 'Elvish'], skills: ['perception'],
         traits: ['Darkvision', 'Keen Senses', 'Fey Ancestry', 'Trance'],
         subraces: {
-          high: { name: 'High Elf', abilityBonuses: { int: 1 }, weapons: 'Longsword, Shortsword, Shortbow, Longbow', extraLanguages: 1, cantrip: 'wizard', traits: ['Elf Weapon Training', 'Cantrip', 'Extra Language'] }
+          high: { name: 'High Elf', abilityBonuses: { int: 1 }, weapons: 'Longsword, Shortsword, Shortbow, Longbow', extraLanguages: 1,
+            spells: { ability: 'int', cantrips: { choose: 1, from: 'wizard' } },
+            traits: ['Elf Weapon Training', 'Cantrip', 'Extra Language'] }
         }
       },
       halfling: {
@@ -434,6 +483,15 @@
       tiefling: {
         name: 'Tiefling', size: 'Medium', speed: 30, abilityBonuses: { cha: 2, int: 1 }, senses: 'Darkvision 60 ft',
         languages: ['Common', 'Infernal'], resistances: 'Fire',
+        // Infernal Legacy
+        spells: {
+          ability: 'cha',
+          innate: [
+            { level: 1, spell: 'thaumaturgy' },
+            { level: 3, spell: 'hellish_rebuke', castAt: 2, per: 'long rest' },
+            { level: 5, spell: 'darkness', castAt: 2, per: 'long rest' }
+          ]
+        },
         traits: ['Darkvision', 'Hellish Resistance', 'Infernal Legacy']
       }
     },
