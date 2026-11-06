@@ -2,6 +2,8 @@
 
 State on 2026-11-06 (evening), for the next working session. Start with "Where things stand", then "Next plan" at the end of the Next steps section.
 
+**Also read `DIFFERENCES.md`** (Turkish): how the whole site, not just the character builder, compares with D&D Beyond (and its Maps VTT), Roll20, Foundry VTT and Owlbear Rodeo, including differences in how things work (accounts, permissions, data and syncing, dice). It ends with proposed work beyond the builder plan: E (table: dice expressions and hidden rolls, conditions, applying damage, SRD monsters and an encounter builder, several scenes, map drawing and a DM layer, walls and vision, handouts), F (saving sheets field by field instead of whole-object `set()`, campaign backup, undo, copying homebrew and maps between campaigns), G (a searchable SRD rules tab, SRD items), H (= phase D here). Each claim there is marked "(arandı)" (searched that day, sources listed) or "(genel bilgi)" (general knowledge, not re-checked); re-check before building on one. Ask the user which phase to start; the builder plan (A–D) was the default until they choose.
+
 ## Where things stand
 
 | Branch | State |
