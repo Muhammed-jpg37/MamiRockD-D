@@ -58,6 +58,9 @@
     })();
   </script>
   <script src="spell-catalog.js" defer></script>
+  <script src="rules/srd5.js" defer></script>
+  <script src="character-engine.js" defer></script>
+  <script src="character-builder.js" defer></script>
   <script src="campaign.js" defer></script>
   <script src="vtt-catalog.js" defer></script>
   <script src="vtt.js" defer></script>
@@ -8454,7 +8457,7 @@
     let forgeCharacterId = null;
     let forgeOnDone = null;
 
-    function openCharacterForgeModal(options = {}) {
+    function openLegacyForgeModal(options = {}) {
       forgeNickname = options.nickname || (activeInventoryUser || (currentUser ? currentUser.nickname : 'Adventurer'));
       forgePassword = options.password || '123';
       forgeRole = options.role || 'player';
@@ -8841,6 +8844,233 @@
     window.forgeResetClassStats = forgeResetClassStats;
     window.toggleForgeSkill = toggleForgeSkill;
     window.submitCharacterForge = submitCharacterForge;
+    window.openLegacyForgeModal = openLegacyForgeModal;
+
+    /* ========================================================
+       CHARACTER BUILDER HOOK-UP
+       Every "forge" entry point (registration, a campaign's new
+       character, the DM's new player, the sheet's ⚔ Forge button)
+       calls openCharacterForgeModal(). It now opens the new builder
+       (character-builder.js); the old forge stays for sheets made
+       before the builder, and if the builder's files didn't load.
+       ======================================================== */
+    function builderAvailable() {
+      return !!(window.CharacterBuilder && window.CharacterEngine && window.RULES_SRD5);
+    }
+
+    // Campaign homebrew and DM settings plug in here later.
+    function builderRules() { return window.RULES_SRD5; }
+    function builderOpts() { return { allowManual: false, strict: true }; }
+
+    function openCharacterForgeModal(options = {}) {
+      if (!builderAvailable() || options.legacy) return openLegacyForgeModal(options);
+      if (options.isEditMode) {
+        // Sheets made with the old forge have no choices to edit yet.
+        if (!state || !state.build) return openLegacyForgeModal(options);
+        return CharacterBuilder.open({
+          rules: builderRules(), opts: builderOpts(), build: state.build, editing: true,
+          onDone: applyRebuiltCharacter
+        });
+      }
+      const nickname = options.nickname || (activeInventoryUser || (currentUser ? currentUser.nickname : 'Adventurer'));
+      CharacterBuilder.open({
+        rules: builderRules(), opts: builderOpts(), initialName: nickname,
+        onDone: (result) => finishBuiltCharacter(result, options, nickname)
+      });
+    }
+
+    // Like the end of submitCharacterForge(): save the sheet, then register / hand back / log in.
+    function finishBuiltCharacter(result, options, nickname) {
+      const display = result.build.name || nickname;
+      const invKey = options.characterId || nickname;
+      const sheet = sheetFromBuild(result, getDefaultState(display));
+      const persist = Object.assign({}, sheet);
+      if (persist.spellbook) { persist.spellbook = Object.assign({}, persist.spellbook); delete persist.spellbook.catalog; }
+
+      // A new account comes with its first character; an extra character doesn't.
+      if (!options.characterId) {
+        saveStoredAccount({ nickname: nickname, password: options.password || '123', role: options.role || 'player', createdAt: Date.now() });
+      }
+      try { localStorage.setItem(STORAGE_INV_PREFIX + invKey.toLowerCase(), JSON.stringify(persist)); } catch (e) { }
+      if (typeof window.fbSaveInventory === 'function') window.fbSaveInventory(invKey, persist, true);
+
+      if (typeof options.onDone === 'function') {
+        options.onDone(options.characterId, { name: display });
+      } else if (options.isDmCreation) {
+        if (window.Campaigns) window.Campaigns.addCreatedPlayer(nickname);
+        populateDmPlayerDropdown();
+        if (confirm('Player "' + nickname + '" created! Switch to inspect their sheet now?')) dmSwitchActivePlayer(nickname);
+      } else {
+        const accounts = getStoredAccounts();
+        loginUser(accounts[nickname.toLowerCase()] || { nickname: nickname, role: options.role || 'player' });
+        toast('⚔ Welcome, ' + display + '!', 4000);
+      }
+    }
+
+    // A fresh sheet in the existing format from the builder's result.
+    function sheetFromBuild(result, base) {
+      const d = result.derived;
+      const cs = d.characterStats;
+      const build = result.build;
+      const rules = builderRules();
+      const slots = emptySlotMax();
+      Object.keys(d.spellcasting.slots).forEach((l) => { slots[l] = d.spellcasting.slots[l]; });
+      let pactLevel = 0;
+      if (d.spellcasting.pact) { slots[d.spellcasting.pact.level] = (slots[d.spellcasting.pact.level] || 0) + d.spellcasting.pact.slots; pactLevel = d.spellcasting.pact.level; }
+
+      const gear = itemsFromEquipment(result, rules);
+      const characterStats = Object.assign({}, base.characterStats, cs, { ac: acWithArmor(d, gear.items) });
+      const firstClass = build.classes[0] && rules.classes[build.classes[0].id];
+
+      return Object.assign({}, base, {
+        campaign: (build.name || 'Adventurer') + "'s Vault",
+        build: build,
+        characterStats: characterStats,
+        hp: { current: d.hp.max, max: d.hp.max, temp: 0 },
+        items: gear.items,
+        currency: { platinum: 0, gold: gear.gold, electrum: 0, silver: 0, copper: 0 },
+        spellSlots: { max: slots, used: emptySlotMax(), pactLevel: pactLevel, syncedFor: cs.characterClass + ':' + cs.level },
+        spellbook: Object.assign({}, base.spellbook || {}, { classFilter: firstClass ? firstClass.name : '' }),
+        features: { items: featuresFromDerived(d), backgroundInfo: backgroundInfoFrom(build, rules) }
+      });
+    }
+
+    function featuresFromDerived(d) {
+      const titles = { CLASS: ' Features', SPECIES: ' Traits', FEATS: ' Feats', BG: ' Background' };
+      return d.features.map((f, i) => ({
+        id: 'build_' + i + '_' + Date.now().toString(36),
+        category: f.category,
+        title: f.category === 'FEATS' ? 'Feats & Ability Score Improvements' : (f.source + (titles[f.category] || '')),
+        name: f.name,
+        source: f.category === 'CLASS' || f.category === 'FEATS' ? 'Level ' + f.level : f.source,
+        desc: '',
+        fromBuild: true   // replaced when the character is rebuilt; features the player adds stay
+      }));
+    }
+
+    function backgroundInfoFrom(build, rules) {
+      const bg = build.background && rules.backgrounds[build.background];
+      const det = build.details || {};
+      return {
+        name: bg ? bg.name : '',
+        featureName: bg ? bg.feature || '' : '',
+        alignment: det.alignment || '',
+        ideals: det.ideals || '',
+        bonds: det.bonds || '',
+        flaws: det.flaws || '',
+        personality: det.personality || '',
+        backstory: det.backstory || ''
+      };
+    }
+
+    // Starting gear: the builder's text picks become inventory items, using the old forge's
+    // item stats (weapons, armour) where a name matches; anything else becomes plain gear.
+    function itemsFromEquipment(result, rules) {
+      const catalog = {};
+      Object.values(DND_CLASSES).forEach((c) => (c.starterItems || []).forEach((it) => { catalog[it.name.toLowerCase()] = it; }));
+      const NUM = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, ten: 10, twenty: 20 };
+      const items = [];
+      const add = (raw) => {
+        let text = raw.replace(/\(if proficient\)/i, '').trim();
+        if (!text) return;
+        let qty = 1;
+        const m = text.match(/^(a|an|one|two|three|four|five|ten|twenty|\d+)\s+(.*)$/i);
+        if (m) { qty = NUM[m[1].toLowerCase()] || parseInt(m[1], 10) || 1; text = m[2]; }
+        text = text.replace(/^quiver of\s+/i, '');
+        const plain = text.toLowerCase();
+        const singular = plain.replace(/(e?s)$/, '');
+        const hit = catalog[plain] || catalog[singular] || catalog[plain.replace(/s$/, '')];
+        if (hit) {
+          const it = Object.assign({}, hit, { qty: qty });
+          delete it.equipped;
+          items.push(it);
+        } else {
+          items.push({ name: text.charAt(0).toUpperCase() + text.slice(1), category: 'gear', rarity: 'common', qty: qty, weight: 0, value: 0, desc: /^any /i.test(text) ? 'Your choice — ask your DM or swap it for a real item.' : '' });
+        }
+      };
+      let gold = 0;
+      if (result.equipment && result.equipment.mode === 'gold') {
+        gold += Number(result.equipment.gold) || 0;
+      } else {
+        ((result.equipment && result.equipment.picks) || []).forEach((pick) => {
+          pick.split(/,\s*(?:and\s+)?|\s+and\s+/i).forEach(add);
+        });
+      }
+      const bg = result.build.background && rules.backgrounds[result.build.background];
+      if (bg && bg.equipment) {
+        const gp = bg.equipment.match(/(\d+)\s*gp/i);
+        if (gp) gold += parseInt(gp[1], 10);
+        items.push({ name: bg.name + ' gear', category: 'gear', rarity: 'common', qty: 1, weight: 0, value: 0, desc: bg.equipment });
+      }
+      // Wear the first armour and shield, wield the first weapon.
+      const firstOf = (cat) => items.find((it) => it.category === cat);
+      const armor = firstOf('armor'), shield = firstOf('shield'), weapon = firstOf('weapon');
+      if (armor) armor.equipped = 'chest';
+      if (shield) shield.equipped = 'off';
+      if (weapon) weapon.equipped = 'main';
+      items.forEach((it, i) => { it.id = 'starter_' + Date.now().toString(36) + '_' + i; });
+      return { items: items, gold: gold };
+    }
+
+    // AC with the armour the character starts wearing (the engine only knows unarmoured AC).
+    function acWithArmor(d, items) {
+      const dex = d.abilities.mods.dex;
+      const armor = items.find((it) => it.category === 'armor' && it.equipped && it.baseAc);
+      const shield = items.find((it) => it.category === 'shield' && it.equipped);
+      let ac = d.acUnarmored;
+      if (armor) {
+        if (armor.armorType === 'Heavy') ac = armor.baseAc;
+        else if (armor.armorType === 'Medium') ac = armor.baseAc + Math.min(2, dex);
+        else ac = armor.baseAc + dex;
+      }
+      if (shield) ac += shield.acBonus || 2;
+      return ac;
+    }
+
+    // ⚔ Forge on a builder-made sheet: apply the changed choices, keeping gear, spells,
+    // notes, current HP (moved by the change in max), spent slots and features the player added.
+    function applyRebuiltCharacter(result) {
+      const E = window.CharacterEngine;
+      const rules = builderRules();
+      const d = result.derived;
+      const old = state.build ? E.derive(state.build, rules) : null;
+      const cs = state.characterStats || {};
+
+      // Expertise bonuses the old build added are replaced; other custom bonuses stay.
+      const skillBonuses = Object.assign({}, cs.skillCustomBonuses || {});
+      if (old) Object.keys(old.characterStats.skillCustomBonuses).forEach((k) => { delete skillBonuses[k]; });
+      Object.assign(skillBonuses, d.characterStats.skillCustomBonuses);
+
+      state.build = result.build;
+      state.characterStats = Object.assign({}, cs, d.characterStats, {
+        ac: cs.ac,   // armour may have changed by hand; the sheet's AC stays the player's
+        saveCustomBonuses: cs.saveCustomBonuses || {},
+        skillCustomBonuses: skillBonuses
+      });
+
+      const prevMax = (state.hp && state.hp.max) || 0;
+      state.hp = state.hp || { current: 0, max: 0, temp: 0 };
+      state.hp.max = d.hp.max;
+      state.hp.current = Math.max(0, Math.min(d.hp.max, (state.hp.current || 0) + (d.hp.max - prevMax)));
+
+      const slots = emptySlotMax();
+      Object.keys(d.spellcasting.slots).forEach((l) => { slots[l] = d.spellcasting.slots[l]; });
+      let pactLevel = 0;
+      if (d.spellcasting.pact) { slots[d.spellcasting.pact.level] = (slots[d.spellcasting.pact.level] || 0) + d.spellcasting.pact.slots; pactLevel = d.spellcasting.pact.level; }
+      const used = Object.assign(emptySlotMax(), (state.spellSlots && state.spellSlots.used) || {});
+      Object.keys(used).forEach((l) => { used[l] = Math.min(used[l], slots[l] || 0); });
+      state.spellSlots = { max: slots, used: used, pactLevel: pactLevel, syncedFor: d.characterStats.characterClass + ':' + d.characterStats.level };
+
+      state.features = state.features || {};
+      state.features.items = (state.features.items || []).filter((f) => !f.fromBuild).concat(featuresFromDerived(d));
+      state.features.backgroundInfo = Object.assign({}, state.features.backgroundInfo || {}, backgroundInfoFrom(result.build, rules));
+
+      save();
+      renderAll();
+      toast('⚔ ' + (result.build.name || 'Character') + ' updated', 2500);
+    }
+
+    window.sheetFromBuild = sheetFromBuild;
 
     /* ========================================================
        ACCOUNT AUTHENTICATION & DM INVENTORY SWITCHER LOGIC

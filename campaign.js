@@ -207,9 +207,12 @@
       window.openCharacterForgeModal({
         nickname: name,
         characterId: id,
-        onDone: () => {
+        onDone: (doneId, info) => {
+          // The builder may rename the character; its name wins.
+          const finalName = (info && info.name) || name;
+          charNames[id] = finalName;
           const patch = {};
-          patch['characters/' + id] = { name: name, owner: nick, createdAt: Date.now() };
+          patch['characters/' + id] = { name: finalName, owner: nick, createdAt: Date.now() };
           patch['users/' + nick + '/characters/' + id] = true;
           window.fbCampaignUpdate(patch).then(() => resolve(id), reject);
         }

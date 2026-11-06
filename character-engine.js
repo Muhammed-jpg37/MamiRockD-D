@@ -278,7 +278,8 @@
     if (bg && bg.feature) features.push({ name: bg.feature, source: bg.name, level: 1, category: 'BG' });
     Object.keys(choices.fightingStyles || {}).forEach((key) => {
       const st = rules.fightingStyles[choices.fightingStyles[key]];
-      if (st) features.push({ name: 'Fighting Style: ' + st.name, source: key.split(':')[0], level: Number(key.split(':')[1]), category: 'CLASS' });
+      const owner = rules.classes[key.split(':')[0]];
+      if (st) features.push({ name: 'Fighting Style: ' + st.name, source: owner ? owner.name : key.split(':')[0], level: Number(key.split(':')[1]), category: 'CLASS' });
     });
 
     const casting = spellcasting(build, rules, scores, prof);

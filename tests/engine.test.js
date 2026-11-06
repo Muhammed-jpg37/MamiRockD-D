@@ -261,6 +261,8 @@ test('features list: class, subclass, species and background', () => {
   const b = build({ classes: [{ id: 'fighter', level: 3, subclass: 'champion' }] });
   const names = E.derive(b, SRD).features.map((f) => f.name);
   ['Second Wind', 'Action Surge (one use)', 'Improved Critical', 'Shelter of the Faithful', 'Fighting Style: Defense'].forEach((n) => assert.ok(names.includes(n), n));
+  // Grouped under the class's name like the other class features
+  assert.equal(E.derive(b, SRD).features.find((f) => f.name === 'Fighting Style: Defense').source, 'Fighter');
 });
 
 test('homebrew: a DM-made species and subclass work like SRD ones', () => {

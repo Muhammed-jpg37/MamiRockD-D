@@ -9,6 +9,8 @@
      rules,                      // RULES_SRD5, or mergeRules(SRD, campaign homebrew)
      opts: { allowManual, strict },   // campaign settings for validate()
      build,                      // optional: start from an existing build
+     initialName,                // optional: prefilled character name
+     editing,                    // true: changing an existing character (no equipment step)
      onDone(result),             // { build, derived, equipment: { mode, picks, gold } }
      onCancel()
    })
@@ -156,6 +158,9 @@
       rollPool: null
     };
     const b = () => st.build;
+    if (!config.build && config.initialName) b().name = String(config.initialName).slice(0, 40);
+    // An existing character keeps its gear, so there is no equipment step when editing.
+    const steps = config.editing ? STEPS.filter((s) => s.id !== 'equipment') : STEPS;
     b().choices = Object.assign({ skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {} }, b().choices || {});
     b().speciesChoices = b().speciesChoices || {};
     b().backgroundChoices = b().backgroundChoices || {};
@@ -191,7 +196,7 @@
         ])
       ]));
       if (!st.quick) {
-        card.appendChild(h('div', { class: 'cb-steps' }, STEPS.map((s) => {
+        card.appendChild(h('div', { class: 'cb-steps' }, steps.map((s) => {
           const todo = s.id !== 'review' && byStep[s.id] && byStep[s.id].length;
           return h('button', { type: 'button', class: 'cb-step' + (st.step === s.id ? ' on' : '') + (s.id === 'review' ? '' : todo ? ' todo' : ' done'), onclick: () => { st.step = s.id; render(); } },
             [s.label, s.id === 'review' ? null : h('span', { class: 'cb-dot', text: todo ? '●' : '✓' })]);
@@ -201,7 +206,7 @@
       card.appendChild(body);
       (st.quick ? renderQuick : ({ class: renderClass, origin: renderOrigin, abilities: renderAbilities, choices: renderChoices, equipment: renderEquipment, details: renderDetails, review: renderReview })[st.step])(body, v);
 
-      const idx = STEPS.findIndex((s) => s.id === st.step);
+      const idx = steps.findIndex((s) => s.id === st.step);
       const foot = h('div', { class: 'cb-foot' });
       if (st.quick) {
         foot.append(
@@ -210,10 +215,10 @@
         );
       } else {
         foot.append(
-          h('button', { type: 'button', class: 'btn ghost small', text: '← Back', disabled: idx === 0, onclick: () => { st.step = STEPS[Math.max(0, idx - 1)].id; render(); } }),
+          h('button', { type: 'button', class: 'btn ghost small', text: '← Back', disabled: idx === 0, onclick: () => { st.step = steps[Math.max(0, idx - 1)].id; render(); } }),
           st.step === 'review'
-            ? h('button', { type: 'button', class: 'btn small', text: '✨ Create character', disabled: !(v.ok && String(b().name || '').trim()), onclick: finish })
-            : h('button', { type: 'button', class: 'btn small', text: 'Next →', onclick: () => { st.step = STEPS[idx + 1].id; render(); } })
+            ? h('button', { type: 'button', class: 'btn small', text: config.editing ? '💾 Save changes' : '✨ Create character', disabled: !(v.ok && String(b().name || '').trim()), onclick: finish })
+            : h('button', { type: 'button', class: 'btn small', text: 'Next →', onclick: () => { st.step = steps[idx + 1].id; render(); } })
         );
       }
       card.appendChild(foot);
@@ -639,7 +644,7 @@
     function refreshTabs() {
       const { v, byStep } = stepStatus();
       card.querySelectorAll('.cb-step').forEach((el, i) => {
-        const s = STEPS[i];
+        const s = steps[i];
         if (!s || s.id === 'review') return;
         const todo = byStep[s.id] && byStep[s.id].length;
         el.classList.toggle('todo', !!todo);
