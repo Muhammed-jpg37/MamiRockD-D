@@ -381,7 +381,8 @@
     const method = (build.abilities || {}).method;
     const base = (build.abilities || {}).base || {};
     const am = rules.abilityMethods;
-    if (ABILITIES.some((a) => !Number.isInteger(Number(base[a])))) err('abilities-missing', 'Set all six ability scores.', 'abilities.base', true);
+    // null/'' must not pass as 0 (Number(null) === 0)
+    if (ABILITIES.some((a) => base[a] === null || base[a] === undefined || base[a] === '' || !Number.isInteger(Number(base[a])))) err('abilities-missing', 'Set all six ability scores.', 'abilities.base', true);
     else if (method === 'standardArray') {
       const got = ABILITIES.map((a) => Number(base[a])).sort((x, y) => y - x).join(',');
       if (got !== am.standardArray.slice().sort((x, y) => y - x).join(',')) err('abilities-array', 'Use each standard array value (' + am.standardArray.join(', ') + ') once.', 'abilities.base');
@@ -465,7 +466,8 @@
     asiSlots(build, rules).forEach((slot) => {
       const pick = asi[slot.key];
       const label = rules.classes[slot.classId].name + ' level ' + slot.level;
-      if (!pick) { err('asi-missing', 'Choose an Ability Score Improvement or feat (' + label + ').', 'choices.asi.' + slot.key, true); return; }
+      const unfinished = !pick || (pick.type === 'feat' && !pick.feat) || (pick.type !== 'feat' && !Object.keys(pick.abilities || {}).length);
+      if (unfinished) { err('asi-missing', 'Choose an Ability Score Improvement or feat (' + label + ').', 'choices.asi.' + slot.key, true); return; }
       if (pick.type === 'feat') {
         const f = rules.feats[pick.feat];
         if (!f) err('feat-unknown', 'Unknown feat "' + pick.feat + '".', 'choices.asi.' + slot.key);

@@ -93,6 +93,19 @@ test('manual ability scores only when the campaign allows it', () => {
   assert.equal(E.validate(b, SRD, { allowManual: true }).ok, true);
 });
 
+test('an unassigned ability score (null) is missing, not 0', () => {
+  const b = build({ abilities: { method: 'roll', base: { str: 14, dex: 12, con: null, int: 10, wis: 10, cha: 8 } } });
+  assert.ok(E.pendingChoices(b, SRD).some((i) => i.code === 'abilities-missing'));
+});
+
+test('a half-made ASI choice (feat with no feat picked) is still pending', () => {
+  const b = build({ classes: [{ id: 'fighter', level: 4, subclass: 'champion' }],
+    choices: { skills: { fighter: ['athletics', 'perception'] }, subclassSkills: {}, expertise: [], asi: { 'fighter:4': { type: 'feat', feat: null } }, fightingStyles: { 'fighter:1': 'defense' } } });
+  const codes = E.validate(b, SRD).issues.map((i) => i.code);
+  assert.ok(codes.includes('asi-missing'));
+  assert.ok(!codes.includes('feat-unknown'));
+});
+
 test('rolling: 4d6 drop lowest stays in 3..18', () => {
   let i = 0;
   const seq = [0.99, 0.0, 0.5, 0.5];     // 6, 1, 4, 4 -> drop 1 -> 14
