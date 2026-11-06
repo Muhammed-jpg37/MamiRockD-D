@@ -2112,6 +2112,43 @@
       color: var(--accent-2-strong);
     }
 
+    /* Tables inside spell text (Animate Objects, Teleport…) */
+    .spell-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 12px;
+      display: block;
+      overflow-x: auto;
+    }
+
+    .spell-table th,
+    .spell-table td {
+      border: 1px solid var(--border);
+      padding: 4px 6px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .spell-table th {
+      background: var(--well-2);
+      color: var(--accent-2-strong);
+    }
+
+    .spell-text-issue {
+      padding: 6px 8px;
+      border: 1px solid var(--warn);
+      border-radius: 4px;
+      background: color-mix(in srgb, var(--warn) 12%, transparent);
+      font-size: 12px;
+    }
+
+    .spell-aka {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
     .dnd-tags-row {
       display: flex;
       align-items: center;
@@ -9847,7 +9884,6 @@
           '<option value="Sorcerer">Sorcerer</option>' +
           '<option value="Warlock">Warlock</option>' +
           '<option value="Wizard">Wizard</option>' +
-          '<option value="Artificer">Artificer</option>' +
           '</select>' +
           '<select id="spell-level-filter" class="my-spells-filter" data-my-filter="levelFilter" onchange="updateMySpellsLevelFilter(this.value)">' +
           '<option value="">All Levels</option>' +
@@ -9882,7 +9918,8 @@
           '<option value="TCE">Tasha\'s Cauldron (TCE)</option>' +
           '<option value="FTD">Fizban\'s Dragons (FTD)</option>' +
           '<option value="EGW">Wildemount (EGW)</option>' +
-          '<option value="SRD">System Reference (SRD)</option>' +
+          '<option value="SRD">System Reference 5.1 (SRD, 2014)</option>' +
+          '<option value="SRD52">System Reference 5.2 (SRD, 2024)</option>' +
           '<option value="OTHER">Other Sources</option>' +
           '</select>' +
           '<select id="spell-sort-by" class="my-spells-filter" data-my-filter="sortBy" onchange="updateMySpellsSortBy(this.value)">' +
@@ -9924,6 +9961,7 @@
       state.spellbook.levelFilter = '';
       state.spellbook.schoolFilter = '';
       state.spellbook.sourceFilter = '';
+      state.spellbook.rulesetFilter = '2014';
       state.spellbook.sortBy = 'level-asc';
       // Only the add screen's own controls are reset here. The Spells tab's
       // filter bar belongs to the saved list and reads mySpellsFilters, so it
@@ -10319,7 +10357,8 @@
       'SCC': 'Strixhaven: A Curriculum of Chaos',
       'PHB': "Player's Handbook (2014)",
       'XPHB': "Player's Handbook (2024)",
-      'SRD': "System Reference Document (SRD)",
+      'SRD': "System Reference Document 5.1 (2014 rules)",
+      'SRD52': "System Reference Document 5.2 (2024 rules)",
       'XGE': "Xanathar's Guide to Everything",
       'TCE': "Tasha's Cauldron of Everything",
       'FTD': "Fizban's Treasury of Dragons",
@@ -10331,16 +10370,17 @@
       'BMT': "The Book of Many Things",
       'SatO': "Sigil and the Outlands",
       'LLK': "Lost Laboratory of Kwalish",
-      'FRHoF': "Heroes of Faerûn",
-      'EFA': "Eberron: Forgotten Armaments",
-      'AitFR-AVT': "Adventures in the Forgotten Realms"
+      'FRHoF': "Forgotten Realms: Heroes of Faerûn",
+      'EFA': "Eberron: Forge of the Artificer",
+      'AitFR-AVT': "Adventures in the Forgotten Realms: A Verdant Tomb"
     };
 
     const SOURCE_SHORT_LABELS = {
       'SCC': 'Strixhaven',
       'PHB': 'PHB 2014',
       'XPHB': 'PHB 2024',
-      'SRD': 'SRD',
+      'SRD': 'SRD 5.1',
+      'SRD52': 'SRD 5.2',
       'XGE': "Xanathar's",
       'TCE': "Tasha's",
       'FTD': "Fizban's",
@@ -10377,6 +10417,34 @@
     function updateSpellClassFilter(val) {
       state.spellbook.classFilter = val;
       renderSpellbookContents();
+    }
+
+    function updateSpellRulesetFilter(val) {
+      state.spellbook.rulesetFilter = (val === '2024' || val === 'all') ? val : '2014';
+      // A book from the other ruleset would leave the list empty.
+      state.spellbook.sourceFilter = '';
+      const sel = document.getElementById('spell-ruleset-filter-modal');
+      if (sel) sel.value = state.spellbook.rulesetFilter;
+      renderSpellbookContents();
+    }
+
+    // The add screen's book list: the books that have spells in the chosen ruleset.
+    function fillCatalogSourceOptions(spells, selected) {
+      const sel = document.getElementById('spell-source-filter-modal');
+      if (!sel) return;
+      const counts = {};
+      spells.forEach(function (s) {
+        (s.books && s.books.length ? s.books : [s.source]).filter(Boolean).forEach(function (b) { counts[b] = (counts[b] || 0) + 1; });
+      });
+      const books = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); });
+      const html = '<option value="">All Books</option>' + books.map(function (b) {
+        return '<option value="' + escapeHtml(b) + '">' + escapeHtml(getSourceFullName(b)) + ' (' + counts[b] + ')</option>';
+      }).join('');
+      if (sel.dataset.options !== html) {
+        sel.innerHTML = html;
+        sel.dataset.options = html;
+      }
+      sel.value = books.includes(selected) ? selected : '';
     }
 
     function updateSpellLevelFilter(val) {
@@ -10481,6 +10549,8 @@
       set('spell-class-filter-modal', state.spellbook.classFilter || '');
       set('spell-level-filter-modal', (state.spellbook.levelFilter === undefined || state.spellbook.levelFilter === null) ? '' : String(state.spellbook.levelFilter));
       set('spell-school-filter-modal', state.spellbook.schoolFilter || '');
+      set('spell-ruleset-filter-modal', state.spellbook.rulesetFilter || '2014');
+      set('spell-source-filter-modal', state.spellbook.sourceFilter || '');
       set('spell-sort-by-modal', state.spellbook.sortBy || 'level-asc');
     }
 
@@ -10519,11 +10589,20 @@
       let catalog = (sb.catalog && sb.catalog.length > 0) ? sb.catalog.slice() : ((window.GLOBAL_SPELL_CATALOG || []).slice());
 
       const sourceFilter = sb.sourceFilter || '';
+      // 2014 by default: the character builder follows the 2014 rules.
+      const rulesetFilter = sb.rulesetFilter || '2014';
+      if (rulesetFilter !== 'all') {
+        catalog = catalog.filter(function (spell) { return spellRuleset(spell) === rulesetFilter; });
+      }
+      const rulesetTotal = catalog.length;
+      fillCatalogSourceOptions(catalog, sourceFilter);
 
       if (query) {
         catalog = catalog.filter(function (spell) {
-          const src = (spell.source || '').toLowerCase();
-          const srcFull = (typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : '').toLowerCase();
+          const books = (spell.books && spell.books.length ? spell.books : [spell.source]).filter(Boolean);
+          const src = books.join(' ').toLowerCase();
+          const srcFull = books.map(function (b) { return getSourceFullName(b); }).join(' ').toLowerCase();
+          if ((spell.aliases || []).some(function (a) { return a.toLowerCase().includes(query); })) return true;
           const classesStr = (spell.classes || []).join(' ').toLowerCase();
           const schoolStr = (spell.schoolName || spell.school || '').toLowerCase();
           const castingStr = (spell.castingTime || '').toLowerCase();
@@ -10554,12 +10633,10 @@
       }
 
       if (sourceFilter) {
-        if (sourceFilter === 'OTHER') {
-          const mainSources = ['SCC', 'PHB', 'XPHB', 'XGE', 'TCE', 'FTD', 'EGW', 'SRD'];
-          catalog = catalog.filter(function (spell) { return !mainSources.includes(spell.source); });
-        } else {
-          catalog = catalog.filter(function (spell) { return spell.source === sourceFilter; });
-        }
+        // A spell matches every book it appears in (an SRD spell is also in the PHB).
+        catalog = catalog.filter(function (spell) {
+          return spell.source === sourceFilter || (spell.books || []).includes(sourceFilter);
+        });
       }
 
       catalog.sort(function (a, b) {
@@ -10587,13 +10664,14 @@
       const mySchoolFilter = mySpellsFilters.schoolFilter || '';
       const mySourceFilter = mySpellsFilters.sourceFilter || '';
       const mySortBy = mySpellsFilters.sortBy || 'level-asc';
-      const findCatalogSpell = function (name) {
-        return (sb.catalog || []).find(function (c) { return c.name === name; });
+      // Saved spells are matched to the catalog entry of their own ruleset.
+      const savedCatalogSpell = function (spell) {
+        return findCatalogSpellFor(spell.name, spellRuleset(spell));
       };
 
       if (myQuery) {
         list = list.filter(function (spell) {
-          const catalogSpell = findCatalogSpell(spell.name);
+          const catalogSpell = savedCatalogSpell(spell);
           const fullDesc = catalogSpell ? (catalogSpell.desc || catalogSpell.quickEffect || '') : (spell.desc || '');
           const dmg = catalogSpell ? (catalogSpell.damage || '') : (spell.damage || '');
           const src = catalogSpell ? (catalogSpell.source || '') : (spell.source || '');
@@ -10615,7 +10693,7 @@
 
       if (myClassFilter) {
         list = list.filter(function (spell) {
-          const catalogSpell = findCatalogSpell(spell.name);
+          const catalogSpell = savedCatalogSpell(spell);
           const classes = (catalogSpell && catalogSpell.classes) ? catalogSpell.classes : (spell.classes || []);
           return classes.includes(myClassFilter);
         });
@@ -10631,7 +10709,7 @@
 
       if (mySchoolFilter) {
         list = list.filter(function (spell) {
-          const catalogSpell = findCatalogSpell(spell.name);
+          const catalogSpell = savedCatalogSpell(spell);
           const sch = catalogSpell ? (catalogSpell.schoolName || catalogSpell.school) : (spell.schoolName || spell.school);
           return sch === mySchoolFilter;
         });
@@ -10639,10 +10717,10 @@
 
       if (mySourceFilter) {
         list = list.filter(function (spell) {
-          const catalogSpell = findCatalogSpell(spell.name);
+          const catalogSpell = savedCatalogSpell(spell);
           const src = catalogSpell ? catalogSpell.source : spell.source;
           if (mySourceFilter === 'OTHER') {
-            const mainSources = ['SCC', 'PHB', 'XPHB', 'XGE', 'TCE', 'FTD', 'EGW', 'SRD'];
+            const mainSources = ['SCC', 'PHB', 'XPHB', 'XGE', 'TCE', 'FTD', 'EGW', 'SRD', 'SRD52'];
             return !mainSources.includes(src);
           }
           return src === mySourceFilter;
@@ -10657,8 +10735,8 @@
         if (mySortBy === 'level-desc') return (bLvl - aLvl) || a.name.localeCompare(b.name);
         if (mySortBy === 'name') return a.name.localeCompare(b.name);
         if (mySortBy === 'class') {
-          const aCat = findCatalogSpell(a.name);
-          const bCat = findCatalogSpell(b.name);
+          const aCat = savedCatalogSpell(a);
+          const bCat = savedCatalogSpell(b);
           const aClasses = (aCat && aCat.classes) ? aCat.classes : (a.classes || []);
           const bClasses = (bCat && bCat.classes) ? bCat.classes : (b.classes || []);
           const aClass = aClasses.length ? aClasses.slice().sort()[0] : 'Universal';
@@ -10666,8 +10744,8 @@
           return aClass.localeCompare(bClass) || (aLvl - bLvl) || a.name.localeCompare(b.name);
         }
         if (mySortBy === 'school') {
-          const aCat = findCatalogSpell(a.name);
-          const bCat = findCatalogSpell(b.name);
+          const aCat = savedCatalogSpell(a);
+          const bCat = savedCatalogSpell(b);
           const aSch = aCat ? (aCat.schoolName || aCat.school || '') : (a.schoolName || a.school || '');
           const bSch = bCat ? (bCat.schoolName || bCat.school || '') : (b.schoolName || b.school || '');
           return aSch.localeCompare(bSch) || (aLvl - bLvl) || a.name.localeCompare(b.name);
@@ -10701,7 +10779,7 @@
       // Each list reports its own filters: the catalog notice reflects the add
       // screen's filters, the saved-list counter only its own search box.
       const catalogHasFilter = query || classFilter || levelFilter !== '' || schoolFilter || sourceFilter;
-      const filterNotice = catalogHasFilter ? ' (' + catalog.length + ' matched active filter)' : ' (574 total spells)';
+      const filterNotice = catalogHasFilter ? ' (' + catalog.length + ' matched active filter)' : ' (' + rulesetTotal.toLocaleString() + ' ' + (rulesetFilter === 'all' ? 'spells, both rulesets' : rulesetFilter + ' spells') + ')';
       if (statusBox) statusBox.textContent = sb.loading ? 'Loading...' : catalog.length.toLocaleString() + ' shown' + filterNotice;
       const modalStatus = document.getElementById('spell-catalog-modal-status');
       if (modalStatus) modalStatus.textContent = sb.loading ? 'Loading...' : catalog.length.toLocaleString() + ' spells shown' + filterNotice;
@@ -10719,7 +10797,13 @@
 
       if (catalogBox) {
         catalogBox.innerHTML = sb.loading ? '<div class="spell-empty">Loading spell catalog...</div>' : catalog.length ? catalog.map(function (spell) {
-          const inList = rawList.some(function (s) { return s.name === spell.name; });
+          const inList = rawList.some(function (s) { return isSameSpell(s, spell); });
+          const rs = spellRuleset(spell);
+          const rulesetBadge = '<span class="badge" title="' + rs + ' rules">' + rs + '</span>';
+          const flagBadges = (spell.ritual ? ' <span class="badge" title="Can be cast as a ritual">Ritual</span>' : '') +
+            (spell.concentration ? ' <span class="badge" title="Needs concentration">Conc.</span>' : '') +
+            (spell.detail === 'name-only' ? ' <span class="badge" title="Not in the SRD: only name, level and school are listed. See the book.">📕 Book only</span>' : '') +
+            (spell.textIssue ? ' <span class="badge" title="' + escapeHtml(spell.textIssue) + '">⚠️ Text incomplete</span>' : '');
           const classesStr = (spell.classes || []).slice(0, 4).join(', ');
           const classBadge = classesStr ? '<span class="badge" style="border-color:var(--danger-bright); color:var(--accent-2-strong); background:var(--surface-2);">🧙 ' + escapeHtml(classesStr) + '</span>' : '';
           const schoolBadge = spell.schoolName ? '<span class="badge school">' + escapeHtml(spell.schoolName) + '</span>' : '';
@@ -10727,17 +10811,19 @@
           const damageBadge = spell.damage ? '<span class="badge damage" style="border-color:var(--danger-bright); color:var(--danger-strong); background:color-mix(in srgb, var(--danger) 25%, transparent); font-weight:600;">⚔️ ' + escapeHtml(spell.damage) + '</span>' : '';
           const scaling = computeSpellScaling(spell);
           const escapedName = escapeJs(spell.name);
-          const scalingBadge = (scaling && scaling.type === 'leveled') ? '<span class="badge" style="border-color:var(--info); color:var(--info-strong); background:color-mix(in srgb, var(--info) 15%, transparent); font-weight:600; cursor:pointer;" onclick="openSpellDetailModal(\'' + escapedName + '\'); event.stopPropagation();" title="Scales with higher level spell slots (Click to view damage at Lvl ' + (spell.levelNum || 1) + '–9)">⚡ Upcasts</span>' : '';
-          const descText = (spell.quickEffect && spell.quickEffect.length > 25 && !spell.quickEffect.includes('magical spell effect')) ? spell.quickEffect : (spell.desc || '');
+          const scalingBadge = (scaling && scaling.type === 'leveled') ? '<span class="badge" style="border-color:var(--info); color:var(--info-strong); background:color-mix(in srgb, var(--info) 15%, transparent); font-weight:600; cursor:pointer;" onclick="openSpellDetailModal(\'' + escapedName + '\', \'' + rs + '\'); event.stopPropagation();" title="Scales with higher level spell slots (Click to view damage at Lvl ' + (spell.levelNum || 1) + '–9)">⚡ Upcasts</span>' : '';
+          const descText = spell.quickEffect || spell.desc || '';
+          const books = (spell.books && spell.books.length ? spell.books : [spell.source]).filter(Boolean);
+          const aka = (spell.aliases && spell.aliases.length) ? '<span style="font-size:11px; color:var(--text-muted); font-weight:normal;"> (' + escapeHtml(spell.aliases.join(', ')) + ')</span>' : '';
           return '<div class="spell-row">' +
             '<div class="spell-row-main">' +
-            '<div class="spell-name">' + escapeHtml(spell.name) + '</div>' +
-            '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + schoolBadge + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (spell.source ? ' · <span class="badge" title="' + escapeHtml(typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : spell.source) + '" style="border-color:color-mix(in srgb, var(--accent-2) 50%, transparent); color:var(--accent-2-strong); background:var(--well-2); font-size:11px;">📚 ' + escapeHtml(typeof getSourceShortLabel === 'function' ? getSourceShortLabel(spell.source) : spell.source) + '</span>' : '') + '</div>' +
+            '<div class="spell-name">' + escapeHtml(spell.name) + aka + '</div>' +
+            '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + schoolBadge + ' ' + rulesetBadge + flagBadges + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (books.length ? ' · <span class="badge" title="' + escapeHtml(books.map(function (b) { return getSourceFullName(b); }).join(' · ')) + '" style="border-color:color-mix(in srgb, var(--accent-2) 50%, transparent); color:var(--accent-2-strong); background:var(--well-2); font-size:11px;">📚 ' + escapeHtml(books.map(function (b) { return getSourceShortLabel(b); }).join(', ')) + '</span>' : '') + '</div>' +
             (descText ? '<div class="spell-desc-snippet" style="font-size:12px; color:var(--text-dim); margin-top:4px; line-height:1.4;">' + escapeHtml(descText) + '</div>' : '') +
             '</div>' +
             '<div class="spell-actions">' +
-            '<button class="btn ghost small" title="View D&D Beyond style spell details" onclick="openSpellDetailModal(\'' + escapedName + '\')">👁️ View</button>' +
-            '<button class="btn ghost small" onclick="toggleSpellFromCatalog(\'' + escapedName + '\')">' + (inList ? '✓ Added' : '+ Add') + '</button>' +
+            '<button class="btn ghost small" title="View D&D Beyond style spell details" onclick="openSpellDetailModal(\'' + escapedName + '\', \'' + rs + '\')">👁️ View</button>' +
+            '<button class="btn ghost small" onclick="toggleSpellFromCatalog(\'' + escapedName + '\', \'' + rs + '\')">' + (inList ? '✓ Added' : '+ Add') + '</button>' +
             '</div>' +
             '</div>';
         }).join('') : '<div class="spell-empty">No spells match the selected filters. <button class="btn ghost small" onclick="clearSpellFilters()">Clear Filters</button></div>';
@@ -10748,7 +10834,7 @@
           listBox.innerHTML = '<div class="spell-empty" style="padding:32px 20px; text-align:center; background:var(--well-2); border:1px dashed var(--border-bright); border-radius:8px;">' +
             '<div style="font-size:36px; margin-bottom:8px;">✨</div>' +
             '<div style="font-size:16px; font-weight:bold; color:var(--accent-2-strong); font-family:var(--font-display);">Your Spellbook is Empty</div>' +
-            '<div style="font-size:13px; color:var(--text-muted); max-width:480px; margin:8px auto 16px; line-height:1.4;">Browse over 1,200 D&D 5e spells from all classes, levels, and schools to add to your character\'s prepared list.</div>' +
+            '<div style="font-size:13px; color:var(--text-muted); max-width:480px; margin:8px auto 16px; line-height:1.4;">Browse the D&D 5e spells (2014 and 2024 rules) by class, level and school, and add them to your character\'s prepared list.</div>' +
             '<button class="btn" onclick="openSpellCatalogModal()" style="font-size:13px; font-weight:bold; padding:8px 18px; background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000;">📜 + Browse & Add Spells (Full Catalog)</button>' +
             '</div>';
         } else if (list.length === 0) {
@@ -10758,7 +10844,7 @@
             '</div>';
         } else {
           listBox.innerHTML = list.map(function (spell) {
-            const catalogSpell = (sb.catalog || []).find(function (c) { return c.name === spell.name; });
+            const catalogSpell = savedCatalogSpell(spell);
             const classesStr = catalogSpell && catalogSpell.classes ? catalogSpell.classes.slice(0, 4).join(', ') : '';
             const classBadge = classesStr ? '<span class="badge" style="border-color:var(--danger-bright); color:var(--accent-2-strong); background:var(--surface-2);">🧙 ' + escapeHtml(classesStr) + '</span>' : '';
             const schoolBadge = catalogSpell && catalogSpell.schoolName ? catalogSpell.schoolName : '';
@@ -10768,17 +10854,22 @@
             const targetSpell = catalogSpell || spell;
             const scaling = computeSpellScaling(targetSpell);
             const escapedName = escapeJs(spell.name);
-            const scalingBadge = (scaling && scaling.type === 'leveled') ? '<span class="badge" style="border-color:var(--info); color:var(--info-strong); background:color-mix(in srgb, var(--info) 15%, transparent); font-weight:600; cursor:pointer;" onclick="openSpellDetailModal(\'' + escapedName + '\'); event.stopPropagation();" title="Scales with higher level spell slots (Click to view damage at Lvl ' + (targetSpell.levelNum || 1) + '–9)">⚡ Upcasts</span>' : '';
-            const descText = catalogSpell ? ((catalogSpell.quickEffect && catalogSpell.quickEffect.length > 25 && !catalogSpell.quickEffect.includes('magical spell effect')) ? catalogSpell.quickEffect : catalogSpell.desc) : (spell.desc || '');
+            const rs = spellRuleset(spell);
+            const scalingBadge = (scaling && scaling.type === 'leveled') ? '<span class="badge" style="border-color:var(--info); color:var(--info-strong); background:color-mix(in srgb, var(--info) 15%, transparent); font-weight:600; cursor:pointer;" onclick="openSpellDetailModal(\'' + escapedName + '\', \'' + rs + '\'); event.stopPropagation();" title="Scales with higher level spell slots (Click to view damage at Lvl ' + (targetSpell.levelNum || 1) + '–9)">⚡ Upcasts</span>' : '';
+            const descText = catalogSpell ? (catalogSpell.quickEffect || catalogSpell.desc || '') : (spell.desc || '');
+            const flagBadges = ' <span class="badge" title="' + rs + ' rules">' + rs + '</span>' +
+              (catalogSpell && catalogSpell.concentration ? ' <span class="badge" title="Needs concentration">Conc.</span>' : '') +
+              (catalogSpell && catalogSpell.ritual ? ' <span class="badge" title="Can be cast as a ritual">Ritual</span>' : '') +
+              (catalogSpell && catalogSpell.detail === 'name-only' ? ' <span class="badge" title="Not in the SRD: see the book">📕 Book only</span>' : '');
             return '<div class="spell-list-item">' +
               '<div style="flex:1;">' +
               '<div class="spell-name">' + escapeHtml(spell.name) + '</div>' +
-              '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + (schoolBadge ? '<span class="badge school">' + escapeHtml(schoolBadge) + '</span>' : '') + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (spell.source ? ' · <span class="badge" title="' + escapeHtml(typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : spell.source) + '" style="border-color:color-mix(in srgb, var(--accent-2) 50%, transparent); color:var(--accent-2-strong); background:var(--well-2); font-size:11px;">📚 ' + escapeHtml(typeof getSourceShortLabel === 'function' ? getSourceShortLabel(spell.source) : spell.source) + '</span>' : '') + '</div>' +
+              '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + (schoolBadge ? '<span class="badge school">' + escapeHtml(schoolBadge) + '</span>' : '') + flagBadges + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (spell.source ? ' · <span class="badge" title="' + escapeHtml(typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : spell.source) + '" style="border-color:color-mix(in srgb, var(--accent-2) 50%, transparent); color:var(--accent-2-strong); background:var(--well-2); font-size:11px;">📚 ' + escapeHtml(typeof getSourceShortLabel === 'function' ? getSourceShortLabel(spell.source) : spell.source) + '</span>' : '') + '</div>' +
               (descText ? '<div class="spell-desc-snippet" style="font-size:12px; color:var(--text-dim); margin-top:4px; line-height:1.4;">' + escapeHtml(descText) + '</div>' : '') +
               '</div>' +
               '<div class="spell-actions">' +
-              '<button class="btn ghost small" title="View D&D Beyond style spell details" onclick="openSpellDetailModal(\'' + escapedName + '\')">👁️ View</button>' +
-              '<button class="btn ghost small" onclick="removeSpellFromList(\'' + escapedName + '\')">Remove</button>' +
+              '<button class="btn ghost small" title="View D&D Beyond style spell details" onclick="openSpellDetailModal(\'' + escapedName + '\', \'' + rs + '\')">👁️ View</button>' +
+              '<button class="btn ghost small" onclick="removeSpellFromList(\'' + escapedName + '\', \'' + rs + '\')">Remove</button>' +
               '</div>' +
               '</div>';
           }).join('');
@@ -11146,43 +11237,73 @@
       return null;
     }
 
-    function openSpellDetailModal(spellName) {
-      const catalog = (state.spellbook && state.spellbook.catalog && state.spellbook.catalog.length > 0)
-        ? state.spellbook.catalog
-        : (window.GLOBAL_SPELL_CATALOG || []);
-      let spell = catalog.find(function (s) { return s.name === spellName; });
+    /* Spell text → HTML. Paragraphs are split on blank lines; runs of "| a | b |"
+       paragraphs become one table (the SRD keeps each row as its own paragraph);
+       "##### Title" becomes a small heading. Everything is escaped. */
+    function spellTextHtml(text) {
+      const paras = String(text || '').split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean);
+      const out = [];
+      let rows = [];
+      const flush = function () {
+        if (!rows.length) return;
+        const cells = rows.filter(function (r) { return !/^\|?\s*:?-{2,}/.test(r); }).map(function (r) {
+          return r.replace(/^\|/, '').replace(/\|$/, '').split('|').map(function (c) { return escapeHtml(c.trim()); });
+        });
+        const head = cells.shift() || [];
+        out.push('<table class="spell-table"><thead><tr>' + head.map(function (c) { return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          cells.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>');
+        rows = [];
+      };
+      paras.forEach(function (p) {
+        if (p.charAt(0) === '|') { rows.push(p); return; }
+        flush();
+        const h = /^#{1,6}\s+(.*)$/.exec(p);
+        out.push(h ? '<p><b>' + escapeHtml(h[1]) + '</b></p>' : '<p>' + escapeHtml(p).replace(/\n/g, '<br>') + '</p>');
+      });
+      flush();
+      return out.join('');
+    }
+
+    function openSpellDetailModal(spellName, ruleset) {
+      let spell = findCatalogSpellFor(spellName, ruleset || '2014');
       if (!spell) {
-        const userSaved = (state.spellbook.list || []).find(function (s) { return s.name === spellName; });
+        const userSaved = (state.spellbook.list || []).find(function (s) { return s.name === spellName && (!ruleset || spellRuleset(s) === ruleset); });
         if (userSaved) spell = userSaved;
       }
       if (!spell) return;
+      const nameOnly = spell.detail === 'name-only';
+      const UNKNOWN = '—';
 
-      const classesText = (spell.classes && spell.classes.length) ? spell.classes.join(', ') : 'Universal';
+      const classesText = (spell.classes && spell.classes.length) ? spell.classes.join(', ') : (nameOnly ? 'see the book' : UNKNOWN);
       const sdClass = document.getElementById('sd-class');
       if (sdClass) sdClass.textContent = 'Class: ' + classesText;
 
       const sdName = document.getElementById('sd-name');
       if (sdName) sdName.textContent = spell.name;
 
-      const subtitle = (spell.levelNum === 0 ? 'Cantrip' : spell.levelText || ('Level ' + spell.levelNum)) + ' ' + (spell.schoolName || spell.school || 'Enchantment');
+      const extras = [];
+      if (spell.ritual) extras.push('ritual');
+      if (spell.concentration) extras.push('concentration');
+      const subtitle = (spell.levelNum === 0 ? 'Cantrip' : (spell.levelText || ('Level ' + spell.levelNum))) + ' ' + (spell.schoolName || spell.school || '') +
+        (extras.length ? ' (' + extras.join(', ') + ')' : '') + ' · ' + spellRuleset(spell) + ' rules';
       const sdSubtitle = document.getElementById('sd-subtitle');
       if (sdSubtitle) sdSubtitle.textContent = subtitle;
 
-      const fullDescText = (spell.quickEffect && spell.quickEffect.length > 25 && !spell.quickEffect.includes('magical spell effect')) ? spell.quickEffect : ((spell.desc && spell.desc.length > 25 && !spell.desc.includes('magical spell effect')) ? spell.desc : 'You fill the area with magical spell effects according to the spell parameters.');
+      const fullDescText = spell.desc || spell.quickEffect || '';
       const sdQuickEffect = document.getElementById('sd-quick-effect');
-      if (sdQuickEffect) sdQuickEffect.textContent = fullDescText;
+      if (sdQuickEffect) sdQuickEffect.textContent = nameOnly ? (spell.note || 'Not in the SRD: see the book.') : (spell.quickEffect || fullDescText);
 
       const sdCasting = document.getElementById('sd-casting');
-      if (sdCasting) sdCasting.textContent = spell.castingTime || '1 action';
+      if (sdCasting) sdCasting.textContent = spell.castingTime || UNKNOWN;
 
       const sdRange = document.getElementById('sd-range');
-      if (sdRange) sdRange.textContent = spell.range || 'Touch';
+      if (sdRange) sdRange.textContent = spell.range || UNKNOWN;
 
       const sdComponents = document.getElementById('sd-components');
-      if (sdComponents) sdComponents.textContent = spell.components || 'V, S';
+      if (sdComponents) sdComponents.textContent = spell.components || UNKNOWN;
 
       const sdDuration = document.getElementById('sd-duration');
-      if (sdDuration) sdDuration.textContent = spell.duration || 'Concentration, up to 1 minute';
+      if (sdDuration) sdDuration.textContent = spell.duration || UNKNOWN;
 
       const sdDamage = document.getElementById('sd-damage');
       if (sdDamage) {
@@ -11227,28 +11348,37 @@
       }
 
       const sdSource = document.getElementById('sd-source');
-      if (sdSource) sdSource.textContent = (typeof getSourceFullName === "function" ? getSourceFullName(spell.source) : spell.source) || "Player's Handbook (2014)";
+      if (sdSource) {
+        const books = (spell.books && spell.books.length ? spell.books : [spell.source]).filter(Boolean);
+        sdSource.textContent = books.map(function (b) { return getSourceFullName(b); }).join(' · ') || UNKNOWN;
+      }
 
       const sdDesc = document.getElementById('sd-desc');
-      if (sdDesc) sdDesc.innerHTML = '<p>' + escapeHtml(fullDescText).replace(/\n/g, '</p><p>') + '</p>';
+      if (sdDesc) {
+        const warn = spell.textIssue ? '<p class="spell-text-issue">⚠️ ' + escapeHtml(spell.textIssue) + ' Check the SRD 5.2 for the exact wording.</p>' : '';
+        const aka = (spell.aliases && spell.aliases.length) ? '<p class="spell-aka">Also known as: ' + escapeHtml(spell.aliases.join(', ')) + '</p>' : '';
+        sdDesc.innerHTML = warn + spellTextHtml(fullDescText) + aka;
+      }
 
       const sdHigherText = document.getElementById('sd-higher-text');
-      if (sdHigherText) sdHigherText.textContent = spell.higherLevels || 'No higher level benefit.';
+      if (sdHigherText) sdHigherText.textContent = spell.higherLevels || '';
+      const sdHigherBox = document.getElementById('sd-higher-box');
+      if (sdHigherBox) sdHigherBox.style.display = (spell.higherLevels && spell.higherLevels !== 'No higher level benefit.') ? '' : 'none';
 
       const tagsList = document.getElementById('sd-tags-list');
       if (tagsList) {
-        const tags = (spell.damage ? ['DAMAGE'] : []).concat(spell.tags || ['UTILITY']);
+        const tags = (spell.damage ? ['DAMAGE'] : []).concat(spell.tags || []);
         const uniqueTags = Array.from(new Set(tags));
         tagsList.innerHTML = uniqueTags.map(function (t) { return '<span class="tag-chip">' + escapeHtml(t) + '</span>'; }).join('');
       }
 
-      const inList = (state.spellbook.list || []).some(function (s) { return s.name === spell.name; });
+      const inList = (state.spellbook.list || []).some(function (s) { return isSameSpell(s, spell); });
       const actionBtn = document.getElementById('sd-action-btn');
       if (actionBtn) {
         actionBtn.textContent = inList ? 'Remove from My Spell List' : '+ Add to My Spell List';
         actionBtn.onclick = function () {
-          toggleSpellFromCatalog(spell.name);
-          openSpellDetailModal(spell.name);
+          toggleSpellFromCatalog(spell.name, spellRuleset(spell));
+          openSpellDetailModal(spell.name, spellRuleset(spell));
         };
       }
 
@@ -11400,6 +11530,44 @@
       }
     }
 
+    /* The catalog (spell-catalog.js) holds one entry per spell per ruleset: the 2014
+       and 2024 versions of a spell are different entries with the same name. So a
+       spell is always looked up by name AND ruleset. Entries come in already cleaned
+       (tools/merge-spell-catalog.js); nothing is made up here when a field is empty. */
+    const RULESETS_2024_BOOKS = ['SRD52', 'XPHB', 'FRHoF', 'EFA'];
+
+    // A catalog entry has `ruleset`; a spell saved on a sheet before it had one is
+    // placed by its book (PHB → 2014, XPHB → 2024).
+    function spellRuleset(spell) {
+      if (spell && (spell.ruleset === '2014' || spell.ruleset === '2024')) return spell.ruleset;
+      return (spell && RULESETS_2024_BOOKS.includes(spell.source)) ? '2024' : '2014';
+    }
+
+    function spellKey(name, ruleset) {
+      return ruleset + '|' + String(name || '').trim().toLowerCase();
+    }
+
+    // Finds a catalog spell by name (or a book name the SRD renamed) in a ruleset.
+    // Without a match in that ruleset it falls back to the other one.
+    function findCatalogSpellFor(name, ruleset) {
+      const map = window.GLOBAL_SPELL_MAP;
+      if (!map || !map.get) return null;
+      const order = ruleset === '2024' ? ['2024', '2014'] : ['2014', '2024'];
+      for (const rs of order) {
+        const hit = map.get(spellKey(name, rs));
+        if (hit) return hit;
+      }
+      return null;
+    }
+
+    // Same spell? Saved spells may carry an old book name (Tenser's Floating Disk).
+    function isSameSpell(saved, catalogSpell) {
+      if (!saved || !catalogSpell) return false;
+      if (spellRuleset(saved) !== spellRuleset(catalogSpell)) return false;
+      const n = String(saved.name || '').toLowerCase();
+      return n === catalogSpell.name.toLowerCase() || (catalogSpell.aliases || []).some(function (a) { return a.toLowerCase() === n; });
+    }
+
     function buildGlobalCatalog(rawCatalog) {
       if (!Array.isArray(rawCatalog) || rawCatalog.length === 0) return [];
       const SCHOOL_MAP = {
@@ -11412,55 +11580,46 @@
         'T': 'Transmutation',
         'V': 'Evocation'
       };
-      const mapByName = new Map();
+      const map = new Map();
       const merged = [];
       rawCatalog.forEach(function (spell) {
         const name = String(spell?.name || '').trim();
         if (!name) return;
-        const key = name.toLowerCase();
-        const schoolName = (spell.schoolName && spell.schoolName !== 'Universal') ? spell.schoolName : (SCHOOL_MAP[spell.school] || spell.schoolName || 'Universal');
-        const bestDesc = (spell.quickEffect && spell.quickEffect.length > 25 && !spell.quickEffect.includes('magical spell effect')) ? spell.quickEffect : ((spell.desc && spell.desc.length > 25 && !spell.desc.includes('magical spell effect')) ? spell.desc : (spell.quickEffect || spell.desc || ''));
-        if (!mapByName.has(key)) {
-          const spellCopy = {
-            name: spell.name,
-            levelNum: spell.levelNum !== undefined ? spell.levelNum : (spell.levelText === 'Cantrip' ? 0 : (parseInt((spell.levelText || '').replace(/\D/g, ''), 10) || 0)),
-            levelText: spell.levelText || 'Spell',
-            source: spell.source || 'PHB',
-            school: spell.school || '',
-            schoolName: schoolName,
-            classes: Array.isArray(spell.classes) ? [...spell.classes] : [],
-            castingTime: spell.castingTime || '1 action',
-            range: spell.range || '60 feet',
-            components: spell.components || 'V, S',
-            duration: spell.duration || 'Instantaneous',
-            quickEffect: bestDesc,
-            desc: bestDesc,
-            higherLevels: spell.higherLevels || '',
-            tags: Array.isArray(spell.tags) ? [...spell.tags] : [],
-            damage: spell.damage || ''
-          };
-          mapByName.set(key, spellCopy);
-          merged.push(spellCopy);
-        } else {
-          const existing = mapByName.get(key);
-          if (Array.isArray(spell.classes)) {
-            spell.classes.forEach(function (c) { if (!existing.classes.includes(c)) existing.classes.push(c); });
-          }
-          if (Array.isArray(spell.tags)) {
-            spell.tags.forEach(function (t) { if (!existing.tags.includes(t)) existing.tags.push(t); });
-          }
-          if (!existing.damage && spell.damage) existing.damage = spell.damage;
-          if ((!existing.desc || existing.desc.length < 25 || existing.desc.includes('magical spell effect')) && bestDesc && bestDesc.length > 25 && !bestDesc.includes('magical spell effect')) {
-            existing.desc = bestDesc;
-            existing.quickEffect = bestDesc;
-          }
-          if (schoolName && schoolName !== 'Universal') existing.schoolName = schoolName;
-        }
+        const ruleset = spellRuleset(spell);
+        const key = spellKey(name, ruleset);
+        if (map.has(key)) return; // the merge script already made these unique
+        const spellCopy = Object.assign({}, spell, {
+          name: name,
+          ruleset: ruleset,
+          levelNum: spell.levelNum !== undefined ? spell.levelNum : parseLevelNum(spell.levelText),
+          levelText: spell.levelText || '',
+          source: spell.source || '',
+          books: Array.isArray(spell.books) && spell.books.length ? spell.books.slice() : (spell.source ? [spell.source] : []),
+          school: spell.school || '',
+          schoolName: spell.schoolName || SCHOOL_MAP[spell.school] || '',
+          classes: Array.isArray(spell.classes) ? spell.classes.slice() : [],
+          castingTime: spell.castingTime || '',
+          range: spell.range || '',
+          components: spell.components || '',
+          duration: spell.duration || '',
+          quickEffect: spell.quickEffect || '',
+          desc: spell.desc || '',
+          higherLevels: spell.higherLevels || '',
+          tags: Array.isArray(spell.tags) ? spell.tags.slice() : [],
+          damage: spell.damage || '',
+          aliases: Array.isArray(spell.aliases) ? spell.aliases.slice() : []
+        });
+        map.set(key, spellCopy);
+        spellCopy.aliases.forEach(function (a) {
+          const ak = spellKey(a, ruleset);
+          if (!map.has(ak)) map.set(ak, spellCopy);
+        });
+        merged.push(spellCopy);
       });
-      merged.sort(function (a, b) { return (a.levelNum - b.levelNum) || String(a.name || '').localeCompare(String(b.name || '')); });
+      merged.sort(function (a, b) { return (a.levelNum - b.levelNum) || a.name.localeCompare(b.name) || a.ruleset.localeCompare(b.ruleset); });
 
       window.GLOBAL_SPELL_CATALOG = merged;
-      window.GLOBAL_SPELL_MAP = mapByName;
+      window.GLOBAL_SPELL_MAP = map;
 
       if (state && state.spellbook) {
         state.spellbook.catalog = merged;
@@ -11470,11 +11629,12 @@
 
         if (Array.isArray(state.spellbook.list)) {
           state.spellbook.list.forEach(function (s) {
-            const cat = mapByName.get(s.name.toLowerCase());
-            if (cat) {
+            const cat = map.get(spellKey(s.name, spellRuleset(s)));
+            // A name-only entry has nothing better than what the sheet already holds.
+            if (cat && cat.detail !== 'name-only') {
               s.damage = cat.damage || s.damage || '';
               s.desc = cat.desc || s.desc || '';
-              s.classes = cat.classes || s.classes || [];
+              s.classes = cat.classes.length ? cat.classes.slice() : (s.classes || []);
               s.schoolName = cat.schoolName || s.schoolName || '';
             }
           });
@@ -11483,18 +11643,17 @@
       return merged;
     }
 
-    async function toggleSpellFromCatalog(name) {
-      const existingIndex = state.spellbook.list.findIndex(function (spell) { return spell.name === name; });
+    async function toggleSpellFromCatalog(name, ruleset) {
+      const catalogSpell = findCatalogSpellFor(name, ruleset || '2014');
+      const existingIndex = state.spellbook.list.findIndex(function (spell) {
+        return catalogSpell ? isSameSpell(spell, catalogSpell) : spell.name === name;
+      });
       if (existingIndex >= 0) {
         state.spellbook.list.splice(existingIndex, 1);
         save();
         renderSpellbookMenu();
         return;
       }
-      const catalogList = (state.spellbook && state.spellbook.catalog && state.spellbook.catalog.length > 0)
-        ? state.spellbook.catalog
-        : (window.GLOBAL_SPELL_CATALOG || []);
-      const catalogSpell = catalogList.find(function (spell) { return spell.name === name; });
       if (!catalogSpell) {
         return;
       }
@@ -11516,6 +11675,7 @@
 
       state.spellbook.list.push({
         name: catalogSpell.name,
+        ruleset: catalogSpell.ruleset,
         levelNum: spellLevel,
         levelText: catalogSpell.levelText || 'Spell',
         source: catalogSpell.source,
@@ -11529,8 +11689,12 @@
       renderSpellbookMenu();
     }
 
-    function removeSpellFromList(name) {
-      state.spellbook.list = state.spellbook.list.filter(function (spell) { return spell.name !== name; });
+    // ruleset tells the 2014 and 2024 versions of a saved spell apart; without it
+    // every saved spell of that name goes.
+    function removeSpellFromList(name, ruleset) {
+      state.spellbook.list = state.spellbook.list.filter(function (spell) {
+        return !(spell.name === name && (!ruleset || spellRuleset(spell) === ruleset));
+      });
       save();
       renderSpellbookMenu();
     }
@@ -13963,6 +14127,11 @@
         <input type="text" id="spell-search-input-modal"
           placeholder="🔍 Search catalog by name, description, damage, or tags..."
           oninput="updateSpellSearch(this.value)">
+        <select id="spell-ruleset-filter-modal" onchange="updateSpellRulesetFilter(this.value)" title="Which rules version's spells to show">
+          <option value="2014">2014 rules</option>
+          <option value="2024">2024 rules</option>
+          <option value="all">Both rulesets</option>
+        </select>
         <select id="spell-class-filter-modal" onchange="updateSpellClassFilter(this.value)">
           <option value="">All Classes</option>
           <option value="Bard">Bard</option>
@@ -13973,7 +14142,9 @@
           <option value="Sorcerer">Sorcerer</option>
           <option value="Warlock">Warlock</option>
           <option value="Wizard">Wizard</option>
-          <option value="Artificer">Artificer</option>
+        </select>
+        <select id="spell-source-filter-modal" onchange="updateSpellSourceFilter(this.value)" title="Book">
+          <option value="">All Books</option>
         </select>
         <select id="spell-level-filter-modal" onchange="updateSpellLevelFilter(this.value)">
           <option value="">All Levels</option>
