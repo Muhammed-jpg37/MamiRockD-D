@@ -58,6 +58,7 @@
     })();
   </script>
   <script src="spell-catalog.js" defer></script>
+  <script src="spell-saved.js" defer></script>
   <script src="rules/srd5.js" defer></script>
   <script src="character-engine.js" defer></script>
   <script src="character-builder.js" defer></script>
@@ -6241,6 +6242,7 @@
           state.spellbook.catalogLoaded = true;
           state.spellbook.loading = false;
           state.spellbook.error = '';
+          refreshSavedSpells();
         } else if (Array.isArray(window.SPELL_CATALOG) && window.SPELL_CATALOG.length > 0) {
           buildGlobalCatalog(window.SPELL_CATALOG);
         } else if (!state.spellbook.loading) {
@@ -11627,20 +11629,21 @@
         state.spellbook.loading = false;
         state.spellbook.error = '';
 
-        if (Array.isArray(state.spellbook.list)) {
-          state.spellbook.list.forEach(function (s) {
-            const cat = map.get(spellKey(s.name, spellRuleset(s)));
-            // A name-only entry has nothing better than what the sheet already holds.
-            if (cat && cat.detail !== 'name-only') {
-              s.damage = cat.damage || s.damage || '';
-              s.desc = cat.desc || s.desc || '';
-              s.classes = cat.classes.length ? cat.classes.slice() : (s.classes || []);
-              s.schoolName = cat.schoolName || s.schoolName || '';
-            }
-          });
-        }
+        refreshSavedSpells();
       }
       return merged;
+    }
+
+    // Brings the details of the spells saved on the open sheet up to date from
+    // the catalog (spell-saved.js has the rules). Runs when the catalog loads and
+    // whenever a sheet is loaded or switched. Only the sheet in memory changes;
+    // it reaches the database with the sheet's next normal save.
+    function refreshSavedSpells() {
+      const map = window.GLOBAL_SPELL_MAP;
+      if (!window.SavedSpells || !map || !map.get || !state || !state.spellbook) return 0;
+      return window.SavedSpells.refresh(state.spellbook.list, function (name, ruleset) {
+        return map.get(spellKey(name, ruleset)) || null;
+      });
     }
 
     async function toggleSpellFromCatalog(name, ruleset) {

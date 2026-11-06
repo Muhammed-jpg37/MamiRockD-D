@@ -78,9 +78,26 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 
 ## Next steps
 
-1. **Docs**: write `CHARACTERS.md` (in Turkish, like `VTT.md` and `CAMPAIGNS.md`) for the friend.
-2. Decide on merging: `karakter-olusturucu` → `kampanya-sistemi` → `main`, then push. Ask the user first.
-3. Optional: let the builder's edit screen show every class's choices.
+`CHARACTERS.md` is written. Work now follows the 14-step **spell plan**:
+
+1. SRD 5.1 data (`rules/srd5-spells.js`, 319 spells): done.
+2. SRD 5.2 data (`rules/srd52-spells.js`, 339 spells): done.
+3. Tagging (ruleset, source, license): done.
+4. Duplicates merged, one entry per spell per ruleset: done.
+5. Non-SRD spells (278) kept as name-only: done.
+6. Spells tab reads the new data, ruleset and book filters: done.
+7. Saved spells refreshed from the catalog (`spell-saved.js`): done.
+8. Class rules: cantrips known, spells known, prepared spells, wizard spellbook, Mystic Arcanum, Magical Secrets in `rules/srd5.js`. **Next.**
+9. Subclass and race spells (Domain, Oath, Circle, Fiend, High Elf, Tiefling).
+10. Engine: spell picks as pending choices, counts, highest level, multiclass lists.
+11. Builder UI: a Spells step in the wizard and in level up, written to the Spells tab.
+12. Homebrew spells in the campaign homebrew editor.
+13. Licence switch: a setting that hides `license: none` spells.
+14. Tests and docs (engine tests per table, `CHARACTERS.md`).
+
+Then: decide on merging `karakter-olusturucu` → `kampanya-sistemi` → `main` (ask first). Optional: the builder's edit screen showing every class's choices.
+
+Note: on the machine used on 2026-11-06 evening, Node.js was not installed and `git` was only GitHub Desktop's copy (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`). Step 7's tests were run in the browser through a small `node:test` shim, not with `npm test`.
 
 ## Before release (tell the friend)
 
