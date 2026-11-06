@@ -287,6 +287,7 @@
     if (c.character && c.characterName) charNames[c.character] = c.characterName;
     watchMembers(c.id);
     watchNotes(c.id);
+    watchCampaignRules(c.id);
     window.dispatchEvent(new CustomEvent('campaignchange', { detail: window.activeCampaign }));
 
     // A player needs a character in the campaign: show it, or ask which one to bring.
@@ -493,6 +494,15 @@
         inv.append(codeBox, copy, renew);
         card.appendChild(inv);
 
+        if (window.HomebrewEditor) {
+          card.appendChild(el('div', 'camp-section', 'Character rules'));
+          const hb = el('button', 'btn small camp-block', '📜 Homebrew & builder settings');
+          hb.type = 'button';
+          hb.title = 'Your own species, backgrounds, feats and subclasses; how strict the character builder is';
+          hb.onclick = () => { closePicker(); window.HomebrewEditor.open(campId, c.name); };
+          card.appendChild(hb);
+        }
+
         card.appendChild(el('div', 'camp-section', 'Members (' + nicks.length + ')'));
         const list = el('div', 'camp-list');
         nicks.sort((a, b) => {
@@ -565,6 +575,7 @@
     try { if (nick) localStorage.removeItem(ACTIVE_KEY_PREFIX + nick); } catch (e) { }
     watchMembers(null);
     watchNotes(null);
+    watchCampaignRules(null);
     closeJournal();
     renderChip();
     window.dispatchEvent(new CustomEvent('campaignchange', { detail: null }));
@@ -622,6 +633,48 @@
 
   function characterName(id) {
     return id ? (charNames[id] || id) : null;
+  }
+
+  /* ---------- Campaign rules: homebrew content and builder settings ---------- */
+  // campaigns/<id>/homebrew: { species, backgrounds, feats, subraces: { <speciesId>: {...} }, subclasses: { <classId>: {...} } }
+  //   (the shape CharacterEngine.mergeRules() takes)
+  // campaigns/<id>/settings/builder: { allowManual, strict }
+
+  const HOMEBREW_GROUPS = ['species', 'backgrounds', 'feats'];
+  const HOMEBREW_NESTED = ['subraces', 'subclasses'];
+  let homebrew = {};
+  let builderSettings = {};
+  let rulesUnsubs = [];
+
+  function watchCampaignRules(campId) {
+    rulesUnsubs.forEach((u) => u && u());
+    rulesUnsubs = [];
+    homebrew = {};
+    builderSettings = {};
+    if (!campId || typeof window.fbCampaignListen !== 'function') return;
+    const announce = () => window.dispatchEvent(new CustomEvent('campaignrules', { detail: { homebrew: getHomebrew(), settings: getBuilderSettings() } }));
+    rulesUnsubs.push(window.fbCampaignListen('campaigns/' + campId + '/homebrew', (v) => { homebrew = v || {}; announce(); }));
+    rulesUnsubs.push(window.fbCampaignListen('campaigns/' + campId + '/settings/builder', (v) => { builderSettings = v || {}; announce(); }));
+  }
+
+  function getHomebrew() { return JSON.parse(JSON.stringify(homebrew || {})); }
+
+  // Defaults: rules enforced, ability scores can't be typed in.
+  function getBuilderSettings() {
+    return { allowManual: !!builderSettings.allowManual, strict: builderSettings.strict !== false };
+  }
+
+  // group: 'species' | 'backgrounds' | 'feats' | 'subraces' | 'subclasses'; parent: species / class id for nested groups.
+  // def null deletes the entry.
+  function saveHomebrew(campId, group, id, def, parent) {
+    if (!HOMEBREW_GROUPS.includes(group) && !HOMEBREW_NESTED.includes(group)) return Promise.reject(new Error('Unknown homebrew group'));
+    if (!/^[a-z0-9_]{1,40}$/.test(id)) return Promise.reject(new Error('Bad id'));
+    const path = 'campaigns/' + campId + '/homebrew/' + group + '/' + (HOMEBREW_NESTED.includes(group) ? parent + '/' : '') + id;
+    return window.fbCampaignUpdate({ [path]: def });
+  }
+
+  function saveBuilderSettings(campId, settings) {
+    return window.fbCampaignUpdate({ ['campaigns/' + campId + '/settings/builder']: { allowManual: !!settings.allowManual, strict: settings.strict !== false } });
   }
 
   /* ---------- Campaign journal (DMs write, players read) ---------- */
@@ -1147,6 +1200,7 @@
     window.activeCampaign = null;
     watchMembers(null);
     watchNotes(null);
+    watchCampaignRules(null);
     closeJournal();
     window.dispatchEvent(new CustomEvent('campaignchange', { detail: null }));
     closePicker();
@@ -1167,6 +1221,10 @@
     joinCampaign: joinCampaign,
     openPicker: openPicker,
     active: () => active,
+    homebrew: getHomebrew,
+    builderSettings: getBuilderSettings,
+    saveHomebrew: saveHomebrew,
+    saveBuilderSettings: saveBuilderSettings,
     openManage: openManage,
     openJournal: openJournal,
     saveNote: saveNote,
