@@ -21,7 +21,18 @@
        subclassSkills: { <classId>: [skill, ...] },         // e.g. College of Lore's bonus skills
        expertise: [skill, ...],
        asi: { '<classId>:<level>': { type: 'asi', abilities: { str: 2 } } | { type: 'feat', feat } },
-       fightingStyles: { '<classId>:<level>': styleId }
+       fightingStyles: { '<classId>:<level>': styleId },
+       spells: {                                            // only checked when spell data is attached (attachSpells)
+         <classId>: {
+           cantrips: [spellId, ...],
+           known: [spellId, ...],       // bard, ranger, sorcerer, warlock (bard: Magical Secrets picks included)
+           spellbook: [spellId, ...],   // wizard
+           arcanum: { 6: spellId, ... },// warlock Mystic Arcanum, by spell level
+           secrets: [spellId, ...],     // College of Lore's Additional Magical Secrets
+           land: landId                 // Circle of the Land
+         },
+         species: { cantrips: [spellId] }   // e.g. the High Elf's wizard cantrip
+       }
      },
      details: { alignment, ... }
    }
@@ -44,7 +55,7 @@
       background: null, backgroundChoices: {},
       classes: [],
       abilities: { method: 'standardArray', base: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 } },
-      choices: { skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {} },
+      choices: { skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {}, spells: {} },
       details: {}
     };
   }
@@ -177,7 +188,198 @@
       const a = c.def.spellcasting.ability;
       return { classId: c.entry.id, ability: a, saveDc: 8 + prof + mod(scores[a]), attack: prof + mod(scores[a]) };
     });
-    return { casterLevel: casterLevel, slots: slots, pact: pact, abilities: abilities };
+    const out = { casterLevel: casterLevel, slots: slots, pact: pact, abilities: abilities };
+    // Per-class spell numbers (step 8 data) and the spells the choices add up to.
+    out.classes = spellLimits(build, rules, scores);
+    out.species = speciesSpells(build, rules);
+    out.spells = chosenSpells(build, rules, out.classes, out.species);
+    return out;
+  }
+
+  /* ---------- Spells: lists, numbers, picks ----------
+     The spell data (rules/srd5-spells.js, plus campaign homebrew later) is attached to the
+     rules with attachSpells(); the rules files do not load it themselves. Without it the
+     numbers are still worked out, but spell picks are not checked or asked for. */
+
+  // rules.spells = { id: spell } from an array of spells (or several arrays). Returns rules.
+  function attachSpells(rules) {
+    const map = Object.assign({}, rules.spells || {});
+    Array.prototype.slice.call(arguments, 1).forEach((list) => {
+      (Array.isArray(list) ? list : Object.values(list || {})).forEach((s) => { if (s && s.id) map[s.id] = s; });
+    });
+    rules.spells = map;
+    return rules;
+  }
+
+  // Highest spell level a class's own level reaches (2014 multiclassing: picks are made per class,
+  // as if single-classed, even when the combined slots go higher).
+  function classMaxSpellLevel(def, level, rules) {
+    const sc = def && def.spellcasting;
+    if (!sc || level < 1) return 0;
+    if (sc.progression === 'pact') return (rules.pactSlots[Math.min(20, level)] || [0, 0])[1];
+    const cl = sc.progression === 'full' ? level : (level >= 2 ? Math.ceil(level / 2) : 0);
+    return (rules.spellSlots[cl] || []).length;
+  }
+
+  // Values of a { classLevel: x } table reached at `level`.
+  const reached = (table, level) => Object.keys(table || {}).filter((l) => Number(l) <= level).map((l) => table[l]);
+  const sumReached = (table, level) => reached(table, level).reduce((s, n) => s + n, 0);
+  const at = (arr, level) => (Array.isArray(arr) && level >= 1 ? arr[Math.min(20, level) - 1] || 0 : 0);
+
+  // What each spellcasting class gets at its level:
+  // [{ classId, name, level, ability, maxSpellLevel, cantrips, known, spellbook, prepared,
+  //    secrets, extraSecrets, arcanum: [spellLevel], alwaysPrepared: [id], expanded: [id], lands }]
+  // known / spellbook / prepared are null when the class doesn't work that way.
+  function spellLimits(build, rules, scores) {
+    scores = scores || abilityScores(build, rules).scores;
+    const picks = ((build.choices || {}).spells) || {};
+    return classList(build, rules).filter((c) => c.def.spellcasting && c.level > 0).map((c) => {
+      const sc = c.def.spellcasting, sub = c.sub || {}, L = c.level, id = c.entry.id;
+      const maxLvl = classMaxSpellLevel(c.def, L, rules);
+      const always = [];
+      reached(sub.alwaysPrepared, L).forEach((ids) => always.push.apply(always, ids));
+      const land = (picks[id] || {}).land;
+      if (sub.circleSpells && land && sub.circleSpells[land]) reached(sub.circleSpells[land].spells, L).forEach((ids) => always.push.apply(always, ids));
+      const expanded = [];
+      Object.keys(sub.expandedSpells || {}).forEach((sl) => { expanded.push.apply(expanded, sub.expandedSpells[sl]); });
+      return {
+        classId: id, name: c.def.name, subclassName: c.sub ? c.sub.name : '', level: L, ability: sc.ability, maxSpellLevel: maxLvl,
+        cantrips: at(sc.cantrips, L) + sumReached(sub.bonusCantrips, L),
+        known: sc.known ? at(sc.known, L) : null,
+        spellbook: sc.spellbook ? sc.spellbook.start + sc.spellbook.perLevel * (L - 1) : null,
+        // Prepared each day from the list, so not a build choice; 0 until Spellcasting starts.
+        prepared: sc.prepared ? (maxLvl > 0 ? Math.max(1, mod(scores[sc.ability]) + Math.floor(L / (sc.prepared.levelDivisor || 1))) : 0) : null,
+        preparedFrom: sc.prepared ? (sc.prepared.from || 'list') : null,
+        secrets: sumReached(sc.magicalSecrets, L),
+        extraSecrets: sumReached(sub.additionalMagicalSecrets, L),
+        arcanum: reached(sc.mysticArcanum, L),
+        ritual: sc.ritual || null,
+        replaceOnLevelUp: !!sc.replaceOnLevelUp,
+        alwaysPrepared: Array.from(new Set(always)),
+        expanded: expanded,
+        lands: sub.circleSpells ? Object.keys(sub.circleSpells) : null
+      };
+    });
+  }
+
+  // Species / subrace spells reached at the character's total level.
+  function speciesSpells(build, rules) {
+    const { sp, sub } = speciesOf(build, rules);
+    const level = Math.max(1, totalLevel(build, rules));
+    const out = { ability: null, cantrips: null, innate: [] };
+    [sp, sub].forEach((s) => {
+      const def = s && s.spells;
+      if (!def) return;
+      out.ability = def.ability || out.ability;
+      if (def.cantrips) out.cantrips = { choose: def.cantrips.choose, from: def.cantrips.from };
+      (def.innate || []).forEach((x) => { if (x.level <= level) out.innate.push(Object.assign({}, x)); });
+    });
+    return out;
+  }
+
+  // Every spell the build has, from choices and grants: [{ id, source, kind }].
+  // kind: cantrip | known | spellbook | always | arcanum | secret | innate. Unknown ids are kept.
+  function chosenSpells(build, rules, limits, species) {
+    const picks = ((build.choices || {}).spells) || {};
+    const out = [];
+    const add = (id, source, kind) => { if (id) out.push({ id: id, source: source, kind: kind }); };
+    limits.forEach((l) => {
+      const p = picks[l.classId] || {};
+      (p.cantrips || []).forEach((id) => add(id, l.classId, 'cantrip'));
+      if (l.known !== null) (p.known || []).forEach((id) => add(id, l.classId, 'known'));
+      if (l.spellbook !== null) (p.spellbook || []).forEach((id) => add(id, l.classId, 'spellbook'));
+      l.arcanum.forEach((sl) => add((p.arcanum || {})[sl], l.classId, 'arcanum'));
+      if (l.extraSecrets) (p.secrets || []).forEach((id) => add(id, l.classId, 'secret'));
+      l.alwaysPrepared.forEach((id) => add(id, l.classId, 'always'));
+    });
+    if (species.cantrips) ((picks.species || {}).cantrips || []).forEach((id) => add(id, 'species', 'cantrip'));
+    species.innate.forEach((x) => add(x.spell, 'species', 'innate'));
+    return out;
+  }
+
+  // The spells a pick may come from: { kind, ids, max } for one class (or 'species').
+  // kind: cantrips | known | spellbook | secrets | arcanum:<spellLevel>.
+  // Needs attached spell data; returns ids sorted by level, then name.
+  function spellOptions(build, rules, classId, kind) {
+    const all = Object.values(rules.spells || {});
+    const sort = (list) => list.sort((a, b) => (a.level - b.level) || String(a.name).localeCompare(String(b.name))).map((s) => s.id);
+    if (classId === 'species') {
+      const sp = speciesSpells(build, rules);
+      return sp.cantrips ? sort(all.filter((s) => s.level === 0 && (s.classes || []).includes(sp.cantrips.from))) : [];
+    }
+    const l = spellLimits(build, rules).find((x) => x.classId === classId);
+    if (!l) return [];
+    const onList = (s) => (s.classes || []).includes(classId) || l.expanded.includes(s.id);
+    if (kind === 'cantrips') return sort(all.filter((s) => s.level === 0 && (s.classes || []).includes(classId)));
+    // Magical Secrets may come from any class.
+    const anyClass = (kind === 'known' && l.secrets > 0) || kind === 'secrets';
+    if (kind === 'known' || kind === 'spellbook' || kind === 'secrets') {
+      return sort(all.filter((s) => s.level >= 1 && s.level <= l.maxSpellLevel && (anyClass || onList(s))));
+    }
+    const m = /^arcanum:(\d)$/.exec(kind || '');
+    if (m) return sort(all.filter((s) => s.level === Number(m[1]) && onList(s)));
+    return [];
+  }
+
+  // Spell checks for validate(); only run when spell data is attached.
+  function validateSpells(build, rules, err) {
+    const spells = rules.spells;
+    if (!spells || !Object.keys(spells).length) return;
+    const picks = ((build.choices || {}).spells) || {};
+    const name = (id) => (spells[id] ? spells[id].name : '"' + id + '"');
+    const listCheck = (ids, need, path, label, okFn, exact) => {
+      ids = ids || [];
+      if (ids.length < need) err('spells-missing', 'Choose ' + (need - ids.length) + ' more ' + label + '.', path, true);
+      else if (exact && ids.length > need) err('spells-count', 'Only ' + need + ' ' + label + ' allowed (' + ids.length + ' chosen).', path);
+      const seen = new Set();
+      ids.forEach((id) => {
+        if (!spells[id]) err('spell-unknown', 'Unknown spell ' + name(id) + '.', path);
+        else if (seen.has(id)) err('spell-duplicate', name(id) + ' is chosen twice.', path);
+        else { const why = okFn(spells[id]); if (why) err('spell-not-allowed', name(id) + ': ' + why, path); }
+        seen.add(id);
+      });
+    };
+    spellLimits(build, rules).forEach((l) => {
+      const p = picks[l.classId] || {};
+      const base = 'choices.spells.' + l.classId;
+      const def = rules.classes[l.classId];
+      const onClass = (s) => (s.classes || []).includes(l.classId);
+      const onList = (s) => onClass(s) || l.expanded.includes(s.id);
+      const levelOk = (s) => (s.level < 1 ? 'is a cantrip.' : s.level > l.maxSpellLevel ? 'is level ' + s.level + '; ' + def.name + ' ' + l.level + ' casts up to level ' + l.maxSpellLevel + '.' : '');
+
+      if (l.lands) {
+        if (!p.land) err('spells-land', 'Choose the land for your ' + l.subclassName + '.', base + '.land', true);
+        else if (!l.lands.includes(p.land)) err('spells-land', 'Unknown land "' + p.land + '".', base + '.land');
+      }
+      if (l.cantrips) listCheck(p.cantrips, l.cantrips, base + '.cantrips', def.name + ' cantrip(s)', (s) => s.level !== 0 ? 'is not a cantrip.' : !onClass(s) ? 'is not on the ' + def.name + ' list.' : '', true);
+      if (l.known !== null && l.known > 0) {
+        let offList = 0;
+        listCheck(p.known, l.known, base + '.known', def.name + ' spell(s) known', (s) => {
+          const lv = levelOk(s);
+          if (lv) return lv;
+          if (!onList(s)) { offList++; if (offList > l.secrets) return 'is not on the ' + def.name + ' list' + (l.secrets ? ' (only ' + l.secrets + ' Magical Secrets).' : '.'); }
+          return '';
+        }, true);
+      }
+      if (l.spellbook !== null) listCheck(p.spellbook, l.spellbook, base + '.spellbook', 'spell(s) in your spellbook', (s) => levelOk(s) || (!onClass(s) ? 'is not a ' + def.name + ' spell.' : ''), false);
+      l.arcanum.forEach((sl) => {
+        const id = (p.arcanum || {})[sl];
+        const path = base + '.arcanum.' + sl;
+        if (!id) err('spells-missing', 'Choose a level ' + sl + ' spell for your Mystic Arcanum.', path, true);
+        else if (!spells[id]) err('spell-unknown', 'Unknown spell ' + name(id) + '.', path);
+        else if (spells[id].level !== sl || !onList(spells[id])) err('spell-not-allowed', name(id) + ' is not a level ' + sl + ' ' + def.name + ' spell.', path);
+      });
+      if (l.extraSecrets) {
+        const known = new Set(p.known || []);
+        listCheck(p.secrets, l.extraSecrets, base + '.secrets', 'Additional Magical Secrets spell(s)', (s) => levelOk(s) || (known.has(s.id) ? 'is already one of your spells known.' : ''), true);
+      }
+    });
+    const sp = speciesSpells(build, rules);
+    if (sp.cantrips) {
+      const from = rules.classes[sp.cantrips.from];
+      listCheck((picks.species || {}).cantrips, sp.cantrips.choose, 'choices.spells.species.cantrips', 'species cantrip(s)',
+        (s) => s.level !== 0 ? 'is not a cantrip.' : !(s.classes || []).includes(sp.cantrips.from) ? 'is not a ' + (from ? from.name : sp.cantrips.from) + ' cantrip.' : '', true);
+    }
   }
 
   /* ---------- derive(): choices in, sheet out ---------- */
@@ -501,6 +703,9 @@
       if (st) chosenStyles.push(st);
     });
 
+    // Spells (only with spell data attached)
+    validateSpells(build, rules, err);
+
     return {
       ok: !issues.some((i) => i.level === 'error'),
       complete: !issues.some((i) => i.pending),
@@ -706,7 +911,12 @@
     buildFromSheet: buildFromSheet,
     mergeRules: mergeRules,
     totalLevel: totalLevel,
-    asiSlots: asiSlots
+    asiSlots: asiSlots,
+    attachSpells: attachSpells,
+    classMaxSpellLevel: classMaxSpellLevel,
+    spellLimits: spellLimits,
+    speciesSpells: speciesSpells,
+    spellOptions: spellOptions
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

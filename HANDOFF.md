@@ -89,8 +89,8 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 7. Saved spells refreshed from the catalog (`spell-saved.js`): done.
 8. Class rules in `rules/srd5.js` (on each class's `spellcasting`: `cantrips`, `known`, `prepared`, `replaceOnLevelUp`, `ritual`, `spellbook`, `mysticArcanum`, `magicalSecrets`; Lore's `additionalMagicalSecrets`): done. Data only; the engine starts using it in step 10.
 9. Subclass and race spells in `rules/srd5.js`: Life `alwaysPrepared`, Devotion `alwaysPrepared`, Land `bonusCantrips` + `circleSpells` (8 lands), Fiend `expandedSpells`, High Elf and Tiefling `spells` (the old unused `cantrip: 'wizard'` is replaced): done. Data only; no tests yet (the user wants tests at the end, step 14).
-10. Engine: spell picks as pending choices, counts, highest level, multiclass lists. **Next.** Also needs a build choice for the Circle of the Land's land.
-11. Builder UI: a Spells step in the wizard and in level up, written to the Spells tab.
+10. Engine (`character-engine.js`): done. `attachSpells(rules, SPELLS_SRD5)` puts the spell data on the rules; only then does `validate` check and ask for spell picks (`build.choices.spells`, shape in the file's header), so the builder is unchanged until step 11 attaches it. New: `spellLimits`, `speciesSpells`, `spellOptions`, `classMaxSpellLevel`; `derive().spellcasting` now also has `classes`, `species` and `spells` (every spell the build has, with its source and kind). Prepared spells are a daily choice, so only their number is worked out. No tests yet (step 14).
+11. Builder UI: a Spells step in the wizard and in level up, written to the Spells tab. **Next.** It must load `rules/srd5-spells.js` in `index.html` and call `attachSpells`.
 12. Homebrew spells in the campaign homebrew editor.
 13. Licence switch: a setting that hides `license: none` spells.
 14. Tests and docs (engine tests per table, `CHARACTERS.md`).
