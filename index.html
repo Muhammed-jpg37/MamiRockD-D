@@ -7298,7 +7298,7 @@
           <div style="font-size:11px; color:var(--text-dim);">${escapeHtml(cs.species)}${cs.subrace ? ' (' + escapeHtml(cs.subrace) + ')' : ''}</div>
         </div>
         <div style="display:flex; gap:6px;">
-          ${state.build && (cs.level || 1) < 20 ? `<button class="btn ghost small" style="padding:2px 8px; font-size:11px;" onclick="event.stopPropagation(); openLevelUp();" title="Gain a level: hit points, new features and choices">⬆ Level</button>` : ''}
+          ${builderAvailable() && (cs.level || 1) < 20 ? `<button class="btn ghost small" style="padding:2px 8px; font-size:11px;" onclick="event.stopPropagation(); openLevelUp();" title="Gain a level: hit points, new features and choices">⬆ Level</button>` : ''}
           <button class="btn ghost small" style="padding:2px 8px; font-size:11px;" onclick="event.stopPropagation(); openCharacterStatsModal();" title="Quick edit identity">⚙️ Edit</button>
           <button class="btn small" style="padding:2px 8px; font-size:11px; background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000; font-weight:bold;" onclick="event.stopPropagation(); openCharacterForgeModal({ isEditMode: true });" title="Re-forge Class, Stats & Proficiencies">⚔ Forge</button>
         </div>
@@ -8872,8 +8872,11 @@
     function openCharacterForgeModal(options = {}) {
       if (!builderAvailable() || options.legacy) return openLegacyForgeModal(options);
       if (options.isEditMode) {
-        // Sheets made with the old forge have no choices to edit yet.
-        if (!state || !state.build) return openLegacyForgeModal(options);
+        // Sheets made with the old forge have no choices to edit yet: offer to convert them.
+        if (!state || !state.build) {
+          if (confirm('Convert this character to the new character builder?\n\nOK: convert it (you check everything before anything is saved; gear, spells and notes stay).\nCancel: open the old forge instead.')) return convertToBuilder();
+          return openLegacyForgeModal(options);
+        }
         return CharacterBuilder.open({
           rules: builderRules(), opts: builderOpts(), build: state.build, editing: true,
           onDone: applyRebuiltCharacter
@@ -9038,13 +9041,39 @@
     // notes, current HP (moved by the change in max), spent slots and features the player added.
     // ⬆ Level up on a builder-made sheet: one more level, saved like an edit (current HP rises by the gain).
     function openLevelUp() {
-      if (!builderAvailable() || !state || !state.build) { toast('Level up works for characters made with the builder; use ⚙️ Edit for this one.', 4000); return; }
+      if (!builderAvailable() || !state) return;
+      if (!state.build) {
+        if (confirm('Levelling up needs the character builder. Convert this character first?\n\nYou check everything before anything is saved; gear, spells and notes stay. Then press ⬆ Level again.')) convertToBuilder();
+        return;
+      }
       CharacterBuilder.levelUp({
         rules: builderRules(), opts: builderOpts(), build: state.build,
         onDone: (result) => applyRebuiltCharacter(result, '⬆ ' + (result.build.name || 'Character') + ' is now level ' + result.derived.level + '!')
       });
     }
     window.openLevelUp = openLevelUp;
+
+    // An old-forge sheet into the builder: the engine guesses the choices, the player checks them
+    // on the review screen, and saving works like an edit (gear, spells, notes and own features stay).
+    function convertToBuilder() {
+      const E = window.CharacterEngine;
+      const rules = builderRules();
+      const bgi = (state.features && state.features.backgroundInfo) || {};
+      const name = String(state.campaign || '').replace(/'s Vault$/, '').trim() || activeInventoryUser || (currentUser && currentUser.nickname) || '';
+      const r = E.buildFromSheet(state.characterStats, rules, { name: name, background: bgi.name });
+      if (!r.ok) { alert(r.reason + '\n\nKeep using ⚙️ Edit and the old forge for this character.'); return; }
+      r.build.details = { alignment: bgi.alignment || '', ideals: bgi.ideals || '', bonds: bgi.bonds || '', flaws: bgi.flaws || '', personality: bgi.personality || '', backstory: bgi.backstory || '' };
+      if (state.portrait) r.build.details.portrait = state.portrait;
+      const notes = ['Converted from your old sheet: check everything below before saving. Gear, spells, notes and the features you wrote stay.'].concat(r.notes);
+      const oldMax = state.hp && state.hp.max;
+      const newMax = E.derive(r.build, rules).hp.max;
+      if (oldMax && oldMax !== newMax) notes.push('Max HP becomes ' + newMax + ' (was ' + oldMax + '), worked out from class, level and CON; current HP moves by the same amount.');
+      CharacterBuilder.open({
+        rules: rules, opts: builderOpts(), build: r.build, editing: true, notice: notes,
+        onDone: (result) => applyRebuiltCharacter(result, '✨ ' + (result.build.name || 'Character') + ' now uses the character builder')
+      });
+    }
+    window.convertToBuilder = convertToBuilder;
 
     function applyRebuiltCharacter(result, message) {
       const E = window.CharacterEngine;
@@ -9079,7 +9108,10 @@
       state.spellSlots = { max: slots, used: used, pactLevel: pactLevel, syncedFor: d.characterStats.characterClass + ':' + d.characterStats.level };
 
       state.features = state.features || {};
-      state.features.items = (state.features.items || []).filter((f) => !f.fromBuild).concat(featuresFromDerived(d));
+      // The player's own feature cards stay; a built feature with the same name isn't added twice.
+      const own = (state.features.items || []).filter((f) => !f.fromBuild);
+      const ownNames = new Set(own.map((f) => String(f.name || '').trim().toLowerCase()));
+      state.features.items = own.concat(featuresFromDerived(d).filter((f) => !ownNames.has(f.name.trim().toLowerCase())));
       state.features.backgroundInfo = Object.assign({}, state.features.backgroundInfo || {}, backgroundInfoFrom(result.build, rules));
 
       save();

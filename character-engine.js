@@ -549,6 +549,111 @@
     });
   }
 
+  /* ---------- Converting a sheet made before the builder ---------- */
+  // Best guess at the choices behind an old sheet (index.html characterStats), so it can be opened
+  // in the builder. Keeps the ability scores the sheet shows: racial bonuses and assumed ASIs are
+  // taken off the base. Returns { ok, reason, build, notes: [text] }; anything it can't tell is
+  // left open for the builder to ask.
+  function buildFromSheet(cs, rules, extra) {
+    cs = cs || {};
+    extra = extra || {};
+    const notes = [];
+    const norm = (s) => String(s || '').toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z]/g, '');
+    const find = (map, name) => {
+      const n = norm(name);
+      if (!n) return null;
+      return Object.keys(map || {}).find((id) => norm(id) === n || norm(map[id].name) === n) || null;
+    };
+
+    const classId = find(rules.classes, cs.characterClass);
+    if (!classId) return { ok: false, reason: 'The class "' + (cs.characterClass || '?') + '" is not in these rules (multiclass or non-SRD classes can\'t be converted).', build: null, notes: notes };
+    const def = rules.classes[classId];
+    const level = Math.max(1, Math.min(20, parseInt(cs.level, 10) || 1));
+
+    const b = newBuild(rules);
+    b.name = String(extra.name || '').slice(0, 40);
+    b.classes = [{ id: classId, level: level, subclass: null, hp: [] }];
+
+    // Subclass, species and subrace by name; a subrace may be written in either field ("Hill Dwarf").
+    if (cs.subclass) {
+      b.classes[0].subclass = find(def.subclasses, cs.subclass);
+      if (!b.classes[0].subclass) notes.push('Subclass "' + cs.subclass + '" is not in these rules: choose one in Choices.');
+    }
+    let speciesId = find(rules.species, cs.species);
+    let subraceId = null;
+    if (!speciesId) {
+      // "Hill Dwarf" in the species field.
+      Object.keys(rules.species).forEach((id) => {
+        const sid = find(rules.species[id].subraces, cs.species);
+        if (sid && !speciesId) { speciesId = id; subraceId = sid; }
+      });
+    }
+    if (speciesId) {
+      const sp = rules.species[speciesId];
+      if (!subraceId && sp.subraces) {
+        subraceId = cs.subrace ? find(sp.subraces, cs.subrace) || find(sp.subraces, cs.subrace + ' ' + sp.name) : null;
+        const subs = Object.keys(sp.subraces);
+        if (!subraceId && subs.length === 1) { subraceId = subs[0]; notes.push(sp.subraces[subraceId].name + ' assumed (the only ' + sp.name + ' subrace in these rules).'); }
+        else if (!subraceId && subs.length) notes.push('Choose a ' + sp.name + ' subrace in Origin.');
+      }
+      b.species = speciesId;
+      b.subrace = subraceId;
+    } else {
+      notes.push('Species "' + (cs.species || '?') + '" is not in these rules: choose one in Origin.');
+    }
+
+    const bgId = find(rules.backgrounds, extra.background);
+    b.background = bgId;
+    if (!bgId) notes.push('Background' + (extra.background ? ' "' + extra.background + '" is not in these rules' : ' is not set') + ': choose one in Origin.');
+
+    // Ability scores: the sheet's numbers stay. Pick species bonus abilities, then work back to a base.
+    const final = {};
+    ABILITIES.forEach((a) => { final[a] = parseInt(cs[a], 10) || 10; });
+    const sp = speciesId ? rules.species[speciesId] : null;
+    if (sp && sp.abilityChoice) {
+      b.speciesChoices.abilities = ABILITIES.filter((a) => !(sp.abilityChoice.exclude || []).includes(a)).sort((x, y) => final[y] - final[x]).slice(0, sp.abilityChoice.count);
+    }
+    b.abilities = { method: 'roll', base: Object.assign({}, final) };
+    const racial = abilityScores(b, rules).racial;
+    const base = {};
+    ABILITIES.forEach((a) => { base[a] = final[a] - racial[a]; });
+    // Ability score improvements already reached: assume +2 to the highest score each time.
+    const assumed = [];
+    asiSlots(b, rules).forEach((slot) => {
+      const top = ABILITIES.slice().sort((x, y) => base[y] - base[x])[0];
+      if (base[top] - 2 < 8) return;   // too low to have come from an ASI; leave the choice open
+      base[top] -= 2;
+      b.choices.asi[slot.key] = { type: 'asi', abilities: { [top]: 2 } };
+      assumed.push('level ' + slot.level + ': ' + top.toUpperCase() + ' +2');
+    });
+    if (assumed.length) notes.push('Ability score improvements assumed (' + assumed.join(', ') + '); change them in Choices if you took something else.');
+    const inRoll = ABILITIES.every((a) => base[a] >= rules.abilityMethods.roll.min && base[a] <= rules.abilityMethods.roll.max);
+    b.abilities = { method: inRoll ? 'roll' : 'manual', base: base };
+    if (!inRoll) notes.push('Some scores are outside 3–18 before bonuses, so they are typed in; your DM has to allow that.');
+
+    // Skills: species and background first, then the class's picks, then a species skill choice.
+    const profs = Object.keys(rules.skills).filter((s) => cs.skillProfs && cs.skillProfs[s]);
+    const sub = sp && subraceId ? sp.subraces[subraceId] : null;
+    const fixed = new Set([].concat((sp && sp.skills) || [], (sub && sub.skills) || [], (bgId && rules.backgrounds[bgId].skills) || []));
+    let left = profs.filter((s) => !fixed.has(s));
+    const from = def.skills.from === 'any' ? Object.keys(rules.skills) : def.skills.from;
+    b.choices.skills[classId] = left.filter((s) => from.includes(s)).slice(0, def.skills.choose);
+    left = left.filter((s) => !b.choices.skills[classId].includes(s));
+    if (sp && sp.skillChoice) {
+      b.speciesChoices.skills = left.slice(0, sp.skillChoice.choose);
+      left = left.slice(sp.skillChoice.choose);
+    }
+    if (left.length) notes.push('These proficiencies don\'t come from your choices and will be dropped: ' + left.map((s) => rules.skills[s].name).join(', ') + '.');
+
+    // Expertise: skills whose extra bonus equals the proficiency bonus.
+    let due = 0;
+    Object.keys(def.expertise || {}).forEach((l) => { if (Number(l) <= level) due += def.expertise[l]; });
+    const prof = proficiencyBonus(level);
+    b.choices.expertise = profs.filter((s) => Number((cs.skillCustomBonuses || {})[s]) === prof).slice(0, due);
+
+    return { ok: true, reason: '', build: b, notes: notes };
+  }
+
   // What a level up asks for: the issues `next` has that `prev` didn't (new choices, broken rules).
   function newIssues(prev, next, rules, opts) {
     const key = (i) => i.code + '|' + i.path + '|' + i.message;
@@ -598,6 +703,7 @@
     levelUp: levelUp,
     levelUpOptions: levelUpOptions,
     newIssues: newIssues,
+    buildFromSheet: buildFromSheet,
     mergeRules: mergeRules,
     totalLevel: totalLevel,
     asiSlots: asiSlots

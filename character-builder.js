@@ -11,6 +11,7 @@
      build,                      // optional: start from an existing build
      initialName,                // optional: prefilled character name
      editing,                    // true: changing an existing character (no equipment step)
+     notice,                     // optional: [text] shown above the review
      onDone(result),             // { build, derived, equipment: { mode, picks, gold } }
      onCancel()
    })
@@ -234,6 +235,10 @@
       }
       const body = h('div', { class: 'cb-body' });
       card.appendChild(body);
+      // e.g. what a conversion from an old sheet assumed
+      if (st.step === 'review' && !st.quick && (config.notice || []).length) {
+        body.appendChild(h('div', { class: 'cb-issues', style: 'margin:0 0 12px' }, config.notice.map((n) => h('div', { class: 'cb-issue warning' }, [h('span', { text: 'ℹ ' + n })]))));
+      }
       (st.quick ? renderQuick : ({ class: renderClass, origin: renderOrigin, abilities: renderAbilities, choices: renderChoices, equipment: renderEquipment, details: renderDetails, review: renderReview })[st.step])(body, v);
 
       const idx = steps.findIndex((s) => s.id === st.step);
@@ -716,8 +721,8 @@
         ['Spell slots', slots || '—'],
         ['Armour', cs.armorProf || '—'], ['Weapons', cs.weaponProf || '—'], ['Tools', cs.toolProf || '—'], ['Languages', cs.languages || '—'],
         ['Features', d.features.map((f) => f.name).join(', ')],
-        ['Equipment', equipmentSummary().join('; ')]
-      ].forEach(([k, val]) => {
+        config.editing ? null : ['Equipment', equipmentSummary().join('; ')]
+      ].filter(Boolean).forEach(([k, val]) => {
         body.appendChild(h('div', { class: 'cb-h', text: k }));
         body.appendChild(h('div', { class: 'cb-list', text: val }));
       });

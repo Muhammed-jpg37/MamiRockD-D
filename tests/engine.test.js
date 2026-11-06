@@ -308,3 +308,48 @@ test('homebrew: a DM-made species and subclass work like SRD ones', () => {
   assert.ok(d.features.some((f) => f.name === 'Bladesong'));
   assert.equal(rules.species.tabaxi.homebrew, true);
 });
+
+// A sheet as the old forge wrote it: final scores with no racial bonus split out.
+function oldSheet(over) {
+  const skillProfs = {};
+  ['athletics', 'acrobatics', 'perception', 'survival'].forEach((s) => { skillProfs[s] = true; });
+  return Object.assign({ str: 15, dex: 14, con: 14, int: 10, wis: 12, cha: 8, characterClass: 'Fighter', species: 'Human', level: 5, skillProfs: skillProfs, skillCustomBonuses: {} }, over || {});
+}
+
+test('converting an old sheet keeps its ability scores and level', () => {
+  const r = E.buildFromSheet(oldSheet(), SRD, { name: 'Old Hero' });
+  assert.equal(r.ok, true);
+  assert.equal(r.build.name, 'Old Hero');
+  assert.deepEqual(r.build.classes, [{ id: 'fighter', level: 5, subclass: null, hp: [] }]);
+  const d = E.derive(r.build, SRD);
+  assert.deepEqual(d.abilities.scores, { str: 15, dex: 14, con: 14, int: 10, wis: 12, cha: 8 });
+  assert.equal(d.level, 5);
+  // Human +1 everywhere and the level 4 ASI (assumed +2 STR) come off the base.
+  assert.deepEqual(r.build.abilities.base, { str: 12, dex: 13, con: 13, int: 9, wis: 11, cha: 7 });
+  assert.deepEqual(r.build.choices.asi, { 'fighter:4': { type: 'asi', abilities: { str: 2 } } });
+  assert.deepEqual(r.build.choices.skills.fighter, ['acrobatics', 'athletics']);
+  assert.ok(r.notes.some((n) => /Perception, Survival/.test(n)));          // extra skills are reported
+  const pending = E.pendingChoices(r.build, SRD).map((i) => i.code);
+  assert.ok(pending.includes('background-missing'));
+  assert.ok(pending.includes('subclass-missing'));
+  assert.ok(pending.includes('style-missing'));
+});
+
+test('converting: subraces by name, the only subrace assumed, species choices picked', () => {
+  const dwarf = E.buildFromSheet(oldSheet({ species: 'Dwarf', level: 1 }), SRD);
+  assert.equal(dwarf.build.subrace, 'hill');
+  assert.equal(E.derive(dwarf.build, SRD).abilities.scores.wis, 12);
+  const elf = E.buildFromSheet(oldSheet({ species: 'Elf', subrace: 'High', level: 1 }), SRD);
+  assert.equal(elf.build.subrace, 'high');
+  const halfElf = E.buildFromSheet(oldSheet({ species: 'Half-Elf', level: 1 }), SRD);
+  assert.deepEqual(halfElf.build.speciesChoices.abilities, ['str', 'dex']);   // two highest, not CHA
+  assert.equal(E.derive(halfElf.build, SRD).abilities.scores.cha, 8);
+});
+
+test('converting: expertise from the sheet bonus; unknown classes are refused', () => {
+  const rogue = E.buildFromSheet(oldSheet({ characterClass: 'Rogue', level: 1, skillProfs: { stealth: true, acrobatics: true, deception: true, insight: true }, skillCustomBonuses: { stealth: 2 } }), SRD);
+  assert.deepEqual(rogue.build.choices.expertise, ['stealth']);
+  const art = E.buildFromSheet(oldSheet({ characterClass: 'Artificer' }), SRD);
+  assert.equal(art.ok, false);
+  assert.match(art.reason, /Artificer/);
+});
