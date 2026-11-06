@@ -61,7 +61,14 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 
 - The ⚔ Forge edit screen only shows choices for the **first** class. Multiclass choices are made in the level-up dialog.
 - A character built with campaign homebrew can only be re-edited inside that campaign.
-- Feature descriptions are names only. Spells known and cantrip counts are not modelled; players add spells in the Spells tab.
+- Feature descriptions are names only, and builder features have no limited uses (Rage, Ki, Channel Divinity…); the sheet's feature cards support uses but they stay empty (plan A1).
+- No weapon attack bonus or damage anywhere; AC is only computed at creation, not when armour changes (A2, A3).
+- No click-to-roll from the sheet; the VTT has a roller (A4).
+- No "prepared today" in the Spells tab and no check of the prepared count (B2). Spell picks in the builder are 2014 (SRD 5.1) only; 2024 spells exist only in the Spells tab catalog (C1).
+- Existing builder-made characters must complete their spell picks before an edit or level up can be saved (seeded from their Spells tab where possible).
+- Tool, instrument and language picks are free text; "any simple weapon"-type equipment becomes a placeholder item (B5).
+- No print / PDF / JSON export, no homebrew sharing between campaigns, no homebrew class form, no companion stat blocks (C2–C4).
+- Licence switch postponed (spell plan step 13); SRD warlock 6th-level list may be missing Arcane Gate; `npm test`, phones and real players not tried (D).
 - Conversion drops skill proficiencies it cannot explain, and assumes ASIs were +2 to the highest score. The review screen lists both before anything saves.
 - Old sheets with non-SRD classes (for example Artificer) or multiclass text cannot be converted.
 
