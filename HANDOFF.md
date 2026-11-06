@@ -1,28 +1,17 @@
 # Handoff: MamiRock D&D site
 
-State on 2026-11-06, for the next working session.
+State on 2026-11-06 (evening), for the next working session. Start with "Where things stand", then "Next plan" at the end of the Next steps section.
 
 ## Where things stand
 
 | Branch | State |
 |---|---|
-| `main` | VTT plus initiative tracker and the LEGACY_BG startup fix. Pushed. |
+| `main` | VTT, initiative tracker, LEGACY_BG fix and the campaign system: `main`, `origin/main` and `kampanya-sistemi` are the same commit (`20cd8a8`). |
 | `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
-| `kampanya-sistemi` | Campaign system, 7 steps, cut from `main`. Pushed, **not merged into `main`**. |
-| `karakter-olusturucu` | Character builder, cut from `kampanya-sistemi`. **Not pushed, not merged.** Current branch. |
+| `kampanya-sistemi` | Campaign system. Same commit as `main`. Pushed. |
+| `karakter-olusturucu` | Character builder and the spell plan, cut from `kampanya-sistemi`. Current branch. Pushed up to `25decde`; the spell-plan commits after it (steps 7–14 and this handoff) are **not pushed**. **Not merged** into `main`. |
 
-Commits on `karakter-olusturucu` (newest first):
-
-- `dd0a121` Convert old-forge sheets (opt-in)
-- `927895d` Level-up flow
-- `ceea22e` Character portrait as the VTT token
-- `b8024bc` My characters (rename, copy, delete, 10 per account)
-- `e3e0a3d` Campaign homebrew editor and builder settings
-- `8fa1363` The builder replaces the forge
-- `2394d5c` The wizard
-- `a55568f` SRD 5.1 rules data, engine and tests
-
-Working tree: clean, apart from the untracked `.claude/` folder and this file.
+On `karakter-olusturucu`, after `main` (oldest first): character builder (`a55568f` … `dd0a121`, 8 commits), spell steps 1–6 (`957264d` … `40c0de2`), docs (`25decde`), then unpushed: step 7 `f61d72b`, 8 `fcf3a63`, 9 `6566754`, 10 `b720e27`, 11 `5a82711`, 12 `9cd44e5`, 14 `bbac6cb`, and the commit adding the "Next plan" below. `git log --oneline main..karakter-olusturucu` lists them.
 
 ## Run and test
 
@@ -34,9 +23,9 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs the engine tests (`node --test "tests/*.test.js"`). 33 tests pass.
+Runs all tests (`node --test "tests/*.test.js"`): 93 tests, which pass in `tests/browser-runner.html`; not yet run with Node.
 
-On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`.
+On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
 
 ## Character builder: how it fits together
 
@@ -96,6 +85,38 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 14. Tests and docs: done. `tests/engine-spells.test.js` (25 tests: subclass/species spell data, spell limits, options, validation, level up, derive, homebrew spells); 93 tests in all pass in `tests/browser-runner.html`; `npm test` not yet run (no Node here). `CHARACTERS.md` has a "Büyüler" section and the new files, paths and tests.
 
 The spell plan is finished except step 13 (postponed).
+
+## Next plan: closing the gaps with other character builders
+
+Written 2026-11-06 after comparing this builder with D&D Beyond, Roll20's Charactermancer and Foundry VTT's dnd5e system (from what those are generally known to offer; not re-checked live). Everything here stays within SRD 5.1 / 5.2 (CC-BY-4.0) or the campaign's homebrew: no book text. Do the phases in order; inside a phase the items are independent. Same working rules as above (ask before push/merge, stub saves when testing, tests at the end of a phase, commit per item).
+
+What we already do as well or better: rules validation with DM-set strictness, multiclass prerequisites, per-campaign homebrew (species, subraces, backgrounds, feats, subclasses, spells), converting old sheets, Quick Build, the VTT link (portrait token, party button, HP bar), spells refreshed from the catalog. What the others have that we don't:
+
+### Phase A: the sheet does the maths (highest value for play)
+
+A1. **Feature text and limited uses.** Today features are names only, and builder features have no uses. Add SRD 5.1 feature descriptions (class, subclass, species traits, background feature, feat) to `rules/srd5.js` (or a separate `rules/srd5-features.js`, like the spells file), and for limited features `uses: { count by class level or ability mod, reset: 'short' | 'long' }`: Rage, Bardic Inspiration, Channel Divinity, Wild Shape, Second Wind, Action Surge, Indomitable, Ki, Lay on Hands (pool), Divine Sense, Sorcery Points, Arcane Recovery, Breath Weapon, Relentless Endurance, etc. `featuresFromDerived` then fills the sheet's existing feature cards (`maxUses`, reset type, desc), which the sheet's rest buttons already handle.
+A2. **Attacks and actions.** No attack bonus or damage is worked out today. Add the SRD weapons table (damage, type, properties: finesse, light, heavy, reach, thrown, two-handed, versatile, ammunition, range) and compute per equipped weapon: attack bonus (proficiency + STR/DEX, finesse picks the higher), damage, Fighting Style effects (Archery, Dueling, Great Weapon), Extra Attack count; spell attack / save DC per class; cantrip damage scaling by character level. Show an "Actions" block on the sheet.
+A3. **Equipment from data, AC that follows the armour.** Starting equipment is matched by name to the old forge's items; AC is only computed at creation. Add SRD armour, gear and packs (packs expand into their contents), "any simple weapon" style picks as real selects, a starting-gold shop with SRD prices, and recompute AC whenever armour/shield is equipped (Unarmored Defense, Draconic Resilience, Defense style included).
+A4. **Click to roll.** The VTT has a dice roller and a shared log, the sheet has no roll buttons. Make ability checks, saves, skills, initiative, attacks/damage and death saves clickable, posting to the VTT log of the active campaign (advantage/disadvantage toggle).
+
+### Phase B: builder comfort
+
+B1. **Edit every class in ⚔ Forge** (known gap: only the first class's choices), and **remove a level** (undo the last level up), as D&D Beyond allows.
+B2. **Prepared spells in the Spells tab.** Mark which spells are prepared today, check the count against the engine's `prepared` number, show always-prepared spells as locked, wizard prepares from the spellbook only. Rituals castable unprepared where the class allows.
+B3. **Information while choosing.** Class, species, background and subclass cards that show their features and text (needs A1), a short "what this class does" line, and the ability scores each class wants (we already have `PRIORITY`).
+B4. **Optional-rule settings for the DM** (next to strict / manual scores): allow feats or not, allow multiclassing or not, HP fixed / rolled / both, starting level, encumbrance on or off.
+B5. **Choices the builder still writes as text:** tool and instrument picks (bard instruments, monk tools, dwarf tools exist), language picks from a list instead of free text, "any martial weapon"-type equipment.
+
+### Phase C: bigger features
+
+C1. **2024 rules (SRD 5.2) in the builder.** The Spells tab already has 2024 spells. Add `rules/srd52.js`: species without ability bonuses, backgrounds that give the ability increases and an origin feat, the 2024 class tables and features, weapon mastery, the SRD 5.2 feats. The engine and builder branch on `build.ruleset`; the campaign picks 2014 or 2024 (DM setting). Large: plan it as its own multi-step plan first.
+C2. **Export, print, share.** A printable sheet (print CSS, "Save as PDF" from the browser), a JSON export / import of one character, and a read-only share link.
+C3. **Homebrew between campaigns.** Export / import a campaign's homebrew as JSON, and a homebrew **class** form (the engine's `mergeRules` already takes `classes`; the editor has no form for it).
+C4. **Companions.** Familiar, Wild Shape and summon stat blocks from the SRD monsters (CC-BY), shown on the sheet and droppable as VTT tokens.
+
+### Phase D: before the site goes public (also in the warnings above)
+
+Licence switch (spell plan step 13), Firebase Authentication instead of plain-text passwords, deploy and test the database rules, Firebase Storage for maps and portraits, real tests on phones and with two people at once, `npm test` on a machine with Node. Also check the SRD 5.1 warlock 6th-level list (Arcane Gate seems to be missing from the data).
 
 Then: decide on merging `karakter-olusturucu` → `kampanya-sistemi` → `main` (ask first). Optional: the builder's edit screen showing every class's choices.
 
