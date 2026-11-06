@@ -118,14 +118,54 @@ test('catalog: every spell has a ruleset and a license', () => {
   }
 });
 
+const findIn = (name, ruleset) => CATALOG.filter((s) => s.name === name && s.ruleset === ruleset);
+
 test('catalog: tags follow the book and the SRD lists', () => {
-  const find = (name, source) => CATALOG.find((s) => s.name === name && s.source === source);
-  assert.deepEqual([find('Fire Bolt', 'SRD').ruleset, find('Fire Bolt', 'SRD').license], ['2014', 'srd51']);
-  assert.deepEqual([find('Fire Bolt', 'PHB').ruleset, find('Fire Bolt', 'PHB').license], ['2014', 'srd51']);
-  assert.deepEqual([find('Fire Bolt', 'XPHB').ruleset, find('Fire Bolt', 'XPHB').license], ['2024', 'srd52']);
-  assert.deepEqual([find('Hex', 'PHB').ruleset, find('Hex', 'PHB').license], ['2014', 'none']);   // not in SRD 5.1
-  assert.deepEqual([find('Hex', 'XPHB').ruleset, find('Hex', 'XPHB').license], ['2024', 'srd52']); // in SRD 5.2
-  assert.equal(CATALOG.filter((s) => s.source === 'SRD').every((s) => s.license === 'srd51'), true);
+  const one = (name, ruleset) => { const f = findIn(name, ruleset); assert.equal(f.length, 1, name + ' ' + ruleset); return f[0]; };
+  assert.deepEqual([one('Fire Bolt', '2014').source, one('Fire Bolt', '2014').license], ['SRD', 'srd51']);
+  assert.deepEqual([one('Fire Bolt', '2024').source, one('Fire Bolt', '2024').license], ['SRD52', 'srd52']);
+  assert.deepEqual([one('Hex', '2014').source, one('Hex', '2014').license], ['PHB', 'none']);   // not in SRD 5.1
+  assert.deepEqual([one('Hex', '2024').source, one('Hex', '2024').license], ['SRD52', 'srd52']); // in SRD 5.2
+  assert.ok(CATALOG.filter((s) => s.source === 'SRD').every((s) => s.license === 'srd51'));
+  assert.ok(CATALOG.filter((s) => s.source === 'SRD52').every((s) => s.license === 'srd52'));
+});
+
+test('catalog: one entry per spell per ruleset', () => {
+  const seen = new Set();
+  for (const s of CATALOG) {
+    const k = s.ruleset + '|' + s.name.toLowerCase();
+    assert.ok(!seen.has(k), 'duplicate ' + k);
+    seen.add(k);
+    assert.ok(Array.isArray(s.books) && s.books.length, s.name + ': books');
+  }
+  // every SRD spell exactly once, under its SRD name
+  assert.equal(CATALOG.filter((s) => s.license === 'srd51').length, SPELLS.length);
+  assert.equal(CATALOG.filter((s) => s.license === 'srd52').length, SPELLS52.length);
+});
+
+test('catalog: SRD renames and book copies are merged into the SRD entry', () => {
+  const disk = findIn('Floating Disk', '2014')[0];
+  assert.deepEqual(disk.aliases, ["Tenser's Floating Disk"]);
+  assert.deepEqual(disk.books, ['SRD', 'PHB']);
+  assert.equal(findIn("Tenser's Floating Disk", '2014').length, 0);
+  assert.deepEqual(findIn('Arcane Sword', '2024')[0].aliases, ["Mordenkainen's Sword"]);
+  // a different spell with a similar name is not merged
+  assert.equal(findIn("Jim's Magic Missile", '2014').length, 1);
+  assert.equal(findIn('Magic Missile', '2014')[0].aliases, undefined);
+});
+
+test('catalog: SRD entries carry the real SRD stats in the Spells tab format', () => {
+  const g = findIn('Guidance', '2014')[0];
+  assert.deepEqual(g.classes, ['Cleric', 'Druid']);
+  assert.equal(g.duration, 'Concentration, up to 1 minute');
+  assert.equal(g.concentration, true);
+  const f = findIn('Fireball', '2014')[0];
+  assert.equal(f.components, 'V, S, M (a tiny ball of bat guano and sulfur)');
+  assert.equal(f.schoolName, 'Evocation');
+  assert.equal(f.school, 'V');
+  assert.ok(f.desc.includes('The fire spreads around corners.'));
+  assert.equal(findIn('Spiritual Weapon', '2024')[0].concentration, true);
+  assert.ok(findIn('Control Water', '2024')[0].textIssue);
 });
 
 test('catalog: spell-catalog.js holds the same data as the JSON', () => {

@@ -37,6 +37,7 @@ const BOOKS = {
   BMT: '2014',        // The Book of Many Things
   SatO: '2014',       // Sigil and the Outlands
   'AitFR-AVT': '2014', // Adventures in the Forgotten Realms: A Verdant Tomb
+  SRD52: '2024',      // System Reference Document 5.2 (set by tools/merge-spell-catalog.js)
   XPHB: '2024',       // Player's Handbook (2024)
   FRHoF: '2024',      // Forgotten Realms: Heroes of Faerûn
   EFA: '2024'         // Eberron: Forge of the Artificer
@@ -60,6 +61,7 @@ const tagged = catalog.map((spell) => {
   if (!ruleset) throw new Error('Unknown book "' + spell.source + '" on ' + spell.name + ' — add it to BOOKS');
   const license = licenseOf(spell, ruleset);
   if (spell.source === 'SRD' && license !== 'srd51') throw new Error('SRD entry not in SRD 5.1 data: ' + spell.name);
+  if (spell.source === 'SRD52' && license !== 'srd52') throw new Error('SRD52 entry not in SRD 5.2 data: ' + spell.name);
   const k = ruleset + ' ' + license;
   counts[k] = (counts[k] || 0) + 1;
 
