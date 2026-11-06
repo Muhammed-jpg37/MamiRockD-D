@@ -2,6 +2,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Acid Splash",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -27,6 +29,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Acid Splash",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -51,6 +55,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Acid Splash",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -76,6 +82,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blade Ward",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "A",
@@ -98,6 +106,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blade Ward",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "A",
@@ -120,6 +130,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Booming Blade",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -144,6 +156,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chill Touch",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "N",
@@ -168,6 +182,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chill Touch",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -191,6 +207,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chill Touch",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "N",
@@ -215,6 +233,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Control Flames",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -238,6 +258,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Bonfire",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -265,6 +287,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dancing Lights",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -288,6 +312,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dancing Lights",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -310,6 +336,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dancing Lights",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "I",
@@ -333,6 +361,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Druidcraft",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -356,6 +386,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Druidcraft",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -378,6 +410,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Druidcraft",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -401,6 +435,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Eldritch Blast",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -425,6 +461,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Eldritch Blast",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -449,6 +487,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Eldritch Blast",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -473,6 +513,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Elementalism",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -496,6 +538,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Encode Thoughts",
     "source": "GGR",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "E",
@@ -519,6 +563,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Bolt",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -544,6 +590,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Bolt",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -567,6 +615,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Bolt",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -592,6 +642,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Friends",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "E",
@@ -615,6 +667,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Friends",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "E",
@@ -638,6 +692,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Frostbite",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -662,6 +718,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Green-Flame Blade",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -686,6 +744,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guidance",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "D",
@@ -707,6 +767,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guidance",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -729,6 +791,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guidance",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "D",
@@ -750,6 +814,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gust",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -773,6 +839,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Infestation",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -797,6 +865,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Light",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -820,6 +890,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Light",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -842,6 +914,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Light",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -865,6 +939,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lightning Lure",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -890,6 +966,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mage Hand",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -913,6 +991,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mage Hand",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -935,6 +1015,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mage Hand",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -958,6 +1040,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Stone",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -982,6 +1066,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mending",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1005,6 +1091,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mending",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1027,6 +1115,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mending",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1050,6 +1140,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Message",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1073,6 +1165,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Message",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1095,6 +1189,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Message",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1118,6 +1214,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mind Sliver",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "E",
@@ -1142,6 +1240,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mind Sliver",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "E",
@@ -1166,6 +1266,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Minor Illusion",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "I",
@@ -1189,6 +1291,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Minor Illusion",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1211,6 +1315,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Minor Illusion",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "I",
@@ -1234,6 +1340,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mold Earth",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1257,6 +1365,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Poison Spray",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -1281,6 +1391,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Poison Spray",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1304,6 +1416,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Poison Spray",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "N",
@@ -1328,6 +1442,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prestidigitation",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1351,6 +1467,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prestidigitation",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1373,6 +1491,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prestidigitation",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1396,6 +1516,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Primal Savagery",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1420,6 +1542,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Produce Flame",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -1444,6 +1568,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Produce Flame",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1467,6 +1593,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Produce Flame",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -1491,6 +1619,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ray of Frost",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -1515,6 +1645,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ray of Frost",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1538,6 +1670,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ray of Frost",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -1562,6 +1696,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Resistance",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "A",
@@ -1584,6 +1720,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Resistance",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1606,6 +1744,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Resistance",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "A",
@@ -1628,6 +1768,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sacred Flame",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -1653,6 +1795,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sacred Flame",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1675,6 +1819,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sacred Flame",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -1700,6 +1846,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sapping Sting",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "N",
@@ -1724,6 +1872,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shape Water",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1747,6 +1897,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shillelagh",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1771,6 +1923,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shillelagh",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1794,6 +1948,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shillelagh",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -1818,6 +1974,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shocking Grasp",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -1842,6 +2000,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shocking Grasp",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1865,6 +2025,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shocking Grasp",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -1889,6 +2051,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sorcerous Burst",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -1913,6 +2077,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spare the Dying",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "N",
@@ -1936,6 +2102,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spare the Dying",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -1958,6 +2126,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spare the Dying",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "N",
@@ -1981,6 +2151,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Starry Wisp",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -2004,6 +2176,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sword Burst",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "C",
@@ -2029,6 +2203,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thaumaturgy",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -2052,6 +2228,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thaumaturgy",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -2074,6 +2252,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thaumaturgy",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -2097,6 +2277,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thorn Whip",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -2121,6 +2303,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thorn Whip",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "T",
@@ -2145,6 +2329,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thunderclap",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -2169,6 +2355,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thunderclap",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -2193,6 +2381,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Toll the Dead",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "N",
@@ -2217,6 +2407,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Toll the Dead",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "N",
@@ -2241,6 +2433,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Strike",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "D",
@@ -2262,6 +2456,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Strike",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -2284,6 +2480,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Strike",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "D",
@@ -2305,6 +2503,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vicious Mockery",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "E",
@@ -2329,6 +2529,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vicious Mockery",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "",
@@ -2351,6 +2553,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vicious Mockery",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "E",
@@ -2375,6 +2579,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Word of Radiance",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -2400,6 +2606,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Word of Radiance",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Cantrip",
     "levelNum": 0,
     "school": "V",
@@ -2425,6 +2633,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Absorb Elements",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -2447,6 +2657,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Alarm",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -2469,6 +2681,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Alarm",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -2491,6 +2705,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Alarm",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -2513,6 +2729,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Friendship",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -2537,6 +2755,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Friendship",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -2558,6 +2778,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Friendship",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -2582,6 +2804,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Armor of Agathys",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -2604,6 +2828,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Armor of Agathys",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -2626,6 +2852,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arms of Hadar",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -2651,6 +2879,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arms of Hadar",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -2676,6 +2906,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bane",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -2699,6 +2931,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bane",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -2721,6 +2955,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bane",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -2744,6 +2980,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Beast Bond",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -2766,6 +3004,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bless",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -2789,6 +3029,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bless",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -2812,6 +3054,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bless",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -2835,6 +3079,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Burning Hands",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -2859,6 +3105,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Burning Hands",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -2882,6 +3130,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Burning Hands",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -2906,6 +3156,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Catapult",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -2930,6 +3182,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cause Fear",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "N",
@@ -2953,6 +3207,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ceremony",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -2975,6 +3231,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chaos Bolt",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -2999,6 +3257,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Charm Person",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -3022,6 +3282,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Charm Person",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3043,6 +3305,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Charm Person",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -3066,6 +3330,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chromatic Orb",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -3090,6 +3356,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chromatic Orb",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -3114,6 +3382,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Color Spray",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -3137,6 +3407,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Color Spray",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3159,6 +3431,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Color Spray",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -3182,6 +3456,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Command",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -3205,6 +3481,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Command",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3227,6 +3505,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Command",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -3250,6 +3530,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Compelled Duel",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -3274,6 +3556,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Compelled Duel",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -3298,6 +3582,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Comprehend Languages",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -3319,6 +3605,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Comprehend Languages",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3341,6 +3629,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Comprehend Languages",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -3362,6 +3652,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create or Destroy Water",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -3385,6 +3677,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create or Destroy Water",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3407,6 +3701,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create or Destroy Water",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -3430,6 +3726,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cure Wounds",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -3458,6 +3756,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cure Wounds",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3486,6 +3786,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cure Wounds",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -3514,6 +3816,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Evil and Good",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -3535,6 +3839,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Evil and Good",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3557,6 +3863,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Evil and Good",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -3578,6 +3886,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Magic",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -3599,6 +3909,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Magic",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3621,6 +3933,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Magic",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -3642,6 +3956,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Poison and Disease",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -3663,6 +3979,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Poison and Disease",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3685,6 +4003,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Poison and Disease",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -3706,6 +4026,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Disguise Self",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -3729,6 +4051,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Disguise Self",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3751,6 +4075,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Disguise Self",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -3774,6 +4100,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dissonant Whispers",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -3798,6 +4126,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dissonant Whispers",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -3822,6 +4152,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Distort Value",
     "source": "AI",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -3845,6 +4177,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divine Favor",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -3869,6 +4203,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divine Favor",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -3890,6 +4226,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divine Favor",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -3914,6 +4252,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divine Smite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -3938,6 +4278,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Earth Tremor",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -3962,6 +4304,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ensnaring Strike",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -3985,6 +4329,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ensnaring Strike",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4008,6 +4354,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Entangle",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4031,6 +4379,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Entangle",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4053,6 +4403,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Entangle",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4076,6 +4428,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Expeditious Retreat",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -4099,6 +4453,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Expeditious Retreat",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4121,6 +4477,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Expeditious Retreat",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -4144,6 +4502,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Faerie Fire",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -4168,6 +4528,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Faerie Fire",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4190,6 +4552,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Faerie Fire",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -4214,6 +4578,8 @@ window.SPELL_CATALOG = [
   {
     "name": "False Life",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "N",
@@ -4237,6 +4603,8 @@ window.SPELL_CATALOG = [
   {
     "name": "False Life",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4259,6 +4627,8 @@ window.SPELL_CATALOG = [
   {
     "name": "False Life",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "N",
@@ -4282,6 +4652,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Feather Fall",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -4305,6 +4677,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Feather Fall",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4327,6 +4701,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Feather Fall",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -4350,6 +4726,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Familiar",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4373,6 +4751,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Familiar",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4395,6 +4775,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Familiar",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4418,6 +4800,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Floating Disk",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4440,6 +4824,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fog Cloud",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4463,6 +4849,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fog Cloud",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4485,6 +4873,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fog Cloud",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4508,6 +4898,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Frost Fingers",
     "source": "IDRotF",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -4531,6 +4923,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gift of Alacrity",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -4552,6 +4946,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Goodberry",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -4575,6 +4971,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Goodberry",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4597,6 +4995,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Goodberry",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4620,6 +5020,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Grease",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4643,6 +5045,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Grease",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4665,6 +5069,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Grease",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4688,6 +5094,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guiding Bolt",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -4712,6 +5120,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guiding Bolt",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4735,6 +5145,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guiding Bolt",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -4759,6 +5171,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hail of Thorns",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4783,6 +5197,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hail of Thorns",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -4807,6 +5223,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Healing Word",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -4832,6 +5250,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Healing Word",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4857,6 +5277,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Healing Word",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -4882,6 +5304,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hellish Rebuke",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -4907,6 +5331,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hellish Rebuke",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -4929,6 +5355,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hellish Rebuke",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -4954,6 +5382,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heroism",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -4977,6 +5407,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heroism",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5000,6 +5432,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heroism",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -5023,6 +5457,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hex",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -5046,6 +5482,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hex",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -5069,6 +5507,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hideous Laughter",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5091,6 +5531,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hunter's Mark",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -5115,6 +5557,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hunter's Mark",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5139,6 +5583,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hunter's Mark",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -5163,6 +5609,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ice Knife",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -5188,6 +5636,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ice Knife",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -5213,6 +5663,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Identify",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -5234,6 +5686,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Identify",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5256,6 +5710,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Identify",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -5277,6 +5733,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Illusory Script",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -5300,6 +5758,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Illusory Script",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5322,6 +5782,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Illusory Script",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -5345,6 +5807,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Inflict Wounds",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "N",
@@ -5369,6 +5833,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Inflict Wounds",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5392,6 +5858,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Inflict Wounds",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "N",
@@ -5416,6 +5884,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Jim's Magic Missile",
     "source": "AI",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -5440,6 +5910,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Jump",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -5463,6 +5935,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Jump",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5485,6 +5959,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Jump",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -5508,6 +5984,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Longstrider",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -5531,6 +6009,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Longstrider",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5553,6 +6033,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Longstrider",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -5576,6 +6058,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mage Armor",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -5598,6 +6082,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mage Armor",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5620,6 +6106,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mage Armor",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -5642,6 +6130,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Missile",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -5666,6 +6156,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Missile",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5689,6 +6181,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Missile",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -5713,6 +6207,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magnify Gravity",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -5736,6 +6232,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection from Evil and Good",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -5758,6 +6256,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection from Evil and Good",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5780,6 +6280,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection from Evil and Good",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -5802,6 +6304,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Purify Food and Drink",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -5825,6 +6329,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Purify Food and Drink",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5847,6 +6353,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Purify Food and Drink",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -5870,6 +6378,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ray of Sickness",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "N",
@@ -5894,6 +6404,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ray of Sickness",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "N",
@@ -5918,6 +6430,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sanctuary",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -5940,6 +6454,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sanctuary",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -5961,6 +6477,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sanctuary",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -5983,6 +6501,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Searing Smite",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6007,6 +6527,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Searing Smite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6031,6 +6553,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shield",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -6054,6 +6578,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shield",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -6077,6 +6603,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shield",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -6100,6 +6628,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shield of Faith",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -6122,6 +6652,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shield of Faith",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -6144,6 +6676,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shield of Faith",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -6166,6 +6700,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Silent Image",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -6189,6 +6725,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Silent Image",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -6211,6 +6749,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Silent Image",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "I",
@@ -6234,6 +6774,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Silvery Barbs",
     "source": "SCC",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -6263,6 +6805,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sleep",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -6286,6 +6830,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sleep",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -6308,6 +6854,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sleep",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -6331,6 +6879,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Snare",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -6354,6 +6904,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Animals",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -6376,6 +6928,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Animals",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -6397,6 +6951,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Animals",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "D",
@@ -6419,6 +6975,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spellfire Flare",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6443,6 +7001,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tasha's Caustic Brew",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6467,6 +7027,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tasha's Hideous Laughter",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -6490,6 +7052,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tasha's Hideous Laughter",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "E",
@@ -6513,6 +7077,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tenser's Floating Disk",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -6536,6 +7102,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tenser's Floating Disk",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -6559,6 +7127,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thunderous Smite",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6583,6 +7153,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thunderous Smite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6607,6 +7179,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thunderwave",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6631,6 +7205,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thunderwave",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -6654,6 +7230,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thunderwave",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6678,6 +7256,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Unseen Servant",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -6701,6 +7281,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Unseen Servant",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "",
@@ -6723,6 +7305,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Unseen Servant",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "C",
@@ -6746,6 +7330,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wardaway",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "A",
@@ -6768,6 +7354,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Witch Bolt",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6792,6 +7380,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Witch Bolt",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6816,6 +7406,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wrathful Smite",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "V",
@@ -6840,6 +7432,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wrathful Smite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "N",
@@ -6865,6 +7459,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Zephyr Strike",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 1",
     "levelNum": 1,
     "school": "T",
@@ -6888,6 +7484,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Acid Arrow",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -6911,6 +7509,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aganazzar's Scorcher",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -6935,6 +7535,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aid",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -6957,6 +7559,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aid",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -6979,6 +7583,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aid",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -7001,6 +7607,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Air Bubble",
     "source": "AAG",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -7024,6 +7632,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Alter Self",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -7047,6 +7657,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Alter Self",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7069,6 +7681,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Alter Self",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -7092,6 +7706,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Messenger",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -7116,6 +7732,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Messenger",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7137,6 +7755,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Messenger",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -7161,6 +7781,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Lock",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -7183,6 +7805,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Lock",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7205,6 +7829,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Lock",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -7227,6 +7853,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Vigor",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -7249,6 +7877,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcanist's Magic Aura",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7270,6 +7900,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Augury",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -7291,6 +7923,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Augury",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7313,6 +7947,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Augury",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -7334,6 +7970,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Barkskin",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -7357,6 +7995,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Barkskin",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7379,6 +8019,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Barkskin",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -7402,6 +8044,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Beast Sense",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -7424,6 +8068,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Beast Sense",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -7446,6 +8092,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blindness/Deafness",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "N",
@@ -7470,6 +8118,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blindness/Deafness",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7493,6 +8143,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blindness/Deafness",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -7517,6 +8169,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blur",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -7540,6 +8194,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blur",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7562,6 +8218,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blur",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -7585,6 +8243,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Borrowed Knowledge",
     "source": "SCC",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -7613,6 +8273,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Branding Smite",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -7637,6 +8299,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Branding Smite",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7659,6 +8323,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Calm Emotions",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -7682,6 +8348,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Calm Emotions",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7704,6 +8372,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Calm Emotions",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -7727,6 +8397,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cloud of Daggers",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -7751,6 +8423,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cloud of Daggers",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -7775,6 +8449,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Continual Flame",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -7798,6 +8474,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Continual Flame",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7820,6 +8498,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Continual Flame",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -7843,6 +8523,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cordon of Arrows",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -7867,6 +8549,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cordon of Arrows",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -7891,6 +8575,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Crown of Madness",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -7914,6 +8600,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Crown of Madness",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -7937,6 +8625,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Darkness",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -7960,6 +8650,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Darkness",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -7982,6 +8674,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Darkness",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -8005,6 +8699,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Darkvision",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8028,6 +8724,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Darkvision",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8050,6 +8748,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Darkvision",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8073,6 +8773,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Death Armor",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "N",
@@ -8096,6 +8798,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Deryan's Helpful Homunculi",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -8119,6 +8823,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Thoughts",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -8140,6 +8846,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Thoughts",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8162,6 +8870,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Detect Thoughts",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -8183,6 +8893,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dragon's Breath",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8207,6 +8919,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dragon's Breath",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8231,6 +8945,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dust Devil",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -8254,6 +8970,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Earthbind",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8277,6 +8995,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Elminster's Elusion",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -8299,6 +9019,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enhance Ability",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8322,6 +9044,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enhance Ability",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8344,6 +9068,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enhance Ability",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8367,6 +9093,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enlarge/Reduce",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8390,6 +9118,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enlarge/Reduce",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8412,6 +9142,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enlarge/Reduce",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -8435,6 +9167,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enthrall",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -8458,6 +9192,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enthrall",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8480,6 +9216,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enthrall",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -8503,6 +9241,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Steed",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -8526,6 +9266,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Steed",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8548,6 +9290,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Steed",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -8571,6 +9315,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Traps",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -8592,6 +9338,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Traps",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8614,6 +9362,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Traps",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -8635,6 +9385,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flame Blade",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -8659,6 +9411,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flame Blade",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8682,6 +9436,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flame Blade",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -8706,6 +9462,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flaming Sphere",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -8729,6 +9487,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flaming Sphere",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8751,6 +9511,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flaming Sphere",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -8774,6 +9536,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flock of Familiars",
     "source": "LLK",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -8797,6 +9561,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fortune's Favor",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -8818,6 +9584,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gentle Repose",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "N",
@@ -8841,6 +9609,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gentle Repose",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8863,6 +9633,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gentle Repose",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "N",
@@ -8886,6 +9658,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gift of Gab",
     "source": "AI",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -8909,6 +9683,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gust of Wind",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -8933,6 +9709,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gust of Wind",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -8954,6 +9732,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gust of Wind",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -8978,6 +9758,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Healing Spirit",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -9003,6 +9785,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heat Metal",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9027,6 +9811,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heat Metal",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9050,6 +9836,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heat Metal",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9074,6 +9862,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hold Person",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -9101,6 +9891,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hold Person",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9128,6 +9920,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hold Person",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -9155,6 +9949,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Homunculus Servant",
     "source": "EFA",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -9178,6 +9974,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Immovable Object",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9201,6 +9999,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Invisibility",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -9224,6 +10024,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Invisibility",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9246,6 +10048,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Invisibility",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -9269,6 +10073,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Jim's Glowing Coin",
     "source": "AI",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -9292,6 +10098,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Kinetic Jaunt",
     "source": "SCC",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9323,6 +10131,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Knock",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9346,6 +10156,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Knock",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9368,6 +10180,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Knock",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9391,6 +10205,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lesser Restoration",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -9413,6 +10229,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lesser Restoration",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9435,6 +10253,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lesser Restoration",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -9457,6 +10277,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Levitate",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9480,6 +10302,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Levitate",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9502,6 +10326,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Levitate",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9525,6 +10351,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Animals or Plants",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -9547,6 +10375,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Animals or Plants",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9568,6 +10398,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Animals or Plants",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -9590,6 +10422,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Object",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -9611,6 +10445,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Object",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9633,6 +10469,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Object",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -9654,6 +10492,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Mouth",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -9677,6 +10517,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Mouth",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9699,6 +10541,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Mouth",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -9722,6 +10566,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Weapon",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9745,6 +10591,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Weapon",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9767,6 +10615,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Weapon",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9790,6 +10640,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Maximilian's Earthen Grasp",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -9813,6 +10665,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Melf's Acid Arrow",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -9839,6 +10693,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Melf's Acid Arrow",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -9865,6 +10721,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mind Spike",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -9887,6 +10745,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mind Spike",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -9909,6 +10769,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mirror Image",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -9932,6 +10794,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mirror Image",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -9954,6 +10818,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mirror Image",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -9977,6 +10843,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Misty Step",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -10002,6 +10870,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Misty Step",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10027,6 +10897,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Misty Step",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -10052,6 +10924,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Moonbeam",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10076,6 +10950,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Moonbeam",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10099,6 +10975,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Moonbeam",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10123,6 +11001,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Nathair's Mischief",
     "source": "FTD",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -10146,6 +11026,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Nystul's Magic Aura",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -10170,6 +11052,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Nystul's Magic Aura",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -10194,6 +11078,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Pass without Trace",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -10217,6 +11103,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Pass without Trace",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -10240,6 +11128,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Pass Without Trace",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10261,6 +11151,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Phantasmal Force",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -10285,6 +11177,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Phantasmal Force",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -10309,6 +11203,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prayer of Healing",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10335,6 +11231,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prayer of Healing",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10358,6 +11256,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prayer of Healing",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -10382,6 +11282,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection from Poison",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -10404,6 +11306,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection from Poison",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10426,6 +11330,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection from Poison",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -10448,6 +11354,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Pyrotechnics",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -10471,6 +11379,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ray of Enfeeblement",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "N",
@@ -10494,6 +11404,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ray of Enfeeblement",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10516,6 +11428,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ray of Enfeeblement",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "N",
@@ -10539,6 +11453,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Rime's Binding Ice",
     "source": "FTD",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10563,6 +11479,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Rope Trick",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -10586,6 +11504,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Rope Trick",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10608,6 +11528,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Rope Trick",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -10631,6 +11553,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Scorching Ray",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10655,6 +11579,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Scorching Ray",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10678,6 +11604,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Scorching Ray",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10702,6 +11630,8 @@ window.SPELL_CATALOG = [
   {
     "name": "See Invisibility",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -10723,6 +11653,8 @@ window.SPELL_CATALOG = [
   {
     "name": "See Invisibility",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10745,6 +11677,8 @@ window.SPELL_CATALOG = [
   {
     "name": "See Invisibility",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -10766,6 +11700,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shadow Blade",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -10789,6 +11725,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shatter",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10813,6 +11751,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shatter",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10836,6 +11776,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shatter",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10860,6 +11802,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shining Smite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -10884,6 +11828,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Silence",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -10907,6 +11853,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Silence",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -10929,6 +11877,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Silence",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "I",
@@ -10952,6 +11902,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Skywrite",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -10975,6 +11927,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Snilloc's Snowball Swarm",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -10999,6 +11953,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spider Climb",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -11022,6 +11978,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spider Climb",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -11044,6 +12002,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spider Climb",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -11067,6 +12027,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spike Growth",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -11090,6 +12052,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spike Growth",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -11112,6 +12076,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spike Growth",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "T",
@@ -11135,6 +12101,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spiritual Weapon",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -11160,6 +12128,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spiritual Weapon",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -11182,6 +12152,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spiritual Weapon",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -11207,6 +12179,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spray of Cards",
     "source": "BMT",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -11230,6 +12204,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Suggestion",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -11253,6 +12229,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Suggestion",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -11275,6 +12253,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Suggestion",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -11298,6 +12278,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Beast",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -11321,6 +12303,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Beast",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -11344,6 +12328,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tasha's Mind Whip",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -11368,6 +12354,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vortex Warp",
     "source": "SCC",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -11397,6 +12385,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Warding Bond",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -11419,6 +12409,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Warding Bond",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -11441,6 +12433,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Warding Bond",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "A",
@@ -11463,6 +12457,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Warding Wind",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "V",
@@ -11487,6 +12483,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Warp Sense",
     "source": "SatO",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "D",
@@ -11508,6 +12506,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Web",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -11531,6 +12531,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Web",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -11553,6 +12555,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Web",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -11576,6 +12580,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wither and Bloom",
     "source": "SCC",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "N",
@@ -11605,6 +12611,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wristpocket",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "C",
@@ -11628,6 +12636,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Zone of Truth",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -11651,6 +12661,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Zone of Truth",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "",
@@ -11673,6 +12685,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Zone of Truth",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 2",
     "levelNum": 2,
     "school": "E",
@@ -11696,6 +12710,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animate Dead",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -11719,6 +12735,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animate Dead",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -11741,6 +12759,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animate Dead",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -11764,6 +12784,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antagonize",
     "source": "BMT",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "E",
@@ -11787,6 +12809,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ashardalon's Stride",
     "source": "FTD",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -11810,6 +12834,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aura of Vitality",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -11833,6 +12859,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aura of Vitality",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -11856,6 +12884,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Beacon of Hope",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -11878,6 +12908,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Beacon of Hope",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -11900,6 +12932,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Beacon of Hope",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -11922,6 +12956,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bestow Curse",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -11946,6 +12982,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bestow Curse",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -11969,6 +13007,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bestow Curse",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -11993,6 +13033,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blinding Smite",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -12018,6 +13060,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blinding Smite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -12043,6 +13087,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blink",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -12066,6 +13112,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blink",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12088,6 +13136,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blink",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -12111,6 +13161,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cacophonic Shield",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -12134,6 +13186,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Call Lightning",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12160,6 +13214,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Call Lightning",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12183,6 +13239,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Call Lightning",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12209,6 +13267,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Catnap",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "E",
@@ -12232,6 +13292,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Clairvoyance",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "D",
@@ -12253,6 +13315,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Clairvoyance",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12275,6 +13339,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Clairvoyance",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "D",
@@ -12296,6 +13362,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Animals",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12319,6 +13387,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Animals",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12340,6 +13410,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Animals",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12363,6 +13435,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Barrage",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12386,6 +13460,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Barrage",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12409,6 +13485,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Constructs",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12432,6 +13510,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Counterspell",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -12457,6 +13537,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Counterspell",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12482,6 +13564,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Counterspell",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -12507,6 +13591,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Food and Water",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12530,6 +13616,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Food and Water",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12552,6 +13640,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Food and Water",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -12575,6 +13665,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Crusader's Mantle",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -12598,6 +13690,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Crusader's Mantle",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -12621,6 +13715,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Daylight",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -12644,6 +13740,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Daylight",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12666,6 +13764,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Daylight",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -12689,6 +13789,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dispel Magic",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -12711,6 +13813,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dispel Magic",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12733,6 +13837,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dispel Magic",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -12755,6 +13861,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Elemental Weapon",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -12778,6 +13886,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Elemental Weapon",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -12801,6 +13911,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enemies Abound",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "E",
@@ -12824,6 +13936,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Erupting Earth",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -12848,6 +13962,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fast Friends",
     "source": "AI",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "E",
@@ -12871,6 +13987,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fear",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "I",
@@ -12894,6 +14012,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fear",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -12916,6 +14036,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fear",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "I",
@@ -12939,6 +14061,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Feign Death",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -12962,6 +14086,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Feign Death",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -12985,6 +14111,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fireball",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -13010,6 +14138,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fireball",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13035,6 +14165,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fireball",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -13060,6 +14192,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flame Arrows",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13084,6 +14218,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fly",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13107,6 +14243,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fly",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13129,6 +14267,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fly",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13152,6 +14292,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Galder's Tower",
     "source": "LLK",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -13175,6 +14317,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gaseous Form",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13198,6 +14342,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gaseous Form",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13220,6 +14366,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gaseous Form",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13243,6 +14391,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Glyph of Warding",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -13265,6 +14415,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Glyph of Warding",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13287,6 +14439,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Glyph of Warding",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -13309,6 +14463,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Haste",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13333,6 +14489,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Haste",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13357,6 +14515,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Haste",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13381,6 +14541,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hunger of Hadar",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -13406,6 +14568,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hunger of Hadar",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -13431,6 +14595,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hypnotic Pattern",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "I",
@@ -13454,6 +14620,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hypnotic Pattern",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13476,6 +14644,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hypnotic Pattern",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "I",
@@ -13499,6 +14669,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Incite Greed",
     "source": "AI",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "E",
@@ -13522,6 +14694,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Intellect Fortress",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -13544,6 +14718,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Laeral's Silver Lance",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -13567,6 +14743,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Leomund's Tiny Hut",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -13590,6 +14768,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Leomund's Tiny Hut",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -13613,6 +14793,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Life Transference",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -13636,6 +14818,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lightning Arrow",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13661,6 +14845,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lightning Arrow",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -13686,6 +14872,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lightning Bolt",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -13711,6 +14899,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lightning Bolt",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13734,6 +14924,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Lightning Bolt",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -13759,6 +14951,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Linked Glyphs",
     "source": "AitFR-AVT",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -13781,6 +14975,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Circle",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -13803,6 +14999,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Circle",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13825,6 +15023,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Circle",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -13847,6 +15047,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Major Image",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "I",
@@ -13870,6 +15072,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Major Image",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13892,6 +15096,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Major Image",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "I",
@@ -13915,6 +15121,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Healing Word",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -13942,6 +15150,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Healing Word",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -13966,6 +15176,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Healing Word",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -13991,6 +15203,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Meld Into Stone",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14012,6 +15226,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Meld into Stone",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -14035,6 +15251,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Meld into Stone",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -14058,6 +15276,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Melf's Minute Meteors",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -14082,6 +15302,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Motivational Speech",
     "source": "AI",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "E",
@@ -14105,6 +15327,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Nondetection",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -14127,6 +15351,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Nondetection",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14149,6 +15375,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Nondetection",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -14171,6 +15399,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Phantom Steed",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "I",
@@ -14194,6 +15424,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Phantom Steed",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14216,6 +15448,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Phantom Steed",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "I",
@@ -14239,6 +15473,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Plant Growth",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -14262,6 +15498,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Plant Growth",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14283,6 +15521,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Plant Growth",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -14306,6 +15546,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection from Energy",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -14328,6 +15570,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection from Energy",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -14350,6 +15594,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Protection From Energy",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14372,6 +15618,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Pulse Wave",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -14396,6 +15644,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Remove Curse",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -14419,6 +15669,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Remove Curse",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14442,6 +15694,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Remove Curse",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "A",
@@ -14465,6 +15719,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Revivify",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -14488,6 +15744,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Revivify",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14510,6 +15768,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Revivify",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -14533,6 +15793,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sending",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -14556,6 +15818,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sending",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14578,6 +15842,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sending",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "D",
@@ -14599,6 +15865,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sleet Storm",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -14622,6 +15890,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sleet Storm",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14643,6 +15913,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sleet Storm",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -14666,6 +15938,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Slow",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -14689,6 +15963,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Slow",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14711,6 +15987,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Slow",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -14734,6 +16012,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Dead",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -14757,6 +16037,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Dead",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14779,6 +16061,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Dead",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -14802,6 +16086,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Plants",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -14825,6 +16111,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Plants",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14846,6 +16134,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Speak with Plants",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -14869,6 +16159,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spirit Guardians",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -14894,6 +16186,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spirit Guardians",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -14916,6 +16210,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spirit Guardians",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -14941,6 +16237,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spirit Shroud",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -14964,6 +16262,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stinking Cloud",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -14987,6 +16287,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stinking Cloud",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -15009,6 +16311,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stinking Cloud",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -15032,6 +16336,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Fey",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -15055,6 +16361,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Fey",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -15078,6 +16386,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Lesser Demons",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -15101,6 +16411,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Shadowspawn",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -15124,6 +16436,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Undead",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -15147,6 +16461,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Undead",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -15170,6 +16486,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Syluné's Viper",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -15193,6 +16511,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Thunder Step",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -15216,6 +16536,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tidal Wave",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "C",
@@ -15239,6 +16561,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tiny Hut",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -15261,6 +16585,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tiny Servant",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -15284,6 +16610,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tongues",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "D",
@@ -15305,6 +16633,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tongues",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -15327,6 +16657,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tongues",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "D",
@@ -15348,6 +16680,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vampiric Touch",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -15372,6 +16706,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vampiric Touch",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -15395,6 +16731,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vampiric Touch",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "N",
@@ -15419,6 +16757,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Sand",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -15442,6 +16782,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Water",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -15465,6 +16807,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Water Breathing",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -15488,6 +16832,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Water Breathing",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -15510,6 +16856,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Water Breathing",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -15533,6 +16881,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Water Walk",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -15556,6 +16906,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Water Walk",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -15578,6 +16930,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Water Walk",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "T",
@@ -15601,6 +16955,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wind Wall",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -15625,6 +16981,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wind Wall",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "",
@@ -15646,6 +17004,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wind Wall",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 3",
     "levelNum": 3,
     "school": "V",
@@ -15670,6 +17030,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Eye",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "D",
@@ -15691,6 +17053,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Eye",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -15713,6 +17077,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Eye",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "D",
@@ -15734,6 +17100,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aura of Life",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -15757,6 +17125,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aura of Life",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -15780,6 +17150,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aura of Purity",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -15803,6 +17175,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Aura of Purity",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -15826,6 +17200,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Backlash",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -15848,6 +17224,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Banishment",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -15870,6 +17248,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Banishment",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -15892,6 +17272,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Banishment",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -15914,6 +17296,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Black Tentacles",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -15936,6 +17320,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blight",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "N",
@@ -15960,6 +17346,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blight",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -15983,6 +17371,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blight",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "N",
@@ -16007,6 +17397,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Charm Monster",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -16030,6 +17422,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Charm Monster",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -16053,6 +17447,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Compulsion",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -16076,6 +17472,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Compulsion",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16098,6 +17496,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Compulsion",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -16121,6 +17521,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Confusion",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -16144,6 +17546,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Confusion",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16166,6 +17570,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Confusion",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -16189,6 +17595,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Minor Elementals",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16212,6 +17620,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Minor Elementals",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16234,6 +17644,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Minor Elementals",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16257,6 +17669,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Woodland Beings",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16280,6 +17694,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Woodland Beings",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16302,6 +17718,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Woodland Beings",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16325,6 +17743,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Control Water",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -16348,6 +17768,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Control Water",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16370,6 +17792,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Control Water",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -16393,6 +17817,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Death Ward",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -16415,6 +17841,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Death Ward",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16437,6 +17865,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Death Ward",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -16459,6 +17889,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dimension Door",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16482,6 +17914,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dimension Door",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16504,6 +17938,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dimension Door",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16527,6 +17963,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divination",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "D",
@@ -16548,6 +17986,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divination",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16570,6 +18010,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divination",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "D",
@@ -16591,6 +18033,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Beast",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -16615,6 +18059,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Beast",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16636,6 +18082,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Beast",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -16660,6 +18108,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Doomtide",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16683,6 +18133,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Elemental Bane",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -16706,6 +18158,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Evard's Black Tentacles",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16729,6 +18183,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Evard's Black Tentacles",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16752,6 +18208,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fabricate",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -16775,6 +18233,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fabricate",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16797,6 +18257,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fabricate",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -16820,6 +18282,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Faithful Hound",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16842,6 +18306,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find Greater Steed",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -16865,6 +18331,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Shield",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -16889,6 +18357,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Shield",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -16911,6 +18381,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Shield",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -16935,6 +18407,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fount of Moonlight",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -16958,6 +18432,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Freedom of Movement",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -16980,6 +18456,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Freedom of Movement",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17002,6 +18480,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Freedom of Movement",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -17024,6 +18504,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Galder's Speedy Courier",
     "source": "LLK",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17047,6 +18529,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gate Seal",
     "source": "SatO",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -17069,6 +18553,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Giant Insect",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -17092,6 +18578,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Giant Insect",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17114,6 +18602,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Giant Insect",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17137,6 +18627,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Grasping Vine",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17160,6 +18652,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Grasping Vine",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17183,6 +18677,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gravity Sinkhole",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -17207,6 +18703,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Greater Invisibility",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "I",
@@ -17230,6 +18728,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Greater Invisibility",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17252,6 +18752,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Greater Invisibility",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "I",
@@ -17275,6 +18777,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guardian of Faith",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17298,6 +18802,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guardian of Faith",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17320,6 +18826,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guardian of Faith",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17343,6 +18851,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guardian of Nature",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -17366,6 +18876,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hallucinatory Terrain",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "I",
@@ -17389,6 +18901,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hallucinatory Terrain",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17411,6 +18925,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hallucinatory Terrain",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "I",
@@ -17434,6 +18950,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ice Storm",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -17459,6 +18977,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ice Storm",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17482,6 +19002,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ice Storm",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -17507,6 +19029,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Leomund's Secret Chest",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17530,6 +19054,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Leomund's Secret Chest",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17553,6 +19079,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Creature",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "D",
@@ -17574,6 +19102,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Creature",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17596,6 +19126,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Locate Creature",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "D",
@@ -17617,6 +19149,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mordenkainen's Faithful Hound",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17640,6 +19174,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mordenkainen's Faithful Hound",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -17663,6 +19199,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mordenkainen's Private Sanctum",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -17685,6 +19223,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mordenkainen's Private Sanctum",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -17707,6 +19247,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Otiluke's Resilient Sphere",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -17730,6 +19272,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Otiluke's Resilient Sphere",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -17752,6 +19296,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Phantasmal Killer",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "I",
@@ -17776,6 +19322,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Phantasmal Killer",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17799,6 +19347,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Phantasmal Killer",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "I",
@@ -17823,6 +19373,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Polymorph",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -17846,6 +19398,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Polymorph",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17868,6 +19422,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Polymorph",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -17891,6 +19447,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Private Sanctum",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17913,6 +19471,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Raulothim's Psychic Lance",
     "source": "FTD",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -17936,6 +19496,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Resilient Sphere",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17958,6 +19520,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Secret Chest",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -17980,6 +19544,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shadow of Moil",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "N",
@@ -18004,6 +19570,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sickening Radiance",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -18028,6 +19596,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spellfire Storm",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -18053,6 +19623,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Spirit of Death",
     "source": "BMT",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "N",
@@ -18076,6 +19648,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Staggering Smite",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -18100,6 +19674,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Staggering Smite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "E",
@@ -18125,6 +19701,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stone Shape",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -18148,6 +19726,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stone Shape",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -18169,6 +19749,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stone Shape",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -18192,6 +19774,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stoneskin",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "A",
@@ -18215,6 +19799,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stoneskin",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -18236,6 +19822,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Stoneskin",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "T",
@@ -18259,6 +19847,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Storm Sphere",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -18284,6 +19874,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Aberration",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -18307,6 +19899,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Aberration",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -18330,6 +19924,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Construct",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -18353,6 +19949,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Construct",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -18376,6 +19974,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Elemental",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -18399,6 +19999,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Elemental",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -18422,6 +20024,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Greater Demon",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -18445,6 +20049,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vitriolic Sphere",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -18469,6 +20075,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Vitriolic Sphere",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -18493,6 +20101,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Fire",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -18518,6 +20128,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Fire",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "",
@@ -18541,6 +20153,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Fire",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "V",
@@ -18566,6 +20180,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Watery Sphere",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 4",
     "levelNum": 4,
     "school": "C",
@@ -18589,6 +20205,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Alustriel's Mooncloak",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -18611,6 +20229,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animate Objects",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -18634,6 +20254,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animate Objects",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -18656,6 +20278,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animate Objects",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -18679,6 +20303,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antilife Shell",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -18701,6 +20327,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antilife Shell",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -18723,6 +20351,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antilife Shell",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -18745,6 +20375,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Hand",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -18767,6 +20399,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Awaken",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -18790,6 +20424,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Awaken",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -18812,6 +20448,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Awaken",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -18835,6 +20473,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Banishing Smite",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -18859,6 +20499,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Banishing Smite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -18884,6 +20526,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bigby's Hand",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -18907,6 +20551,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bigby's Hand",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -18930,6 +20576,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Circle of Power",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -18952,6 +20600,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Circle of Power",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -18974,6 +20624,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cloudkill",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -18998,6 +20650,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cloudkill",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19021,6 +20675,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cloudkill",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -19045,6 +20701,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Commune",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -19066,6 +20724,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Commune",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19088,6 +20748,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Commune",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -19109,6 +20771,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Commune with Nature",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -19131,6 +20795,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Commune with Nature",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -19153,6 +20819,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Commune With Nature",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19174,6 +20842,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cone of Cold",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -19199,6 +20869,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cone of Cold",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19223,6 +20895,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Cone of Cold",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -19248,6 +20922,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Elemental",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -19271,6 +20947,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Elemental",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19293,6 +20971,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Elemental",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -19316,6 +20996,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Volley",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -19339,6 +21021,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Volley",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -19362,6 +21046,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contact Other Plane",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -19383,6 +21069,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contact Other Plane",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19405,6 +21093,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contact Other Plane",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -19426,6 +21116,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contagion",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "N",
@@ -19449,6 +21141,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contagion",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19471,6 +21165,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contagion",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "N",
@@ -19494,6 +21190,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Control Winds",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -19517,6 +21215,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Spelljamming Helm",
     "source": "AAG",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -19540,6 +21240,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Creation",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "I",
@@ -19563,6 +21265,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Creation",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19585,6 +21289,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Creation",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "I",
@@ -19608,6 +21314,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Danse Macabre",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "N",
@@ -19631,6 +21339,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dawn",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -19654,6 +21364,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Destructive Wave",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -19678,6 +21390,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Destructive Wave",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -19702,6 +21416,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dispel Evil and Good",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -19724,6 +21440,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dispel Evil and Good",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19746,6 +21464,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dispel Evil and Good",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -19768,6 +21488,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Person",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -19791,6 +21513,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Person",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19813,6 +21537,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Person",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -19836,6 +21562,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dream",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "I",
@@ -19859,6 +21587,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dream",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19881,6 +21611,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dream",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "I",
@@ -19904,6 +21636,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Enervation",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "N",
@@ -19927,6 +21661,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Far Step",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -19950,6 +21686,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flame Strike",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -19974,6 +21712,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flame Strike",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -19997,6 +21737,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flame Strike",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -20021,6 +21763,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Geas",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -20044,6 +21788,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Geas",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20066,6 +21812,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Geas",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -20089,6 +21837,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Greater Restoration",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -20111,6 +21861,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Greater Restoration",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20133,6 +21885,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Greater Restoration",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -20155,6 +21909,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hallow",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -20178,6 +21934,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hallow",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20200,6 +21958,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hallow",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -20222,6 +21982,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hold Monster",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -20245,6 +22007,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hold Monster",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20267,6 +22031,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Hold Monster",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -20290,6 +22056,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Holy Weapon",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -20314,6 +22082,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Immolation",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -20338,6 +22108,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Infernal Calling",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -20361,6 +22133,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Insect Plague",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -20384,6 +22158,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Insect Plague",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20406,6 +22182,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Insect Plague",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -20429,6 +22207,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Jallarzi's Storm of Radiance",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -20453,6 +22233,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Legend Lore",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -20474,6 +22256,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Legend Lore",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20496,6 +22280,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Legend Lore",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -20517,6 +22303,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Maelstrom",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -20541,6 +22329,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Cure Wounds",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -20567,6 +22357,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Cure Wounds",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20590,6 +22382,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Cure Wounds",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -20614,6 +22408,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mislead",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "I",
@@ -20637,6 +22433,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mislead",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20659,6 +22457,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mislead",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "I",
@@ -20682,6 +22482,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Modify Memory",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -20705,6 +22507,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Modify Memory",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20727,6 +22531,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Modify Memory",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -20750,6 +22556,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Negative Energy Flood",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "N",
@@ -20774,6 +22582,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Passwall",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -20798,6 +22608,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Passwall",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20819,6 +22631,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Passwall",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -20843,6 +22657,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Planar Binding",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -20865,6 +22681,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Planar Binding",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20887,6 +22705,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Planar Binding",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "A",
@@ -20909,6 +22729,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Raise Dead",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "N",
@@ -20932,6 +22754,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Raise Dead",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -20954,6 +22778,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Raise Dead",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "N",
@@ -20977,6 +22803,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Rary's Telepathic Bond",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -20998,6 +22826,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Rary's Telepathic Bond",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -21019,6 +22849,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Reincarnate",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21042,6 +22874,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Reincarnate",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21064,6 +22898,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Reincarnate",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "N",
@@ -21087,6 +22923,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Scrying",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -21108,6 +22946,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Scrying",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21130,6 +22970,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Scrying",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "D",
@@ -21151,6 +22993,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Seeming",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "I",
@@ -21174,6 +23018,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Seeming",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21196,6 +23042,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Seeming",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "I",
@@ -21219,6 +23067,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Skill Empowerment",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21242,6 +23092,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Songal's Elemental Suffusion",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21266,6 +23118,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Steel Wind Strike",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21289,6 +23143,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Steel Wind Strike",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21312,6 +23168,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Celestial",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21335,6 +23193,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Celestial",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21358,6 +23218,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Draconic Spirit",
     "source": "FTD",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21382,6 +23244,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Dragon",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21406,6 +23270,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Swift Quiver",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21429,6 +23295,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Swift Quiver",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21452,6 +23320,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Synaptic Static",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -21476,6 +23346,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Synaptic Static",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -21500,6 +23372,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Telekinesis",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21523,6 +23397,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Telekinesis",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21545,6 +23421,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Telekinesis",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21568,6 +23446,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Telepathic Bond",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21590,6 +23470,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Teleportation Circle",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21613,6 +23495,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Teleportation Circle",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21635,6 +23519,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Teleportation Circle",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21658,6 +23544,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Temporal Shunt",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21681,6 +23569,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Transmute Rock",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "T",
@@ -21704,6 +23594,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tree Stride",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21727,6 +23619,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tree Stride",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21749,6 +23643,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tree Stride",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "C",
@@ -21772,6 +23668,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Force",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -21796,6 +23694,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Force",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21819,6 +23719,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Force",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -21843,6 +23745,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Light",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -21867,6 +23771,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Stone",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -21891,6 +23797,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Stone",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "",
@@ -21912,6 +23820,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Stone",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -21936,6 +23846,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wrath of Nature",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "V",
@@ -21960,6 +23872,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Yolande's Regal Presence",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 5",
     "levelNum": 5,
     "school": "E",
@@ -21983,6 +23897,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Gate",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -22005,6 +23921,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Gate",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -22027,6 +23945,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blade Barrier",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -22050,6 +23970,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blade Barrier",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22073,6 +23995,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blade Barrier",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -22096,6 +24020,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Bones of the Earth",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -22119,6 +24045,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chain Lightning",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -22143,6 +24071,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chain Lightning",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22166,6 +24096,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Chain Lightning",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -22190,6 +24122,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Circle of Death",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -22214,6 +24148,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Circle of Death",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22237,6 +24173,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Circle of Death",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -22261,6 +24199,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Fey",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -22283,6 +24223,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Fey",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22305,6 +24247,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Fey",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -22327,6 +24271,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contingency",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -22349,6 +24295,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contingency",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22371,6 +24319,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Contingency",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -22393,6 +24343,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Homunculus",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -22416,6 +24368,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Undead",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -22439,6 +24393,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Undead",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22461,6 +24417,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Undead",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -22484,6 +24442,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dirge",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "E",
@@ -22507,6 +24467,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Disintegrate",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -22531,6 +24493,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Disintegrate",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22554,6 +24518,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Disintegrate",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -22578,6 +24544,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Drawmij's Instant Summons",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -22600,6 +24568,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Drawmij's Instant Summons",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -22622,6 +24592,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Druid Grove",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -22644,6 +24616,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Elminster's Effulgent Spheres",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -22666,6 +24640,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Eyebite",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -22689,6 +24665,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Eyebite",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22711,6 +24689,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Eyebite",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -22734,6 +24714,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find the Path",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "D",
@@ -22755,6 +24737,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find the Path",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22777,6 +24761,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Find the Path",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "D",
@@ -22798,6 +24784,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fizban's Platinum Shield",
     "source": "FTD",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -22820,6 +24808,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flesh to Stone",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -22843,6 +24833,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flesh to Stone",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22864,6 +24856,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Flesh to Stone",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -22887,6 +24881,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Forbiddance",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -22909,6 +24905,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Forbiddance",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22931,6 +24929,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Forbiddance",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -22953,6 +24953,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Freezing Sphere",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -22975,6 +24977,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Globe of Invulnerability",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -22997,6 +25001,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Globe of Invulnerability",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23019,6 +25025,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Globe of Invulnerability",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -23041,6 +25049,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gravity Fissure",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -23064,6 +25074,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guards and Wards",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -23086,6 +25098,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guards and Wards",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23108,6 +25122,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Guards and Wards",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -23130,6 +25146,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Harm",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -23154,6 +25172,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Harm",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23177,6 +25197,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Harm",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -23201,6 +25223,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heal",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -23226,6 +25250,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heal",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23249,6 +25275,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heal",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -23273,6 +25301,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heroes' Feast",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -23297,6 +25327,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heroes' Feast",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23319,6 +25351,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Heroes' Feast",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -23343,6 +25377,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Instant Summons",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23365,6 +25401,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Investiture of Flame",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -23388,6 +25426,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Investiture of Ice",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -23411,6 +25451,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Investiture of Stone",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -23434,6 +25476,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Investiture of Wind",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -23457,6 +25501,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Irresistible Dance",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23479,6 +25525,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Jar",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -23502,6 +25550,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Jar",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23524,6 +25574,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magic Jar",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -23547,6 +25599,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Suggestion",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "E",
@@ -23570,6 +25624,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Suggestion",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23592,6 +25648,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Suggestion",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "E",
@@ -23615,6 +25673,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mental Prison",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "I",
@@ -23638,6 +25698,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Move Earth",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -23661,6 +25723,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Move Earth",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23682,6 +25746,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Move Earth",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -23705,6 +25771,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Otiluke's Freezing Sphere",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -23728,6 +25796,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Otiluke's Freezing Sphere",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -23751,6 +25821,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Otto's Irresistible Dance",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "E",
@@ -23774,6 +25846,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Otto's Irresistible Dance",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "E",
@@ -23797,6 +25871,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Planar Ally",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -23819,6 +25895,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Planar Ally",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23841,6 +25919,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Planar Ally",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -23863,6 +25943,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Primordial Ward",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "A",
@@ -23885,6 +25967,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Programmed Illusion",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "I",
@@ -23908,6 +25992,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Programmed Illusion",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -23930,6 +26016,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Programmed Illusion",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "I",
@@ -23953,6 +26041,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Scatter",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -23975,6 +26065,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Soul Cage",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "N",
@@ -23998,6 +26090,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Fiend",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24020,6 +26114,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Summon Fiend",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24042,6 +26138,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sunbeam",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -24065,6 +26163,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sunbeam",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -24088,6 +26188,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sunbeam",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -24111,6 +26213,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tasha's Bubbling Cauldron",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24133,6 +26237,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tasha's Otherworldly Guise",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -24157,6 +26263,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tenser's Transformation",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -24180,6 +26288,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Transport via Plants",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24202,6 +26312,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Transport via Plants",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -24223,6 +26335,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Transport via Plants",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24245,6 +26359,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Seeing",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "D",
@@ -24266,6 +26382,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Seeing",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -24288,6 +26406,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Seeing",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "D",
@@ -24309,6 +26429,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Ice",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -24332,6 +26454,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Ice",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -24354,6 +26478,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Ice",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "V",
@@ -24377,6 +26503,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Thorns",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24399,6 +26527,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Thorns",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -24420,6 +26550,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wall of Thorns",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24442,6 +26574,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wind Walk",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -24465,6 +26599,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wind Walk",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -24486,6 +26622,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wind Walk",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "T",
@@ -24509,6 +26647,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Word of Recall",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24532,6 +26672,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Word of Recall",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "",
@@ -24553,6 +26695,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Word of Recall",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 6",
     "levelNum": 6,
     "school": "C",
@@ -24576,6 +26720,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Arcane Sword",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -24597,6 +26743,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Celestial",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -24619,6 +26767,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Celestial",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -24641,6 +26791,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Conjure Celestial",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -24663,6 +26815,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Create Magen",
     "source": "IDRotF",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -24686,6 +26840,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Crown of Stars",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -24709,6 +26865,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Delayed Blast Fireball",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -24733,6 +26891,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Delayed Blast Fireball",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -24756,6 +26916,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Delayed Blast Fireball",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -24780,6 +26942,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divine Word",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -24804,6 +26968,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divine Word",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -24826,6 +26992,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Divine Word",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -24850,6 +27018,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Draconic Transformation",
     "source": "FTD",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -24873,6 +27043,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dream of the Blue Veil",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -24895,6 +27067,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Etherealness",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -24918,6 +27092,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Etherealness",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -24940,6 +27116,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Etherealness",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -24962,6 +27140,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Finger of Death",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "N",
@@ -24986,6 +27166,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Finger of Death",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25009,6 +27191,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Finger of Death",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "N",
@@ -25033,6 +27217,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Storm",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -25058,6 +27244,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Storm",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25082,6 +27270,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Fire Storm",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -25107,6 +27297,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Forcecage",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -25130,6 +27322,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Forcecage",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25153,6 +27347,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Forcecage",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -25176,6 +27372,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Magnificent Mansion",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25197,6 +27395,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mirage Arcane",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "I",
@@ -25220,6 +27420,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mirage Arcane",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25242,6 +27444,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mirage Arcane",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "I",
@@ -25265,6 +27469,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mordenkainen's Magnificent Mansion",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -25288,6 +27494,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mordenkainen's Magnificent Mansion",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -25311,6 +27519,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mordenkainen's Sword",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -25334,6 +27544,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mordenkainen's Sword",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -25357,6 +27569,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Plane Shift",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -25379,6 +27593,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Plane Shift",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25401,6 +27617,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Plane Shift",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -25423,6 +27641,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Fortify",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "E",
@@ -25446,6 +27666,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Pain",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "E",
@@ -25469,6 +27691,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prismatic Spray",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -25492,6 +27716,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prismatic Spray",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25515,6 +27741,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prismatic Spray",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -25538,6 +27766,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Project Image",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "I",
@@ -25561,6 +27791,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Project Image",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25583,6 +27815,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Project Image",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "I",
@@ -25606,6 +27840,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Regenerate",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -25629,6 +27865,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Regenerate",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25651,6 +27889,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Regenerate",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -25674,6 +27914,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Resurrection",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "N",
@@ -25697,6 +27939,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Resurrection",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25719,6 +27963,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Resurrection",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "N",
@@ -25742,6 +27988,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Reverse Gravity",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -25765,6 +28013,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Reverse Gravity",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25787,6 +28037,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Reverse Gravity",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -25810,6 +28062,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sequester",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -25833,6 +28087,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sequester",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25855,6 +28111,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sequester",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -25878,6 +28136,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Simbul's Synostodweomer",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "T",
@@ -25901,6 +28161,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Simulacrum",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "I",
@@ -25924,6 +28186,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Simulacrum",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -25946,6 +28210,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Simulacrum",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "I",
@@ -25969,6 +28235,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Symbol",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "A",
@@ -25991,6 +28259,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Symbol",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -26013,6 +28283,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Symbol",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "A",
@@ -26035,6 +28307,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Teleport",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -26057,6 +28331,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Teleport",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "",
@@ -26079,6 +28355,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Teleport",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -26101,6 +28379,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Temple of the Gods",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "C",
@@ -26123,6 +28403,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tether Essence",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "N",
@@ -26146,6 +28428,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Whirlwind",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 7",
     "levelNum": 7,
     "school": "V",
@@ -26170,6 +28454,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Abi-Dalzim's Horrid Wilting",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "N",
@@ -26194,6 +28480,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Shapes",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "T",
@@ -26217,6 +28505,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Shapes",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26238,6 +28528,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Animal Shapes",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "T",
@@ -26261,6 +28553,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antimagic Field",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "A",
@@ -26283,6 +28577,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antimagic Field",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26305,6 +28601,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antimagic Field",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "A",
@@ -26327,6 +28625,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antipathy/Sympathy",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -26350,6 +28650,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antipathy/Sympathy",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26372,6 +28674,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Antipathy/Sympathy",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -26395,6 +28699,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Befuddlement",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -26418,6 +28724,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Clone",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "N",
@@ -26441,6 +28749,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Clone",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26463,6 +28773,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Clone",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "N",
@@ -26486,6 +28798,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Control Weather",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "T",
@@ -26509,6 +28823,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Control Weather",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26531,6 +28847,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Control Weather",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "T",
@@ -26554,6 +28872,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dark Star",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "V",
@@ -26577,6 +28897,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Demiplane",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -26599,6 +28921,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Demiplane",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26621,6 +28945,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Demiplane",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -26643,6 +28969,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Monster",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -26666,6 +28994,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Monster",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26688,6 +29018,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Dominate Monster",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -26711,6 +29043,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Earthquake",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "V",
@@ -26735,6 +29069,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Earthquake",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26757,6 +29093,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Earthquake",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "T",
@@ -26781,6 +29119,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Feeblemind",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -26804,6 +29144,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Feeblemind",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26826,6 +29168,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Glibness",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "T",
@@ -26849,6 +29193,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Glibness",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26871,6 +29217,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Glibness",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -26894,6 +29242,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Holy Aura",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "A",
@@ -26917,6 +29267,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Holy Aura",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -26938,6 +29290,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Holy Aura",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "A",
@@ -26961,6 +29315,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Holy Star of Mystra",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "V",
@@ -26983,6 +29339,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Illusory Dragon",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "I",
@@ -27006,6 +29364,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Incendiary Cloud",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -27029,6 +29389,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Incendiary Cloud",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -27052,6 +29414,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Incendiary Cloud",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -27075,6 +29439,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Maddening Darkness",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "V",
@@ -27097,6 +29463,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Maze",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -27119,6 +29487,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Maze",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -27141,6 +29511,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Maze",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -27163,6 +29535,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mighty Fortress",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -27185,6 +29559,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mind Blank",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "A",
@@ -27207,6 +29583,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mind Blank",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -27229,6 +29607,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mind Blank",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "A",
@@ -27251,6 +29631,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Stun",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -27274,6 +29656,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Stun",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -27295,6 +29679,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Stun",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "E",
@@ -27318,6 +29704,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Reality Break",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -27341,6 +29729,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sunburst",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "V",
@@ -27364,6 +29754,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sunburst",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "",
@@ -27387,6 +29779,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Sunburst",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "V",
@@ -27410,6 +29804,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Telepathy",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "V",
@@ -27432,6 +29828,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Telepathy",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "D",
@@ -27453,6 +29851,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tsunami",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -27476,6 +29876,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Tsunami",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 8",
     "levelNum": 8,
     "school": "C",
@@ -27499,6 +29901,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Astral Projection",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "N",
@@ -27522,6 +29926,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Astral Projection",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -27544,6 +29950,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Astral Projection",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "N",
@@ -27567,6 +29975,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blade of Disaster",
     "source": "FRHoF",
+    "ruleset": "2024",
+    "license": "none",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "C",
@@ -27590,6 +30000,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Blade of Disaster",
     "source": "TCE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "C",
@@ -27613,6 +30025,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Foresight",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "D",
@@ -27634,6 +30048,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Foresight",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -27656,6 +30072,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Foresight",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "D",
@@ -27677,6 +30095,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gate",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "C",
@@ -27699,6 +30119,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gate",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -27721,6 +30143,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Gate",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "C",
@@ -27743,6 +30167,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Imprisonment",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "A",
@@ -27765,6 +30191,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Imprisonment",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -27787,6 +30215,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Imprisonment",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "A",
@@ -27809,6 +30239,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Invulnerability",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "A",
@@ -27831,6 +30263,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Heal",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "V",
@@ -27855,6 +30289,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Heal",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -27877,6 +30313,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Heal",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "A",
@@ -27900,6 +30338,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Mass Polymorph",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "T",
@@ -27923,6 +30363,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Meteor Swarm",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "V",
@@ -27946,6 +30388,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Meteor Swarm",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -27969,6 +30413,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Meteor Swarm",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "V",
@@ -27992,6 +30438,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Heal",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "V",
@@ -28018,6 +30466,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Heal",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "E",
@@ -28044,6 +30494,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Kill",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "E",
@@ -28068,6 +30520,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Kill",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28090,6 +30544,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Power Word Kill",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "E",
@@ -28114,6 +30570,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prismatic Wall",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "A",
@@ -28136,6 +30594,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prismatic Wall",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28158,6 +30618,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Prismatic Wall",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "A",
@@ -28180,6 +30642,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Psychic Scream",
     "source": "XGE",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "E",
@@ -28204,6 +30668,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Ravenous Void",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "V",
@@ -28226,6 +30692,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shapechange",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "T",
@@ -28249,6 +30717,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shapechange",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28271,6 +30741,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Shapechange",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "T",
@@ -28294,6 +30766,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Storm of Vengeance",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "C",
@@ -28317,6 +30791,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Storm of Vengeance",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28339,6 +30815,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Storm of Vengeance",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "C",
@@ -28362,6 +30840,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Time Ravage",
     "source": "EGW",
+    "ruleset": "2014",
+    "license": "none",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "N",
@@ -28385,6 +30865,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Time Stop",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "T",
@@ -28408,6 +30890,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Time Stop",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28430,6 +30914,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Time Stop",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "T",
@@ -28453,6 +30939,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Polymorph",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "T",
@@ -28476,6 +30964,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Polymorph",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28498,6 +30988,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Polymorph",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "T",
@@ -28521,6 +31013,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Resurrection",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "N",
@@ -28544,6 +31038,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Resurrection",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28566,6 +31062,8 @@ window.SPELL_CATALOG = [
   {
     "name": "True Resurrection",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "N",
@@ -28589,6 +31087,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Weird",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "I",
@@ -28612,6 +31112,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Weird",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28634,6 +31136,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Weird",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "I",
@@ -28657,6 +31161,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wish",
     "source": "PHB",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "C",
@@ -28679,6 +31185,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wish",
     "source": "SRD",
+    "ruleset": "2014",
+    "license": "srd51",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "",
@@ -28701,6 +31209,8 @@ window.SPELL_CATALOG = [
   {
     "name": "Wish",
     "source": "XPHB",
+    "ruleset": "2024",
+    "license": "srd52",
     "levelText": "Level 9",
     "levelNum": 9,
     "school": "C",

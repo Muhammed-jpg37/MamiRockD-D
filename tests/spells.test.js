@@ -105,3 +105,31 @@ test('2024: repaired source faults and spot checks', () => {
   const marked = SPELLS52.filter((s) => s.textIssue).map((s) => s.id).sort();
   assert.deepEqual(marked, ['control_water', 'control_weather', 'creation', 'divine_word', 'greater_restoration', 'guards_and_wards', 'telekinesis']);
 });
+
+/* --- The Spells tab catalog: spell-catalog.json / spell-catalog.js --- */
+const CATALOG = require('../spell-catalog.json');
+
+test('catalog: every spell has a ruleset and a license', () => {
+  for (const s of CATALOG) {
+    assert.ok(['2014', '2024'].includes(s.ruleset), s.name + ' (' + s.source + '): ruleset ' + s.ruleset);
+    assert.ok(['srd51', 'srd52', 'none'].includes(s.license), s.name + ': license ' + s.license);
+    if (s.license === 'srd51') assert.equal(s.ruleset, '2014', s.name);
+    if (s.license === 'srd52') assert.equal(s.ruleset, '2024', s.name);
+  }
+});
+
+test('catalog: tags follow the book and the SRD lists', () => {
+  const find = (name, source) => CATALOG.find((s) => s.name === name && s.source === source);
+  assert.deepEqual([find('Fire Bolt', 'SRD').ruleset, find('Fire Bolt', 'SRD').license], ['2014', 'srd51']);
+  assert.deepEqual([find('Fire Bolt', 'PHB').ruleset, find('Fire Bolt', 'PHB').license], ['2014', 'srd51']);
+  assert.deepEqual([find('Fire Bolt', 'XPHB').ruleset, find('Fire Bolt', 'XPHB').license], ['2024', 'srd52']);
+  assert.deepEqual([find('Hex', 'PHB').ruleset, find('Hex', 'PHB').license], ['2014', 'none']);   // not in SRD 5.1
+  assert.deepEqual([find('Hex', 'XPHB').ruleset, find('Hex', 'XPHB').license], ['2024', 'srd52']); // in SRD 5.2
+  assert.equal(CATALOG.filter((s) => s.source === 'SRD').every((s) => s.license === 'srd51'), true);
+});
+
+test('catalog: spell-catalog.js holds the same data as the JSON', () => {
+  const sandbox = {};
+  new Function('window', require('fs').readFileSync(require('path').join(__dirname, '..', 'spell-catalog.js'), 'utf8'))(sandbox);
+  assert.deepEqual(sandbox.SPELL_CATALOG, CATALOG);
+});
