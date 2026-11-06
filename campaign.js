@@ -815,11 +815,11 @@
   }
 
   /* ---------- Campaign rules: homebrew content and builder settings ---------- */
-  // campaigns/<id>/homebrew: { species, backgrounds, feats, subraces: { <speciesId>: {...} }, subclasses: { <classId>: {...} } }
-  //   (the shape CharacterEngine.mergeRules() takes)
+  // campaigns/<id>/homebrew: { species, backgrounds, feats, spells, subraces: { <speciesId>: {...} }, subclasses: { <classId>: {...} } }
+  //   (the shape CharacterEngine.mergeRules() takes; spells in the shape of rules/srd5-spells.js)
   // campaigns/<id>/settings/builder: { allowManual, strict }
 
-  const HOMEBREW_GROUPS = ['species', 'backgrounds', 'feats'];
+  const HOMEBREW_GROUPS = ['species', 'backgrounds', 'feats', 'spells'];
   const HOMEBREW_NESTED = ['subraces', 'subclasses'];
   let homebrew = {};
   let builderSettings = {};
@@ -843,7 +843,7 @@
     return { allowManual: !!builderSettings.allowManual, strict: builderSettings.strict !== false };
   }
 
-  // group: 'species' | 'backgrounds' | 'feats' | 'subraces' | 'subclasses'; parent: species / class id for nested groups.
+  // group: 'species' | 'backgrounds' | 'feats' | 'spells' | 'subraces' | 'subclasses'; parent: species / class id for nested groups.
   // def null deletes the entry.
   function saveHomebrew(campId, group, id, def, parent) {
     if (!HOMEBREW_GROUPS.includes(group) && !HOMEBREW_NESTED.includes(group)) return Promise.reject(new Error('Unknown homebrew group'));

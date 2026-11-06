@@ -66,6 +66,7 @@
           "species": { "$id": { ".validate": "$id.matches(/^[a-z0-9_]{1,40}$/) && newData.child('name').isString()" } },
           "backgrounds": { "$id": { ".validate": "$id.matches(/^[a-z0-9_]{1,40}$/) && newData.child('name').isString()" } },
           "feats": { "$id": { ".validate": "$id.matches(/^[a-z0-9_]{1,40}$/) && newData.child('name').isString()" } },
+          "spells": { "$id": { ".validate": "$id.matches(/^[a-z0-9_]{1,40}$/) && newData.child('name').isString() && newData.child('name').val().length <= 80 && newData.child('level').isNumber() && newData.child('level').val() >= 0 && newData.child('level').val() <= 9" } },
           "subraces": { "$parent": { "$id": { ".validate": "$id.matches(/^[a-z0-9_]{1,40}$/) && newData.child('name').isString()" } } },
           "subclasses": { "$parent": { "$id": { ".validate": "$id.matches(/^[a-z0-9_]{1,40}$/) && newData.child('name').isString()" } } },
           "$other": { ".validate": false }

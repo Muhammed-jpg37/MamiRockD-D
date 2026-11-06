@@ -10431,6 +10431,7 @@
       'XPHB': "Player's Handbook (2024)",
       'SRD': "System Reference Document 5.1 (2014 rules)",
       'SRD52': "System Reference Document 5.2 (2024 rules)",
+      'HB': "Campaign homebrew",
       'XGE': "Xanathar's Guide to Everything",
       'TCE': "Tasha's Cauldron of Everything",
       'FTD': "Fizban's Treasury of Dragons",
@@ -10453,6 +10454,7 @@
       'XPHB': 'PHB 2024',
       'SRD': 'SRD 5.1',
       'SRD52': 'SRD 5.2',
+      'HB': 'Homebrew',
       'XGE': "Xanathar's",
       'TCE': "Tasha's",
       'FTD': "Fizban's",
@@ -11703,6 +11705,40 @@
       }
       return merged;
     }
+
+    /* The active campaign's homebrew spells (homebrew editor → campaigns/<id>/homebrew/spells)
+       join the catalog as 2014 spells from the book "HB". They are rebuilt whenever the
+       campaign's homebrew changes or another campaign is opened. */
+    const SCHOOL_LETTER = { Abjuration: 'A', Conjuration: 'C', Divination: 'D', Enchantment: 'E', Evocation: 'V', Illusion: 'I', Necromancy: 'N', Transmutation: 'T' };
+    function homebrewCatalogSpells(hb) {
+      const spells = (hb && hb.spells) || {};
+      const className = (id) => (window.RULES_SRD5 && window.RULES_SRD5.classes[id] ? window.RULES_SRD5.classes[id].name : String(id).charAt(0).toUpperCase() + String(id).slice(1));
+      return Object.keys(spells).map((id) => {
+        const s = spells[id] || {};
+        const lvl = Math.max(0, Math.min(9, Number(s.level) || 0));
+        const comps = (Array.isArray(s.components) ? s.components : []).join(', ') + (s.material ? ' (' + s.material + ')' : '');
+        const desc = (Array.isArray(s.desc) ? s.desc : [String(s.desc || '')]).join('\n\n');
+        return {
+          name: String(s.name || id), ruleset: '2014', source: 'HB', books: ['HB'], license: 'homebrew', homebrew: true,
+          levelNum: lvl, levelText: lvl === 0 ? 'Cantrip' : 'Level ' + lvl,
+          school: SCHOOL_LETTER[s.school] || '', schoolName: s.school || '',
+          classes: (Array.isArray(s.classes) ? s.classes : []).map(className),
+          castingTime: s.castingTime || '', range: s.range || '', components: comps, duration: s.duration || '',
+          ritual: !!s.ritual, concentration: !!s.concentration,
+          quickEffect: desc.split('\n')[0].slice(0, 220), desc: desc,
+          higherLevels: (Array.isArray(s.higherLevel) ? s.higherLevel : []).join('\n\n'),
+          tags: ['HOMEBREW'], damage: ''
+        };
+      }).filter((s) => s.name);
+    }
+    window.addEventListener('campaignrules', function (e) {
+      if (!Array.isArray(window.SPELL_CATALOG) || !window.SPELL_CATALOG.length) return;
+      const hbSpells = homebrewCatalogSpells(e.detail && e.detail.homebrew);
+      // Nothing to do when no campaign had or has homebrew spells.
+      if (!hbSpells.length && !(window.GLOBAL_SPELL_CATALOG || []).some((s) => s.source === 'HB')) return;
+      buildGlobalCatalog(window.SPELL_CATALOG.concat(hbSpells));
+      if (typeof renderSpellbookMenu === 'function') renderSpellbookMenu();
+    });
 
     // Brings the details of the spells saved on the open sheet up to date from
     // the catalog (spell-saved.js has the rules). Runs when the catalog loads and

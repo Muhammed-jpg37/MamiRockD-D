@@ -74,6 +74,25 @@
         { key: 'desc', label: 'What it does (your own words)', type: 'textarea' }
       ]
     },
+    // Same shape as rules/srd5-spells.js, so the builder offers them like SRD spells.
+    spells: {
+      label: 'Spells', single: 'spell', nested: null,
+      fields: [
+        { key: 'name', label: 'Name', type: 'text', required: true },
+        { key: 'level', label: 'Level', type: 'select', options: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], labels: ['Cantrip', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th'], value: '1' },
+        { key: 'school', label: 'School', type: 'select', options: ['Abjuration', 'Conjuration', 'Divination', 'Enchantment', 'Evocation', 'Illusion', 'Necromancy', 'Transmutation'], value: 'Evocation' },
+        { key: 'classes', label: 'On the spell list of', type: 'classes' },
+        { key: 'castingTime', label: 'Casting time', type: 'text', value: '1 action' },
+        { key: 'range', label: 'Range', type: 'text', value: '60 feet' },
+        { key: 'components', label: 'Components (V, S, M)', type: 'text', value: 'V, S' },
+        { key: 'material', label: 'Material component (if M)', type: 'text' },
+        { key: 'duration', label: 'Duration', type: 'text', value: 'Instantaneous' },
+        { key: 'ritual', label: 'Ritual', type: 'checkbox' },
+        { key: 'concentration', label: 'Concentration', type: 'checkbox' },
+        { key: 'desc', label: 'What it does (your own words; a blank line starts a new paragraph)', type: 'textarea' },
+        { key: 'higherLevel', label: 'At higher levels (optional)', type: 'textarea' }
+      ]
+    },
     subclasses: {
       label: 'Subclasses', single: 'subclass', nested: 'classes',
       fields: [
@@ -177,6 +196,22 @@
       if (num(v.skillChoose)) def.skillChoice = { choose: num(v.skillChoose), from: 'any' };
       if (!def.languages) def.languages = ['Common'];
     }
+    if (kind === 'spells') {
+      const paras = (t) => String(t || '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+      def.level = Math.max(0, Math.min(9, Number(v.level) || 0));
+      def.school = v.school || 'Evocation';
+      def.classes = Array.isArray(v.classes) ? v.classes.slice() : [];
+      const comps = String(v.components || '').toUpperCase().split(/[^VSM]+/).filter((c) => ['V', 'S', 'M'].includes(c));
+      def.components = Array.from(new Set(comps));
+      if (!def.components.includes('M')) delete def.material;
+      def.ritual = !!v.ritual;
+      def.concentration = !!v.concentration;
+      def.desc = paras(v.desc);
+      if (paras(v.higherLevel).length) def.higherLevel = paras(v.higherLevel); else delete def.higherLevel;
+      def.ruleset = '2014';
+      def.source = 'HB';
+      def.license = 'homebrew';
+    }
     return def;
   }
 
@@ -186,6 +221,12 @@
     if (kind === 'species' && def) {
       if (def.abilityChoice) { v.choiceCount = def.abilityChoice.count; v.choiceAmount = def.abilityChoice.amount; }
       if (def.skillChoice) v.skillChoose = def.skillChoice.choose;
+    }
+    if (kind === 'spells' && def) {
+      v.level = String(def.level || 0);
+      v.components = (def.components || []).join(', ');
+      v.desc = (def.desc || []).join('\n\n');
+      v.higherLevel = (def.higherLevel || []).join('\n\n');
     }
     return v;
   }
@@ -209,6 +250,8 @@
     const E = root.CharacterEngine;
     const SRD = root.RULES_SRD5;
     if (!E || !SRD || !root.Campaigns) return;
+    // The SRD spells, so new spell names and ids don't clash with them.
+    if (!SRD.spells && root.SPELLS_SRD5) E.attachSpells(SRD, root.SPELLS_SRD5);
     injectStyles();
     close();
     let tab = 'species';
@@ -298,6 +341,7 @@
       if (kind === 'backgrounds') return (d.skills || []).map((s) => (SRD.skills[s] || { name: s }).name).join(', ');
       if (kind === 'feats') return d.requires ? 'Needs ' + Object.keys(d.requires).map((a) => a.toUpperCase() + ' ' + d.requires[a]).join(', ') : 'No prerequisite';
       if (kind === 'subclasses') return parentName(kind, e.parent) + ' · features at level ' + Object.keys(d.features || {}).join(', ');
+      if (kind === 'spells') return [Number(d.level) ? 'Level ' + d.level : 'Cantrip', d.school, (d.classes || []).map((c) => (SRD.classes[c] || { name: c }).name).join(', ') || 'no class list yet'].join(' · ');
       return '';
     }
 
@@ -321,6 +365,14 @@
         const fail = (text) => { msg.textContent = text; msg.className = 'hb-msg hb-field wide error'; };
         if (!String(v.name || '').trim()) return fail('Give it a name.');
         if (KINDS[kind].nested && !v.parent) return fail('Choose the ' + (KINDS[kind].nested === 'species' ? 'species' : 'class') + ' it belongs to.');
+        if (kind === 'spells') {
+          const nm = String(v.name).trim().toLowerCase();
+          const clash = Object.values(SRD.spells || {}).find((s) => s.name.toLowerCase() === nm) ||
+            Object.keys(data.spells || {}).filter((k) => k !== editing.id).map((k) => data.spells[k]).find((s) => String(s.name).toLowerCase() === nm);
+          if (clash) return fail('There is already a spell called "' + clash.name + '". Pick another name.');
+          if (!String(v.desc || '').trim()) return fail('Say what the spell does.');
+          if (!(v.classes || []).length) return fail('Put it on at least one class\'s spell list, or no one can pick it.');
+        }
         const def = toDef(kind, v);
         def.name = String(v.name).trim();
         // A new entry gets an id from its name; one that would replace an SRD entry gets a suffix.
@@ -354,7 +406,7 @@
     }
 
     function field(f, v, kind) {
-      const wide = ['skills', 'abilities', 'textarea', 'levels', 'list'].includes(f.type);
+      const wide = ['skills', 'abilities', 'textarea', 'levels', 'list', 'classes'].includes(f.type);
       const wrapEl = h('label', { class: 'hb-field' + (wide ? ' wide' : '') }, [f.label + (f.required ? ' *' : '')]);
       if (f.type === 'text' || f.type === 'number') {
         wrapEl.appendChild(h('input', { class: 'hb-in', type: f.type, value: v[f.key] === undefined ? '' : v[f.key], maxlength: 120, oninput: (e) => { v[f.key] = e.target.value; } }));
@@ -363,7 +415,14 @@
         t.value = v[f.key] || '';
         wrapEl.appendChild(t);
       } else if (f.type === 'select') {
-        wrapEl.appendChild(h('select', { class: 'hb-in', onchange: (e) => { v[f.key] = e.target.value; } }, f.options.map((o) => h('option', { value: o, text: o, selected: v[f.key] === o }))));
+        wrapEl.appendChild(h('select', { class: 'hb-in', onchange: (e) => { v[f.key] = e.target.value; } }, f.options.map((o, i) => h('option', { value: o, text: f.labels ? f.labels[i] : o, selected: v[f.key] === o }))));
+      } else if (f.type === 'classes') {
+        // Spellcasting classes only (homebrew classes included).
+        const all = merged().classes;
+        const sel = new Set(v[f.key] || []);
+        wrapEl.appendChild(h('div', { class: 'hb-skills' }, Object.keys(all).filter((c) => all[c].spellcasting).map((c) => h('label', {}, [
+          h('input', { type: 'checkbox', checked: sel.has(c), onchange: (e) => { if (e.target.checked) sel.add(c); else sel.delete(c); v[f.key] = Array.from(sel); } }), ' ' + all[c].name
+        ]))));
       } else if (f.type === 'parent') {
         const group = KINDS[kind].nested === 'species' ? merged().species : SRD.classes;
         wrapEl.appendChild(h('select', { class: 'hb-in', onchange: (e) => { v.parent = e.target.value || null; } },

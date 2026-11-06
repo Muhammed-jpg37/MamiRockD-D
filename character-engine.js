@@ -868,7 +868,8 @@
 
   /* ---------- Homebrew ---------- */
   // Adds a campaign's own content to the rules. homebrew = { classes, species, backgrounds, feats, fightingStyles,
-  // subclasses: { <classId>: { <subclassId>: def } }, subraces: { <speciesId>: { <subraceId>: def } } }.
+  // subclasses: { <classId>: { <subclassId>: def } }, subraces: { <speciesId>: { <subraceId>: def } },
+  // spells: { <spellId>: spell } }.
   // Entries with the same id replace the SRD's; everything added is marked homebrew: true.
   function mergeRules(base, homebrew) {
     const out = clone(base);
@@ -885,6 +886,15 @@
       out.classes[classId].subclasses = out.classes[classId].subclasses || {};
       Object.keys(homebrew.subclasses[classId]).forEach((id) => { out.classes[classId].subclasses[id] = mark(homebrew.subclasses[classId][id]); });
     });
+    // Homebrew spells join the spell data (same shape as rules/srd5-spells.js). Only when the
+    // base rules carry spell data: spell picks must never be asked for from homebrew alone.
+    if (out.spells && homebrew.spells) {
+      Object.keys(homebrew.spells).forEach((id) => {
+        const s = homebrew.spells[id];
+        if (!s || !s.name || out.spells[id]) return;   // never replaces an SRD spell
+        out.spells[id] = mark(Object.assign({}, s, { id: id, level: Number(s.level) || 0, classes: Array.isArray(s.classes) ? s.classes : [] }));
+      });
+    }
     Object.keys(homebrew.subraces || {}).forEach((speciesId) => {
       if (!out.species[speciesId]) return;
       out.species[speciesId].subraces = out.species[speciesId].subraces || {};
