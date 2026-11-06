@@ -130,6 +130,8 @@
       .cb-list { font-size: 13px; line-height: 1.6; color: var(--text); }
       .cb-portrait { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); background: var(--surface-inset); }
       .cb-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .cb-opt:disabled { opacity: .45; cursor: not-allowed; }
+      .cb-gain { color: var(--success); }
       @media (max-width: 640px) {
         .cb-abil { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         .cb-two { grid-template-columns: 1fr; }
@@ -137,6 +139,34 @@
       }
     `;
     document.head.appendChild(style);
+  }
+
+  /* ---------- Small form helpers ---------- */
+
+  // Checkbox list limited to `max` ticks; `disabled` ids can't be ticked (already proficient).
+  function checks(options, selected, max, onChange, disabled) {
+    const sel = new Set(selected || []);
+    const off = new Set(disabled || []);
+    return h('div', { class: 'cb-checks' }, options.map((o) => {
+      const isOff = off.has(o.id) && !sel.has(o.id);
+      const full = sel.size >= max && !sel.has(o.id);
+      return h('label', { class: 'cb-check' + (isOff || full ? ' dim' : '') }, [
+        h('input', { type: 'checkbox', checked: sel.has(o.id), disabled: isOff || full, onchange: (e) => {
+          if (e.target.checked) sel.add(o.id); else sel.delete(o.id);
+          onChange(Array.from(sel));
+        } }), o.label + (off.has(o.id) ? ' ✓' : '')
+      ]);
+    }));
+  }
+
+  function select(options, value, placeholder, onChange) {
+    return h('select', { class: 'cb-select', onchange: (e) => onChange(e.target.value || null) },
+      [h('option', { value: '', text: placeholder })].concat(options.map((o) => h('option', { value: o.value, text: o.label, selected: o.value === value }))));
+  }
+
+  function slotText(sc) {
+    const s = Object.keys(sc.slots).map((l) => l + ': ' + sc.slots[l]).join(' · ');
+    return s + (sc.pact ? (s ? ' · ' : '') + 'Pact: ' + sc.pact.slots + ' × level ' + sc.pact.level : '');
   }
 
   /* ---------- The wizard ---------- */
@@ -680,7 +710,7 @@
       ].concat(sc.abilities.map((x) => ['Spell save DC', x.saveDc])).map(([k, val]) => h('div', {}, [h('small', { text: k }), h('b', { text: val })]))));
 
       const skills = Object.keys(cs.skillProfs).filter((s) => cs.skillProfs[s]).map((s) => rules.skills[s].name + (cs.skillCustomBonuses[s] ? ' (expertise)' : ''));
-      const slots = Object.keys(sc.slots).map((l) => l + ': ' + sc.slots[l]).join(' · ') + (sc.pact ? (Object.keys(sc.slots).length ? ' · ' : '') + 'Pact: ' + sc.pact.slots + ' × level ' + sc.pact.level : '');
+      const slots = slotText(sc);
       [
         ['Skills', skills.join(', ') || '—'],
         ['Spell slots', slots || '—'],
@@ -758,28 +788,6 @@
       applyHpMode();
     }
 
-    /* --- Small form helpers --- */
-    // Checkbox list limited to `max` ticks; `disabled` ids can't be ticked (already proficient).
-    function checks(options, selected, max, onChange, disabled) {
-      const sel = new Set(selected || []);
-      const off = new Set(disabled || []);
-      return h('div', { class: 'cb-checks' }, options.map((o) => {
-        const isOff = off.has(o.id) && !sel.has(o.id);
-        const full = sel.size >= max && !sel.has(o.id);
-        return h('label', { class: 'cb-check' + (isOff || full ? ' dim' : '') }, [
-          h('input', { type: 'checkbox', checked: sel.has(o.id), disabled: isOff || full, onchange: (e) => {
-            if (e.target.checked) sel.add(o.id); else sel.delete(o.id);
-            onChange(Array.from(sel));
-          } }), o.label + (off.has(o.id) ? ' ✓' : '')
-        ]);
-      }));
-    }
-
-    function select(options, value, placeholder, onChange) {
-      return h('select', { class: 'cb-select', onchange: (e) => onChange(e.target.value || null) },
-        [h('option', { value: '', text: placeholder })].concat(options.map((o) => h('option', { value: o.value, text: o.label, selected: o.value === value }))));
-    }
-
     /* --- Finish --- */
     function finish() {
       const v = validation();
@@ -807,10 +815,272 @@
     return { close: close };
   }
 
+  /* ---------- Level up ---------- */
+  // CharacterBuilder.levelUp({ rules, opts, build, onDone({ build, derived }), onCancel })
+  // One screen: which class gains the level (or a new one), hit points, the choices the new
+  // level brings, and what changes. Everything else in the build stays as it was.
+  function levelUp(config) {
+    const E = root.CharacterEngine;
+    const rules = config.rules || root.RULES_SRD5;
+    const opts = config.opts || {};
+    if (!E || !rules || !config.build) throw new Error('Level up needs character-engine.js, the rules and a build');
+    injectStyles();
+    close();
+
+    const base = JSON.parse(JSON.stringify(config.build));
+    base.choices = Object.assign({ skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {} }, base.choices || {});
+    const before = E.derive(base, rules);
+    const options = E.levelUpOptions(base, rules);
+    const strict = opts.strict !== false;
+    const st = { classId: null, hpMode: 'average', hpRoll: null, next: null, showMulti: false };
+    const entry = () => st.next ? st.next.classes.find((c) => c.id === st.classId) : null;
+
+    const wrap = h('div', { id: 'char-builder' });
+    const card = h('div', { class: 'cb-card', role: 'dialog', 'aria-label': 'Level up' });
+    card.style.maxWidth = '720px';
+    wrap.appendChild(card);
+    document.body.appendChild(wrap);
+
+    function pickClass(id) {
+      st.classId = id;
+      st.next = E.levelUp(base, rules, id, null);
+      st.next.choices = JSON.parse(JSON.stringify(base.choices));
+      if (st.hpMode === 'roll') st.hpRoll = null;
+      st.hpMode = 'average';
+      applyHp();
+      render();
+    }
+
+    // The new level's hit die: null means the average.
+    function applyHp() {
+      const c = entry();
+      if (c) c.hp[c.level - 1] = st.hpMode === 'roll' ? st.hpRoll : null;
+    }
+
+    function render() {
+      card.innerHTML = '';
+      card.appendChild(h('div', { class: 'cb-head' }, [
+        h('div', { class: 'cb-title', text: '⬆ LEVEL UP' + (base.name ? ': ' + base.name : '') }),
+        h('button', { type: 'button', class: 'btn ghost small', text: '✕', title: 'Close without levelling up', onclick: cancel })
+      ]));
+      const body = h('div', { class: 'cb-body' });
+      card.appendChild(body);
+      body.appendChild(h('div', { class: 'cb-note', text: 'Character level ' + before.level + ' → ' + (before.level + 1) + '. Gear, spells and notes stay as they are.' }));
+
+      renderClassPick(body);
+      let issues = [];
+      let hpOk = true;
+      if (st.next) {
+        hpOk = renderHp(body);
+        issues = renderChoices(body);
+        renderGains(body);
+        if (issues.length) {
+          body.appendChild(h('div', { class: 'cb-h', text: 'Still to do' }));
+          body.appendChild(h('div', { class: 'cb-issues' }, issues.map((i) => h('div', { class: 'cb-issue ' + i.level }, [h('span', { text: (i.level === 'error' ? '● ' : '⚠ ') + i.message })]))));
+        }
+      }
+
+      const ready = !!st.next && hpOk && !issues.some((i) => i.level === 'error');
+      card.appendChild(h('div', { class: 'cb-foot' }, [
+        h('button', { type: 'button', class: 'btn ghost small', text: 'Cancel', onclick: cancel }),
+        h('button', { type: 'button', class: 'btn small', text: '⬆ Level up', disabled: !ready, onclick: finish })
+      ]));
+    }
+
+    function renderClassPick(body) {
+      const mine = options.filter((o) => o.existing);
+      const others = options.filter((o) => !o.existing);
+      body.appendChild(h('div', { class: 'cb-h', text: 'Which class gains the level?' }));
+      body.appendChild(h('div', { class: 'cb-grid' }, mine.map((o) => h('button', { type: 'button', class: 'cb-opt' + (st.classId === o.id ? ' on' : ''), onclick: () => pickClass(o.id) }, [
+        h('b', { text: o.name }), h('small', { text: 'Level ' + o.level + ' → ' + (o.level + 1) })
+      ]))));
+      if (!others.length) return;
+      const pickedNew = others.some((o) => o.id === st.classId);
+      if (!st.showMulti && !pickedNew) {
+        body.appendChild(h('div', { class: 'cb-row', style: 'margin-top:8px' }, [
+          h('button', { type: 'button', class: 'btn ghost small', text: '➕ Multiclass into a new class…', onclick: () => { st.showMulti = true; render(); } })
+        ]));
+        return;
+      }
+      body.appendChild(h('div', { class: 'cb-h', text: 'Multiclass into' }));
+      body.appendChild(h('div', { class: 'cb-grid' }, others.map((o) => {
+        const blocked = !o.ok && strict;
+        return h('button', { type: 'button', class: 'cb-opt' + (st.classId === o.id ? ' on' : ''), disabled: blocked, title: o.need.join(' '), onclick: () => pickClass(o.id) }, [
+          h('b', { text: o.name }),
+          h('small', { text: o.ok ? 'd' + rules.classes[o.id].hitDie + ' hit die' : o.need.join(' ') }),
+          rules.classes[o.id].homebrew ? h('span', { class: 'cb-hb', text: 'homebrew' }) : null
+        ]);
+      })));
+      body.appendChild(h('div', { class: 'cb-note', text: 'Multiclassing needs the ability scores of both your classes and the new one' + (strict ? '.' : ' (your DM has relaxed the rules, so it is only a warning here).') }));
+    }
+
+    // Returns false while a typed roll is missing.
+    function renderHp(body) {
+      const c = entry();
+      const die = rules.classes[c.id].hitDie;
+      const gain = E.derive(st.next, rules).hp.max - before.hp.max;
+      body.appendChild(h('div', { class: 'cb-h', text: 'Hit points (d' + die + ')' }));
+      const typed = h('input', { type: 'number', class: 'cb-input', min: 1, max: die, placeholder: 'Type your roll', style: 'width:130px', value: st.hpMode === 'roll' && st.hpRoll ? st.hpRoll : '', onchange: (e) => {
+        const v = parseInt(e.target.value, 10);
+        if (Number.isInteger(v) && v >= 1 && v <= die) { st.hpMode = 'roll'; st.hpRoll = v; } else { st.hpMode = 'average'; st.hpRoll = null; }
+        applyHp();
+        render();
+      } });
+      body.appendChild(h('div', { class: 'cb-row cb-tabs' }, [
+        h('button', { type: 'button', class: 'btn ghost small' + (st.hpMode === 'average' ? ' on' : ''), text: 'Take the average (' + E.averageHitDie(die) + ')', onclick: () => { st.hpMode = 'average'; st.hpRoll = null; applyHp(); render(); } }),
+        h('button', { type: 'button', class: 'btn ghost small' + (st.hpMode === 'roll' ? ' on' : ''), text: '🎲 Roll d' + die, onclick: () => { st.hpMode = 'roll'; st.hpRoll = 1 + Math.floor(Math.random() * die); applyHp(); render(); } }),
+        typed
+      ]));
+      body.appendChild(h('div', { class: 'cb-note' }, [
+        st.hpMode === 'roll' ? 'Rolled ' + st.hpRoll + '. ' : '',
+        h('span', { class: 'cb-gain', text: (gain >= 0 ? '+' : '') + gain + ' max HP' }),
+        ' (CON ' + signed(before.abilities.mods.con) + ' included).'
+      ]));
+      return st.hpMode === 'average' || Number.isInteger(st.hpRoll);
+    }
+
+    // The choices this level brings for the class that gained it. Returns the level up's new issues.
+    function renderChoices(body) {
+      const c = entry();
+      const def = rules.classes[c.id];
+      const ch = st.next.choices;
+      const L = c.level;
+      const idx = st.next.classes.indexOf(c);
+      const issues = E.newIssues(base, st.next, rules, opts);
+      const pending = (prefix) => issues.some((i) => (i.path || '') === prefix || (i.path || '').startsWith(prefix + '.'));
+      const now = (lvl, path) => Number(lvl) === L || (Number(lvl) <= L && pending(path));
+      const proficient = () => { const p = E.derive(st.next, rules).characterStats.skillProfs; return Object.keys(p).filter((s) => p[s]); };
+      const skillOpts = (from) => (from === 'any' ? Object.keys(rules.skills) : from).map((s) => ({ id: s, label: rules.skills[s].name + ' (' + rules.skills[s].ability.toUpperCase() + ')' }));
+      const head = (text) => body.appendChild(h('div', { class: 'cb-h', text: text }));
+      let asked = false;
+
+      if (def.subclassLevel && now(def.subclassLevel, 'classes.' + idx + '.subclass')) {
+        asked = true;
+        head(def.subclassTitle || 'Subclass');
+        body.appendChild(h('div', { class: 'cb-grid' }, Object.keys(def.subclasses || {}).map((id) => {
+          const s = def.subclasses[id];
+          return h('button', { type: 'button', class: 'cb-opt' + (c.subclass === id ? ' on' : ''), onclick: () => { c.subclass = id; ch.subclassSkills[c.id] = []; render(); } }, [
+            h('b', { text: s.name }), h('small', { text: ((s.features || {})[L] || []).join(', ') }), s.homebrew ? h('span', { class: 'cb-hb', text: 'homebrew' }) : null
+          ]);
+        })));
+      }
+      const sub = c.subclass && def.subclasses ? def.subclasses[c.subclass] : null;
+
+      // A new class's own skill pick (Bard, Ranger, Rogue).
+      const mc = def.multiclass || {};
+      if (idx > 0 && mc.skills && (L === 1 || pending('choices.skills.' + c.id))) {
+        asked = true;
+        head(def.name + ': ' + mc.skills + ' skill' + (mc.skills > 1 ? 's' : ''));
+        body.appendChild(checks(skillOpts(mc.skillsFrom === 'class' ? def.skills.from : 'any'), ch.skills[c.id] || [], mc.skills, (v) => { ch.skills[c.id] = v; render(); }, proficient().filter((s) => !(ch.skills[c.id] || []).includes(s))));
+      }
+
+      if (sub && sub.bonusSkills) Object.keys(sub.bonusSkills).forEach((l) => {
+        if (!now(l, 'choices.subclassSkills.' + c.id)) return;
+        asked = true;
+        head(sub.name + ': ' + sub.bonusSkills[l] + ' bonus skills');
+        body.appendChild(checks(skillOpts('any'), ch.subclassSkills[c.id] || [], sub.bonusSkills[l], (v) => { ch.subclassSkills[c.id] = v; render(); }, proficient().filter((s) => !(ch.subclassSkills[c.id] || []).includes(s))));
+      });
+
+      const styleSlots = Object.keys(def.fightingStyle || {}).map((l) => [l, def.fightingStyle[l], 'Fighting style']);
+      if (sub && sub.fightingStyle) Object.keys(sub.fightingStyle).forEach((l) => styleSlots.push([l, Object.values(def.fightingStyle || {})[0] || Object.keys(rules.fightingStyles), sub.name + ': additional fighting style']));
+      styleSlots.forEach(([l, list, title]) => {
+        const key = c.id + ':' + l;
+        if (!now(l, 'choices.fightingStyles.' + key)) return;
+        asked = true;
+        head(title);
+        body.appendChild(select(list.map((s) => ({ value: s, label: rules.fightingStyles[s].name })), ch.fightingStyles[key], 'Choose…', (v) => { ch.fightingStyles[key] = v; render(); }));
+      });
+
+      if ((def.expertise || {})[L] || pending('choices.expertise')) {
+        let due = 0;
+        st.next.classes.forEach((x) => { const d = rules.classes[x.id]; Object.keys((d && d.expertise) || {}).forEach((l) => { if (Number(l) <= x.level) due += d.expertise[l]; }); });
+        asked = true;
+        head('Expertise: ' + due + ' skills in all (double proficiency)');
+        body.appendChild(checks(proficient().map((s) => ({ id: s, label: rules.skills[s].name })), ch.expertise, due, (v) => { ch.expertise = v; render(); }));
+      }
+
+      if ((def.asiLevels || []).includes(L)) {
+        asked = true;
+        head('Ability score improvement or feat');
+        body.appendChild(asiRow(c.id + ':' + L, ch));
+      }
+
+      if (!asked) body.appendChild(h('div', { class: 'cb-note', text: 'Nothing to choose at this level: the new features are listed below.' }));
+      return E.newIssues(base, st.next, rules, opts);
+    }
+
+    function asiRow(key, ch) {
+      const pick = ch.asi[key] || {};
+      const n = Object.keys(pick.abilities || {}).length;
+      const kind = pick._kind || (pick.type === 'feat' ? 'feat' : n === 2 ? 'two' : n === 1 ? 'one' : '');
+      const scores = before.abilities.scores;
+      const row = h('div', { class: 'cb-row' });
+      row.appendChild(select([{ value: 'one', label: '+2 to one ability' }, { value: 'two', label: '+1 to two abilities' }, { value: 'feat', label: 'A feat' }], kind, 'Choose…', (v) => {
+        if (!v) delete ch.asi[key];
+        else ch.asi[key] = v === 'feat' ? { type: 'feat', feat: null, _kind: v } : { type: 'asi', abilities: {}, _kind: v };
+        render();
+      }));
+      if (kind === 'one' || kind === 'two') {
+        const keys = Object.keys(pick.abilities || {});
+        const abil = E.ABILITIES.map((a) => ({ value: a, label: rules.abilityNames[a] + ' (' + scores[a] + ')' }));
+        const setAb = (i, a) => {
+          const cur = keys.slice();
+          cur[i] = a;
+          const abilities = {};
+          if (kind === 'one') { if (cur[0]) abilities[cur[0]] = 2; } else cur.slice(0, 2).forEach((x) => { if (x) abilities[x] = 1; });
+          ch.asi[key] = { type: 'asi', abilities: abilities, _kind: kind };
+          render();
+        };
+        row.appendChild(select(abil, keys[0], 'Ability…', (v) => setAb(0, v)));
+        if (kind === 'two') row.appendChild(select(abil, keys[1], 'Ability…', (v) => setAb(1, v)));
+      } else if (kind === 'feat') {
+        row.appendChild(select(Object.keys(rules.feats).map((f) => ({ value: f, label: rules.feats[f].name + (rules.feats[f].requires ? ' (needs ' + Object.keys(rules.feats[f].requires).map((a) => a.toUpperCase() + ' ' + rules.feats[f].requires[a]).join(', ') + ')' : '') })), pick.feat, 'Feat…', (v) => { ch.asi[key] = { type: 'feat', feat: v, _kind: 'feat' }; render(); }));
+      }
+      return row;
+    }
+
+    function renderGains(body) {
+      const after = E.derive(st.next, rules);
+      const fkey = (f) => f.name + '|' + f.source + '|' + f.level;
+      const had = new Set(before.features.map(fkey));
+      const gained = after.features.filter((f) => !had.has(fkey(f)));
+      body.appendChild(h('div', { class: 'cb-h', text: 'What changes' }));
+      const cells = [
+        ['Max HP', before.hp.max + ' → ' + after.hp.max],
+        ['Proficiency', signed(before.proficiencyBonus) + (after.proficiencyBonus !== before.proficiencyBonus ? ' → ' + signed(after.proficiencyBonus) : '')],
+        ['Hit dice', after.hp.hitDice]
+      ];
+      E.ABILITIES.forEach((a) => { if (after.abilities.scores[a] !== before.abilities.scores[a]) cells.push([a.toUpperCase(), before.abilities.scores[a] + ' → ' + after.abilities.scores[a]]); });
+      body.appendChild(h('div', { class: 'cb-sum' }, cells.map(([k, v]) => h('div', {}, [h('small', { text: k }), h('b', { text: v })]))));
+      const s0 = slotText(before.spellcasting), s1 = slotText(after.spellcasting);
+      if (s0 !== s1) body.appendChild(h('div', { class: 'cb-list', style: 'margin-top:8px' }, [h('b', { text: 'Spell slots: ' }), (s0 || 'none') + ' → ' + s1]));
+      body.appendChild(h('div', { class: 'cb-list', style: 'margin-top:6px' }, [h('b', { text: 'New features: ' }), gained.map((f) => f.name).join(', ') || '—']));
+      if (after.spellcasting.abilities.length) body.appendChild(h('div', { class: 'cb-note', text: 'New spells known or prepared: add them in the Spells tab.' }));
+    }
+
+    function finish() {
+      Object.keys(st.next.choices.asi).forEach((k) => { if (st.next.choices.asi[k]) delete st.next.choices.asi[k]._kind; });
+      const result = { build: JSON.parse(JSON.stringify(st.next)), derived: E.derive(st.next, rules) };
+      close();
+      if (typeof config.onDone === 'function') config.onDone(result);
+    }
+
+    function cancel() {
+      if (st.next && !confirm('Close without levelling up?')) return;
+      close();
+      if (typeof config.onCancel === 'function') config.onCancel();
+    }
+
+    // A single class with no multiclassing to consider: start on it.
+    const only = options.filter((o) => o.existing);
+    if (only.length === 1) pickClass(only[0].id); else render();
+    return { close: close };
+  }
+
   function close() {
     const el = document.getElementById('char-builder');
     if (el) el.remove();
   }
 
-  root.CharacterBuilder = { open: open, close: close, stepOfIssue: stepOfIssue };
+  root.CharacterBuilder = { open: open, levelUp: levelUp, close: close, stepOfIssue: stepOfIssue };
 })(typeof window !== 'undefined' ? window : this);

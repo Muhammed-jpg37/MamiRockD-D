@@ -7298,6 +7298,7 @@
           <div style="font-size:11px; color:var(--text-dim);">${escapeHtml(cs.species)}${cs.subrace ? ' (' + escapeHtml(cs.subrace) + ')' : ''}</div>
         </div>
         <div style="display:flex; gap:6px;">
+          ${state.build && (cs.level || 1) < 20 ? `<button class="btn ghost small" style="padding:2px 8px; font-size:11px;" onclick="event.stopPropagation(); openLevelUp();" title="Gain a level: hit points, new features and choices">⬆ Level</button>` : ''}
           <button class="btn ghost small" style="padding:2px 8px; font-size:11px;" onclick="event.stopPropagation(); openCharacterStatsModal();" title="Quick edit identity">⚙️ Edit</button>
           <button class="btn small" style="padding:2px 8px; font-size:11px; background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000; font-weight:bold;" onclick="event.stopPropagation(); openCharacterForgeModal({ isEditMode: true });" title="Re-forge Class, Stats & Proficiencies">⚔ Forge</button>
         </div>
@@ -9035,7 +9036,17 @@
 
     // ⚔ Forge on a builder-made sheet: apply the changed choices, keeping gear, spells,
     // notes, current HP (moved by the change in max), spent slots and features the player added.
-    function applyRebuiltCharacter(result) {
+    // ⬆ Level up on a builder-made sheet: one more level, saved like an edit (current HP rises by the gain).
+    function openLevelUp() {
+      if (!builderAvailable() || !state || !state.build) { toast('Level up works for characters made with the builder; use ⚙️ Edit for this one.', 4000); return; }
+      CharacterBuilder.levelUp({
+        rules: builderRules(), opts: builderOpts(), build: state.build,
+        onDone: (result) => applyRebuiltCharacter(result, '⬆ ' + (result.build.name || 'Character') + ' is now level ' + result.derived.level + '!')
+      });
+    }
+    window.openLevelUp = openLevelUp;
+
+    function applyRebuiltCharacter(result, message) {
       const E = window.CharacterEngine;
       const rules = builderRules();
       const d = result.derived;
@@ -9073,7 +9084,7 @@
 
       save();
       renderAll();
-      toast('⚔ ' + (result.build.name || 'Character') + ' updated', 2500);
+      toast(message || '⚔ ' + (result.build.name || 'Character') + ' updated', 3000);
     }
 
     window.sheetFromBuild = sheetFromBuild;

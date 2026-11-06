@@ -248,6 +248,35 @@ test('level up adds a level and keeps everything else', () => {
   assert.throws(() => E.levelUp(max, SRD, 'fighter'), /level 20/);
 });
 
+test('level up options: existing classes, and new ones only with the multiclass prerequisites', () => {
+  // Human fighter from the standard array: STR 16, DEX 15, CON 14, INT 13, WIS 11, CHA 9.
+  const opts = E.levelUpOptions(build(), SRD);
+  const by = Object.fromEntries(opts.map((o) => [o.id, o]));
+  assert.equal(by.fighter.existing, true);
+  assert.equal(by.fighter.level, 1);
+  assert.equal(by.fighter.ok, true);
+  assert.equal(by.wizard.ok, true);                 // INT 13
+  assert.equal(by.rogue.ok, true);                  // DEX 13
+  assert.equal(by.cleric.ok, false);                // WIS 11
+  assert.match(by.cleric.need.join(' '), /WIS 13/);
+  assert.equal(by.monk.ok, false);                  // needs DEX 13 and WIS 13
+  assert.deepEqual(E.levelUpOptions(build({ classes: [{ id: 'fighter', level: 20 }] }), SRD), []);
+});
+
+test('level up asks only for what the new level brings', () => {
+  const codes = (prev, next) => E.newIssues(prev, next, SRD).map((i) => i.code);
+  const lvl = (n) => build({ classes: [{ id: 'fighter', level: n, subclass: n >= 3 ? 'champion' : null, hp: [] }], choices: Object.assign(build().choices, n >= 4 ? { asi: { 'fighter:4': { type: 'asi', abilities: { str: 2 } } } } : {}) });
+  assert.deepEqual(codes(lvl(1), E.levelUp(lvl(1), SRD, 'fighter', null)), []);
+  assert.deepEqual(codes(lvl(2), E.levelUp(lvl(2), SRD, 'fighter', null)), ['subclass-missing']);
+  assert.deepEqual(codes(lvl(3), E.levelUp(lvl(3), SRD, 'fighter', null)), ['asi-missing']);
+  // Multiclassing into rogue: one rogue skill and two expertise picks.
+  const rogue = codes(lvl(1), E.levelUp(lvl(1), SRD, 'rogue', null));
+  assert.ok(rogue.includes('skills-missing'), rogue.join());
+  assert.ok(rogue.includes('expertise-missing'), rogue.join());
+  // Cleric without WIS 13 breaks the rules.
+  assert.ok(codes(lvl(1), E.levelUp(lvl(1), SRD, 'cleric', null)).includes('multiclass-requires'));
+});
+
 test('sheet output has the fields the existing character sheet reads', () => {
   const cs = E.derive(build(), SRD).characterStats;
   const keys = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'profBonus', 'speed', 'initBonus', 'ac', 'characterClass', 'species', 'level',

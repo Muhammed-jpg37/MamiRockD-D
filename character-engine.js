@@ -532,6 +532,30 @@
     return next;
   }
 
+  // The classes this build can take its next level in:
+  // [{ id, name, existing, level, ok, need: [message, ...] }].
+  // A new class is not ok when multiclassing breaks the prerequisites (2014: the classes you have
+  // and the new one all need theirs).
+  function levelUpOptions(build, rules) {
+    if (totalLevel(build, rules) >= 20) return [];
+    return Object.keys(rules.classes).map((id) => {
+      const entry = (build.classes || []).find((c) => c && c.id === id);
+      const out = { id: id, name: rules.classes[id].name, existing: !!entry, level: entry ? Number(entry.level) || 0 : 0, ok: true, need: [] };
+      if (!entry && (build.classes || []).length) {
+        out.need = validate(levelUp(build, rules, id, null), rules, {}).issues.filter((i) => i.code === 'multiclass-requires').map((i) => i.message);
+        out.ok = !out.need.length;
+      }
+      return out;
+    });
+  }
+
+  // What a level up asks for: the issues `next` has that `prev` didn't (new choices, broken rules).
+  function newIssues(prev, next, rules, opts) {
+    const key = (i) => i.code + '|' + i.path + '|' + i.message;
+    const before = new Set(validate(prev, rules, opts).issues.map(key));
+    return validate(next, rules, opts).issues.filter((i) => !before.has(key(i)));
+  }
+
   /* ---------- Homebrew ---------- */
   // Adds a campaign's own content to the rules. homebrew = { classes, species, backgrounds, feats, fightingStyles,
   // subclasses: { <classId>: { <subclassId>: def } }, subraces: { <speciesId>: { <subraceId>: def } } }.
@@ -572,6 +596,8 @@
     validate: validate,
     pendingChoices: pendingChoices,
     levelUp: levelUp,
+    levelUpOptions: levelUpOptions,
+    newIssues: newIssues,
     mergeRules: mergeRules,
     totalLevel: totalLevel,
     asiSlots: asiSlots
