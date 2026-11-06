@@ -16,6 +16,37 @@
 
   const ASI = [4, 8, 12, 16, 19];
 
+  // A per-level table (index 0 = class level 1) from the levels where the value changes:
+  // steps({ 1: 2, 4: 3, 10: 4 }) → 2 at levels 1–3, 3 at 4–9, 4 at 10–20.
+  function steps(changes) {
+    const out = [];
+    let v = 0;
+    for (let lvl = 1; lvl <= 20; lvl++) {
+      if (changes[lvl] !== undefined) v = changes[lvl];
+      out.push(v);
+    }
+    return out;
+  }
+
+  /* Spells per class (SRD 5.1 class tables). On a class's `spellcasting`:
+     cantrips[lvl-1]      cantrips known at that class level
+     known[lvl-1]         spells known (bard, ranger, sorcerer, warlock); the bard's
+                          table already includes the spells learned through Magical Secrets
+     prepared             prepared casters: ability modifier + class level / levelDivisor
+                          (rounded down), at least 1, chosen from the whole class list
+                          (the wizard's from the spellbook) after each long rest
+     replaceOnLevelUp     known casters may swap one known spell for another class spell
+                          of a level they can cast when they gain a level in the class
+     ritual               'known' | 'prepared' | 'spellbook': which spells can be cast
+                          as rituals (the spell must have the ritual tag)
+     spellbook            wizard: { start, perLevel } 1st-level wizard spells in the book
+                          at level 1, then spells added at each wizard level, of a level
+                          the wizard has slots for
+     mysticArcanum        warlock: { classLevel: spellLevel }, one spell each, once per
+                          long rest, not counted in spells known
+     magicalSecrets       bard: { classLevel: count } spells from any class's list; they
+                          count as bard spells and are part of `known` */
+
   const SRD5 = {
     id: 'srd5.1',
     ruleset: '5e-2014',
@@ -98,7 +129,14 @@
         name: 'Bard', hitDie: 8, saves: ['dex', 'cha'],
         armor: 'Light Armor', weapons: 'Simple Weapons, Hand Crossbows, Longswords, Rapiers, Shortswords', tools: 'Three musical instruments',
         skills: { choose: 3, from: 'any' },
-        spellcasting: { ability: 'cha', progression: 'full' }, asiLevels: ASI,
+        spellcasting: {
+          ability: 'cha', progression: 'full',
+          cantrips: steps({ 1: 2, 4: 3, 10: 4 }),
+          known: [4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 15, 16, 18, 19, 19, 20, 22, 22, 22],
+          replaceOnLevelUp: true, ritual: 'known',
+          magicalSecrets: { 10: 2, 14: 2, 18: 2 }
+        },
+        asiLevels: ASI,
         expertise: { 3: 2, 10: 2 },
         subclassLevel: 3, subclassTitle: 'Bard College',
         multiclass: { requires: { all: { cha: 13 } }, armor: 'Light Armor', weapons: '', tools: 'One musical instrument', skills: 1, skillsFrom: 'any' },
@@ -111,14 +149,20 @@
           15: ['Bardic Inspiration (d12)'], 17: ['Song of Rest (d12)'], 18: ['Magical Secrets'], 20: ['Superior Inspiration']
         },
         subclasses: {
-          lore: { name: 'College of Lore', bonusSkills: { 3: 3 }, features: { 3: ['Bonus Proficiencies', 'Cutting Words'], 6: ['Additional Magical Secrets'], 14: ['Peerless Skill'] } }
+          // Additional Magical Secrets: 2 spells from any class at bard level 6, NOT counted in spells known.
+          lore: { name: 'College of Lore', bonusSkills: { 3: 3 }, additionalMagicalSecrets: { 6: 2 }, features: { 3: ['Bonus Proficiencies', 'Cutting Words'], 6: ['Additional Magical Secrets'], 14: ['Peerless Skill'] } }
         }
       },
       cleric: {
         name: 'Cleric', hitDie: 8, saves: ['wis', 'cha'],
         armor: 'Light Armor, Medium Armor, Shields', weapons: 'Simple Weapons', tools: '',
         skills: { choose: 2, from: ['history', 'insight', 'medicine', 'persuasion', 'religion'] },
-        spellcasting: { ability: 'wis', progression: 'full' }, asiLevels: ASI,
+        spellcasting: {
+          ability: 'wis', progression: 'full',
+          cantrips: steps({ 1: 3, 4: 4, 10: 5 }),
+          prepared: { levelDivisor: 1 }, ritual: 'prepared'
+        },
+        asiLevels: ASI,
         subclassLevel: 1, subclassTitle: 'Divine Domain',
         multiclass: { requires: { all: { wis: 13 } }, armor: 'Light Armor, Medium Armor, Shields', weapons: '', skills: 0 },
         startingWealth: { dice: 5, mult: 10 },
@@ -136,7 +180,12 @@
         name: 'Druid', hitDie: 8, saves: ['int', 'wis'],
         armor: 'Light Armor, Medium Armor, Shields (nonmetal)', weapons: 'Clubs, Daggers, Darts, Javelins, Maces, Quarterstaffs, Scimitars, Sickles, Slings, Spears', tools: 'Herbalism Kit',
         skills: { choose: 2, from: ['arcana', 'animalHandling', 'insight', 'medicine', 'nature', 'perception', 'religion', 'survival'] },
-        spellcasting: { ability: 'wis', progression: 'full' }, asiLevels: ASI,
+        spellcasting: {
+          ability: 'wis', progression: 'full',
+          cantrips: steps({ 1: 2, 4: 3, 10: 4 }),
+          prepared: { levelDivisor: 1 }, ritual: 'prepared'
+        },
+        asiLevels: ASI,
         subclassLevel: 2, subclassTitle: 'Druid Circle',
         multiclass: { requires: { all: { wis: 13 } }, armor: 'Light Armor, Medium Armor, Shields (nonmetal)', weapons: '', skills: 0 },
         startingWealth: { dice: 2, mult: 10 },
@@ -191,7 +240,12 @@
         name: 'Paladin', hitDie: 10, saves: ['wis', 'cha'],
         armor: 'All Armor, Shields', weapons: 'Simple Weapons, Martial Weapons', tools: '',
         skills: { choose: 2, from: ['athletics', 'insight', 'intimidation', 'medicine', 'persuasion', 'religion'] },
-        spellcasting: { ability: 'cha', progression: 'half' }, asiLevels: ASI,
+        spellcasting: {
+          ability: 'cha', progression: 'half',
+          cantrips: steps({ 1: 0 }),
+          prepared: { levelDivisor: 2 }   // from paladin level 2, when Spellcasting starts
+        },
+        asiLevels: ASI,
         fightingStyle: { 2: ['defense', 'dueling', 'greatWeapon', 'protection'] },
         subclassLevel: 3, subclassTitle: 'Sacred Oath',
         multiclass: { requires: { all: { str: 13, cha: 13 } }, armor: 'Light Armor, Medium Armor, Shields', weapons: 'Simple Weapons, Martial Weapons', skills: 0 },
@@ -209,7 +263,13 @@
         name: 'Ranger', hitDie: 10, saves: ['str', 'dex'],
         armor: 'Light Armor, Medium Armor, Shields', weapons: 'Simple Weapons, Martial Weapons', tools: '',
         skills: { choose: 3, from: ['animalHandling', 'athletics', 'insight', 'investigation', 'nature', 'perception', 'stealth', 'survival'] },
-        spellcasting: { ability: 'wis', progression: 'half' }, asiLevels: ASI,
+        spellcasting: {
+          ability: 'wis', progression: 'half',
+          cantrips: steps({ 1: 0 }),
+          known: [0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11],
+          replaceOnLevelUp: true
+        },
+        asiLevels: ASI,
         fightingStyle: { 2: ['archery', 'defense', 'dueling', 'twoWeapon'] },
         subclassLevel: 3, subclassTitle: 'Ranger Archetype',
         multiclass: { requires: { all: { dex: 13, wis: 13 } }, armor: 'Light Armor, Medium Armor, Shields', weapons: 'Simple Weapons, Martial Weapons', skills: 1, skillsFrom: 'class' },
@@ -246,7 +306,13 @@
         name: 'Sorcerer', hitDie: 6, saves: ['con', 'cha'],
         armor: '', weapons: 'Daggers, Darts, Slings, Quarterstaffs, Light Crossbows', tools: '',
         skills: { choose: 2, from: ['arcana', 'deception', 'insight', 'intimidation', 'persuasion', 'religion'] },
-        spellcasting: { ability: 'cha', progression: 'full' }, asiLevels: ASI,
+        spellcasting: {
+          ability: 'cha', progression: 'full',
+          cantrips: steps({ 1: 4, 4: 5, 10: 6 }),
+          known: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 13, 13, 14, 14, 15, 15, 15, 15],
+          replaceOnLevelUp: true
+        },
+        asiLevels: ASI,
         subclassLevel: 1, subclassTitle: 'Sorcerous Origin',
         multiclass: { requires: { all: { cha: 13 } }, armor: '', weapons: '', skills: 0 },
         startingWealth: { dice: 3, mult: 10 },
@@ -265,7 +331,14 @@
         name: 'Warlock', hitDie: 8, saves: ['wis', 'cha'],
         armor: 'Light Armor', weapons: 'Simple Weapons', tools: '',
         skills: { choose: 2, from: ['arcana', 'deception', 'history', 'intimidation', 'investigation', 'nature', 'religion'] },
-        spellcasting: { ability: 'cha', progression: 'pact' }, asiLevels: ASI,
+        spellcasting: {
+          ability: 'cha', progression: 'pact',
+          cantrips: steps({ 1: 2, 4: 3, 10: 4 }),
+          known: [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15],
+          replaceOnLevelUp: true,
+          mysticArcanum: { 11: 6, 13: 7, 15: 8, 17: 9 }
+        },
+        asiLevels: ASI,
         subclassLevel: 1, subclassTitle: 'Otherworldly Patron',
         multiclass: { requires: { all: { cha: 13 } }, armor: 'Light Armor', weapons: 'Simple Weapons', skills: 0 },
         startingWealth: { dice: 4, mult: 10 },
@@ -282,7 +355,13 @@
         name: 'Wizard', hitDie: 6, saves: ['int', 'wis'],
         armor: '', weapons: 'Daggers, Darts, Slings, Quarterstaffs, Light Crossbows', tools: '',
         skills: { choose: 2, from: ['arcana', 'history', 'insight', 'investigation', 'medicine', 'religion'] },
-        spellcasting: { ability: 'int', progression: 'full' }, asiLevels: ASI,
+        spellcasting: {
+          ability: 'int', progression: 'full',
+          cantrips: steps({ 1: 3, 4: 4, 10: 5 }),
+          prepared: { levelDivisor: 1, from: 'spellbook' }, ritual: 'spellbook',
+          spellbook: { start: 6, perLevel: 2 }
+        },
+        asiLevels: ASI,
         subclassLevel: 2, subclassTitle: 'Arcane Tradition',
         multiclass: { requires: { all: { int: 13 } }, armor: '', weapons: '', skills: 0 },
         startingWealth: { dice: 4, mult: 10 },

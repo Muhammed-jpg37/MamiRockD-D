@@ -87,8 +87,8 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 5. Non-SRD spells (278) kept as name-only: done.
 6. Spells tab reads the new data, ruleset and book filters: done.
 7. Saved spells refreshed from the catalog (`spell-saved.js`): done.
-8. Class rules: cantrips known, spells known, prepared spells, wizard spellbook, Mystic Arcanum, Magical Secrets in `rules/srd5.js`. **Next.**
-9. Subclass and race spells (Domain, Oath, Circle, Fiend, High Elf, Tiefling).
+8. Class rules in `rules/srd5.js` (on each class's `spellcasting`: `cantrips`, `known`, `prepared`, `replaceOnLevelUp`, `ritual`, `spellbook`, `mysticArcanum`, `magicalSecrets`; Lore's `additionalMagicalSecrets`): done. Data only; the engine starts using it in step 10.
+9. Subclass and race spells (Domain, Oath, Circle, Fiend, High Elf, Tiefling). **Next.**
 10. Engine: spell picks as pending choices, counts, highest level, multiclass lists.
 11. Builder UI: a Spells step in the wizard and in level up, written to the Spells tab.
 12. Homebrew spells in the campaign homebrew editor.
@@ -97,7 +97,7 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 
 Then: decide on merging `karakter-olusturucu` → `kampanya-sistemi` → `main` (ask first). Optional: the builder's edit screen showing every class's choices.
 
-Note: on the machine used on 2026-11-06 evening, Node.js was not installed and `git` was only GitHub Desktop's copy (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`). Step 7's tests were run in the browser through a small `node:test` shim, not with `npm test`.
+Note: on the machine used on 2026-11-06 evening, Node.js was not installed and `git` was only GitHub Desktop's copy (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`). Steps 7 and 8 were tested with `tests/browser-runner.html` (serve the folder, open `/tests/browser-runner.html`): it runs every `tests/*.test.js` file through small stand-ins for `node:test`, `node:assert`, `fs` and `path`. 68 pass there. Run `npm test` once on a machine with Node to confirm. New test files have to be added to the `FILES` list in the runner.
 
 ## Before release (tell the friend)
 

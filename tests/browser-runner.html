@@ -1,0 +1,95 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Test runner</title>
+<!--
+  Runs tests/*.test.js in a browser, for machines without Node.js.
+  Serve the project folder (npm start, or any static server) and open
+  /tests/browser-runner.html. It loads each test file with a small
+  CommonJS loader and stand-ins for node:test, node:assert/strict,
+  node:fs (read only) and node:path. `npm test` is still the real run.
+-->
+<body style="font:14px/1.5 monospace; padding:16px; background:#111; color:#ddd">
+<pre id="out">Running…</pre>
+<script>
+(function () {
+  const FILES = ['engine.test.js', 'spells.test.js', 'saved-spells.test.js', 'class-spells.test.js'];
+
+  function getSync(url) {
+    const x = new XMLHttpRequest();
+    x.open('GET', url + '?t=' + Date.now(), false);
+    x.send();
+    if (x.status !== 200) throw new Error('cannot read ' + url + ' (' + x.status + ')');
+    return x.responseText;
+  }
+  function norm(p) {
+    const out = [];
+    p.split('/').forEach(function (s) { if (s === '..') out.pop(); else if (s && s !== '.') out.push(s); });
+    return '/' + out.join('/');
+  }
+  const pathMod = { join: function () { return norm(Array.prototype.join.call(arguments, '/')); }, dirname: function (p) { return norm(p + '/..'); } };
+
+  function isObj(v) { return v && typeof v === 'object'; }
+  function deepEq(a, b) {
+    if (a === b) return true;
+    if (typeof a === 'number' && typeof b === 'number') return Number.isNaN(a) && Number.isNaN(b);
+    if (!isObj(a) || !isObj(b) || Array.isArray(a) !== Array.isArray(b)) return false;
+    if (Object.getPrototypeOf(a) !== Object.getPrototypeOf(b)) return false;
+    const ka = Object.keys(a), kb = Object.keys(b);
+    return ka.length === kb.length && ka.every(function (k) { return Object.prototype.hasOwnProperty.call(b, k) && deepEq(a[k], b[k]); });
+  }
+  function fail(m, a, b) { throw new Error((m ? m + ': ' : '') + JSON.stringify(a) + ' vs ' + JSON.stringify(b)); }
+  const assert = {
+    ok: function (v, m) { if (!v) throw new Error(m || 'expected truthy, got ' + JSON.stringify(v)); },
+    equal: function (a, b, m) { if (a !== b && !(Number.isNaN(a) && Number.isNaN(b))) fail(m || 'equal', a, b); },
+    notEqual: function (a, b, m) { if (a === b) fail(m || 'notEqual', a, b); },
+    deepEqual: function (a, b, m) { if (!deepEq(a, b)) fail(m || 'deepEqual', a, b); },
+    notDeepEqual: function (a, b, m) { if (deepEq(a, b)) fail(m || 'notDeepEqual', a, b); },
+    match: function (s, re, m) { if (!re.test(s)) fail(m || 'match', s, String(re)); },
+    throws: function (fn, exp, m) {
+      try { fn(); } catch (e) {
+        if (exp instanceof RegExp && !exp.test(String(e && e.message))) fail(m || 'throws: wrong error', String(e && e.message), String(exp));
+        return;
+      }
+      throw new Error(m || 'expected a throw');
+    }
+  };
+  assert.strictEqual = assert.equal;
+  assert.deepStrictEqual = assert.deepEqual;
+
+  let tests = [];
+  const cache = {};
+  function load(file) {
+    if (cache[file]) return cache[file].exports;
+    const module = { exports: {} };
+    cache[file] = module;
+    const dir = pathMod.dirname(file);
+    const src = getSync(file);
+    if (file.endsWith('.json')) { module.exports = JSON.parse(src.replace(/^﻿/, '')); return module.exports; }
+    const req = function (n) {
+      if (n === 'node:test') { const t = function (name, fn) { tests.push([name, fn]); }; t.test = t; return t; }
+      if (n === 'node:assert/strict' || n === 'node:assert' || n === 'assert') return assert;
+      if (n === 'node:fs' || n === 'fs') return { readFileSync: function (p) { return getSync(p); }, existsSync: function () { return true; } };
+      if (n === 'node:path' || n === 'path') return pathMod;
+      let p = norm(dir + '/' + n);
+      if (!/\.(js|json)$/.test(p)) p += '.js';
+      return load(p);
+    };
+    new Function('module', 'exports', 'require', '__dirname', '__filename', 'window', src)(module, module.exports, req, dir, file, undefined);
+    return module.exports;
+  }
+
+  const lines = [];
+  let pass = 0, failN = 0;
+  FILES.forEach(function (f) {
+    tests = [];
+    try { load('/tests/' + f); } catch (e) { lines.push('LOAD FAIL ' + f + ' :: ' + e.message); failN++; return; }
+    tests.forEach(function (t) {
+      try { t[1](); pass++; lines.push('  ok  ' + f + ' > ' + t[0]); }
+      catch (e) { failN++; lines.push('FAIL  ' + f + ' > ' + t[0] + ' :: ' + e.message); }
+    });
+  });
+  lines.unshift('pass ' + pass + '  fail ' + failN, '');
+  document.getElementById('out').textContent = lines.join('\n');
+  window.TEST_RESULT = { pass: pass, fail: failN, lines: lines };
+})();
+</script>
