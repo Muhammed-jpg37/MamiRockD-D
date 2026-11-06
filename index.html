@@ -14530,6 +14530,45 @@
       });
     };
 
+    /* Character sheets (inventories/<key>) for the "My characters" screen in campaign.js.
+       key is a character id: 'ch…' for builder characters, the nickname for older ones. */
+    const sheetKeyOk = (k) => typeof k === 'string' && /^[^.#$\[\]\/]{1,60}$/.test(k);
+
+    window.fbCharacterSheet = function(key) {
+      if (!db || !sheetKeyOk(key)) return Promise.resolve(null);
+      return get(ref(db, 'inventories/' + key.toLowerCase())).then((snap) => snap.val());
+    };
+
+    // Copies a sheet to a new key; `changes` are top-level fields to replace (e.g. campaign, build).
+    window.fbCopyCharacterSheet = function(fromKey, toKey, changes) {
+      if (!db || !sheetKeyOk(fromKey) || !sheetKeyOk(toKey)) return Promise.reject(new Error('Bad character id'));
+      return get(ref(db, 'inventories/' + fromKey.toLowerCase())).then((snap) => {
+        const sheet = snap.val();
+        if (!sheet) throw new Error('That character has no sheet to copy');
+        const copy = Object.assign({}, sheet, changes || {});
+        if (copy.spellbook) { copy.spellbook = Object.assign({}, copy.spellbook); delete copy.spellbook.catalog; }
+        return set(ref(db, 'inventories/' + toKey.toLowerCase()), cleanData(copy));
+      });
+    };
+
+    window.fbRenameCharacterSheet = function(key, name) {
+      if (!db || !sheetKeyOk(key)) return Promise.reject(new Error('Bad character id'));
+      const path = 'inventories/' + key.toLowerCase();
+      return get(ref(db, path + '/build')).then((b) => {
+        const patch = { campaign: name + "'s Vault" };
+        if (b.exists()) patch['build/name'] = name;
+        return update(ref(db, path), patch);
+      });
+    };
+
+    window.fbDeleteCharacterSheet = function(key) {
+      if (!db || !sheetKeyOk(key)) return Promise.reject(new Error('Bad character id'));
+      return Promise.all([
+        set(ref(db, 'inventories/' + key.toLowerCase()), null),
+        set(ref(db, 'inventory_backgrounds/' + key.toLowerCase()), null)
+      ]);
+    };
+
     // Live view of one campaign path. Returns an unsubscribe function.
     window.fbCampaignListen = function(path, callback) {
       if (!db || !campaignPathOk(path) || typeof callback !== 'function') return () => {};

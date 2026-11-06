@@ -202,7 +202,9 @@
     if (!name) return Promise.reject(new Error('Give the character a name'));
     if (typeof window.openCharacterForgeModal !== 'function') return Promise.reject(new Error('Character forge not available'));
     const id = 'ch' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    return new Promise((resolve, reject) => {
+    return loadMyCharacters(nick).then((mine) => {
+      if (mine.length >= MAX_CHARACTERS) throw new Error('You have ' + MAX_CHARACTERS + ' characters, the most an account can have. Delete one in 🎭 My characters first.');
+    }).then(() => new Promise((resolve, reject) => {
       closePicker();   // the forge opens underneath the picker otherwise
       window.openCharacterForgeModal({
         nickname: name,
@@ -217,6 +219,145 @@
           window.fbCampaignUpdate(patch).then(() => resolve(id), reject);
         }
       });
+    }));
+  }
+
+  /* ---------- "My characters": list, rename, copy, delete ---------- */
+
+  const MAX_CHARACTERS = 10;   // per account, like D&D Beyond's character slots
+
+  // Everything shown on the list: name, a summary from the sheet, the portrait, and the campaigns it's in.
+  function loadCharacterCards(nick) {
+    return Promise.all([loadMyCharacters(nick), loadMyCampaigns(nick)]).then(([chars, camps]) =>
+      Promise.all(chars.map((ch) => (typeof window.fbCharacterSheet === 'function' ? window.fbCharacterSheet(ch.id) : Promise.resolve(null)).then((sheet) => {
+        const cs = (sheet && sheet.characterStats) || {};
+        const build = sheet && sheet.build;
+        return {
+          id: ch.id,
+          name: ch.name,
+          legacy: ch.id === nick,          // the account's own first character, used at login
+          builder: !!build,
+          portrait: build && build.details ? build.details.portrait || null : null,
+          summary: [cs.level ? 'Lvl ' + cs.level : '', cs.characterClass || '', cs.subrace || cs.species || ''].filter(Boolean).join(' · '),
+          campaigns: camps.filter((c) => c.character === ch.id).map((c) => c.name)
+        };
+      }))));
+  }
+
+  function renameCharacter(id, name) {
+    const nick = myKey();
+    name = String(name || '').trim().slice(0, 40);
+    if (!nick) return Promise.reject(new Error('Log in first'));
+    if (!name) return Promise.reject(new Error('Give the character a name'));
+    return window.fbCampaignGet('characters/' + id).then((c) => {
+      if (!c || c.owner !== nick) throw new Error('That is not your character');
+      charNames[id] = name;
+      return Promise.all([
+        window.fbCampaignUpdate({ ['characters/' + id + '/name']: name }),
+        typeof window.fbRenameCharacterSheet === 'function' ? window.fbRenameCharacterSheet(id, name) : null
+      ]);
+    });
+  }
+
+  // A full copy (sheet, gear, spells) under a new id; handy for a variant or a backup before levelling.
+  function copyCharacter(id) {
+    const nick = myKey();
+    if (!nick) return Promise.reject(new Error('Log in first'));
+    return Promise.all([loadMyCharacters(nick), window.fbCampaignGet('characters/' + id), window.fbCharacterSheet(id)]).then(([mine, c, sheet]) => {
+      if (!c || c.owner !== nick) throw new Error('That is not your character');
+      if (mine.length >= MAX_CHARACTERS) throw new Error('You have ' + MAX_CHARACTERS + ' characters, the most an account can have. Delete one first.');
+      const newId = 'ch' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      const name = (c.name + ' (copy)').slice(0, 40);
+      const changes = { campaign: name + "'s Vault" };
+      if (sheet && sheet.build) changes.build = Object.assign({}, sheet.build, { name: name });
+      return window.fbCopyCharacterSheet(id, newId, changes).then(() => window.fbCampaignUpdate({
+        ['characters/' + newId]: { name: name, owner: nick, createdAt: Date.now() },
+        ['users/' + nick + '/characters/' + newId]: true
+      })).then(() => newId);
+    });
+  }
+
+  // Refuses while a campaign still uses the character, and for the account's own first character.
+  function deleteCharacter(id) {
+    const nick = myKey();
+    if (!nick) return Promise.reject(new Error('Log in first'));
+    if (id === nick) return Promise.reject(new Error("This is your account's own character (it opens when you log in), so it can't be deleted."));
+    return Promise.all([window.fbCampaignGet('characters/' + id), loadMyCampaigns(nick)]).then(([c, camps]) => {
+      if (!c || c.owner !== nick) throw new Error('That is not your character');
+      const usedIn = camps.filter((x) => x.character === id).map((x) => x.name);
+      if (usedIn.length) throw new Error('Pick another character in ' + usedIn.join(', ') + ' first (🎭 next to the campaign).');
+      return window.fbCampaignUpdate({ ['characters/' + id]: null, ['users/' + nick + '/characters/' + id]: null })
+        .then(() => window.fbDeleteCharacterSheet(id))
+        .then(() => {
+          delete charNames[id];
+          try { localStorage.removeItem('hoard_inv_user_' + id.toLowerCase()); } catch (e) { }
+        });
+    });
+  }
+
+  function openCharacters(message, isError) {
+    const nick = myKey();
+    if (!nick) return Promise.resolve();
+    injectStyles();
+    return loadCharacterCards(nick).then((cards) => {
+      closePicker();
+      const wrap = el('div');
+      wrap.id = 'campaign-picker';
+      const card = el('div', 'auth-card');
+      wrap.appendChild(card);
+
+      const back = el('button', 'btn ghost small camp-close', '← Back');
+      back.type = 'button';
+      back.onclick = () => openPicker();
+      card.appendChild(back);
+
+      const head = el('div', 'auth-header');
+      head.appendChild(el('div', 'auth-emblem', '🎭'));
+      head.appendChild(el('h2', 'auth-title', 'MY CHARACTERS'));
+      head.appendChild(el('div', 'auth-subtitle', cards.length + ' / ' + MAX_CHARACTERS + ' characters'));
+      card.appendChild(head);
+
+      const msgBox = el('div', 'auth-msg');
+      const say = (text, err) => { msgBox.textContent = text || ''; msgBox.className = 'auth-msg' + (text ? (err ? ' error' : ' success') : ''); };
+      const fail = (err) => say(err.message || String(err), true);
+      const list = el('div', 'camp-list');
+      if (!cards.length) list.appendChild(el('div', 'camp-empty', 'No characters yet.'));
+      cards.forEach((ch) => {
+        const row = el('div', 'camp-member');
+        const pic = ch.portrait ? Object.assign(el('img', 'char-thumb'), { src: ch.portrait, alt: '' }) : el('div', 'char-thumb', (ch.name || '?').slice(0, 1).toUpperCase());
+        const who = el('div', 'camp-member-who');
+        who.appendChild(el('span', 'camp-name', ch.name));
+        who.appendChild(el('span', 'camp-meta', (ch.summary || 'No sheet yet') + (ch.campaigns.length ? ' · in ' + ch.campaigns.join(', ') : '')));
+        const acts = el('div', 'camp-member-acts');
+        const act = (label, title, fn) => { const b = el('button', 'btn ghost small', label); b.type = 'button'; b.title = title; b.onclick = fn; acts.appendChild(b); };
+        act('✏️', 'Rename', () => {
+          // Inline rename (prompt() isn't available everywhere).
+          who.innerHTML = '';
+          const f = form('New name', 'Save', (v) => renameCharacter(ch.id, v).then(() => openCharacters('Renamed to "' + v.trim() + '".'), fail), 40);
+          f.querySelector('input').value = ch.name;
+          who.appendChild(f);
+          f.querySelector('input').focus();
+        });
+        act('📄', 'Make a copy', () => copyCharacter(ch.id).then(() => openCharacters('Copied "' + ch.name + '".'), fail));
+        act('🗑', ch.legacy ? "Your account's own character can't be deleted" : 'Delete', () => {
+          if (ch.legacy) { say("This is your account's own character (it opens when you log in), so it can't be deleted.", true); return; }
+          if (!confirm('Delete "' + ch.name + '" and its sheet, gear and spells? This can not be undone.')) return;
+          deleteCharacter(ch.id).then(() => openCharacters('Deleted "' + ch.name + '".'), fail);
+        });
+        row.append(pic, who, acts);
+        list.appendChild(row);
+      });
+      card.appendChild(list);
+
+      if (cards.length < MAX_CHARACTERS) {
+        card.appendChild(el('div', 'camp-section', 'New character'));
+        card.appendChild(form('Character name', 'Create', (name) => {
+          createCharacter(name).then(() => openCharacters('Created "' + name + '".'), (err) => openCharacters(err.message || String(err), true));
+        }, 40));
+      }
+      card.appendChild(msgBox);
+      if (message) say(message, isError);
+      document.body.appendChild(wrap);
     });
   }
 
@@ -968,6 +1109,8 @@
       .camp-member-acts { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
       .camp-member-acts .btn { padding: 2px 6px; }
       .camp-danger { color: var(--danger-strong); border-color: color-mix(in srgb, var(--danger) 60%, transparent); }
+      .char-thumb { width: 40px; height: 40px; flex: none; border-radius: 50%; object-fit: cover; border: 1px solid var(--accent); background: var(--surface-inset); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); color: var(--accent-strong); }
+      .camp-member-who .camp-form { margin: 0; }
       .camp-chip { padding: 3px 8px; font-size: 11px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     `;
     document.head.appendChild(style);
@@ -1069,6 +1212,10 @@
       card.appendChild(el('div', 'auth-msg'));
 
       const foot = el('div', 'camp-foot');
+      const mine = el('button', 'btn ghost small', '🎭 My characters');
+      mine.type = 'button';
+      mine.onclick = () => openCharacters();
+      foot.appendChild(mine);
       const out = el('button', 'btn ghost small', '🚪 Log out');
       out.type = 'button';
       out.onclick = () => { closePicker(); if (typeof logoutCurrentUser === 'function') logoutCurrentUser(); };
@@ -1215,6 +1362,11 @@
     migrateIfNeeded: migrateIfNeeded,
     loadMyCampaigns: loadMyCampaigns,
     loadMyCharacters: loadMyCharacters,
+    openCharacters: openCharacters,
+    renameCharacter: renameCharacter,
+    copyCharacter: copyCharacter,
+    deleteCharacter: deleteCharacter,
+    MAX_CHARACTERS: MAX_CHARACTERS,
     createCharacter: createCharacter,
     setCampaignCharacter: setCampaignCharacter,
     createCampaign: createCampaign,
