@@ -60,6 +60,7 @@
   <script src="spell-catalog.js" defer></script>
   <script src="spell-saved.js" defer></script>
   <script src="rules/srd5.js" defer></script>
+  <script src="rules/srd5-spells.js" defer></script>
   <script src="character-engine.js" defer></script>
   <script src="character-builder.js" defer></script>
   <script src="campaign.js" defer></script>
@@ -8900,9 +8901,70 @@
     }
 
     // The SRD plus the active campaign's homebrew, and the campaign's builder settings.
+    // The SRD spell data is attached once, so the builder asks for spell picks.
     function builderRules() {
+      if (window.SPELLS_SRD5 && window.RULES_SRD5 && !window.RULES_SRD5.spells) window.CharacterEngine.attachSpells(window.RULES_SRD5, window.SPELLS_SRD5);
       const hb = window.activeCampaign && window.Campaigns && window.Campaigns.homebrew ? window.Campaigns.homebrew() : null;
       return hb && Object.keys(hb).length ? window.CharacterEngine.mergeRules(window.RULES_SRD5, hb) : window.RULES_SRD5;
+    }
+
+    /* Spell picks and the Spells tab.
+       A builder-made character's spells (cantrips, spells known, spellbook, Domain/Oath/Circle
+       spells, species spells) are copied into the Spells tab's saved list, marked fromBuild.
+       When the build changes, those entries are replaced; spells the player added by hand stay. */
+
+    // Characters made before the builder asked for spells: start their picks from the Spells tab,
+    // so editing or levelling up doesn't ask them to choose everything again.
+    function seedSpellPicks(build, rules) {
+      const E = window.CharacterEngine;
+      if (!rules.spells || !build) return build;
+      const saved = (state && state.spellbook && state.spellbook.list) || [];
+      if (!saved.length) return build;
+      const byName = {};
+      Object.values(rules.spells).forEach((s) => { byName[s.name.toLowerCase()] = s; });
+      // Saved spells, 2014 rules only, matched to SRD spells by name (or a catalog alias).
+      const savedIds = [];
+      saved.forEach((s) => {
+        if (spellRuleset(s) !== '2014') return;
+        let sp = byName[String(s.name || '').toLowerCase()];
+        if (!sp) { const cat = findCatalogSpellFor(s.name, '2014'); if (cat) sp = byName[cat.name.toLowerCase()]; }
+        if (sp && !savedIds.includes(sp.id)) savedIds.push(sp.id);
+      });
+      build.choices = build.choices || {};
+      build.choices.spells = build.choices.spells || {};
+      E.spellLimits(build, rules).forEach((l) => {
+        if (build.choices.spells[l.classId]) return;   // already has picks
+        const p = {};
+        const take = (kind, max) => E.spellOptions(build, rules, l.classId, kind).filter((id) => savedIds.includes(id)).slice(0, max);
+        if (l.cantrips) p.cantrips = take('cantrips', l.cantrips);
+        if (l.known) p.known = take('known', l.known);
+        if (l.spellbook !== null) p.spellbook = take('spellbook', 999);
+        build.choices.spells[l.classId] = p;
+      });
+      return build;
+    }
+
+    function syncBuildSpellsToSheet(sheet, derived, rules) {
+      if (!rules.spells || !derived || !derived.spellcasting || !derived.spellcasting.spells) return;
+      sheet.spellbook = sheet.spellbook || {};
+      const list = (Array.isArray(sheet.spellbook.list) ? sheet.spellbook.list : []).filter((s) => !s.fromBuild);
+      derived.spellcasting.spells.forEach((x) => {
+        const sp = rules.spells[x.id];
+        if (!sp) return;
+        const cat = findCatalogSpellFor(sp.name, '2014');
+        const entry = cat && spellRuleset(cat) === '2014' ? {
+          name: cat.name, ruleset: '2014', levelNum: cat.levelNum, levelText: cat.levelText || '', source: cat.source, school: cat.school || '',
+          schoolName: cat.schoolName || '', classes: (cat.classes || []).slice(), damage: cat.damage || '', desc: cat.desc || cat.quickEffect || ''
+        } : {
+          name: sp.name, ruleset: '2014', levelNum: sp.level, levelText: sp.level === 0 ? 'Cantrip' : 'Level ' + sp.level, source: 'SRD',
+          schoolName: sp.school, classes: [], damage: '', desc: (sp.desc || []).join('\n\n')
+        };
+        // A spell the player added by hand is kept as theirs, not doubled.
+        if (list.some((s) => isSameSpell(s, Object.assign({ aliases: (cat && cat.aliases) || [] }, entry)))) return;
+        if (list.some((s) => s.fromBuild && s.name === entry.name)) return;
+        list.push(Object.assign(entry, { fromBuild: true, buildKind: x.kind }));
+      });
+      sheet.spellbook.list = list;
     }
     function builderOpts() {
       return window.activeCampaign && window.Campaigns && window.Campaigns.builderSettings ? window.Campaigns.builderSettings() : { allowManual: false, strict: true };
@@ -8916,8 +8978,9 @@
           if (confirm('Convert this character to the new character builder?\n\nOK: convert it (you check everything before anything is saved; gear, spells and notes stay).\nCancel: open the old forge instead.')) return convertToBuilder();
           return openLegacyForgeModal(options);
         }
+        const rules = builderRules();
         return CharacterBuilder.open({
-          rules: builderRules(), opts: builderOpts(), build: state.build, editing: true,
+          rules: rules, opts: builderOpts(), build: seedSpellPicks(JSON.parse(JSON.stringify(state.build)), rules), editing: true,
           onDone: applyRebuiltCharacter
         });
       }
@@ -8971,6 +9034,8 @@
       const characterStats = Object.assign({}, base.characterStats, cs, { ac: acWithArmor(d, gear.items) });
       const firstClass = build.classes[0] && rules.classes[build.classes[0].id];
 
+      const spellSheet = { spellbook: Object.assign({}, base.spellbook || {}, { list: ((base.spellbook || {}).list || []).slice() }) };
+      syncBuildSpellsToSheet(spellSheet, d, rules);
       return Object.assign({}, base, {
         campaign: (build.name || 'Adventurer') + "'s Vault",
         build: build,
@@ -8979,7 +9044,7 @@
         items: gear.items,
         currency: { platinum: 0, gold: gear.gold, electrum: 0, silver: 0, copper: 0 },
         spellSlots: { max: slots, used: emptySlotMax(), pactLevel: pactLevel, syncedFor: cs.characterClass + ':' + cs.level },
-        spellbook: Object.assign({}, base.spellbook || {}, { classFilter: firstClass ? firstClass.name : '' }),
+        spellbook: Object.assign({}, spellSheet.spellbook, { classFilter: firstClass ? firstClass.name : '' }),
         features: { items: featuresFromDerived(d), backgroundInfo: backgroundInfoFrom(build, rules) }
       });
     }
@@ -9085,8 +9150,9 @@
         if (confirm('Levelling up needs the character builder. Convert this character first?\n\nYou check everything before anything is saved; gear, spells and notes stay. Then press ⬆ Level again.')) convertToBuilder();
         return;
       }
+      const rules = builderRules();
       CharacterBuilder.levelUp({
-        rules: builderRules(), opts: builderOpts(), build: state.build,
+        rules: rules, opts: builderOpts(), build: seedSpellPicks(JSON.parse(JSON.stringify(state.build)), rules),
         onDone: (result) => applyRebuiltCharacter(result, '⬆ ' + (result.build.name || 'Character') + ' is now level ' + result.derived.level + '!')
       });
     }
@@ -9103,6 +9169,7 @@
       if (!r.ok) { alert(r.reason + '\n\nKeep using ⚙️ Edit and the old forge for this character.'); return; }
       r.build.details = { alignment: bgi.alignment || '', ideals: bgi.ideals || '', bonds: bgi.bonds || '', flaws: bgi.flaws || '', personality: bgi.personality || '', backstory: bgi.backstory || '' };
       if (state.portrait) r.build.details.portrait = state.portrait;
+      seedSpellPicks(r.build, rules);
       const notes = ['Converted from your old sheet: check everything below before saving. Gear, spells, notes and the features you wrote stay.'].concat(r.notes);
       const oldMax = state.hp && state.hp.max;
       const newMax = E.derive(r.build, rules).hp.max;
@@ -9152,6 +9219,9 @@
       const ownNames = new Set(own.map((f) => String(f.name || '').trim().toLowerCase()));
       state.features.items = own.concat(featuresFromDerived(d).filter((f) => !ownNames.has(f.name.trim().toLowerCase())));
       state.features.backgroundInfo = Object.assign({}, state.features.backgroundInfo || {}, backgroundInfoFrom(result.build, rules));
+
+      // The build's spells replace the ones it added before; the player's own stay.
+      syncBuildSpellsToSheet(state, d, rules);
 
       save();
       renderAll();

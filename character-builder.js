@@ -24,6 +24,7 @@
     { id: 'origin', label: 'Origin' },
     { id: 'abilities', label: 'Abilities' },
     { id: 'choices', label: 'Choices' },
+    { id: 'spells', label: 'Spells' },
     { id: 'equipment', label: 'Equipment' },
     { id: 'details', label: 'Details' },
     { id: 'review', label: 'Review' }
@@ -44,6 +45,7 @@
   // Which wizard step an engine issue belongs to.
   function stepOfIssue(issue) {
     const p = issue.path || '';
+    if (p.startsWith('choices.spells')) return 'spells';
     if (/^classes\.\d+\.(subclass|hp)/.test(p) || p.startsWith('choices')) return 'choices';
     if (p.startsWith('classes') || p === 'ruleset') return 'class';
     if (p.startsWith('species') || p.startsWith('subrace') || p.startsWith('background')) return 'origin';
@@ -133,6 +135,12 @@
       .cb-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
       .cb-opt:disabled { opacity: .45; cursor: not-allowed; }
       .cb-gain { color: var(--success); }
+      .cb-spells { margin-bottom: 8px; }
+      .cb-count { font-family: var(--font-mono); font-size: 12px; color: var(--warn); }
+      .cb-count.ok { color: var(--success); }
+      .cb-sublvl { font-size: 11px; color: var(--accent-2-strong); text-transform: uppercase; letter-spacing: .5px; margin: 8px 0 2px; }
+      .cb-spellclass { color: var(--accent-strong); font-size: 13px; border-top: 1px solid var(--border); padding-top: 10px; }
+      .cb-spellclass:first-child { border-top: 0; padding-top: 0; }
       @media (max-width: 640px) {
         .cb-abil { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         .cb-two { grid-template-columns: 1fr; }
@@ -165,6 +173,154 @@
       [h('option', { value: '', text: placeholder })].concat(options.map((o) => h('option', { value: o.value, text: o.label, selected: o.value === value }))));
   }
 
+  /* ---------- Spell picks (wizard step and level up) ----------
+     Asks for everything engine.spellLimits() says the build has: the land (Circle of the
+     Land), cantrips, spells known or the spellbook, Mystic Arcanum, Lore's extra secrets and
+     the species cantrip. Only shown when the rules carry spell data (engine.attachSpells). */
+
+  const ORD = ['Cantrips', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th'];
+
+  // A list of spells to tick, grouped by level, with a search box; at most `max` ticked.
+  // `locked` ids are shown ticked but can't be changed (always-prepared spells).
+  function spellChecks(rules, ids, selected, max, onChange, state) {
+    const sel = new Set(selected || []);
+    const box = h('div', { class: 'cb-spells' });
+    const q = (state.q || '').toLowerCase();
+    const shown = ids.filter((id) => sel.has(id) || !q || rules.spells[id].name.toLowerCase().includes(q));
+    const head = h('div', { class: 'cb-row' }, [
+      h('span', { class: 'cb-count' + (sel.size === max ? ' ok' : ''), text: sel.size + ' / ' + max + ' chosen' }),
+      ids.length > 12 ? h('input', { class: 'cb-input', placeholder: '🔍 Search', value: state.q || '', style: 'flex:1;min-width:140px', oninput: (e) => {
+        state.q = e.target.value;
+        const pos = e.target.selectionStart;
+        const fresh = spellChecks(rules, ids, Array.from(sel), max, onChange, state);
+        box.replaceWith(fresh);
+        const inp = fresh.querySelector('input.cb-input');
+        if (inp) { inp.focus(); inp.setSelectionRange(pos, pos); }
+      } }) : null
+    ]);
+    box.appendChild(head);
+    let lvl = -1;
+    let grid = null;
+    shown.forEach((id) => {
+      const s = rules.spells[id];
+      if (s.level !== lvl) {
+        lvl = s.level;
+        box.appendChild(h('div', { class: 'cb-sublvl', text: lvl === 0 ? ORD[0] : ORD[lvl] + ' level' }));
+        grid = h('div', { class: 'cb-checks' });
+        box.appendChild(grid);
+      }
+      const full = sel.size >= max && !sel.has(id);
+      grid.appendChild(h('label', { class: 'cb-check' + (full ? ' dim' : ''), title: (s.desc || [])[0] || '' }, [
+        h('input', { type: 'checkbox', checked: sel.has(id), disabled: full, onchange: (e) => {
+          if (e.target.checked) sel.add(id); else sel.delete(id);
+          onChange(Array.from(sel));
+        } }),
+        s.name + (s.ritual ? ' ®' : '') + (s.concentration ? ' ©' : '')
+      ]));
+    });
+    if (!shown.length) box.appendChild(h('div', { class: 'cb-note', text: 'No spell matches.' }));
+    return box;
+  }
+
+  // Renders the spell picks for every caster class (or only `onlyClass`) and the species.
+  // ui: a per-dialog object that keeps search texts between renders. Returns false when there
+  // is nothing to ask.
+  function renderSpellPicks(body, E, rules, build, render, ui, onlyClass) {
+    if (!rules.spells) return false;
+    build.choices.spells = build.choices.spells || {};
+    const picks = build.choices.spells;
+    const names = (ids) => ids.map((id) => (rules.spells[id] || { name: id }).name).join(', ');
+    let asked = false;
+    E.spellLimits(build, rules).forEach((l) => {
+      if (onlyClass && l.classId !== onlyClass) return;
+      const p = picks[l.classId] = picks[l.classId] || {};
+      const set = (k, v) => { p[k] = v; render(); };
+      const key = (k) => { ui[l.classId + k] = ui[l.classId + k] || {}; return ui[l.classId + k]; };
+      const sub = (t) => body.appendChild(h('div', { class: 'cb-h', text: t }));
+      const facts = [];
+      if (l.maxSpellLevel) facts.push('Spells up to ' + ORD[l.maxSpellLevel] + ' level');
+      if (l.prepared !== null) facts.push('prepares ' + l.prepared + ' spell' + (l.prepared === 1 ? '' : 's') + ' a day' + (l.preparedFrom === 'spellbook' ? ' from the spellbook' : ' from the whole ' + l.name + ' list') + ' (in the Spells tab)');
+      if (l.ritual) facts.push('ritual casting');
+      body.appendChild(h('div', { class: 'cb-h cb-spellclass', text: '✨ ' + l.name + ' ' + l.level + (l.subclassName ? ' · ' + l.subclassName : '') }));
+      body.appendChild(h('div', { class: 'cb-note', text: (facts.join(' · ') || 'No spells yet at this level.') + '.' }));
+
+      if (l.lands) {
+        asked = true;
+        sub('Your land (Circle Spells)');
+        const circle = rules.classes[l.classId].subclasses[(build.classes.find((c) => c.id === l.classId) || {}).subclass].circleSpells;
+        body.appendChild(select(l.lands.map((k) => ({ value: k, label: circle[k].name })), p.land, 'Choose…', (v) => set('land', v)));
+      }
+      if (l.cantrips) {
+        asked = true;
+        sub('Cantrips: ' + l.cantrips);
+        body.appendChild(spellChecks(rules, E.spellOptions(build, rules, l.classId, 'cantrips'), p.cantrips, l.cantrips, (v) => set('cantrips', v), key('c')));
+      }
+      if (l.known) {
+        asked = true;
+        sub('Spells known: ' + l.known);
+        if (l.secrets) body.appendChild(h('div', { class: 'cb-note', text: 'Magical Secrets: up to ' + l.secrets + ' of these may come from any class.' }));
+        if (l.replaceOnLevelUp) body.appendChild(h('div', { class: 'cb-note', text: 'When you gain a ' + l.name + ' level you may swap one of these for another.' }));
+        body.appendChild(spellChecks(rules, E.spellOptions(build, rules, l.classId, 'known'), p.known, l.known, (v) => set('known', v), key('k')));
+      }
+      if (l.spellbook !== null) {
+        asked = true;
+        sub('Spellbook: ' + l.spellbook + ' spells');
+        body.appendChild(h('div', { class: 'cb-note', text: 'Six 1st-level spells at level 1, then two per wizard level. Spells you copy from scrolls later go in the Spells tab.' }));
+        body.appendChild(spellChecks(rules, E.spellOptions(build, rules, l.classId, 'spellbook'), p.spellbook, Math.max(l.spellbook, (p.spellbook || []).length), (v) => set('spellbook', v), key('b')));
+      }
+      l.arcanum.forEach((sl) => {
+        asked = true;
+        sub('Mystic Arcanum: one ' + ORD[sl] + '-level spell');
+        p.arcanum = p.arcanum || {};
+        body.appendChild(select(E.spellOptions(build, rules, l.classId, 'arcanum:' + sl).map((id) => ({ value: id, label: rules.spells[id].name })), p.arcanum[sl], 'Choose…', (v) => { p.arcanum[sl] = v; render(); }));
+      });
+      if (l.extraSecrets) {
+        asked = true;
+        sub('Additional Magical Secrets: ' + l.extraSecrets + ' (any class)');
+        body.appendChild(spellChecks(rules, E.spellOptions(build, rules, l.classId, 'secrets').filter((id) => !(p.known || []).includes(id)), p.secrets, l.extraSecrets, (v) => set('secrets', v), key('s')));
+      }
+      if (l.alwaysPrepared.length) body.appendChild(h('div', { class: 'cb-note', text: 'Always prepared (' + l.subclassName + '): ' + names(l.alwaysPrepared) + '.' }));
+      if (l.expanded.length) body.appendChild(h('div', { class: 'cb-note', text: l.subclassName + ' adds to your list: ' + names(l.expanded) + '.' }));
+    });
+    if (!onlyClass || onlyClass === 'species') {
+      const sp = E.speciesSpells(build, rules);
+      if (sp.cantrips || sp.innate.length) body.appendChild(h('div', { class: 'cb-h cb-spellclass', text: '✨ Species spells' + (sp.ability ? ' (' + sp.ability.toUpperCase() + ')' : '') }));
+      if (sp.cantrips) {
+        asked = true;
+        picks.species = picks.species || {};
+        body.appendChild(spellChecks(rules, E.spellOptions(build, rules, 'species'), picks.species.cantrips, sp.cantrips.choose, (v) => { picks.species.cantrips = v; render(); }, (ui.species = ui.species || {})));
+      }
+      if (sp.innate.length) body.appendChild(h('div', { class: 'cb-note', text: 'Innate: ' + sp.innate.map((x) => (rules.spells[x.spell] || { name: x.spell }).name + (x.per ? ' (once per ' + x.per + (x.castAt ? ', as level ' + x.castAt : '') + ')' : '')).join(', ') + '.' }));
+    }
+    return asked;
+  }
+
+  // Fills empty spell picks with the first options (Quick Build).
+  function autoSpells(E, rules, build) {
+    if (!rules.spells) return;
+    build.choices.spells = build.choices.spells || {};
+    const picks = build.choices.spells;
+    E.spellLimits(build, rules).forEach((l) => {
+      const p = picks[l.classId] = picks[l.classId] || {};
+      if (l.lands && !p.land) p.land = l.lands[0];
+      if (l.cantrips && !(p.cantrips || []).length) p.cantrips = E.spellOptions(build, rules, l.classId, 'cantrips').slice(0, l.cantrips);
+      // Class-list spells first (Magical Secrets are a deliberate pick), lowest level first.
+      const own = (id) => (rules.spells[id].classes || []).includes(l.classId);
+      if (l.known && !(p.known || []).length) p.known = E.spellOptions(build, rules, l.classId, 'known').filter(own).slice(0, l.known);
+      if (l.spellbook && !(p.spellbook || []).length) p.spellbook = E.spellOptions(build, rules, l.classId, 'spellbook').slice(0, l.spellbook);
+      l.arcanum.forEach((sl) => { p.arcanum = p.arcanum || {}; if (!p.arcanum[sl]) p.arcanum[sl] = E.spellOptions(build, rules, l.classId, 'arcanum:' + sl)[0]; });
+      if (l.extraSecrets && !(p.secrets || []).length) p.secrets = E.spellOptions(build, rules, l.classId, 'secrets').filter((id) => !(p.known || []).includes(id)).slice(0, l.extraSecrets);
+    });
+    const sp = E.speciesSpells(build, rules);
+    if (sp.cantrips) {
+      picks.species = picks.species || {};
+      // Not a cantrip the class already gives.
+      const have = new Set();
+      Object.keys(picks).forEach((k) => { if (k !== 'species') (picks[k].cantrips || []).forEach((id) => have.add(id)); });
+      if (!(picks.species.cantrips || []).length) picks.species.cantrips = E.spellOptions(build, rules, 'species').filter((id) => !have.has(id)).slice(0, sp.cantrips.choose);
+    }
+  }
+
   function slotText(sc) {
     const s = Object.keys(sc.slots).map((l) => l + ': ' + sc.slots[l]).join(' · ');
     return s + (sc.pact ? (s ? ' · ' : '') + 'Pact: ' + sc.pact.slots + ' × level ' + sc.pact.level : '');
@@ -191,8 +347,10 @@
     const b = () => st.build;
     if (!config.build && config.initialName) b().name = String(config.initialName).slice(0, 40);
     // An existing character keeps its gear, so there is no equipment step when editing.
-    const steps = config.editing ? STEPS.filter((s) => s.id !== 'equipment') : STEPS;
-    b().choices = Object.assign({ skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {} }, b().choices || {});
+    // The Spells step needs spell data on the rules.
+    const steps = STEPS.filter((s) => !(config.editing && s.id === 'equipment') && !(s.id === 'spells' && !rules.spells));
+    b().choices = Object.assign({ skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {}, spells: {} }, b().choices || {});
+    const spellUi = {};
     b().speciesChoices = b().speciesChoices || {};
     b().backgroundChoices = b().backgroundChoices || {};
     b().details = b().details || {};
@@ -212,7 +370,7 @@
       v.issues.forEach((i) => { if (i.level === 'error') (byStep[stepOfIssue(i)] = byStep[stepOfIssue(i)] || []).push(i); });
       if (!String(b().name || '').trim()) (byStep.details = byStep.details || []).push({ message: 'Give your character a name.' });
       // Without a class these steps have nothing to show yet, so they aren't done either.
-      if (!cls()) ['choices', 'equipment'].forEach((s) => { (byStep[s] = byStep[s] || []).push({ message: 'Choose a class first.' }); });
+      if (!cls()) ['choices', 'spells', 'equipment'].forEach((s) => { (byStep[s] = byStep[s] || []).push({ message: 'Choose a class first.' }); });
       return { v: v, byStep: byStep };
     }
 
@@ -239,7 +397,7 @@
       if (st.step === 'review' && !st.quick && (config.notice || []).length) {
         body.appendChild(h('div', { class: 'cb-issues', style: 'margin:0 0 12px' }, config.notice.map((n) => h('div', { class: 'cb-issue warning' }, [h('span', { text: 'ℹ ' + n })]))));
       }
-      (st.quick ? renderQuick : ({ class: renderClass, origin: renderOrigin, abilities: renderAbilities, choices: renderChoices, equipment: renderEquipment, details: renderDetails, review: renderReview })[st.step])(body, v);
+      (st.quick ? renderQuick : ({ class: renderClass, origin: renderOrigin, abilities: renderAbilities, choices: renderChoices, spells: renderSpells, equipment: renderEquipment, details: renderDetails, review: renderReview })[st.step])(body, v);
 
       const idx = steps.findIndex((s) => s.id === st.step);
       const foot = h('div', { class: 'cb-foot' });
@@ -282,7 +440,7 @@
       const level = cls() ? cls().level : 1;
       b().classes = [{ id: id, level: level, subclass: null, hp: [] }];
       // Everything tied to the old class goes.
-      Object.assign(b().choices, { skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {} });
+      Object.assign(b().choices, { skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {}, spells: {} });
       applyHpMode();
       render();
     }
@@ -552,6 +710,16 @@
       body.appendChild(h('div', { class: 'cb-note', text: 'Max HP: ' + E.derive(b(), rules).hp.max }));
     }
 
+    /* --- Step: Spells --- */
+    function renderSpells(body) {
+      if (!cls()) { body.appendChild(h('div', { class: 'cb-note', text: 'Choose a class first.' })); return; }
+      const asked = renderSpellPicks(body, E, rules, b(), render, spellUi);
+      const any = E.spellLimits(b(), rules).length || E.speciesSpells(b(), rules).innate.length;
+      if (!any) body.appendChild(h('div', { class: 'cb-note', text: clsDef().name + 's don\'t cast spells' + (clsDef().spellcasting ? ' yet at this level' : '') + '. Nothing to choose here.' }));
+      else if (!asked) body.appendChild(h('div', { class: 'cb-note', text: 'Nothing to choose at this level.' }));
+      body.appendChild(h('div', { class: 'cb-note', text: '® ritual · © concentration. Your picks go to the Spells tab when you save; spells you add there yourself stay yours.' }));
+    }
+
     function applyHpMode(reroll) {
       const c = cls();
       if (!c) return;
@@ -716,9 +884,16 @@
 
       const skills = Object.keys(cs.skillProfs).filter((s) => cs.skillProfs[s]).map((s) => rules.skills[s].name + (cs.skillCustomBonuses[s] ? ' (expertise)' : ''));
       const slots = slotText(sc);
+      const KIND = { cantrip: 'cantrips', known: 'known', spellbook: 'spellbook', always: 'always prepared', arcanum: 'Mystic Arcanum', secret: 'Magical Secrets', innate: 'innate' };
+      const spellGroups = {};
+      (sc.spells || []).forEach((x) => {
+        const k = (x.source === 'species' ? 'Species' : (rules.classes[x.source] || { name: x.source }).name) + ' ' + KIND[x.kind];
+        (spellGroups[k] = spellGroups[k] || []).push((rules.spells && rules.spells[x.id] ? rules.spells[x.id].name : x.id));
+      });
       [
         ['Skills', skills.join(', ') || '—'],
         ['Spell slots', slots || '—'],
+        rules.spells && (sc.spells || []).length ? ['Spells', Object.keys(spellGroups).map((k) => k + ': ' + spellGroups[k].join(', ')).join(' · ')] : null,
         ['Armour', cs.armorProf || '—'], ['Weapons', cs.weaponProf || '—'], ['Tools', cs.toolProf || '—'], ['Languages', cs.languages || '—'],
         ['Features', d.features.map((f) => f.name).join(', ')],
         config.editing ? null : ['Equipment', equipmentSummary().join('; ')]
@@ -790,6 +965,7 @@
       const prof = Array.from(new Set(Array.from(fixed).concat(b().choices.skills[c.id])));
       b().choices.expertise = prof.sort((x, y) => order.indexOf(rules.skills[x].ability) - order.indexOf(rules.skills[y].ability)).slice(0, due);
       E.asiSlots(b(), rules).forEach((slot) => { if (!b().choices.asi[slot.key]) b().choices.asi[slot.key] = { type: 'asi', abilities: { [order[0]]: 2 } }; });
+      autoSpells(E, rules, b());
       applyHpMode();
     }
 
@@ -833,7 +1009,8 @@
     close();
 
     const base = JSON.parse(JSON.stringify(config.build));
-    base.choices = Object.assign({ skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {} }, base.choices || {});
+    base.choices = Object.assign({ skills: {}, subclassSkills: {}, expertise: [], asi: {}, fightingStyles: {}, spells: {} }, base.choices || {});
+    const spellUi = {};
     const before = E.derive(base, rules);
     const options = E.levelUpOptions(base, rules);
     const strict = opts.strict !== false;
@@ -1010,6 +1187,17 @@
         body.appendChild(asiRow(c.id + ':' + L, ch));
       }
 
+      // Spells for the class that gained the level (new picks, or swapping one known spell),
+      // and species spells when they still need choosing.
+      if (rules.spells && def.spellcasting) {
+        const sb = h('div', {});
+        if (renderSpellPicks(sb, E, rules, st.next, render, spellUi, c.id)) { asked = true; body.appendChild(sb); }
+      }
+      if (rules.spells && pending('choices.spells.species')) {
+        asked = true;
+        renderSpellPicks(body, E, rules, st.next, render, spellUi, 'species');
+      }
+
       if (!asked) body.appendChild(h('div', { class: 'cb-note', text: 'Nothing to choose at this level: the new features are listed below.' }));
       return E.newIssues(base, st.next, rules, opts);
     }
@@ -1060,7 +1248,7 @@
       const s0 = slotText(before.spellcasting), s1 = slotText(after.spellcasting);
       if (s0 !== s1) body.appendChild(h('div', { class: 'cb-list', style: 'margin-top:8px' }, [h('b', { text: 'Spell slots: ' }), (s0 || 'none') + ' → ' + s1]));
       body.appendChild(h('div', { class: 'cb-list', style: 'margin-top:6px' }, [h('b', { text: 'New features: ' }), gained.map((f) => f.name).join(', ') || '—']));
-      if (after.spellcasting.abilities.length) body.appendChild(h('div', { class: 'cb-note', text: 'New spells known or prepared: add them in the Spells tab.' }));
+      if (after.spellcasting.abilities.length) body.appendChild(h('div', { class: 'cb-note', text: rules.spells ? 'The spells picked above go to the Spells tab. Prepared spells are chosen each day in the Spells tab.' : 'New spells known or prepared: add them in the Spells tab.' }));
     }
 
     function finish() {
