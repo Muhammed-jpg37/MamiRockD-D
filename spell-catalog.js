@@ -40,20 +40,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.",
-    "desc": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -67,22 +68,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You brandish a weapon and make a melee attack. On a hit, the target takes normal attack damage and becomes sheathed in booming energy. If it moves before your next turn, it takes 1d8 thunder damage.",
-    "desc": "You brandish a weapon and make a melee attack. On a hit, the target takes normal attack damage and becomes sheathed in booming energy. If it moves before your next turn, it takes 1d8 thunder damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You brandish a weapon and make a melee attack. On a hit, the target takes normal attack damage and becomes sheathed in booming energy. If it moves before your next turn, it takes 1d8 thunder damage. (Unchecked summary, not in the SRD: see TCE.)",
+    "desc": "You brandish a weapon and make a melee attack. On a hit, the target takes normal attack damage and becomes sheathed in booming energy. If it moves before your next turn, it takes 1d8 thunder damage.\n\nNot in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d8 Thunder",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You brandish a weapon and make a melee attack. On a hit, the target takes normal attack damage and becomes sheathed in booming energy. If it moves before your next turn, it takes 1d8 thunder damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "TCE"
     ]
@@ -128,21 +128,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You choose a nonmagical flame within range and expand, extinguish, or change its color and shape.",
-    "desc": "You choose a nonmagical flame within range and expand, extinguish, or change its color and shape.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You choose a nonmagical flame within range and expand, extinguish, or change its color and shape. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You choose a nonmagical flame within range and expand, extinguish, or change its color and shape.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You choose a nonmagical flame within range and expand, extinguish, or change its color and shape.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -156,25 +156,23 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You create a bonfire on ground you can see. Any creature that enters the bonfire's space or ends its turn there must succeed on a Dexterity save or take 1d8 fire damage.",
-    "desc": "You create a bonfire on ground you can see. Any creature that enters the bonfire's space or ends its turn there must succeed on a Dexterity save or take 1d8 fire damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You create a bonfire on ground you can see. Any creature that enters the bonfire's space or ends its turn there must succeed on a Dexterity save or take 1d8 fire damage. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You create a bonfire on ground you can see. Any creature that enters the bonfire's space or ends its turn there must succeed on a Dexterity save or take 1d8 fire damage.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "DAMAGE",
       "COMBAT",
       "SUMMONING"
     ],
-    "damage": "1d8 Fire",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You create a bonfire on ground you can see. Any creature that enters the bonfire's space or ends its turn there must succeed on a Dexterity save or take 1d8 fire damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -282,21 +280,19 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "Enchantment cantrip magical spell effect.",
-    "desc": "Encode Thoughts is a cantrip enchantment spell. When cast, it channels mystical energy within a range of 60 feet to produce its unique spell effect for a duration of Instantaneous.",
-    "higherLevels": "No higher level benefit.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Guildmasters' Guide to Ravnica (GGR) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Guildmasters' Guide to Ravnica (GGR) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Guildmasters' Guide to Ravnica (GGR) for the rest.",
     "books": [
       "GGR"
     ]
@@ -342,21 +338,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood.",
-    "desc": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
+    "damage": "",
+    "detail": "name-only",
+    "summary": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -370,22 +366,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You cause numbing frost to form on a creature. The target must succeed on a Constitution save or take 1d6 cold damage and have disadvantage on its next weapon attack roll.",
-    "desc": "You cause numbing frost to form on a creature. The target must succeed on a Constitution save or take 1d6 cold damage and have disadvantage on its next weapon attack roll.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You cause numbing frost to form on a creature. The target must succeed on a Constitution save or take 1d6 cold damage and have disadvantage on its next weapon attack roll. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You cause numbing frost to form on a creature. The target must succeed on a Constitution save or take 1d6 cold damage and have disadvantage on its next weapon attack roll.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Cold",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You cause numbing frost to form on a creature. The target must succeed on a Constitution save or take 1d6 cold damage and have disadvantage on its next weapon attack roll.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -399,22 +394,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You strike with a melee weapon and green fire leaps to a target within 5 feet, dealing fire damage equal to your spellcasting ability modifier.",
-    "desc": "You strike with a melee weapon and green fire leaps to a target within 5 feet, dealing fire damage equal to your spellcasting ability modifier.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You strike with a melee weapon and green fire leaps to a target within 5 feet, dealing fire damage equal to your spellcasting ability modifier. (Unchecked summary, not in the SRD: see TCE.)",
+    "desc": "You strike with a melee weapon and green fire leaps to a target within 5 feet, dealing fire damage equal to your spellcasting ability modifier.\n\nNot in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d8 Fire",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You strike with a melee weapon and green fire leaps to a target within 5 feet, dealing fire damage equal to your spellcasting ability modifier.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "TCE"
     ]
@@ -459,21 +453,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You seize the air and push a creature or object 5 feet away or create a harmless gust of wind.",
-    "desc": "You seize the air and push a creature or object 5 feet away or create a harmless gust of wind.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You seize the air and push a creature or object 5 feet away or create a harmless gust of wind. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You seize the air and push a creature or object 5 feet away or create a harmless gust of wind.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You seize the air and push a creature or object 5 feet away or create a harmless gust of wind.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -487,22 +481,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You cause mites, fleas, and parasites to briefly appear on a target. It must succeed on a Constitution save or take 1d6 poison damage and move 5 feet in a random direction.",
-    "desc": "You cause mites, fleas, and parasites to briefly appear on a target. It must succeed on a Constitution save or take 1d6 poison damage and move 5 feet in a random direction.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You cause mites, fleas, and parasites to briefly appear on a target. It must succeed on a Constitution save or take 1d6 poison damage and move 5 feet in a random direction. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You cause mites, fleas, and parasites to briefly appear on a target. It must succeed on a Constitution save or take 1d6 poison damage and move 5 feet in a random direction.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Poison",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You cause mites, fleas, and parasites to briefly appear on a target. It must succeed on a Constitution save or take 1d6 poison damage and move 5 feet in a random direction.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -549,23 +542,22 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You create a lash of lightning energy. The target must succeed on a Strength save or be pulled up to 10 feet toward you and take 1d8 lightning damage if within 5 feet.",
-    "desc": "You create a lash of lightning energy. The target must succeed on a Strength save or be pulled up to 10 feet toward you and take 1d8 lightning damage if within 5 feet.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You create a lash of lightning energy. The target must succeed on a Strength save or be pulled up to 10 feet toward you and take 1d8 lightning damage if within 5 feet. (Unchecked summary, not in the SRD: see TCE.)",
+    "desc": "You create a lash of lightning energy. The target must succeed on a Strength save or be pulled up to 10 feet toward you and take 1d8 lightning damage if within 5 feet.\n\nNot in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "DAMAGE",
       "COMBAT"
     ],
-    "damage": "1d8 Lightning",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You create a lash of lightning energy. The target must succeed on a Strength save or be pulled up to 10 feet toward you and take 1d8 lightning damage if within 5 feet.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "TCE"
     ]
@@ -612,22 +604,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You touch one to three pebbles and imbue them with magic. Anyone can throw or sling them for 1d6 + spellcasting ability modifier bludgeoning damage.",
-    "desc": "You touch one to three pebbles and imbue them with magic. Anyone can throw or sling them for 1d6 + spellcasting ability modifier bludgeoning damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You touch one to three pebbles and imbue them with magic. Anyone can throw or sling them for 1d6 + spellcasting ability modifier bludgeoning damage. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You touch one to three pebbles and imbue them with magic. Anyone can throw or sling them for 1d6 + spellcasting ability modifier bludgeoning damage.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 + Mod Bludgeoning",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You touch one to three pebbles and imbue them with magic. Anyone can throw or sling them for 1d6 + spellcasting ability modifier bludgeoning damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -707,22 +698,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw.",
-    "desc": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw. (Unchecked summary, not in the SRD: see TCE.)",
+    "desc": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw.\n\nNot in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Psychic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "TCE"
     ]
@@ -769,21 +759,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You manipulate dirt or stone within range, excavating loose earth, altering terrain, or creating shapes.",
-    "desc": "You manipulate dirt or stone within range, excavating loose earth, altering terrain, or creating shapes.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You manipulate dirt or stone within range, excavating loose earth, altering terrain, or creating shapes. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You manipulate dirt or stone within range, excavating loose earth, altering terrain, or creating shapes.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You manipulate dirt or stone within range, excavating loose earth, altering terrain, or creating shapes.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -863,22 +853,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "Your teeth or fingernails sharpen and drip with acid. Make a melee spell attack. On a hit, the target takes 1d10 acid damage.",
-    "desc": "Your teeth or fingernails sharpen and drip with acid. Make a melee spell attack. On a hit, the target takes 1d10 acid damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Your teeth or fingernails sharpen and drip with acid. Make a melee spell attack. On a hit, the target takes 1d10 acid damage. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "Your teeth or fingernails sharpen and drip with acid. Make a melee spell attack. On a hit, the target takes 1d10 acid damage.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d10 Acid",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "Your teeth or fingernails sharpen and drip with acid. Make a melee spell attack. On a hit, the target takes 1d10 acid damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -1014,22 +1003,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You sap the vitality of one creature. The target must succeed on a Constitution save or take 1d4 necrotic damage and fall prone.",
-    "desc": "You sap the vitality of one creature. The target must succeed on a Constitution save or take 1d4 necrotic damage and fall prone.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You sap the vitality of one creature. The target must succeed on a Constitution save or take 1d4 necrotic damage and fall prone. (Unchecked summary, not in the SRD: see EGW.)",
+    "desc": "You sap the vitality of one creature. The target must succeed on a Constitution save or take 1d4 necrotic damage and fall prone.\n\nNot in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d4 Necrotic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You sap the vitality of one creature. The target must succeed on a Constitution save or take 1d4 necrotic damage and fall prone.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest. The short summary has not been checked against the book.",
     "books": [
       "EGW"
     ]
@@ -1043,21 +1031,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You manipulate body of water: change its flow, freeze it, or form simple shapes.",
-    "desc": "You manipulate body of water: change its flow, freeze it, or form simple shapes.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You manipulate body of water: change its flow, freeze it, or form simple shapes. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You manipulate body of water: change its flow, freeze it, or form simple shapes.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You manipulate body of water: change its flow, freeze it, or form simple shapes.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -1162,23 +1150,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Bard",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You create a circle of spectral blades. Each creature within 5 feet must succeed on a Dexterity save or take 1d6 force damage.",
-    "desc": "You create a circle of spectral blades. Each creature within 5 feet must succeed on a Dexterity save or take 1d6 force damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You create a circle of spectral blades. Each creature within 5 feet must succeed on a Dexterity save or take 1d6 force damage. (Unchecked summary, not in the SRD: see TCE.)",
+    "desc": "You create a circle of spectral blades. Each creature within 5 feet must succeed on a Dexterity save or take 1d6 force damage.\n\nNot in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Force",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You create a circle of spectral blades. Each creature within 5 feet must succeed on a Dexterity save or take 1d6 force damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "TCE"
     ]
@@ -1222,22 +1208,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer.",
-    "desc": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Piercing",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -1251,22 +1236,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage.",
-    "desc": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Thunder",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -1280,22 +1264,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points).",
-    "desc": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points).",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points). (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points).\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d8/1d12 Necrotic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points).",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -1372,23 +1355,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Bard",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage.",
-    "desc": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Radiant",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -1402,20 +1383,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 1 magical spell effect.",
-    "desc": "Absorb Elements is a level 1 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -1492,20 +1472,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 1 magical spell effect.",
-    "desc": "Armor of Agathys is a level 1 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -1519,23 +1498,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 1 magical spell effect.",
-    "desc": "Arms of Hadar is a level 1 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d6 Necrotic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -1580,20 +1555,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 1 magical spell effect.",
-    "desc": "Beast Bond is a level 1 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -1670,22 +1644,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 1 magical spell effect.",
-    "desc": "Catapult is a level 1 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3d8 Bludgeoning",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -1699,21 +1670,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 1 magical spell effect.",
-    "desc": "Cause Fear is a level 1 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -1727,20 +1696,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 1 magical spell effect.",
-    "desc": "Ceremony is a level 1 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -1754,22 +1722,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Chaos Bolt is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d8 + 1d6 Elemental",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -1817,22 +1782,21 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "You hurl a 4-inch sphere of energy (Acid, Cold, Fire, Lightning, Poison, or Thunder). Make a ranged spell attack. On a hit, the target takes 3d8 damage of the chosen type.",
-    "desc": "You hurl a 4-inch sphere of energy (Acid, Cold, Fire, Lightning, Poison, or Thunder). Make a ranged spell attack. On a hit, the target takes 3d8 damage of the chosen type.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You hurl a 4-inch sphere of energy (Acid, Cold, Fire, Lightning, Poison, or Thunder). Make a ranged spell attack. On a hit, the target takes 3d8 damage of the chosen type. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "You hurl a 4-inch sphere of energy (Acid, Cold, Fire, Lightning, Poison, or Thunder). Make a ranged spell attack. On a hit, the target takes 3d8 damage of the chosen type.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "3d8 Elemental",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You hurl a 4-inch sphere of energy (Acid, Cold, Fire, Lightning, Poison, or Thunder). Make a ranged spell attack. On a hit, the target takes 3d8 damage of the chosen type.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -1908,22 +1872,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Paladin",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 1 magical spell effect.",
-    "desc": "Compelled Duel is a level 1 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -2168,22 +2129,21 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "You whisper a discordant melody. Target must make a Wisdom save or take 3d6 psychic damage and use its reaction to move as far away from you as possible.",
-    "desc": "You whisper a discordant melody. Target must make a Wisdom save or take 3d6 psychic damage and use its reaction to move as far away from you as possible.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You whisper a discordant melody. Target must make a Wisdom save or take 3d6 psychic damage and use its reaction to move as far away from you as possible. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "You whisper a discordant melody. Target must make a Wisdom save or take 3d6 psychic damage and use its reaction to move as far away from you as possible.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "3d6 Psychic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You whisper a discordant melody. Target must make a Wisdom save or take 3d6 psychic damage and use its reaction to move as far away from you as possible.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -2197,21 +2157,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "I",
     "schoolName": "Illusion",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Bard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Illusion level 1 magical spell effect.",
-    "desc": "Distort Value is a level 1 illusion spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
     "books": [
       "AI"
     ]
@@ -2255,22 +2213,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Earth Tremor is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -2284,21 +2239,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 1 magical spell effect.",
-    "desc": "Ensnaring Strike is a level 1 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -2564,21 +2517,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Frost Fingers is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Icewind Dale: Rime of the Frostmaiden (IDRotF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Icewind Dale: Rime of the Frostmaiden (IDRotF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Icewind Dale: Rime of the Frostmaiden (IDRotF) for the rest.",
     "books": [
       "IDRotF"
     ]
@@ -2592,19 +2543,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Wizard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 1 magical spell effect.",
-    "desc": "Gift of Alacrity is a level 1 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -2709,22 +2660,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 1 magical spell effect.",
-    "desc": "Hail of Thorns is a level 1 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "1d10 Piercing",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -2833,21 +2781,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 1 magical spell effect.",
-    "desc": "Hex is a level 1 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -2927,23 +2873,21 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "You create a shard of ice and hurl it. Target takes 1d10 piercing damage on hit, then the shard explodes dealing 2d6 cold damage to all within 5 feet.",
-    "desc": "You create a shard of ice and hurl it. Target takes 1d10 piercing damage on hit, then the shard explodes dealing 2d6 cold damage to all within 5 feet.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You create a shard of ice and hurl it. Target takes 1d10 piercing damage on hit, then the shard explodes dealing 2d6 cold damage to all within 5 feet. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You create a shard of ice and hurl it. Target takes 1d10 piercing damage on hit, then the shard explodes dealing 2d6 cold damage to all within 5 feet.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d10 Piercing + 2d6 Cold",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You create a shard of ice and hurl it. Target takes 1d10 piercing damage on hit, then the shard explodes dealing 2d6 cold damage to all within 5 feet.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -3050,22 +2994,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Jim's Magic Missile is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3x(2d4) Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
     "books": [
       "AI"
     ]
@@ -3207,21 +3148,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 1 magical spell effect.",
-    "desc": "Magnify Gravity is a level 1 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -3300,22 +3239,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 1 magical spell effect.",
-    "desc": "Ray of Sickness is a level 1 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d8 Poison",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -3359,22 +3295,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Searing Smite is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "1d6 Fire",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -3483,18 +3416,14 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Bard",
-      "Sorcerer",
-      "Wizard"
-    ],
-    "castingTime": "1 reaction, which you take when a creature you can see within 60 feet of yourself succeeds on an attack roll, an ability check, or a saving throw",
-    "range": "60 feet",
-    "components": "V",
-    "duration": "Instantaneous",
-    "quickEffect": "Reaction when a creature within 60 ft succeeds on an attack roll, ability check, or saving throw: force it to reroll the d20 and use the lower roll. Then choose a creature within 60 ft (can be yourself) to gain advantage on its next attack, ability check, or save within 1 minute.",
-    "desc": "You magically distract the triggering creature and turn its momentary uncertainty into encouragement for another creature.\n\nCasting Time: 1 reaction, which you take when a creature you can see within 60 feet of yourself succeeds on an attack roll, an ability check, or a saving throw.\n\nThe triggering creature must reroll the d20 and use the lower roll.\n\nYou then choose a different creature you can see within 60 feet of yourself (you can choose yourself). The chosen creature has advantage on the next attack roll, ability check, or saving throw it makes within 1 minute. A creature can be empowered by only one use of this spell at a time.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Reaction when a creature within 60 ft succeeds on an attack roll, ability check, or saving throw: force it to reroll the d20 and use the lower roll. Then choose a creature within 60 ft (can be yourself) to gain advantage on its next attack, ability check, or save within 1 minute. (Unchecked summary, not in the SRD: see SCC.)",
+    "desc": "Reaction when a creature within 60 ft succeeds on an attack roll, ability check, or saving throw: force it to reroll the d20 and use the lower roll. Then choose a creature within 60 ft (can be yourself) to gain advantage on its next attack, ability check, or save within 1 minute.\n\nNot in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "DEBUFF",
       "BUFF",
@@ -3504,6 +3433,9 @@ window.SPELL_CATALOG = [
       "SCC"
     ],
     "damage": "",
+    "detail": "name-only",
+    "summary": "Reaction when a creature within 60 ft succeeds on an attack roll, ability check, or saving throw: force it to reroll the d20 and use the lower roll. Then choose a creature within 60 ft (can be yourself) to gain advantage on its next attack, ability check, or save within 1 minute.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
     "books": [
       "SCC"
     ]
@@ -3549,21 +3481,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 1 magical spell effect.",
-    "desc": "Snare is a level 1 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -3609,22 +3539,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Tasha's Caustic Brew is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d4 Acid",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -3638,22 +3565,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Thunderous Smite is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d6 Thunder",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -3732,22 +3656,21 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically.",
-    "desc": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d12 Lightning",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -3761,22 +3684,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Wrathful Smite is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "1d6 Psychic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -3790,21 +3710,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 1 magical spell effect.",
-    "desc": "Zephyr Strike is a level 1 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -3852,22 +3770,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 2 magical spell effect.",
-    "desc": "Aganazzar's Scorcher is a level 2 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3d8 Fire",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -3912,21 +3827,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Air Bubble is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Astral Adventurer's Guide (AAG) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Astral Adventurer's Guide (AAG) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Astral Adventurer's Guide (AAG) for the rest.",
     "books": [
       "AAG"
     ]
@@ -4127,20 +4040,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 2 magical spell effect.",
-    "desc": "Beast Sense is a level 2 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -4219,19 +4131,14 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Bard",
-      "Cleric",
-      "Warlock",
-      "Wizard"
-    ],
-    "castingTime": "1 action",
-    "range": "Touch",
-    "components": "V, S, M (a book worth at least 25 gp)",
-    "duration": "1 hour",
-    "quickEffect": "You touch one creature (or yourself) and draw on spirits of the past to grant proficiency in one chosen skill in which the target lacks proficiency for 1 hour.",
-    "desc": "You draw on knowledge from spirits of the past. Choose one skill in which you lack proficiency. For the duration, you have proficiency in the chosen skill. The spell ends early if you cast it again.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You touch one creature (or yourself) and draw on spirits of the past to grant proficiency in one chosen skill in which the target lacks proficiency for 1 hour. (Unchecked summary, not in the SRD: see SCC.)",
+    "desc": "You touch one creature (or yourself) and draw on spirits of the past to grant proficiency in one chosen skill in which the target lacks proficiency for 1 hour.\n\nNot in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "BUFF",
       "UTILITY",
@@ -4239,6 +4146,9 @@ window.SPELL_CATALOG = [
       "SCC"
     ],
     "damage": "",
+    "detail": "name-only",
+    "summary": "You touch one creature (or yourself) and draw on spirits of the past to grant proficiency in one chosen skill in which the target lacks proficiency for 1 hour.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
     "books": [
       "SCC"
     ]
@@ -4313,22 +4223,21 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage.",
-    "desc": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "4d4 Slashing",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -4373,22 +4282,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Cordon of Arrows is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -4402,21 +4308,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 2 magical spell effect.",
-    "desc": "Crown of Madness is a level 2 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -4527,22 +4431,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Dragon's Breath is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3d6 Elemental",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -4556,21 +4457,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Dust Devil is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -4584,21 +4483,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Earthbind is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -4830,21 +4727,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Flock of Familiars is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
     "books": [
       "LLK"
     ]
@@ -4858,19 +4753,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Wizard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 2 magical spell effect.",
-    "desc": "Fortune's Favor is a level 2 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -4915,21 +4810,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 2 magical spell effect.",
-    "desc": "Gift of Gab is a level 2 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
     "books": [
       "AI"
     ]
@@ -4975,23 +4868,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Healing Spirit is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "HEALING",
-      "SUPPORT"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -5072,21 +4961,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Immovable Object is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -5133,21 +5020,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 2 magical spell effect.",
-    "desc": "Jim's Glowing Coin is a level 2 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
     "books": [
       "AI"
     ]
@@ -5161,19 +5046,14 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Artificer",
-      "Bard",
-      "Sorcerer",
-      "Wizard"
-    ],
-    "castingTime": "1 bonus action",
-    "range": "Self",
-    "components": "S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Bonus action: Walking speed increases by 10 ft, movement doesn't provoke opportunity attacks, and you can move through other creatures' spaces for up to 1 minute (Concentration).",
-    "desc": "You magically empower your movement with dance-like agility. For the duration, your walking speed increases by 10 feet, and your movement doesn't provoke opportunity attacks.\n\nIn addition, you can move through the space of other creatures, but you cannot end your turn in their space.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Bonus action: Walking speed increases by 10 ft, movement doesn't provoke opportunity attacks, and you can move through other creatures' spaces for up to 1 minute (Concentration). (Unchecked summary, not in the SRD: see SCC.)",
+    "desc": "Bonus action: Walking speed increases by 10 ft, movement doesn't provoke opportunity attacks, and you can move through other creatures' spaces for up to 1 minute (Concentration).\n\nNot in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "BUFF",
       "MOVEMENT",
@@ -5184,6 +5064,9 @@ window.SPELL_CATALOG = [
       "SCC"
     ],
     "damage": "",
+    "detail": "name-only",
+    "summary": "Bonus action: Walking speed increases by 10 ft, movement doesn't provoke opportunity attacks, and you can move through other creatures' spaces for up to 1 minute (Concentration).",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
     "books": [
       "SCC"
     ]
@@ -5423,21 +5306,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Maximilian's Earthen Grasp is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -5451,20 +5332,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Wizard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 2 magical spell effect.",
-    "desc": "Mind Spike is a level 2 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3d8 Psychic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -5574,21 +5454,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "I",
     "schoolName": "Illusion",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Bard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Illusion level 2 magical spell effect.",
-    "desc": "Nathair's Mischief is a level 2 illusion spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
     "books": [
       "FTD"
     ]
@@ -5633,22 +5511,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "I",
     "schoolName": "Illusion",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Bard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Illusion level 2 magical spell effect.",
-    "desc": "Phantasmal Force is a level 2 illusion spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "DAMAGE",
-      "COMBAT"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -5726,21 +5601,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Pyrotechnics is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -5785,22 +5658,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 2 magical spell effect.",
-    "desc": "Rime's Binding Ice is a level 2 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3d8 Cold",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
     "books": [
       "FTD"
     ]
@@ -5907,21 +5777,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "I",
     "schoolName": "Illusion",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Bard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Illusion level 2 magical spell effect.",
-    "desc": "Shadow Blade is a level 2 illusion spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -6000,21 +5868,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Skywrite is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -6028,22 +5894,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 2 magical spell effect.",
-    "desc": "Snilloc's Snowball Swarm is a level 2 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3d6 Cold",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -6150,21 +6013,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Spray of Cards is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
     "books": [
       "BMT"
     ]
@@ -6211,21 +6072,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Summon Beast is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -6239,22 +6098,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 2 magical spell effect.",
-    "desc": "Tasha's Mind Whip is a level 2 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d6 Psychic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -6268,18 +6124,14 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Artificer",
-      "Sorcerer",
-      "Wizard"
-    ],
-    "castingTime": "1 action",
-    "range": "90 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "Teleport a creature within 90 ft to an unoccupied space on a surface or in liquid within range (Constitution save negates; willing creatures can choose to fail). Range +30 ft per slot level above 2nd.",
-    "desc": "You magically twist space around another creature you can see within range. The target must succeed on a Constitution saving throw (the target can choose to fail) or be teleported to an unoccupied space of your choice that you can see within range. The chosen space must be on a surface or in a liquid that can support the target without the target having to squeeze.",
-    "higherLevels": "When you cast this spell using a spell slot of 3rd level or higher, the range of the spell increases by 30 feet for each slot level above 2nd.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Teleport a creature within 90 ft to an unoccupied space on a surface or in liquid within range (Constitution save negates; willing creatures can choose to fail). Range +30 ft per slot level above 2nd. (Unchecked summary, not in the SRD: see SCC.)",
+    "desc": "Teleport a creature within 90 ft to an unoccupied space on a surface or in liquid within range (Constitution save negates; willing creatures can choose to fail). Range +30 ft per slot level above 2nd.\n\nNot in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "TELEPORTATION",
       "CONTROL",
@@ -6289,6 +6141,9 @@ window.SPELL_CATALOG = [
       "SCC"
     ],
     "damage": "",
+    "detail": "name-only",
+    "summary": "Teleport a creature within 90 ft to an unoccupied space on a surface or in liquid within range (Constitution save negates; willing creatures can choose to fail). Range +30 ft per slot level above 2nd.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
     "books": [
       "SCC"
     ]
@@ -6332,22 +6187,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 2 magical spell effect.",
-    "desc": "Warding Wind is a level 2 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -6361,19 +6213,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Wizard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 2 magical spell effect.",
-    "desc": "Warp Sense is a level 2 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Sigil and the Outlands (SatO) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Sigil and the Outlands (SatO) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Sigil and the Outlands (SatO) for the rest.",
     "books": [
       "SatO"
     ]
@@ -6418,18 +6270,14 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Druid",
-      "Sorcerer",
-      "Wizard"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S, M (a withered flower)",
-    "duration": "Instantaneous",
-    "quickEffect": "10-ft sphere within 60 ft: each chosen creature takes 2d6 necrotic damage (Con save half). Nonmagical vegetation withers. One chosen willing creature can spend a Hit Die to heal (roll + casting modifier). Scales +1d6 damage and +1 Hit Die per slot above 2nd.",
-    "desc": "You invoke both death and life upon a 10-foot-radius sphere centered on a point within range. Each creature of your choice in that area must make a Constitution saving throw, taking 2d6 necrotic damage on a failed save, or half as much damage on a successful one. Nonmagical vegetation in that area withers.\n\nIn addition, one willing creature of your choice in that area can immediately spend and roll one of its unspent Hit Dice and regain a number of hit points equal to the roll plus your spellcasting ability modifier.",
-    "higherLevels": "When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d6 for each slot level above 2nd, and the creature can spend one additional Hit Die for each slot level above 2nd.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "10-ft sphere within 60 ft: each chosen creature takes 2d6 necrotic damage (Con save half). Nonmagical vegetation withers. One chosen willing creature can spend a Hit Die to heal (roll + casting modifier). Scales +1d6 damage and +1 Hit Die per slot above 2nd. (Unchecked summary, not in the SRD: see SCC.)",
+    "desc": "10-ft sphere within 60 ft: each chosen creature takes 2d6 necrotic damage (Con save half). Nonmagical vegetation withers. One chosen willing creature can spend a Hit Die to heal (roll + casting modifier). Scales +1d6 damage and +1 Hit Die per slot above 2nd.\n\nNot in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "DAMAGE",
       "HEALING",
@@ -6438,7 +6286,10 @@ window.SPELL_CATALOG = [
       "STRIXHAVEN",
       "SCC"
     ],
-    "damage": "2d6 Necrotic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "10-ft sphere within 60 ft: each chosen creature takes 2d6 necrotic damage (Con save half). Nonmagical vegetation withers. One chosen willing creature can spend a Hit Die to heal (roll + casting modifier). Scales +1d6 damage and +1 Hit Die per slot above 2nd.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Strixhaven: A Curriculum of Chaos (SCC) for the rest. The short summary has not been checked against the book.",
     "books": [
       "SCC"
     ]
@@ -6452,21 +6303,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Wristpocket is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -6543,21 +6392,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 3 magical spell effect.",
-    "desc": "Antagonize is a level 3 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
     "books": [
       "BMT"
     ]
@@ -6571,21 +6418,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 3 magical spell effect.",
-    "desc": "Ashardalon's Stride is a level 3 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
     "books": [
       "FTD"
     ]
@@ -6599,21 +6444,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Aura of Vitality is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -6690,23 +6533,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Blinding Smite is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "CONTROL",
-      "DEBUFF"
-    ],
-    "damage": "3d8 Radiant",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -6782,21 +6621,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 3 magical spell effect.",
-    "desc": "Catnap is a level 3 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -6874,21 +6711,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Conjure Barrage is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -6968,21 +6803,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Crusader's Mantle is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -7066,21 +6899,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 3 magical spell effect.",
-    "desc": "Elemental Weapon is a level 3 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -7094,21 +6925,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 3 magical spell effect.",
-    "desc": "Enemies Abound is a level 3 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -7122,22 +6951,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 3 magical spell effect.",
-    "desc": "Erupting Earth is a level 3 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3d12 Bludgeoning",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -7151,21 +6977,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 3 magical spell effect.",
-    "desc": "Fast Friends is a level 3 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
     "books": [
       "AI"
     ]
@@ -7212,21 +7036,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 3 magical spell effect.",
-    "desc": "Feign Death is a level 3 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -7273,22 +7095,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 3 magical spell effect.",
-    "desc": "Flame Arrows is a level 3 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -7334,21 +7153,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Galder's Tower is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
     "books": [
       "LLK"
     ]
@@ -7458,23 +7275,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Hunger of Hadar is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d6 Cold + 2d6 Acid",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -7521,21 +7334,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 3 magical spell effect.",
-    "desc": "Incite Greed is a level 3 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
     "books": [
       "AI"
     ]
@@ -7549,20 +7360,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 3 magical spell effect.",
-    "desc": "Intellect Fortress is a level 3 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -7576,21 +7386,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 3 magical spell effect.",
-    "desc": "Life Transference is a level 3 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -7604,23 +7412,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 3 magical spell effect.",
-    "desc": "Lightning Arrow is a level 3 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "DAMAGE",
-      "COMBAT"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -7666,20 +7470,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 3 magical spell effect.",
-    "desc": "Linked Glyphs is a level 3 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Adventures in the Forgotten Realms: A Verdant Tomb (AitFR-AVT) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Adventures in the Forgotten Realms: A Verdant Tomb (AitFR-AVT) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Adventures in the Forgotten Realms: A Verdant Tomb (AitFR-AVT) for the rest.",
     "books": [
       "AitFR-AVT"
     ]
@@ -7820,22 +7623,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Melf's Minute Meteors is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "6x(2d6 Fire)",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -7849,21 +7649,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 3 magical spell effect.",
-    "desc": "Motivational Speech is a level 3 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Acquisitions Incorporated (AI) for the rest.",
     "books": [
       "AI"
     ]
@@ -8005,22 +7803,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Pulse Wave is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "3d6 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -8287,21 +8082,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 3 magical spell effect.",
-    "desc": "Spirit Shroud is a level 3 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -8347,21 +8140,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Summon Fey is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -8375,21 +8166,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Summon Lesser Demons is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -8403,21 +8192,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Summon Shadowspawn is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -8431,21 +8218,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 3 magical spell effect.",
-    "desc": "Summon Undead is a level 3 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -8459,21 +8244,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Thunder Step is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -8487,21 +8270,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Tidal Wave is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -8549,21 +8330,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 3 magical spell effect.",
-    "desc": "Tiny Servant is a level 3 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -8642,21 +8421,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Wall of Sand is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -8670,21 +8447,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Wall of Water is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -8826,21 +8601,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 4 magical spell effect.",
-    "desc": "Aura of Life is a level 4 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -8854,21 +8627,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 4 magical spell effect.",
-    "desc": "Aura of Purity is a level 4 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -8982,21 +8753,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 4 magical spell effect.",
-    "desc": "Charm Monster is a level 4 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -9292,21 +9061,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 4 magical spell effect.",
-    "desc": "Elemental Bane is a level 4 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -9383,21 +9150,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Find Greater Steed is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -9475,21 +9240,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Galder's Speedy Courier is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "BUFF"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Lost Laboratory of Kwalish (LLK) for the rest.",
     "books": [
       "LLK"
     ]
@@ -9503,20 +9266,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 4 magical spell effect.",
-    "desc": "Gate Seal is a level 4 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Sigil and the Outlands (SatO) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Sigil and the Outlands (SatO) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Sigil and the Outlands (SatO) for the rest.",
     "books": [
       "SatO"
     ]
@@ -9560,21 +9322,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Grasping Vine is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -9588,22 +9348,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 4 magical spell effect.",
-    "desc": "Gravity Sinkhole is a level 4 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "5d10 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -9679,21 +9436,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 4 magical spell effect.",
-    "desc": "Guardian of Nature is a level 4 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -9903,21 +9658,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 4 magical spell effect.",
-    "desc": "Raulothim's Psychic Lance is a level 4 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
     "books": [
       "FTD"
     ]
@@ -9997,22 +9750,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 4 magical spell effect.",
-    "desc": "Shadow of Moil is a level 4 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d8 Necrotic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -10026,22 +9776,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 4 magical spell effect.",
-    "desc": "Sickening Radiance is a level 4 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "4d10 Radiant",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -10055,21 +9802,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 4 magical spell effect.",
-    "desc": "Spirit of Death is a level 4 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See The Book of Many Things (BMT) for the rest.",
     "books": [
       "BMT"
     ]
@@ -10083,22 +9828,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 4 magical spell effect.",
-    "desc": "Staggering Smite is a level 4 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "4d6 Psychic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -10177,23 +9919,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 4 magical spell effect.",
-    "desc": "Storm Sphere is a level 4 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d6 Bludgeoning + 4d6 Lightning",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -10207,21 +9945,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Summon Aberration is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -10235,21 +9971,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Summon Construct is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -10263,21 +9997,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Summon Elemental is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -10291,21 +10023,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Summon Greater Demon is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -10319,22 +10049,21 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "A 1-foot sphere of emerald acid explodes in a 20-foot radius. Takes 10d4 acid damage immediately and 5d4 acid damage at end of next turn on a failed Dexterity save.",
-    "desc": "A 1-foot sphere of emerald acid explodes in a 20-foot radius. Takes 10d4 acid damage immediately and 5d4 acid damage at end of next turn on a failed Dexterity save.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "A 1-foot sphere of emerald acid explodes in a 20-foot radius. Takes 10d4 acid damage immediately and 5d4 acid damage at end of next turn on a failed Dexterity save. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "A 1-foot sphere of emerald acid explodes in a 20-foot radius. Takes 10d4 acid damage immediately and 5d4 acid damage at end of next turn on a failed Dexterity save.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "10d4 Acid + 5d4 Acid",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "A 1-foot sphere of emerald acid explodes in a 20-foot radius. Takes 10d4 acid damage immediately and 5d4 acid damage at end of next turn on a failed Dexterity save.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -10381,21 +10110,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Watery Sphere is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -10535,22 +10262,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 5 magical spell effect.",
-    "desc": "Banishing Smite is a level 5 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "5d10 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -10564,20 +10288,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 5 magical spell effect.",
-    "desc": "Circle of Power is a level 5 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -10746,21 +10469,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Conjure Volley is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -10836,21 +10557,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 5 magical spell effect.",
-    "desc": "Control Winds is a level 5 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -10864,21 +10583,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 5 magical spell effect.",
-    "desc": "Create Spelljamming Helm is a level 5 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Astral Adventurer's Guide (AAG) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Astral Adventurer's Guide (AAG) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Astral Adventurer's Guide (AAG) for the rest.",
     "books": [
       "AAG"
     ]
@@ -10923,21 +10640,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 5 magical spell effect.",
-    "desc": "Danse Macabre is a level 5 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -10951,21 +10666,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Dawn is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -10979,22 +10692,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Destructive Wave is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "5d6 Thunder + 5d6 Radiant/Necrotic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -11103,21 +10813,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 5 magical spell effect.",
-    "desc": "Enervation is a level 5 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11131,21 +10839,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Far Step is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11318,22 +11024,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Holy Weapon is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d8 Radiant",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11347,22 +11050,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Immolation is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "8d6 Fire",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11376,21 +11076,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Infernal Calling is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11468,22 +11166,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Maelstrom is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "6d6 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11592,22 +11287,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 5 magical spell effect.",
-    "desc": "Negative Energy Flood is a level 5 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "5d12 Necrotic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11812,21 +11504,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 5 magical spell effect.",
-    "desc": "Skill Empowerment is a level 5 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11840,21 +11530,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Steel Wind Strike is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -11868,21 +11556,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Summon Celestial is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -11896,22 +11582,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Summon Draconic Spirit is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
     "books": [
       "FTD"
     ]
@@ -11925,21 +11608,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 5 magical spell effect.",
-    "desc": "Swift Quiver is a level 5 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -11953,22 +11634,21 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute.",
-    "desc": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "8d6 Psychic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -12078,21 +11758,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 5 magical spell effect.",
-    "desc": "Temporal Shunt is a level 5 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -12106,21 +11784,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 5 magical spell effect.",
-    "desc": "Transmute Rock is a level 5 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -12196,22 +11872,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Wall of Light is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "4d8 Radiant",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -12257,22 +11930,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Wrath of Nature is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -12286,20 +11956,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 6 magical spell effect.",
-    "desc": "Arcane Gate is a level 6 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -12343,21 +12012,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 6 magical spell effect.",
-    "desc": "Bones of the Earth is a level 6 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -12496,21 +12163,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 6 magical spell effect.",
-    "desc": "Create Homunculus is a level 6 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -12587,20 +12252,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 6 magical spell effect.",
-    "desc": "Druid Grove is a level 6 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -12679,20 +12343,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 6 magical spell effect.",
-    "desc": "Fizban's Platinum Shield is a level 6 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
     "books": [
       "FTD"
     ]
@@ -12831,21 +12494,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 6 magical spell effect.",
-    "desc": "Gravity Fissure is a level 6 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "8d8 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -13016,21 +12677,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 6 magical spell effect.",
-    "desc": "Investiture of Flame is a level 6 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13044,21 +12703,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 6 magical spell effect.",
-    "desc": "Investiture of Ice is a level 6 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13072,21 +12729,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 6 magical spell effect.",
-    "desc": "Investiture of Stone is a level 6 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13100,21 +12755,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 6 magical spell effect.",
-    "desc": "Investiture of Wind is a level 6 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13225,21 +12878,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "I",
     "schoolName": "Illusion",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Bard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Illusion level 6 magical spell effect.",
-    "desc": "Mental Prison is a level 6 illusion spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13315,20 +12966,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 6 magical spell effect.",
-    "desc": "Primordial Ward is a level 6 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13373,20 +13023,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 6 magical spell effect.",
-    "desc": "Scatter is a level 6 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13400,21 +13049,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 6 magical spell effect.",
-    "desc": "Soul Cage is a level 6 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13428,20 +13075,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 6 magical spell effect.",
-    "desc": "Summon Fiend is a level 6 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -13487,22 +13133,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 6 magical spell effect.",
-    "desc": "Tasha's Otherworldly Guise is a level 6 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d8 Radiant/Necrotic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -13516,21 +13159,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 6 magical spell effect.",
-    "desc": "Tenser's Transformation is a level 6 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13792,21 +13433,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 7 magical spell effect.",
-    "desc": "Create Magen is a level 7 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Icewind Dale: Rime of the Frostmaiden (IDRotF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Icewind Dale: Rime of the Frostmaiden (IDRotF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Icewind Dale: Rime of the Frostmaiden (IDRotF) for the rest.",
     "books": [
       "IDRotF"
     ]
@@ -13820,21 +13459,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 7 magical spell effect.",
-    "desc": "Crown of Stars is a level 7 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "4d12 Radiant",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -13910,21 +13547,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 7 magical spell effect.",
-    "desc": "Draconic Transformation is a level 7 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Fizban's Treasury of Dragons (FTD) for the rest.",
     "books": [
       "FTD"
     ]
@@ -13938,20 +13573,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 7 magical spell effect.",
-    "desc": "Dream of the Blue Veil is a level 7 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -14197,21 +13831,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 7 magical spell effect.",
-    "desc": "Power Word Pain is a level 7 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -14506,20 +14138,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 7 magical spell effect.",
-    "desc": "Temple of the Gods is a level 7 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -14533,21 +14164,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 7 magical spell effect.",
-    "desc": "Tether Essence is a level 7 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -14561,22 +14190,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 7 magical spell effect.",
-    "desc": "Whirlwind is a level 7 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "10d6 Bludgeoning",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -14590,22 +14216,21 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "You draw moisture from every creature in a 30-foot cube. Creatures take 12d8 necrotic damage on a failed Constitution save.",
-    "desc": "You draw moisture from every creature in a 30-foot cube. Creatures take 12d8 necrotic damage on a failed Constitution save.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You draw moisture from every creature in a 30-foot cube. Creatures take 12d8 necrotic damage on a failed Constitution save. (Unchecked summary, not in the SRD: see XGE.)",
+    "desc": "You draw moisture from every creature in a 30-foot cube. Creatures take 12d8 necrotic damage on a failed Constitution save.\n\nNot in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "12d8 Necrotic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You draw moisture from every creature in a 30-foot cube. Creatures take 12d8 necrotic damage on a failed Constitution save.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XGE"
     ]
@@ -14773,21 +14398,19 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 8 magical spell effect.",
-    "desc": "Dark Star is a level 8 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "8d10 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -14991,21 +14614,19 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "I",
     "schoolName": "Illusion",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Bard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Illusion level 8 magical spell effect.",
-    "desc": "Illusory Dragon is a level 8 illusion spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -15050,20 +14671,19 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 8 magical spell effect.",
-    "desc": "Maddening Darkness is a level 8 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -15107,20 +14727,19 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 8 magical spell effect.",
-    "desc": "Mighty Fortress is a level 8 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -15198,21 +14817,19 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 8 magical spell effect.",
-    "desc": "Reality Break is a level 8 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "10d10 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -15258,20 +14875,19 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 8 magical spell effect.",
-    "desc": "Telepathy is a level 8 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest.",
     "books": [
       "PHB"
     ]
@@ -15285,21 +14901,21 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "A wall of water 300 feet long, 300 feet high, and 50 feet thick rises. Creatures caught take 6d10 bludgeoning damage and are carried away.",
-    "desc": "A wall of water 300 feet long, 300 feet high, and 50 feet thick rises. Creatures caught take 6d10 bludgeoning damage and are carried away.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "A wall of water 300 feet long, 300 feet high, and 50 feet thick rises. Creatures caught take 6d10 bludgeoning damage and are carried away. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "A wall of water 300 feet long, 300 feet high, and 50 feet thick rises. Creatures caught take 6d10 bludgeoning damage and are carried away.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "6d10 Bludgeoning",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "A wall of water 300 feet long, 300 feet high, and 50 feet thick rises. Creatures caught take 6d10 bludgeoning damage and are carried away.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -15345,21 +14961,19 @@ window.SPELL_CATALOG = [
     "levelNum": 9,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 9 magical spell effect.",
-    "desc": "Blade of Disaster is a level 9 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 10th level or higher, the spell's potency or number of targets increases for each slot level above 9st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "4d12 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Tasha's Cauldron of Everything (TCE) for the rest.",
     "books": [
       "TCE"
     ]
@@ -15469,20 +15083,19 @@ window.SPELL_CATALOG = [
     "levelNum": 9,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 9 magical spell effect.",
-    "desc": "Invulnerability is a level 9 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 10th level or higher, the spell's potency or number of targets increases for each slot level above 9st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -15527,21 +15140,19 @@ window.SPELL_CATALOG = [
     "levelNum": 9,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 9 magical spell effect.",
-    "desc": "Mass Polymorph is a level 9 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 10th level or higher, the spell's potency or number of targets increases for each slot level above 9st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -15586,24 +15197,22 @@ window.SPELL_CATALOG = [
     "levelNum": 9,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Cleric",
-      "Bard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "A wave of healing energy touches a creature. The target regains all its hit points, and all charmed, frightened, paralyzed, or stunned conditions are ended.",
-    "desc": "A wave of healing energy touches a creature. The target regains all its hit points, and all charmed, frightened, paralyzed, or stunned conditions are ended.",
-    "higherLevels": "When you cast this spell using a spell slot of 10th level or higher, the spell's potency or number of targets increases for each slot level above 9st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "A wave of healing energy touches a creature. The target regains all its hit points, and all charmed, frightened, paralyzed, or stunned conditions are ended. (Unchecked summary, not in the SRD: see PHB.)",
+    "desc": "A wave of healing energy touches a creature. The target regains all its hit points, and all charmed, frightened, paralyzed, or stunned conditions are ended.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "HEALING",
       "SUPPORT"
     ],
-    "damage": "Full HP Healing",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "A wave of healing energy touches a creature. The target regains all its hit points, and all charmed, frightened, paralyzed, or stunned conditions are ended.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2014) (PHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "PHB"
     ]
@@ -15680,22 +15289,19 @@ window.SPELL_CATALOG = [
     "levelNum": 9,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 9 magical spell effect.",
-    "desc": "Psychic Scream is a level 9 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 10th level or higher, the spell's potency or number of targets increases for each slot level above 9st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "14d6 Psychic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Xanathar's Guide to Everything (XGE) for the rest.",
     "books": [
       "XGE"
     ]
@@ -15709,20 +15315,19 @@ window.SPELL_CATALOG = [
     "levelNum": 9,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 9 magical spell effect.",
-    "desc": "Ravenous Void is a level 9 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 10th level or higher, the spell's potency or number of targets increases for each slot level above 9st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -15797,21 +15402,19 @@ window.SPELL_CATALOG = [
     "levelNum": 9,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 9 magical spell effect.",
-    "desc": "Time Ravage is a level 9 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 10th level or higher, the spell's potency or number of targets increases for each slot level above 9st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Explorer's Guide to Wildemount (EGW) for the rest.",
     "books": [
       "EGW"
     ]
@@ -16012,20 +15615,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.",
-    "desc": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You extend your hand and trace a sigil of protection in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -16229,21 +15833,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood.",
-    "desc": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
+    "damage": "",
+    "detail": "name-only",
+    "summary": "For the duration, you have advantage on all Charisma checks directed at one non-hostile creature. When the spell ends, the creature realizes you used magic to influence its mood.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -16421,22 +16025,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw.",
-    "desc": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Psychic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You drive a disorienting spike of psychic energy into a creature's mind. The target must succeed on an Intelligence save or take 1d6 psychic damage and subtract 1d4 from its next saving throw.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -16854,22 +16457,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer.",
-    "desc": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Piercing",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You create a long, vine-like whip. Make a melee spell attack. On a hit, the target takes 1d6 piercing damage and if Large or smaller, pulled up to 10 feet closer.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -16883,22 +16485,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage.",
-    "desc": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Thunder",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You create a burst of thundering sound audible up to 100 feet. Each creature within 5 feet must succeed on a Constitution save or take 1d6 thunder damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -16912,22 +16513,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points).",
-    "desc": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points).",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points). (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points).\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d8/1d12 Necrotic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You point at a creature and sound a dolorous bell. The target must succeed on a Wisdom save or take 1d8 necrotic damage (1d12 if missing any hit points).",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -17004,23 +16604,21 @@ window.SPELL_CATALOG = [
     "levelNum": 0,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Bard",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "60 feet",
-    "components": "V, S",
-    "duration": "Instantaneous",
-    "quickEffect": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage.",
-    "desc": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage.",
-    "higherLevels": "No higher level benefit.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d6 Radiant",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You utter a divine word, causing burning radiance to erupt. Each creature of your choice within 5 feet must succeed on a Constitution save or take 1d6 radiant damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -17097,20 +16695,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 1 magical spell effect.",
-    "desc": "Armor of Agathys is a level 1 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -17124,23 +16721,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 1 magical spell effect.",
-    "desc": "Arms of Hadar is a level 1 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d6 Necrotic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -17378,22 +16971,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Paladin",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 1 magical spell effect.",
-    "desc": "Compelled Duel is a level 1 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -18105,22 +17695,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 1 magical spell effect.",
-    "desc": "Hail of Thorns is a level 1 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "1d10 Piercing",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -18896,22 +18483,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Spellfire Flare is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "DAMAGE",
-      "COMBAT"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -18925,22 +18509,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 1 magical spell effect.",
-    "desc": "Thunderous Smite is a level 1 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d6 Thunder",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -19019,20 +18600,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 1 magical spell effect.",
-    "desc": "Wardaway is a level 1 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -19046,22 +18626,21 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically.",
-    "desc": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "1d12 Lightning",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "A beam of blue crackling energy streaks toward a target. On a hit, takes 1d12 lightning damage, and you can use your action on subsequent turns to deal 1d12 automatically.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -19075,23 +18654,19 @@ window.SPELL_CATALOG = [
     "levelNum": 1,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Paladin",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 1 magical spell effect.",
-    "desc": "Wrathful Smite is a level 1 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 2th level or higher, the spell's potency or number of targets increases for each slot level above 1st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "1d6 Psychic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -19266,20 +18841,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 2 magical spell effect.",
-    "desc": "Arcane Vigor is a level 2 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -19389,20 +18963,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 2 magical spell effect.",
-    "desc": "Beast Sense is a level 2 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -19512,22 +19085,21 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage.",
-    "desc": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "4d4 Slashing",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You fill a 5-foot cube with spinning daggers. Any creature that enters or starts its turn in the area takes 4d4 slashing damage.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -19573,22 +19145,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 2 magical spell effect.",
-    "desc": "Cordon of Arrows is a level 2 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -19602,21 +19171,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 2 magical spell effect.",
-    "desc": "Crown of Madness is a level 2 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -19695,21 +19262,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 2 magical spell effect.",
-    "desc": "Death Armor is a level 2 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -19723,21 +19288,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Deryan's Helpful Homunculi is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -19814,20 +19377,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 2 magical spell effect.",
-    "desc": "Elminster's Elusion is a level 2 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -20197,21 +19759,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Homunculus Servant is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Eberron: Forge of the Artificer (EFA) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Eberron: Forge of the Artificer (EFA) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Eberron: Forge of the Artificer (EFA) for the rest.",
     "books": [
       "EFA"
     ]
@@ -21088,21 +20648,19 @@ window.SPELL_CATALOG = [
     "levelNum": 2,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 2 magical spell effect.",
-    "desc": "Summon Beast is a level 2 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 3th level or higher, the spell's potency or number of targets increases for each slot level above 2st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -21241,21 +20799,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 3 magical spell effect.",
-    "desc": "Aura of Vitality is a level 3 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -21332,23 +20888,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Blinding Smite is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "CONTROL",
-      "DEBUFF"
-    ],
-    "damage": "3d8 Radiant",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -21393,21 +20945,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Cacophonic Shield is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -21516,21 +21066,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Conjure Barrage is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -21544,21 +21092,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Conjure Constructs is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -21637,21 +21183,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Crusader's Mantle is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -21736,21 +21280,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 3 magical spell effect.",
-    "desc": "Elemental Weapon is a level 3 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -21797,21 +21339,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 3 magical spell effect.",
-    "desc": "Feign Death is a level 3 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -21986,23 +21526,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Hunger of Hadar is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "2d6 Cold + 2d6 Acid",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -22049,21 +21585,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 3 magical spell effect.",
-    "desc": "Laeral's Silver Lance is a level 3 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -22077,23 +21611,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 3 magical spell effect.",
-    "desc": "Lightning Arrow is a level 3 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "DAMAGE",
-      "COMBAT"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -22686,21 +22216,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Summon Fey is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -22714,21 +22242,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "N",
     "schoolName": "Necromancy",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Necromancy level 3 magical spell effect.",
-    "desc": "Summon Undead is a level 3 necromancy spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -22742,21 +22268,19 @@ window.SPELL_CATALOG = [
     "levelNum": 3,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 3 magical spell effect.",
-    "desc": "Syluné's Viper is a level 3 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 4th level or higher, the spell's potency or number of targets increases for each slot level above 3st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -23028,21 +22552,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 4 magical spell effect.",
-    "desc": "Aura of Purity is a level 4 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -23056,20 +22578,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 4 magical spell effect.",
-    "desc": "Backlash is a level 4 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -23503,21 +23024,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Doomtide is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -23627,21 +23146,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 4 magical spell effect.",
-    "desc": "Fount of Moonlight is a level 4 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -23718,21 +23235,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Grasping Vine is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -24071,23 +23586,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 4 magical spell effect.",
-    "desc": "Spellfire Storm is a level 4 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "DAMAGE",
-      "COMBAT"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -24101,23 +23612,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Paladin",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 4 magical spell effect.",
-    "desc": "Staggering Smite is a level 4 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "4d6 Psychic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -24196,21 +23703,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Summon Aberration is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -24224,21 +23729,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Summon Construct is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -24252,21 +23755,19 @@ window.SPELL_CATALOG = [
     "levelNum": 4,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 4 magical spell effect.",
-    "desc": "Summon Elemental is a level 4 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 5th level or higher, the spell's potency or number of targets increases for each slot level above 4st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -24344,20 +23845,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 5 magical spell effect.",
-    "desc": "Alustriel's Mooncloak is a level 5 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -24498,23 +23998,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Paladin",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Banishing Smite is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "5d10 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -24528,20 +24024,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "A",
     "schoolName": "Abjuration",
-    "classes": [
-      "Wizard",
-      "Cleric"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Abjuration level 5 magical spell effect.",
-    "desc": "Circle of Power is a level 5 abjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -24711,21 +24206,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Conjure Volley is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -24833,22 +24326,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Destructive Wave is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "5d6 Thunder + 5d6 Radiant/Necrotic",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -25151,22 +24641,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Paladin"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 5 magical spell effect.",
-    "desc": "Jallarzi's Storm of Radiance is a level 5 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -25500,22 +24987,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid",
-      "Bard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 5 magical spell effect.",
-    "desc": "Songal's Elemental Suffusion is a level 5 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -25529,21 +25013,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Steel Wind Strike is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -25557,21 +25039,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid",
-      "Ranger"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 5 magical spell effect.",
-    "desc": "Summon Celestial is a level 5 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -25615,21 +25095,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 5 magical spell effect.",
-    "desc": "Swift Quiver is a level 5 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -25643,22 +25121,21 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute.",
-    "desc": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute. (Unchecked summary, not in the SRD: see XPHB.)",
+    "desc": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute.\n\nNot in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
+    "higherLevels": "",
     "tags": [
       "UTILITY"
     ],
-    "damage": "8d6 Psychic",
+    "damage": "",
+    "detail": "name-only",
+    "summary": "You cause a psychic explosion in a 20-foot radius. Creatures failing an Intelligence save take 8d6 psychic damage and subtract 1d6 from attack rolls and ability checks for 1 minute.",
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest. The short summary has not been checked against the book.",
     "books": [
       "XPHB"
     ]
@@ -25865,21 +25342,19 @@ window.SPELL_CATALOG = [
     "levelNum": 5,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 5 magical spell effect.",
-    "desc": "Yolande's Regal Presence is a level 5 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 6th level or higher, the spell's potency or number of targets increases for each slot level above 5st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -25893,20 +25368,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 6 magical spell effect.",
-    "desc": "Arcane Gate is a level 6 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -26106,21 +25580,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 6 magical spell effect.",
-    "desc": "Dirge is a level 6 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -26165,20 +25637,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 6 magical spell effect.",
-    "desc": "Elminster's Effulgent Spheres is a level 6 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -26732,20 +26203,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 6 magical spell effect.",
-    "desc": "Summon Fiend is a level 6 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "SUMMONING"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -26792,20 +26262,19 @@ window.SPELL_CATALOG = [
     "levelNum": 6,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 6 magical spell effect.",
-    "desc": "Tasha's Bubbling Cauldron is a level 6 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 7th level or higher, the spell's potency or number of targets increases for each slot level above 6st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -27362,21 +26831,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "E",
     "schoolName": "Enchantment",
-    "classes": [
-      "Wizard",
-      "Bard",
-      "Warlock"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Enchantment level 7 magical spell effect.",
-    "desc": "Power Word Fortify is a level 7 enchantment spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -27578,21 +27045,19 @@ window.SPELL_CATALOG = [
     "levelNum": 7,
     "school": "T",
     "schoolName": "Transmutation",
-    "classes": [
-      "Wizard",
-      "Sorcerer",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Transmutation level 7 magical spell effect.",
-    "desc": "Simbul's Synostodweomer is a level 7 transmutation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 8th level or higher, the spell's potency or number of targets increases for each slot level above 7st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -28048,20 +27513,19 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "V",
     "schoolName": "Evocation",
-    "classes": [
-      "Wizard",
-      "Sorcerer"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Evocation level 8 magical spell effect.",
-    "desc": "Holy Star of Mystra is a level 8 evocation spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]
@@ -28234,19 +27698,19 @@ window.SPELL_CATALOG = [
     "levelNum": 8,
     "school": "D",
     "schoolName": "Divination",
-    "classes": [
-      "Wizard"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Divination level 8 magical spell effect.",
-    "desc": "Telepathy is a level 8 divination spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 9th level or higher, the spell's potency or number of targets increases for each slot level above 8st.",
-    "tags": [
-      "UTILITY"
-    ],
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Player's Handbook (2024) (XPHB) for the rest.",
     "books": [
       "XPHB"
     ]
@@ -28322,21 +27786,19 @@ window.SPELL_CATALOG = [
     "levelNum": 9,
     "school": "C",
     "schoolName": "Conjuration",
-    "classes": [
-      "Wizard",
-      "Druid"
-    ],
-    "castingTime": "1 action",
-    "range": "30 feet",
-    "components": "V, S",
-    "duration": "Concentration, up to 1 minute",
-    "quickEffect": "Conjuration level 9 magical spell effect.",
-    "desc": "Blade of Disaster is a level 9 conjuration spell. When cast, it channels mystical energy within a range of 30 feet to produce its unique spell effect for a duration of Concentration, up to 1 minute.",
-    "higherLevels": "When you cast this spell using a spell slot of 10th level or higher, the spell's potency or number of targets increases for each slot level above 9st.",
-    "tags": [
-      "UTILITY"
-    ],
-    "damage": "4d12 Force",
+    "classes": [],
+    "castingTime": "—",
+    "range": "—",
+    "components": "—",
+    "duration": "—",
+    "quickEffect": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "desc": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
+    "higherLevels": "",
+    "tags": [],
+    "damage": "",
+    "detail": "name-only",
+    "summary": null,
+    "note": "Not in the SRD: only the name, level and school are listed here. See Forgotten Realms: Heroes of Faerûn (FRHoF) for the rest.",
     "books": [
       "FRHoF"
     ]

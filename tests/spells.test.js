@@ -173,3 +173,26 @@ test('catalog: spell-catalog.js holds the same data as the JSON', () => {
   new Function('window', require('fs').readFileSync(require('path').join(__dirname, '..', 'spell-catalog.js'), 'utf8'))(sandbox);
   assert.deepEqual(sandbox.SPELL_CATALOG, CATALOG);
 });
+
+test('catalog: non-SRD spells are listed by name, level and school only', () => {
+  const nonSrd = CATALOG.filter((s) => s.license === 'none' && !s.verified);
+  assert.ok(nonSrd.length > 0);
+  for (const s of nonSrd) {
+    assert.equal(s.detail, 'name-only', s.name);
+    assert.ok(s.levelText && SCHOOLS.includes(s.schoolName), s.name + ': level and school kept');
+    assert.deepEqual([s.castingTime, s.range, s.components, s.duration], ['—', '—', '—', '—'], s.name + ': placeholder stats removed');
+    assert.deepEqual(s.classes, [], s.name + ': made-up class list removed');
+    assert.ok(s.note.startsWith('Not in the SRD') && s.desc.includes(s.note), s.name + ': note shown');
+    assert.ok(!/channels mystical energy|magical spell effect/.test(s.desc + s.quickEffect), s.name + ': filler text removed');
+  }
+  const hex = findIn('Hex', '2014')[0];
+  assert.equal(hex.summary, null);
+  assert.ok(hex.note.includes("Player's Handbook (2014)"));
+  const boom = findIn('Booming Blade', '2014')[0];
+  assert.ok(boom.summary && boom.desc.startsWith(boom.summary), 'an existing short summary is kept');
+  assert.ok(boom.note.includes('has not been checked'));
+});
+
+test('catalog: SRD spells are never marked name-only', () => {
+  assert.equal(CATALOG.filter((s) => s.license !== 'none' && s.detail).length, 0);
+});

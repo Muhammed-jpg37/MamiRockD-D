@@ -20,28 +20,8 @@ const ROOT = path.join(__dirname, '..');
 const JSON_PATH = path.join(ROOT, 'spell-catalog.json');
 const JS_PATH = path.join(ROOT, 'spell-catalog.js');
 
-// Book abbreviation → rules version.
-const BOOKS = {
-  SRD: '2014',        // System Reference Document 5.1
-  PHB: '2014',        // Player's Handbook (2014)
-  XGE: '2014',        // Xanathar's Guide to Everything
-  TCE: '2014',        // Tasha's Cauldron of Everything
-  GGR: '2014',        // Guildmasters' Guide to Ravnica
-  EGW: '2014',        // Explorer's Guide to Wildemount
-  AI: '2014',         // Acquisitions Incorporated
-  IDRotF: '2014',     // Icewind Dale: Rime of the Frostmaiden
-  SCC: '2014',        // Strixhaven: A Curriculum of Chaos
-  AAG: '2014',        // Astral Adventurer's Guide
-  LLK: '2014',        // Lost Laboratory of Kwalish
-  FTD: '2014',        // Fizban's Treasury of Dragons
-  BMT: '2014',        // The Book of Many Things
-  SatO: '2014',       // Sigil and the Outlands
-  'AitFR-AVT': '2014', // Adventures in the Forgotten Realms: A Verdant Tomb
-  SRD52: '2024',      // System Reference Document 5.2 (set by tools/merge-spell-catalog.js)
-  XPHB: '2024',       // Player's Handbook (2024)
-  FRHoF: '2024',      // Forgotten Realms: Heroes of Faerûn
-  EFA: '2024'         // Eberron: Forge of the Artificer
-};
+// Book abbreviation → rules version (full list in tools/spell-books.js).
+const BOOKS = Object.fromEntries(Object.entries(require('./spell-books.js')).map(([k, v]) => [k, v.ruleset]));
 
 const key = (name) => String(name).trim().toLowerCase();
 const SRD51 = new Set(require('../rules/srd5-spells.js').map((s) => key(s.name)));
@@ -58,7 +38,7 @@ const counts = {};
 
 const tagged = catalog.map((spell) => {
   const ruleset = BOOKS[spell.source];
-  if (!ruleset) throw new Error('Unknown book "' + spell.source + '" on ' + spell.name + ' — add it to BOOKS');
+  if (!ruleset) throw new Error('Unknown book "' + spell.source + '" on ' + spell.name + ' — add it to tools/spell-books.js');
   const license = licenseOf(spell, ruleset);
   if (spell.source === 'SRD' && license !== 'srd51') throw new Error('SRD entry not in SRD 5.1 data: ' + spell.name);
   if (spell.source === 'SRD52' && license !== 'srd52') throw new Error('SRD52 entry not in SRD 5.2 data: ' + spell.name);

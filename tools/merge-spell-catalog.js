@@ -108,6 +108,41 @@ function fromSrd(s, ruleset, group) {
   return out;
 }
 
+/* Spells that are not in the SRD. The old catalog's stats for them are placeholders
+   ("1 action", "30 feet", class lists made up from the school) and most descriptions are
+   filler. We can't take the real details from the SRD and don't copy book text, so they
+   are listed by name, level and school only, with a pointer to the book. A short summary
+   that was already there is kept, marked unchecked.
+   To fill one in by hand: enter its real stats and set "verified": true — this script
+   then leaves it alone. */
+const BOOK_INFO = require('./spell-books.js');
+const UNKNOWN = '—';
+const isFiller = (text) => !text || text.length < 25 || /channels mystical energy|magical spell effect/.test(text);
+
+function nameOnly(e) {
+  if (e.verified) return e;
+  const out = Object.assign({}, e);
+  // On a re-run the summary was already moved to `summary`.
+  const summary = out.detail === 'name-only' ? out.summary : [out.quickEffect, out.desc].find((t) => !isFiller(t));
+  const book = BOOK_INFO[out.source] ? BOOK_INFO[out.source].name + ' (' + out.source + ')' : out.source;
+  out.castingTime = UNKNOWN;
+  out.range = UNKNOWN;
+  out.components = UNKNOWN;
+  out.duration = UNKNOWN;
+  out.classes = [];
+  out.higherLevels = '';
+  out.damage = '';
+  if (!summary) out.tags = [];
+  out.detail = 'name-only';
+  out.summary = summary || null;
+  out.note = 'Not in the SRD: only the name, level and school are listed here. See ' + book + ' for the rest.' +
+    (summary ? ' The short summary has not been checked against the book.' : '');
+  // The Spells tab shows quickEffect, so it carries a short pointer to the book too.
+  out.quickEffect = summary ? summary + ' (Unchecked summary, not in the SRD: see ' + out.source + '.)' : out.note;
+  out.desc = summary ? summary + '\n\n' + out.note : out.note;
+  return out;
+}
+
 const catalog = JSON.parse(fs.readFileSync(JSON_PATH, 'utf8'));
 for (const e of catalog) {
   if (!SRD[e.ruleset]) throw new Error('Untagged spell ' + e.name + ' (' + e.source + '): run tools/tag-spell-catalog.js first');
@@ -140,7 +175,7 @@ for (const [k, group] of groups) {
     rebuilt++;
   } else {
     if (group.length > 1) throw new Error('Two non-SRD entries for ' + name + ' in ' + ruleset + ' — decide which to keep');
-    out = Object.assign({}, group[0]);
+    out = nameOnly(group[0]);
     delete out.aliases;
     delete out.books;
   }
