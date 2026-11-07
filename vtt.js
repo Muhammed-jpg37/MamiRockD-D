@@ -2080,12 +2080,7 @@
       return null;
     }
     const u = window.currentUser;
-    const entry = {
-      by: String((u && u.nickname) || 'Guest').slice(0, 40),
-      expr: r.expr, total: r.total, text: r.text.slice(0, 400),
-      crit: r.crit, fumble: r.fumble, at: Date.now(),
-    };
-    if (opts.label) entry.label = String(opts.label).slice(0, 60);
+    const entry = window.Dice.logEntry(r, { by: u && u.nickname, label: opts.label });
     postRoll(entry, opts.hidden === undefined ? hiddenRoll : !!opts.hidden);
     return entry;
   }
@@ -2095,7 +2090,7 @@
     hidden = !!hidden && isDm();
     // Zero-padded time first so keys sort chronologically; random tail avoids clashes.
     const key = String(entry.at).padStart(15, '0') + Math.random().toString(36).slice(2, 6);
-    const shared = hidden ? { by: entry.by, hidden: true, at: entry.at } : entry;
+    const shared = hidden ? window.Dice.secretEntry(entry) : entry;
     vtt.log[key] = shared;
     if (hidden) vtt.logHidden[key] = entry;
     logOpen = true;
@@ -2130,43 +2125,29 @@
     panel.style.display = logOpen && keys.length ? '' : 'none';
     list.innerHTML = '';
     keys.slice().reverse().forEach((k, i) => {
-      let e = vtt.log[k] || {};
+      const e = vtt.log[k] || {};
+      // Only DMs get the full entry of a hidden roll.
+      const v = window.Dice.logView(e, e.hidden && isDm() && vtt.logHidden ? vtt.logHidden[k] : null);
       const row = document.createElement('div');
-      row.className = 'vtt-log-row' + (i === 0 ? ' vtt-log-new' : '');
+      row.className = 'vtt-log-row' + (i === 0 ? ' vtt-log-new' : '') + (v.hidden ? ' vtt-log-secret' : '');
       const who = document.createElement('span');
       who.className = 'vtt-log-who';
-      who.textContent = e.by || '?';
+      who.textContent = (v.secret ? '🙈 ' : '') + v.who;
       const what = document.createElement('span');
       what.className = 'vtt-log-what';
+      what.textContent = v.what;
       const res = document.createElement('b');
-      if (e.hidden) {
-        const secret = isDm() && vtt.logHidden && vtt.logHidden[k];
-        row.classList.add('vtt-log-secret');
-        if (!secret) {
-          what.textContent = 'rolled in secret';
-          res.textContent = '?';
-          row.title = 'A hidden DM roll';
-          row.append(who, what, res);
-          list.appendChild(row);
-          return;
-        }
-        e = secret;
-        who.textContent = '🙈 ' + (e.by || '?');
-      }
-      const old = e.expr === undefined;
-      what.textContent = old ? 'd' + e.die : (e.label || e.expr || '');
-      res.textContent = old ? e.result : e.total;
-      const crit = old ? e.die === 20 && e.result === 20 : !!e.crit;
-      const fumble = old ? e.die === 20 && e.result === 1 : !!e.fumble;
-      if (crit) res.className = 'vtt-crit';
-      if (fumble) res.className = 'vtt-fumble';
+      res.textContent = v.total;
+      if (v.crit) res.className = 'vtt-crit';
+      if (v.fumble) res.className = 'vtt-fumble';
       row.append(who, what, res);
-      if (!old && e.text) {
+      if (v.hidden && !v.secret) row.title = 'A hidden DM roll';
+      if (v.detail) {
         // Every die: "2d20kh1 (17, 4̶) + 5 = 22".
         const detail = document.createElement('span');
         detail.className = 'vtt-log-detail';
-        detail.textContent = e.text;
-        row.title = (row.classList.contains('vtt-log-secret') ? 'Hidden roll (players see "rolled in secret"). ' : '') + (e.label ? e.label + ': ' : '') + e.text;
+        detail.textContent = v.detail;
+        row.title = (v.secret ? 'Hidden roll (players see "rolled in secret"). ' : '') + (v.what !== v.detail ? v.what + ': ' : '') + v.detail;
         row.appendChild(detail);
       }
       list.appendChild(row);

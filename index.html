@@ -12281,29 +12281,23 @@
       return entry;
     }
 
-    // 10 or more: a success; a natural 1: two failures; a natural 20: back with 1 HP (SRD 5.1).
+    // 10 or more: a success; a natural 1: two failures; a natural 20: back with 1 HP (Dice.deathSave).
     function rollDeathSave() {
       const e = sheetRoll('Death save', 0, { quiet: true });
       if (!e) return;
       const ds = state.deathSaves;
-      const mark = (list, n) => { for (let i = 0; i < list.length && n > 0; i++) if (!list[i]) { list[i] = true; n--; } };
-      let note;
-      if (e.crit) {
-        ds.successes = [false, false, false];
-        ds.failures = [false, false, false];
+      const out = window.Dice.deathSave(e, ds);
+      ds.successes = out.successes;
+      ds.failures = out.failures;
+      if (out.revived) {
         if (!state.hp) state.hp = { current: 0, max: 45, temp: 0 };
         state.hp.current = Math.max(1, Number(state.hp.current) || 0);
-        note = 'natural 20, back up with 1 HP';
-      } else if (e.fumble) { mark(ds.failures, 2); note = 'natural 1, two failures'; }
-      else if (e.total >= 10) { mark(ds.successes, 1); note = 'success'; }
-      else { mark(ds.failures, 1); note = 'failure'; }
-      if (ds.failures.every(Boolean)) note += '. Three failures: the character dies';
-      else if (ds.successes.every(Boolean)) note += '. Three successes: stable';
+      }
       ds.open = true;
       save();
       renderDeathSaves();
-      if (e.crit) renderHpTracker();
-      toast('🎲 Death save: ' + e.total + ', ' + note, 5000);
+      if (out.revived) renderHpTracker();
+      toast('🎲 Death save: ' + e.total + ', ' + out.note, 5000);
     }
 
     function stripDiceModeHtml() {

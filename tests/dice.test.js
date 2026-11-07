@@ -80,3 +80,94 @@ test('dice: d20 helper and the real random source stay in range', () => {
   for (let i = 0; i < 400; i++) seen.add(Dice.roll('1d20').total);
   assert.equal(seen.size, 20, 'every face of a d20 comes up');
 });
+
+/* ---------- The table's roll log (vtt.js writes these) ---------- */
+
+// The proposed database rules (firebase-rules/database.rules.json) for one log entry.
+const RULES = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', 'firebase-rules', 'database.rules.json'), 'utf8'));
+const roomRules = (() => {
+  const vtt = RULES.rules.vtt;
+  return vtt[Object.keys(vtt).find((k) => k.charAt(0) === '$')];   // vtt/$campaign
+})();
+const allowed = (node) => Object.keys(node.$entry).filter((k) => k.charAt(0) !== '.' && k !== '$other');
+
+test('dice log: a roll becomes { by, expr, total, text, crit, fumble, label?, at }', () => {
+  const r = Dice.roll('1d20+3', { rng: seq(20) });
+  const e = Dice.logEntry(r, { by: 'Ayla', label: 'Thorin: Perception', at: 1234 });
+  assert.deepEqual(e, { by: 'Ayla', expr: '1d20 + 3', total: 23, text: '1d20 (20) + 3 = 23', crit: true, fumble: false, at: 1234, label: 'Thorin: Perception' });
+  const plain = Dice.logEntry(Dice.roll('2d6', { rng: seq(1, 1) }), {});
+  assert.equal(plain.by, 'Guest');
+  assert.equal('label' in plain, false);
+  assert.ok(plain.at > 0);
+  // Long names and labels are cut to what the database rules accept.
+  const long = Dice.logEntry(r, { by: 'x'.repeat(80), label: 'y'.repeat(80) });
+  assert.equal(long.by.length, 40);
+  assert.equal(long.label.length, 60);
+  // Every field is one the proposed rules allow, and the required ones are there.
+  Object.keys(e).forEach((k) => assert.ok(allowed(roomRules.log).includes(k), 'log rule lacks ' + k));
+  Object.keys(e).forEach((k) => assert.ok(allowed(roomRules.logHidden).includes(k), 'logHidden rule lacks ' + k));
+  ['by', 'expr', 'total', 'text', 'at'].forEach((k) => assert.ok(roomRules.log.$entry['.validate'].includes("'" + k + "'")));
+});
+
+test('dice log: a hidden DM roll leaves only a placeholder in the shared log', () => {
+  const e = Dice.logEntry(Dice.roll('1d20', { rng: seq(7) }), { by: 'DM', label: 'Stealth', at: 99 });
+  const s = Dice.secretEntry(e);
+  assert.deepEqual(s, { by: 'DM', hidden: true, at: 99 });
+  Object.keys(s).forEach((k) => assert.ok(allowed(roomRules.log).includes(k), 'log rule lacks ' + k));
+  assert.ok(roomRules.log.$entry['.validate'].includes("['by', 'hidden', 'at']"));
+  // Players see that something was rolled, not what.
+  const player = Dice.logView(s);
+  assert.equal(player.what, 'rolled in secret');
+  assert.equal(player.total, '?');
+  assert.equal(player.detail, '');
+  assert.equal(player.secret, false);
+  // DMs pass the logHidden entry and see it all.
+  const dm = Dice.logView(s, e);
+  assert.equal(dm.what, 'Stealth');
+  assert.equal(dm.total, 7);
+  assert.equal(dm.detail, '1d20 (7) = 7');
+  assert.equal(dm.hidden, true);
+  assert.equal(dm.secret, true);
+});
+
+test('dice log: old { die, result } entries and new ones read the same way', () => {
+  const old = Dice.logView({ by: 'Bo', die: 20, result: 20, at: 1 });
+  assert.equal(old.what, 'd20');
+  assert.equal(old.total, 20);
+  assert.equal(old.crit, true);
+  assert.equal(old.detail, '');
+  assert.equal(Dice.logView({ by: 'Bo', die: 20, result: 1, at: 1 }).fumble, true);
+  assert.equal(Dice.logView({ by: 'Bo', die: 6, result: 1, at: 1 }).fumble, false);
+  const fresh = Dice.logView(Dice.logEntry(Dice.roll('2d20kl1+1', { rng: seq(1, 15) }), { by: 'Bo' }));
+  assert.equal(fresh.what, '2d20kl1 + 1');
+  assert.equal(fresh.total, 2);
+  assert.equal(fresh.fumble, true);
+  assert.equal(Dice.logView(undefined).who, '?');
+});
+
+/* ---------- Death saves ---------- */
+
+test('dice: death saves fill the boxes by the SRD rules', () => {
+  const empty = { successes: [false, false, false], failures: [false, false, false] };
+  let out = Dice.deathSave({ total: 12 }, empty);
+  assert.deepEqual(out.successes, [true, false, false]);
+  assert.deepEqual(empty.successes, [false, false, false], 'the boxes passed in are not changed');
+  assert.equal(out.note, 'success');
+  out = Dice.deathSave({ total: 10 }, empty);
+  assert.deepEqual(out.successes, [true, false, false], '10 is a success');
+  out = Dice.deathSave({ total: 9 }, empty);
+  assert.deepEqual(out.failures, [true, false, false]);
+  out = Dice.deathSave({ total: 1, fumble: true }, { successes: [true, false, false], failures: [true, false, false] });
+  assert.deepEqual(out.failures, [true, true, true]);
+  assert.equal(out.dead, true);
+  assert.match(out.note, /two failures.*dies/);
+  out = Dice.deathSave({ total: 20, crit: true }, { successes: [true, false, false], failures: [true, true, false] });
+  assert.equal(out.revived, true);
+  assert.deepEqual(out.successes, [false, false, false]);
+  assert.deepEqual(out.failures, [false, false, false]);
+  out = Dice.deathSave({ total: 15 }, { successes: [true, true, false], failures: [true, false, false] });
+  assert.equal(out.stable, true);
+  assert.match(out.note, /stable/);
+  // Missing or short boxes are filled in.
+  assert.deepEqual(Dice.deathSave({ total: 3 }, {}).failures, [true, false, false]);
+});

@@ -16,6 +16,9 @@ Sitedeki mevcut sekme sistemine "🗺 VTT" sekmesi eklendi. Kodun neredeyse tama
 | Oyuncu token'ında HP çubuğu (karakter sayfasından okunur) | ✔ | ✔ |
 | Canavar HP'si (token menüsünden) | ✔ | Görmez |
 | Zar atıcı (d4–d100) ve ortak log (son 20 atış) | ✔ | ✔ |
+| Zar ifadesi (`1d20+5`, `2d6+3`, `4d6kh3`, `d%`; Enter ile atılır, son 10 ifade önerilir) ve Adv / Norm / Dis anahtarı. Logda her zar görünür | ✔ | ✔ |
+| 🙈 Gizli zar: oyuncular yalnızca "rolled in secret" görür | ✔ | Göremez, atamaz |
+| Karakter sayfasından zar: yetenek, kurtarma, beceri, inisiyatif, ölüm kurtarma (🎲 butonları). Masa hiç açılmamış olsa da kampanyanın loguna düşer | ✔ | ✔ |
 | Inisiyatif sırası: tur sayacı, sıradaki karakter, haritada sıradaki token'ın etrafında halka | ✔ Yönetir (ekleme, değer girme, NPC'lere d20, ileri/geri, gizleme, bitirme) | Görür. Gizli girişleri ve sisteki düşmanları görmez |
 | Cetvel: sürükleyerek ölçüm (kare ve feet), sürüklerken herkes görür | ✔ | ✔ |
 | Alan şablonları: daire, koni, çizgi, küp. Etkilenen kareler boyanır | ✔ (herkesinkini silebilir) | ✔ (yalnızca kendininkini siler) |
@@ -29,13 +32,23 @@ vtt/<kampanya>/map            { url, width, height }
 vtt/<kampanya>/grid           { size, visible, color, opacity, offsetX, offsetY }   offset = haritadaki bir ızgara çizgisinin konumu (px)
 vtt/<kampanya>/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden, hp? }   x/y = ızgara hücresi
 vtt/<kampanya>/fog            { enabled, revealed: { "x_y": true } }
-vtt/<kampanya>/log/<key>      { by, die, result, at }   en yeni 20 kayıt tutulur
+vtt/<kampanya>/log/<key>      { by, expr, total, text, crit, fumble, label?, at }   en yeni 20 kayıt tutulur
+                              eski kayıtlar { by, die, result, at } hâlâ gösterilir; gizli zar burada { by, hidden: true, at }
+vtt/<kampanya>/logHidden/<key> { by, expr, total, text, crit, fumble, label?, at }   gizli DM zarı, aynı anahtar; yalnızca DM'ler gösterir
 vtt/<kampanya>/initiative     { round, turn, entries: { <id>: { name, init, tokenId, hidden, at } } }   yalnızca DM yazar
 vtt/<kampanya>/shapes/<id>    { kind, ox, oy, ex, ey, by, color }   kare cinsinden; kind = circle | cone | line | square
 vtt/<kampanya>/measure/<sekme> { who, ax, ay, bx, by, color, at }   yalnızca sürükleme sürerken var
 ```
 
 Oyuncu HP'si ayrıca saklanmıyor, doğrudan `inventories/<nickname>/hp` okunuyor. HP hâlâ yalnızca karakter sayfasından değiştiriliyor.
+
+## Zar
+
+- **Motor:** `dice.js` (`window.Dice`, DOM yok, Node'da da çalışır). İfadeyi okur, atar, her zarın metnini yazar (atılan zarlar üstü çizili), doğal 20 / 1'i işaretler. Rastgele sayı `crypto.getRandomValues` ile. Log kaydının şekli (`logEntry`, `secretEntry`, `logView`) ve ölüm kurtarma kuralı (`deathSave`) da burada; testler `tests/dice.test.js`.
+- **Masa:** `vtt.js` `window.VTT = { roll, postRoll, getRollMode, setRollMode }` dışa aktarır. Sitenin geri kalanı (karakter sayfası) zarları bununla atar.
+- **Avantaj:** Adv / Dis, ifadedeki ilk tek d20'yi `2d20kh1` / `2d20kl1` yapar. Seçim tarayıcıda hatırlanır; masadaki ve karakter şeridindeki anahtar aynı ayarı gösterir.
+- **Gizli zar:** ⚠️ Firebase Authentication olmadığı için gizlilik yalnızca uygulamada. `logHidden` her oyuncunun tarayıcısına yine de iner (masa tek dinleyiciyle okunuyor). Anahtar açılınca bu söylenir.
+- **Ölüm kurtarma:** 10 ve üstü başarı, doğal 1 iki başarısızlık, doğal 20 kutuları sıfırlar ve HP'yi 1 yapar (SRD 5.1).
 
 ## ⚠️ Güvenlik — okunması gereken kısım
 
@@ -71,6 +84,7 @@ Projede Storage bucket'ı yok (`mamirockd-d37.firebasestorage.app` 404 döndür�
 | İnternet kesilip geliyor | ⏳ Denenmedi. Firebase SDK yeniden bağlanmayı kendisi yapıyor, sürükleme sırasında kopma ayrıca denenmeli |
 | Oyuncu karakter sayfasında HP değiştiriyor → haritadaki çubuk | ⏳ Okuma doğrulandı. Canlı değişiklik gerçek bir hesapla denenmeli |
 | Güvenlik kuralları | ⏳ Yazıldı, Rules Playground'da denenmeli |
+| Zar ifadesi, Adv/Dis, gizli zar, sayfadan zar (2026-11-07) | ✅ Yazmalar stub'lıyken DM olarak ve rol bellekte değiştirilerek oyuncu olarak; masaüstü ve 375 px. ⏳ İki gerçek kişiyle aynı anda denenmedi |
 
 ## Bilinen sınırlar / sonraki işler
 

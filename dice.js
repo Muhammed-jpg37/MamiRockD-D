@@ -142,5 +142,72 @@
 
   function isValid(expr) { try { parse(expr); return true; } catch (e) { return false; } }
 
-  root.Dice = { parse: parse, roll: roll, describe: describe, d20: d20, isValid: isValid, applyMode: applyMode, exprText: exprText, LIMITS: LIMITS };
+  /* ---------- The table's roll log (vtt/<campaign>/log, vtt.js) ---------- */
+
+  // The entry a roll writes: { by, expr, total, text, crit, fumble, label?, at }.
+  // r: a roll() result; opts: { by, label, at }. Text lengths match the proposed database rules.
+  function logEntry(r, opts) {
+    opts = opts || {};
+    const entry = {
+      by: String(opts.by || 'Guest').slice(0, 40),
+      expr: String(r.expr).slice(0, 200), total: r.total, text: String(r.text).slice(0, 400),
+      crit: !!r.crit, fumble: !!r.fumble, at: Number(opts.at) || Date.now(),
+    };
+    if (opts.label) entry.label = String(opts.label).slice(0, 60);
+    return entry;
+  }
+
+  // A hidden DM roll: the full entry goes to vtt/<campaign>/logHidden, the shared log gets this.
+  function secretEntry(entry) {
+    return { by: entry.by, hidden: true, at: entry.at };
+  }
+
+  // How one log row reads, for every shape in the log:
+  //   new entries; entries from before this engine ({ by, die, result, at });
+  //   hidden placeholders, shown in full only when `secret` (the logHidden entry) is passed.
+  // -> { who, what, total, detail, crit, fumble, hidden, secret }
+  function logView(e, secret) {
+    e = e || {};
+    if (e.hidden) {
+      if (!secret) return { who: e.by || '?', what: 'rolled in secret', total: '?', detail: '', crit: false, fumble: false, hidden: true, secret: false };
+      const v = logView(secret);
+      return Object.assign(v, { hidden: true, secret: true });
+    }
+    if (e.expr === undefined) {
+      const nat = Number(e.die) === 20;
+      return { who: e.by || '?', what: 'd' + e.die, total: e.result, detail: '', crit: nat && e.result === 20, fumble: nat && e.result === 1, hidden: false, secret: false };
+    }
+    return { who: e.by || '?', what: e.label || e.expr || '', total: e.total, detail: e.text || '', crit: !!e.crit, fumble: !!e.fumble, hidden: false, secret: false };
+  }
+
+  /* ---------- Death saves (SRD 5.1) ---------- */
+
+  // A death save roll against the sheet's boxes: 10 or more is a success, a natural 1 two
+  // failures, a natural 20 clears the boxes and brings the character back with 1 HP.
+  // entry: { total, crit, fumble }; ds: { successes: [bool×3], failures: [bool×3] }.
+  // -> { successes, failures, revived, stable, dead, note } (new arrays; ds is not changed)
+  function deathSave(entry, ds) {
+    const successes = (ds && ds.successes ? ds.successes : []).slice(0, 3).map(Boolean);
+    const failures = (ds && ds.failures ? ds.failures : []).slice(0, 3).map(Boolean);
+    while (successes.length < 3) successes.push(false);
+    while (failures.length < 3) failures.push(false);
+    const mark = (list, n) => { for (let i = 0; i < list.length && n > 0; i++) if (!list[i]) { list[i] = true; n--; } };
+    if (entry.crit) {
+      return { successes: [false, false, false], failures: [false, false, false], revived: true, stable: false, dead: false, note: 'natural 20, back up with 1 HP' };
+    }
+    let note;
+    if (entry.fumble) { mark(failures, 2); note = 'natural 1, two failures'; }
+    else if (entry.total >= 10) { mark(successes, 1); note = 'success'; }
+    else { mark(failures, 1); note = 'failure'; }
+    const dead = failures.every(Boolean);
+    const stable = !dead && successes.every(Boolean);
+    if (dead) note += '. Three failures: the character dies';
+    else if (stable) note += '. Three successes: stable';
+    return { successes: successes, failures: failures, revived: false, stable: stable, dead: dead, note: note };
+  }
+
+  root.Dice = {
+    parse: parse, roll: roll, describe: describe, d20: d20, isValid: isValid, applyMode: applyMode, exprText: exprText, LIMITS: LIMITS,
+    logEntry: logEntry, secretEntry: secretEntry, logView: logView, deathSave: deathSave,
+  };
 })(typeof window !== 'undefined' ? window : this);
