@@ -4,9 +4,9 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ## Resume here
 
-**Where work stopped:** feature plan section **4 (combat)**, on branch `savas` (cut from `sayfa-hesaplari`; `zar` and `sayfa-hesaplari` are done and pushed). Step 4.1 (conditions) is done. `savas` is **not pushed** (the user pushes it themselves).
+**Where work stopped:** feature plan section **4 (combat)**, on branch `savas` (cut from `sayfa-hesaplari`; `zar` and `sayfa-hesaplari` are done and pushed). Steps 4.1 (conditions) and 4.2 (damage and healing) are done. `savas` is **not pushed** (the user pushes it themselves).
 
-**Do next: step 4.2.** On 2026-11-07 the user said to do all of section 4 (4.1–4.4) without asking, one commit per step, and that they push themselves; after 4.4, stop and report (sections 5, 7, 8 and Help wait for their word).
+**Do next: step 4.3.** On 2026-11-07 the user said to do all of section 4 (4.1–4.4) without asking, one commit per step, and that they push themselves; after 4.4, stop and report (sections 5, 7, 8 and Help wait for their word).
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
 1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
@@ -30,8 +30,8 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 - 3.7 Done (see "Step 3, sheet maths" below). Push `sayfa-hesaplari` when the user asks.
 
 **4. Combat** (new branch, e.g. `savas`)
-- 4.1 Conditions: the 15 SRD conditions (+ exhaustion levels) on tokens (small icons) and as a list on the sheet; DM sets them from the token menu, the player from the sheet; text from `rules/catalog/srd5*-conditions.json`.
-- 4.2 Damage and healing from the token menu ("− X HP / + X HP"); on a player token it writes the character sheet's HP (`inventories/<id>/hp`), on an NPC the token's own HP.
+- 4.1 Done (see "Step 4, combat" below).
+- 4.2 Done (see "Step 4, combat" below).
 - 4.3 Monsters on the map: "Add monster" in the VTT opens the Monsters catalog; the token gets HP, AC and an initiative roll from the stat block; the stat block opens from the token and its attacks click-to-roll (`attack`, `damage` fields are already in the catalog).
 - 4.4 Encounter builder: pick monsters, see the 2014 XP-budget difficulty (Easy…Deadly) for the party's levels; "Place on map" drops them as tokens.
 
@@ -201,6 +201,7 @@ Section 3 is done (branch `sayfa-hesaplari`, pushed 2026-11-07).
 
 Step 4, combat (branch `savas`, cut from `sayfa-hesaplari`):
 1. Conditions: done. New `combat.js` (`window.Combat`, no DOM; loaded after `sheet-maths.js`): the 15 SRD conditions with icons (`CONDITIONS`), exhaustion levels 1–6 (`EXHAUSTION`), `normalize` / `toggle` / `setExhaustion` / `active` / `summary` on a `{ poisoned: true, …, exhaustion: 2 }` object. On the sheet, Overview has a **🩹 Conditions** panel above the death saves (`renderConditionsPanel`, `toggleSheetCondition`, `setSheetExhaustion`; `state.conditions`): chips with the SRD text as tooltip (`rules/catalog/srd51-conditions.json` via `RulesCatalog.load('conditions', '2014')`), an exhaustion select, and the active conditions with their text. On the table, a token shows up to 4 condition icons along its top (+n): a player token's come from its character sheet (`inventories/<sheet>/conditions`, read with the new `fbListenToSheetField` next to the HP listener), a monster token's from the token (`tokens/<id>/conditions`). DMs get condition buttons and an exhaustion select in the token menu (`conditionsSection`, `setTokenConditions`); for a player token that writes only the sheet's `conditions` field (new `fbSaveSheetField`, allowed fields `conditions` and `hp`), never the whole sheet. `firebase-rules/database.rules.json` (proposal) accepts `conditions` on tokens. `window.vttApi` also has `openTokenMenu` and `tokenConditions` for testing. Tests: `tests/combat.test.js` (3; in the browser runner). 156 tests pass. Checked in the browser with writes stubbed (sheet panel; a monster token's conditions saved on the token; a player token's sent as one sheet field). The canvas did not redraw at higher zoom in the hidden pane, so the icons were only seen small.
+2. Damage and healing: done. The token menu has a "**− HP** [X] **+ HP**" row (`hpChangeRow`, Enter = damage) for the DM and for the token's owner. `changeTokenHp(t, delta)` uses `Combat.applyHp` (damage takes temporary HP first, healing stops at max and leaves temp HP alone): a player token writes only its sheet's `hp` field (`fbSaveSheetField`), a monster token its own `hp`; the table's status line says "Ogre: 12 damage → 47 / 59 HP" ("down!" at 0). The monster's old −5 / −1 / +1 buttons stay. `vttApi.changeTokenHp` for testing. Checked in the browser with writes and sheet listeners stubbed (monster 59 → 47 → 59; player 20 + 5 temp, 8 damage → 17, +3 → 20, 4 from the menu → 16).
 
 ## Next plan: closing the gaps with other character builders
 

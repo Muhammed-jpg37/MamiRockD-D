@@ -192,6 +192,7 @@
       .vtt-log-row b.vtt-crit { color: var(--success); }
       .vtt-log-row b.vtt-fumble { color: var(--danger-strong); }
       .vtt-hp { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
+      .vtt-hp-change input { width: 56px; }
       .vtt-conds { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
       .vtt-cond-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
       .vtt-cond-grid .btn { min-width: 0; padding: 2px 0; font-size: 14px; }
@@ -2218,7 +2219,7 @@
     });
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t) };
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t), changeTokenHp: (t, d) => changeTokenHp(t, d) };
 
   // For the rest of the site (the sheet's click-to-roll). Works before the Table section was ever
   // opened: rolls post to the active campaign's log (vtt/<campaign>/log) as soon as there is one.
@@ -2792,9 +2793,15 @@
     wrap.className = 'vtt-hp';
     if (t.owner) {
       const hp = tokenHp(t);
-      wrap.textContent = hp
-        ? '❤️ ' + (Number(hp.current) || 0) + ' / ' + hp.max + (Number(hp.temp) > 0 ? ' (+' + hp.temp + ' temp)' : '') + ' — from ' + ownerName(t.owner) + "'s sheet"
-        : '❤️ No HP on ' + ownerName(t.owner) + "'s sheet yet";
+      const line = document.createElement('div');
+      const show = (h) => {
+        line.textContent = h
+          ? '❤️ ' + (Number(h.current) || 0) + ' / ' + h.max + (Number(h.temp) > 0 ? ' (+' + h.temp + ' temp)' : '') + ' — from ' + ownerName(t.owner) + "'s sheet"
+          : '❤️ No HP on ' + ownerName(t.owner) + "'s sheet yet";
+      };
+      show(hp);
+      wrap.appendChild(line);
+      if (hp && (isDm() || canEdit(t))) wrap.appendChild(hpChangeRow(t, show));
       return wrap;
     }
     const hp = t.hp || {};
@@ -2830,7 +2837,57 @@
     max.addEventListener('change', save);
     row.append(button('−5', bump(-5)), button('−1', bump(-1)), cur, document.createTextNode('/'), max, button('+1', bump(1)));
     wrap.appendChild(row);
+    wrap.appendChild(hpChangeRow(t, (h) => { if (h) cur.value = h.current; }));
     return wrap;
+  }
+
+  // "− X HP / + X HP" (feature plan 4.2). Damage takes temporary HP first (Combat.applyHp).
+  // A player token changes its character sheet's HP (one field, inventories/<sheet>/hp);
+  // a monster token its own. after(hp) refreshes the menu's numbers.
+  function hpChangeRow(t, after) {
+    const row = document.createElement('div');
+    row.className = 'vtt-row vtt-hp-change';
+    const amount = document.createElement('input');
+    amount.type = 'number';
+    amount.min = '0';
+    amount.placeholder = 'X';
+    amount.title = 'Hit points';
+    const apply = (sign) => () => {
+      const n = Math.abs(parseInt(amount.value, 10) || 0);
+      if (!n) { amount.focus(); return; }
+      const next = changeTokenHp(vtt.tokens[t.id] || t, sign * n);
+      if (next && after) after(next);
+      amount.value = '';
+    };
+    amount.addEventListener('keydown', (e) => { if (e.key === 'Enter') apply(-1)(); });
+    const dmg = button('− HP', apply(-1));
+    dmg.title = 'Damage (temporary HP first)';
+    const heal = button('+ HP', apply(1));
+    heal.title = 'Healing (up to max)';
+    row.append(dmg, amount, heal);
+    return row;
+  }
+
+  // Returns the new { current, max, temp } or null when there is no HP to change.
+  function changeTokenHp(t, delta) {
+    const C = window.Combat;
+    if (!C || !t || !(isDm() || canEdit(t))) return null;
+    const before = tokenHp(t);
+    if (!before) return null;
+    const next = C.applyHp(before, delta);
+    if (t.owner) {
+      const w = hpWatch[t.owner];
+      if (w) w.hp = Object.assign({}, w.hp, next);
+      if (typeof window.fbSaveSheetField === 'function') window.fbSaveSheetField(hpSheetOf(t.owner), 'hp', Object.assign({}, w && w.hp, next));
+    } else {
+      const cur = vtt.tokens[t.id];
+      if (!cur) return null;
+      cur.hp = { current: next.current, max: next.max };
+      onVttChange({ token: t.id });
+    }
+    requestDraw();
+    flashStatus(t.name + ': ' + (delta < 0 ? (-delta) + ' damage' : delta + ' healed') + ' → ' + next.current + ' / ' + next.max + ' HP' + (next.current === 0 ? ' (down!)' : ''));
+    return next;
   }
 
   function openAddTokenForm(anchorBtn) {
