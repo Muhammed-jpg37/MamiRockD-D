@@ -390,6 +390,19 @@
       .frame { padding-left: 12px; padding-right: 12px; }
     }
 
+    /* DM with no player sheets (L6) */
+    .dm-empty-sheet { display: none; max-width: 620px; margin: 10px auto; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+    .dm-empty-sheet h2 { font-family: var(--font-display); color: var(--gold-bright); margin: 0 0 6px; }
+    .dm-empty-sheet p { color: var(--text-dim); margin: 0 0 14px; }
+    .dm-empty-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+    body.dm-no-sheet[data-section="character"] .dm-empty-sheet { display: block; }
+    body.dm-no-sheet[data-section="character"] .char-strip,
+    body.dm-no-sheet[data-section="character"] .sheet-tabs,
+    body.dm-no-sheet[data-section="character"] #dm-control-bar,
+    body.dm-no-sheet[data-section="character"] #inventory-view-container,
+    body.dm-no-sheet[data-section="character"] #spellbook-view-container,
+    body.dm-no-sheet[data-section="character"] #features-view-container { display: none !important; }
+
     /* Campaign screen (campaign-home.js, L2) */
     .campaign-home { max-width: 1200px; margin: 4px auto 0; }
     .ch-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 16px; align-items: start; }
@@ -5573,6 +5586,15 @@
       <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="window.Campaigns && window.Campaigns.copyInvite()" title="Players join with the campaign's invite link or code">📨 Invite players</button>
       <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="window.Campaigns && window.Campaigns.viewAsPlayer(document.getElementById('dm-player-dropdown').value)" title="See the campaign as the picked player sees it, with player rights">👁 View as player</button>
     </div>
+    <div class="dm-empty-sheet character-only" role="status">
+      <h2>No player sheets yet</h2>
+      <p>As the DM you have no sheet of your own here. When players join with the invite code and pick a character, their sheets open here.</p>
+      <div class="dm-empty-acts">
+        <button type="button" class="btn" onclick="window.Campaigns && window.Campaigns.copyInvite()">📨 Copy invite link</button>
+        <button type="button" class="btn ghost" onclick="showSection('campaign')">🏰 Campaign screen</button>
+        <button type="button" class="btn ghost" onclick="window.Campaigns && window.Campaigns.openCharacters()">🎭 Make my own character</button>
+      </div>
+    </div>
     <div class="layout" id="inventory-view-container">
       <!-- COL 1 (FAR LEFT): Character Stats & Bonuses Panel -->
       <div class="panel dnd-stats-column sheet-overview-part">
@@ -7003,6 +7025,20 @@
       window.CampaignHome.render(box);
     }
     window.addEventListener('campaignchange', renderCampaignHome);
+
+    // Opening a campaign (login, or switching campaigns) lands where that role starts (L6):
+    // a DM on the Campaign screen, a player on their sheet, or on the Campaign screen while
+    // they still have to pick a character. Switching sections afterwards is the viewer's choice;
+    // "View as player" and role refreshes of the same campaign don't move anyone.
+    var landedCampaignId = null;
+    window.addEventListener('campaignchange', function (e) {
+      const c = e.detail;
+      if (!c) { landedCampaignId = null; return; }
+      if (c.id === landedCampaignId) return;
+      landedCampaignId = c.id;
+      if (currentSection === 'notes') return;   // don't pull someone out of their notes
+      showSection(c.role === 'dm' ? 'campaign' : (c.character ? 'character' : 'campaign'));
+    });
     window.addEventListener('campaignmembers', renderCampaignHome);
     window.addEventListener('campaignnotes', renderCampaignHome);
 
@@ -9778,6 +9814,9 @@
       if (iconEl) iconEl.textContent = isDm ? '👑' : '👤';
     }
     window.addEventListener('campaignchange', renderRoleBadge);
+    window.addEventListener('campaignchange', function () {
+      if (!currentUser || currentUser.role !== 'dm') document.body.classList.remove('dm-no-sheet');
+    });
 
     function logoutCurrentUser() {
       save();
@@ -9828,6 +9867,8 @@
           if (acc.role !== 'dm') players.push({ value: acc.nickname, label: '👤 Player: ' + acc.nickname });
         });
       }
+      // A DM with no player sheets to open sees an empty state, not their old vault sheet (L6).
+      document.body.classList.toggle('dm-no-sheet', !players.length && currentUser.role === 'dm' && !dmViewingAs);
       select.innerHTML = (players.length ? '' : '<option value="__dm__">No players yet: share the invite code</option>') +
         players.map(p => '<option value="' + escapeHtml(p.value) + '">' + escapeHtml(p.label) + '</option>').join('');
 

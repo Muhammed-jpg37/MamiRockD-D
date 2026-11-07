@@ -288,3 +288,10 @@ Kaynaklar:
   - Alt navigasyon çubuğu yapılmadı. Bölüm sekmeleri telefonda zaten üst barın ikinci satırında, dört eşit sütun hâlinde.
   - Gerçek bir telefonda denenmedi; sadece tarayıcının telefon boyutunda.
 - **L6.** Role göre görünürlük ve açılış ekranı; "Oyuncu olarak gör" (R5) ile kontrol.
+  - **Yapıldı.**
+  - **Açılış:** Bir kampanya açılınca (giriş ya da kampanya değiştirme) DM Kampanya ekranına, oyuncu kendi sayfasına düşüyor. Karakter seçmemiş oyuncu Kampanya ekranına düşüyor ve orada "Pick a character" kartını görüyor.
+    - Bu sadece kampanya açılırken bir kez oluyor. Sonra bölüm seçimi kullanıcıda kalıyor.
+    - View as player ve aynı kampanyada rol yenilenmesi kimseyi yerinden oynatmıyor. Notes açıksa kimse oradan çekilmiyor.
+  - **Oyuncusu olmayan DM:** Character bölümünde eski vault sayfası yerine "No player sheets yet" kartı çıkıyor (`body.dm-no-sheet`). Kartta Copy invite link, Campaign screen ve Make my own character düğmeleri var.
+  - **Görünürlük kontrolü** (View as player ile): Oyuncu görünümünde DM barı, Kampanya ekranındaki DM araçları ve davet, "New note" ve masadaki DM grupları (`vtt-player`) gizli. Açılış bölümü değişmiyor.
+  - Masada "aktif oturum varsa Masaya git öne çıksın" maddesi yapılmadı. Bunun için VTT durumunun masaya girmeden okunması gerekiyor.
