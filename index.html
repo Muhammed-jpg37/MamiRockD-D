@@ -369,6 +369,31 @@
     .prep-toggle.on { border-color: var(--success); color: var(--success); }
     .prep-lock { font-size: 11px; color: var(--gold-bright); align-self: center; white-space: nowrap; }
     .spell-list-item.unprepared .spell-name { opacity: 0.7; }
+    /* Print / Save as PDF (feature plan 7.1): printSheet() sets body.print-sheet, so a page printed
+       from the browser menu without it prints as before. Every sheet tab goes on paper, in ink. */
+    @media print {
+      @page { margin: 12mm; }
+      html:has(body.print-sheet), body.print-sheet { background: #fff !important; color: #000 !important; color-scheme: light; }
+      body.print-sheet #bg-layer, body.print-sheet .topbar, body.print-sheet .sheet-tabs, body.print-sheet #dm-control-bar,
+      body.print-sheet .dm-empty-sheet, body.print-sheet #level-up-banner, body.print-sheet #dm-inspecting-notice,
+      body.print-sheet #vtt-view-container, body.print-sheet #campaign-view-container, body.print-sheet #rules-view-container,
+      body.print-sheet #notes-view-container, body.print-sheet #table-char-bar, body.print-sheet .toast, body.print-sheet .overlay,
+      body.print-sheet button, body.print-sheet input, body.print-sheet select, body.print-sheet .toolbar,
+      body.print-sheet .spellbook-filter-bar, body.print-sheet .spell-actions, body.print-sheet .spell-slots-actions,
+      body.print-sheet .strip-dice-mode, body.print-sheet .hp-btn, body.print-sheet #actions-box .action-rolls button,
+      body.print-sheet .item-detail-panel, body.print-sheet .spell-catalog-section { display: none !important; }
+      body.print-sheet #inventory-view-container, body.print-sheet .sheet-overview-part, body.print-sheet .sheet-inventory-part { display: block !important; }
+      body.print-sheet #spellbook-view-container, body.print-sheet #features-view-container { display: block !important; break-before: page; }
+      body.print-sheet *, body.print-sheet *::before, body.print-sheet *::after {
+        color: #000 !important; background: transparent !important; box-shadow: none !important; text-shadow: none !important;
+        border-color: #999 !important;
+      }
+      body.print-sheet .panel, body.print-sheet .dnd-box, body.print-sheet .spell-list-item, body.print-sheet .death-save-panel,
+      body.print-sheet .action-row, body.print-sheet .skill-row, body.print-sheet .save-row { break-inside: avoid; }
+      body.print-sheet .spell-desc-snippet { -webkit-line-clamp: unset !important; max-height: none !important; overflow: visible !important; }
+      body.print-sheet .print-only { display: block !important; }
+    }
+    .print-only { display: none; }
     /* Conditions (feature plan 4.1) */
     .conditions-panel .cond-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
     .cond-chip { background: var(--well-2); border: 1px solid var(--border); border-radius: 999px; color: var(--text-dim); font: inherit; font-size: 11px; padding: 2px 8px; cursor: pointer; }
@@ -5611,6 +5636,7 @@
             <button type="button" role="menuitem" onclick="closeUserMenu(); window.Campaigns && window.Campaigns.openCharacters()">🎭 My characters</button>
             <button type="button" role="menuitem" onclick="closeUserMenu(); openSettings()" title="Coins, carry capacity, theme and font of the open sheet">⚙ Settings</button>
             <button type="button" role="menuitem" class="bg-trigger" onclick="closeUserMenu(); toggleBgPanel()" title="Wallpaper for this character">🎨 Wallpaper</button>
+            <button type="button" role="menuitem" onclick="closeUserMenu(); printSheet()" title="The open character on paper: Overview, Inventory, Spells and Features. Choose Save as PDF in the print window for a file.">🖨 Print / Save as PDF</button>
             <button type="button" role="menuitem" onclick="closeUserMenu(); logoutCurrentUser()" title="Log out / Switch User">🚪 Exit</button>
           </div>
         </div>
@@ -5711,6 +5737,7 @@
         <button type="button" class="btn ghost" onclick="window.Campaigns && window.Campaigns.openCharacters()">🎭 Make my own character</button>
       </div>
     </div>
+    <div class="print-only" id="print-footer" style="font-size:10px; margin:6px 0;"></div>
     <div class="layout" id="inventory-view-container">
       <!-- COL 1 (FAR LEFT): Character Stats & Bonuses Panel -->
       <div class="panel dnd-stats-column sheet-overview-part">
@@ -9675,6 +9702,30 @@
     // ⚔ Forge on a builder-made sheet: apply the changed choices, keeping gear, spells,
     // notes, current HP (moved by the change in max), spent slots and features the player added.
     // ⬆ Level up on a builder-made sheet: one more level, saved like an edit (current HP rises by the gain).
+    /* ---------- Print / Save as PDF (feature plan 7.1) ----------
+       Shows the Character section with every tab drawn, prints, then puts the view back.
+       The browser's print window offers "Save as PDF". */
+    function printSheet() {
+      const tab = document.body.dataset.sheetTab || 'overview';
+      const section = currentSection;
+      showSection('character');
+      renderAll();
+      if (typeof renderSpellbookMenu === 'function') renderSpellbookMenu();
+      if (typeof renderFeaturesView === 'function') renderFeaturesView();
+      const foot = document.getElementById('print-footer');
+      if (foot) foot.textContent = ((document.getElementById('strip-name') || {}).textContent || 'Character') + ' · printed ' + new Date().toLocaleDateString() + ' · MamiRock';
+      document.body.classList.add('print-sheet');
+      const done = function () {
+        document.body.classList.remove('print-sheet');
+        window.removeEventListener('afterprint', done);
+        if (typeof switchMainTab === 'function') switchMainTab(tab);
+        if (section && section !== 'character') showSection(section);
+      };
+      window.addEventListener('afterprint', done);
+      setTimeout(function () { window.print(); }, 50);
+    }
+    window.printSheet = printSheet;
+
     /* ---------- Conditions on the sheet (feature plan 4.1, combat.js) ----------
        state.conditions = { poisoned: true, ..., exhaustion: 2 }. The table reads it for the
        character's token; the DM can also change it from the token menu (one field write). */
