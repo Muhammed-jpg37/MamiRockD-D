@@ -112,9 +112,56 @@
     return out;
   }
 
+  /* ---------- 4.3 Monsters on the table ---------- */
+
+  const mod = (score) => Math.floor(((Number(score) || 10) - 10) / 2);
+  const signed = (n) => (n >= 0 ? '+' : '') + n;
+  const SIZE_CELLS = { tiny: 1, small: 1, medium: 1, large: 2, huge: 3, gargantuan: 4 };
+
+  // "Goblin" with "Goblin 1", "Goblin 2" on the map -> "Goblin 3".
+  function nextName(base, existing) {
+    const used = new Set((existing || []).map((n) => String(n)));
+    for (let i = 1; i < 1000; i++) if (!used.has(base + ' ' + i)) return base + ' ' + i;
+    return base;
+  }
+
+  // What a monster token carries, from a catalog entry (rules/catalog/srd5*-monsters.json).
+  // -> { name, size, hp: { current, max }, ac, monsterId: 'srd51:goblin', initBonus }
+  function monsterToken(entry, existingNames) {
+    const prefix = entry.ruleset === '2024' ? 'srd52' : 'srd51';
+    const hp = Math.max(1, Number(entry.hp) || 1);
+    return {
+      name: nextName(entry.name, existingNames),
+      size: SIZE_CELLS[String(entry.size || '').toLowerCase()] || 1,
+      hp: { current: hp, max: hp },
+      ac: Number(entry.ac) || 10,
+      monsterId: prefix + ':' + entry.id,
+      initBonus: mod(entry.abilities && entry.abilities.dex),
+    };
+  }
+
+  // The rolls of one stat block action: { attack: '1d20+4' | null, damage: [{ expr, type }], dc: 'DC 13 Dexterity' | null }.
+  function actionRolls(action) {
+    const a = action || {};
+    const n = Number(a.attack);
+    const attack = a.attack !== undefined && a.attack !== null && isFinite(n) ? '1d20' + (n ? signed(n) : '') : null;
+    const damage = (a.damage || []).filter((d) => d && d.dice).map((d) => ({ expr: String(d.dice).replace(/\s+/g, ''), type: String(d.type || '').toLowerCase() }));
+    let dc = null;
+    if (a.dc && (a.dc.value || a.dc.dc)) dc = 'DC ' + (a.dc.value || a.dc.dc) + (a.dc.ability || a.dc.type ? ' ' + (a.dc.ability || a.dc.type) : '');
+    else { const m = String(a.desc || '').match(/DC (\d+) (\w+)/); if (m) dc = 'DC ' + m[1] + ' ' + m[2]; }
+    return { attack: attack, damage: damage, dc: dc };
+  }
+
+  // Ability line of a stat block: [{ key: 'str', score: 8, mod: '-1' }, ...].
+  function abilityLine(entry) {
+    const ab = (entry && entry.abilities) || {};
+    return ['str', 'dex', 'con', 'int', 'wis', 'cha'].map((k) => ({ key: k, score: Number(ab[k]) || 10, mod: signed(mod(ab[k])) }));
+  }
+
   root.Combat = {
     CONDITIONS: CONDITIONS, EXHAUSTION: EXHAUSTION, byId: (id) => BY_ID[id] || null,
     normalize: normalize, toggle: toggle, setExhaustion: setExhaustion, active: active, summary: summary,
     applyHp: applyHp,
+    nextName: nextName, monsterToken: monsterToken, actionRolls: actionRolls, abilityLine: abilityLine, SIZE_CELLS: SIZE_CELLS,
   };
 })(typeof window !== 'undefined' ? window : this);

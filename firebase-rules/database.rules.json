@@ -151,6 +151,8 @@
               "max": { ".validate": "newData.isNumber() && newData.val() > 0" },
               "$other": { ".validate": false }
             },
+            "ac": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 40" },
+            "monsterId": { ".validate": "newData.isString() && newData.val().length <= 80" },
             "conditions": {
               "$condition": { ".validate": "($condition !== 'exhaustion' && newData.isBoolean()) || ($condition === 'exhaustion' && newData.isNumber() && newData.val() >= 1 && newData.val() <= 6)" }
             },

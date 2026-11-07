@@ -4,9 +4,9 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ## Resume here
 
-**Where work stopped:** feature plan section **4 (combat)**, on branch `savas` (cut from `sayfa-hesaplari`; `zar` and `sayfa-hesaplari` are done and pushed). Steps 4.1 (conditions) and 4.2 (damage and healing) are done. `savas` is **not pushed** (the user pushes it themselves).
+**Where work stopped:** feature plan section **4 (combat)**, on branch `savas` (cut from `sayfa-hesaplari`; `zar` and `sayfa-hesaplari` are done and pushed). Steps 4.1 (conditions), 4.2 (damage and healing) and 4.3 (monsters) are done. `savas` is **not pushed** (the user pushes it themselves).
 
-**Do next: step 4.3.** On 2026-11-07 the user said to do all of section 4 (4.1–4.4) without asking, one commit per step, and that they push themselves; after 4.4, stop and report (sections 5, 7, 8 and Help wait for their word).
+**Do next: step 4.4.** On 2026-11-07 the user said to do all of section 4 (4.1–4.4) without asking, one commit per step, and that they push themselves; after 4.4, stop and report (sections 5, 7, 8 and Help wait for their word).
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
 1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
@@ -32,7 +32,7 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 **4. Combat** (new branch, e.g. `savas`)
 - 4.1 Done (see "Step 4, combat" below).
 - 4.2 Done (see "Step 4, combat" below).
-- 4.3 Monsters on the map: "Add monster" in the VTT opens the Monsters catalog; the token gets HP, AC and an initiative roll from the stat block; the stat block opens from the token and its attacks click-to-roll (`attack`, `damage` fields are already in the catalog).
+- 4.3 Done (see "Step 4, combat" below).
 - 4.4 Encounter builder: pick monsters, see the 2014 XP-budget difficulty (Easy…Deadly) for the party's levels; "Place on map" drops them as tokens.
 
 **5. Map** (new branch, e.g. `harita`)
@@ -85,7 +85,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 156 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 158 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 Node v24 and git are installed on the 2026-11-07 machine (`/c/Program Files/nodejs/node`). In the Claude desktop app the site runs through `.claude/launch.json` ("start" = `npm run start`, port 3000) in the browser pane. Python is not installed; use Node for scripts. In bash, avoid `node -e` with text containing a single quote (write a script file instead).
 
@@ -202,6 +202,7 @@ Section 3 is done (branch `sayfa-hesaplari`, pushed 2026-11-07).
 Step 4, combat (branch `savas`, cut from `sayfa-hesaplari`):
 1. Conditions: done. New `combat.js` (`window.Combat`, no DOM; loaded after `sheet-maths.js`): the 15 SRD conditions with icons (`CONDITIONS`), exhaustion levels 1–6 (`EXHAUSTION`), `normalize` / `toggle` / `setExhaustion` / `active` / `summary` on a `{ poisoned: true, …, exhaustion: 2 }` object. On the sheet, Overview has a **🩹 Conditions** panel above the death saves (`renderConditionsPanel`, `toggleSheetCondition`, `setSheetExhaustion`; `state.conditions`): chips with the SRD text as tooltip (`rules/catalog/srd51-conditions.json` via `RulesCatalog.load('conditions', '2014')`), an exhaustion select, and the active conditions with their text. On the table, a token shows up to 4 condition icons along its top (+n): a player token's come from its character sheet (`inventories/<sheet>/conditions`, read with the new `fbListenToSheetField` next to the HP listener), a monster token's from the token (`tokens/<id>/conditions`). DMs get condition buttons and an exhaustion select in the token menu (`conditionsSection`, `setTokenConditions`); for a player token that writes only the sheet's `conditions` field (new `fbSaveSheetField`, allowed fields `conditions` and `hp`), never the whole sheet. `firebase-rules/database.rules.json` (proposal) accepts `conditions` on tokens. `window.vttApi` also has `openTokenMenu` and `tokenConditions` for testing. Tests: `tests/combat.test.js` (3; in the browser runner). 156 tests pass. Checked in the browser with writes stubbed (sheet panel; a monster token's conditions saved on the token; a player token's sent as one sheet field). The canvas did not redraw at higher zoom in the hidden pane, so the icons were only seen small.
 2. Damage and healing: done. The token menu has a "**− HP** [X] **+ HP**" row (`hpChangeRow`, Enter = damage) for the DM and for the token's owner. `changeTokenHp(t, delta)` uses `Combat.applyHp` (damage takes temporary HP first, healing stops at max and leaves temp HP alone): a player token writes only its sheet's `hp` field (`fbSaveSheetField`), a monster token its own `hp`; the table's status line says "Ogre: 12 damage → 47 / 59 HP" ("down!" at 0). The monster's old −5 / −1 / +1 buttons stay. `vttApi.changeTokenHp` for testing. Checked in the browser with writes and sheet listeners stubbed (monster 59 → 47 → 59; player 20 + 5 temp, 8 damage → 17, +3 → 20, 4 from the menu → 16).
+3. Monsters: done. `combat.js`: `monsterToken(entry, names)` (name numbered "Goblin 2", size in cells from Small…Gargantuan, `hp`, `ac`, `monsterId` like `srd51:goblin`, DEX initiative bonus), `actionRolls(action)` (attack `1d20+N`, damage expressions with type, a DC line), `abilityLine`. On the table (DMs): **🐉 Add Monster** in the toolbar opens a picker (`openMonsterPicker`: search by name or type, "cr 5", 2014 / 2024 monsters from `rules/catalog/srd5*-monsters.json`, how many, hidden); `addMonsters` places the tokens (dark red, `hp`, `ac`, `monsterId`) and adds each to initiative with a rolled d20 + DEX. A monster token's menu shows its AC and **📜 Stat block** (`openStatBlock`): type, AC, HP (the token's current), speed, the six abilities as check buttons, saves, skills, senses, languages, CR / XP, traits, actions and legendary actions with **🎲 +to-hit**, damage buttons and the DC; rolls go to the log with the token's name (the DM's 🙈 switch applies), and after a natural 20 that action's next damage roll doubles its dice. `addToken` takes `hp`, `ac`, `monsterId`; the proposed rules accept `ac` and `monsterId` on tokens. `vttApi` has `addMonsters`, `openStatBlock`, `loadMonsters`. Tests: 2 more in `tests/combat.test.js` (every catalog action's damage is a valid dice expression). 158 tests pass. Checked in the browser with writes stubbed (search, "cr 5", two goblins with initiative 19 and 16, stat block rolls, at ~340 px).
 
 ## Next plan: closing the gaps with other character builders
 

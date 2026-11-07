@@ -37,3 +37,28 @@ test('combat: damage takes temporary HP first; healing stops at max', () => {
   assert.deepEqual(C.applyHp({ current: 25, max: 30, temp: 2 }, 10), { current: 30, max: 30, temp: 2 }, 'healing leaves temp HP alone');
   assert.deepEqual(C.applyHp({ max: 12 }, -5), { current: 7, max: 12 }, 'missing current means full');
 });
+
+/* ---------- 4.3 Monsters ---------- */
+
+const MONSTERS = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'rules', 'catalog', 'srd51-monsters.json'), 'utf8')).entries;
+const monster = (id) => MONSTERS.find((m) => m.id === id);
+
+test('combat: a monster from the catalog becomes a token', () => {
+  const t = C.monsterToken(monster('goblin'), ['Goblin 1', 'Orc 1']);
+  assert.deepEqual(t, { name: 'Goblin 2', size: 1, hp: { current: 7, max: 7 }, ac: 15, monsterId: 'srd51:goblin', initBonus: 2 });
+  const dragon = MONSTERS.find((m) => m.size === 'Huge');
+  assert.equal(C.monsterToken(dragon, []).size, 3);
+  assert.equal(C.nextName('Ogre', []), 'Ogre 1');
+  assert.deepEqual(C.abilityLine(monster('goblin')).map((a) => a.key + a.mod), ['str-1', 'dex+2', 'con+0', 'int+0', 'wis-1', 'cha-1']);
+});
+
+test('combat: stat block actions give attack, damage and DC rolls', () => {
+  const [scimitar] = monster('goblin').actions;
+  assert.deepEqual(C.actionRolls(scimitar), { attack: '1d20+4', damage: [{ expr: '1d6+2', type: 'slashing' }], dc: null });
+  const withDc = MONSTERS.flatMap((m) => m.actions || []).find((a) => a.dc);
+  assert.match(C.actionRolls(withDc).dc, /^DC \d+ [A-Z]{3}$/);
+  assert.equal(C.actionRolls({ name: 'Multiattack', desc: 'Two attacks.' }).attack, null);
+  // Every catalog action's damage reads as a dice expression.
+  const Dice = require('../dice.js').Dice || globalThis.Dice;
+  MONSTERS.forEach((m) => (m.actions || []).forEach((a) => C.actionRolls(a).damage.forEach((d) => assert.ok(Dice.isValid(d.expr), m.id + ' ' + a.name + ' ' + d.expr))));
+});

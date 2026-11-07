@@ -193,6 +193,27 @@
       .vtt-log-row b.vtt-fumble { color: var(--danger-strong); }
       .vtt-hp { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
       .vtt-hp-change input { width: 56px; }
+      .vtt-monster-pick { left: 12px; top: 12px; width: min(360px, calc(100% - 24px)); max-height: calc(100% - 24px); display: flex; flex-direction: column; }
+      .vtt-monster-pick input[type=search] { flex: 1; min-width: 0; }
+      .vtt-monster-pick input[type=number] { width: 52px; }
+      .vtt-monster-list { overflow-y: auto; display: flex; flex-direction: column; gap: 2px; min-height: 80px; }
+      .vtt-monster-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; text-align: left; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 8px; font: inherit; font-size: 13px; cursor: pointer; }
+      .vtt-monster-row:hover { border-color: var(--line-strong); }
+      .vtt-monster-row small, .vtt-monster-empty { color: var(--text-muted); font-size: 11px; }
+      .vtt-statblock { left: 12px; top: 12px; width: min(420px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow-y: auto; font-size: 12px; }
+      .vtt-sb-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+      .vtt-sb-sub { font-style: italic; color: var(--text-muted); }
+      .vtt-sb-line { color: var(--text-dim); }
+      .vtt-sb-abil { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin: 4px 0; }
+      .vtt-sb-abil .btn { min-width: 0; padding: 2px 4px; font-size: 11px; }
+      .vtt-sb-title { margin-top: 6px; font-family: var(--font-display); color: var(--accent); border-bottom: 1px solid var(--border); }
+      .vtt-sb-action { display: flex; flex-direction: column; gap: 3px; padding: 3px 0; }
+      .vtt-sb-text { color: var(--text-dim); line-height: 1.4; }
+      .vtt-sb-text b { color: var(--text); }
+      .vtt-sb-action .vtt-row { flex-wrap: wrap; gap: 3px; }
+      .vtt-sb-action .btn { min-width: 0; padding: 2px 6px; font-size: 11px; font-family: var(--font-mono); }
+      .vtt-sb-dc { font-family: var(--font-mono); font-size: 11px; color: var(--gold-bright, var(--accent)); align-self: center; }
+      .vtt-sb-credit { margin-top: 6px; font-size: 10px; color: var(--text-muted); }
       .vtt-conds { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
       .vtt-cond-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
       .vtt-cond-grid .btn { min-width: 0; padding: 2px 0; font-size: 14px; }
@@ -262,6 +283,7 @@
         </div>
         <div class="vtt-group vtt-dm-only">
           <button class="btn small ghost" data-act="add-token">➕ Add Token</button>
+          <button class="btn small ghost" data-act="add-monster" title="SRD monsters with HP, AC, initiative and their stat block">🐉 Add Monster</button>
           <button class="btn small ghost" data-act="add-party" title="A token for each player in this campaign who is not on the map yet">👥 Party</button>
           <button class="btn small ghost" data-act="catalog" title="Ready-made maps and tokens">📚 Catalog</button>
           <input type="file" accept="image/*" data-el="token-file" hidden>
@@ -371,6 +393,7 @@
       if (act === 'load-map') el('map-file').click();
       else if (act === 'map-url') promptMapUrl();
       else if (act === 'add-token') openAddTokenForm(btn);
+      else if (act === 'add-monster') openMonsterPicker(btn);
       else if (act === 'add-party') addPartyTokens();
       else if (act === 'zoom-in') zoomAt(canvasCenter(), 1.25);
       else if (act === 'zoom-out') zoomAt(canvasCenter(), 0.8);
@@ -1087,9 +1110,12 @@
       catalogId: source.catalogId || null,
       color: source.color || TOKEN_COLORS[0],
       owner: source.owner ? String(source.owner).toLowerCase() : null,
-      hp: null,
+      hp: source.hp && Number(source.hp.max) > 0 ? { current: Number(source.hp.current), max: Number(source.hp.max) } : null,
       hidden: !!source.hidden
     };
+    // Monsters from the catalog (feature plan 4.3).
+    if (Number(source.ac) > 0) token.ac = Number(source.ac);
+    if (source.monsterId) token.monsterId = String(source.monsterId).slice(0, 80);
     vtt.tokens[id] = token;
     selectedId = id;
     onVttChange({ token: id });
@@ -1333,6 +1359,8 @@
         owner: t.owner || null,
         hp: (t.hp === undefined) ? null : t.hp,
         conditions: t.conditions || null,
+        ac: Number(t.ac) > 0 ? Number(t.ac) : null,
+        monsterId: t.monsterId || null,
         hidden: !!t.hidden
       };
     });
@@ -2219,7 +2247,7 @@
     });
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t), changeTokenHp: (t, d) => changeTokenHp(t, d) };
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t), changeTokenHp: (t, d) => changeTokenHp(t, d), addMonsters: (e, n, h) => addMonsters(e, n, h), openStatBlock: (t) => openStatBlock(t), loadMonsters: (rs) => loadMonsters(rs) };
 
   // For the rest of the site (the sheet's click-to-roll). Works before the Table section was ever
   // opened: rolls post to the active campaign's log (vtt/<campaign>/log) as soon as there is one.
@@ -2692,6 +2720,149 @@
     pop.style.top = Math.max(4, Math.min(p.y, sh - pop.offsetHeight - 4)) + 'px';
   }
 
+  /* ---------- Monsters (feature plan 4.3; catalog: rules/catalog/srd5*-monsters.json, combat.js) ---------- */
+
+  const monsterCache = {};   // '2014' | '2024' -> entries
+
+  function loadMonsters(ruleset) {
+    if (monsterCache[ruleset]) return Promise.resolve(monsterCache[ruleset]);
+    if (!window.RulesCatalog) return Promise.reject(new Error('The rules catalog is not loaded.'));
+    return window.RulesCatalog.load('monsters', ruleset).then((d) => { monsterCache[ruleset] = d.entries || []; return monsterCache[ruleset]; });
+  }
+
+  function findMonster(monsterId) {
+    const m = /^(srd51|srd52):(.+)$/.exec(monsterId || '');
+    if (!m) return Promise.resolve(null);
+    return loadMonsters(m[1] === 'srd52' ? '2024' : '2014').then((list) => list.find((e) => e.id === m[2]) || null);
+  }
+
+  // Adds count tokens of a monster near the middle of the view and rolls their initiative.
+  function addMonsters(entry, count, hidden) {
+    const C = window.Combat;
+    if (!C || !isDm()) return [];
+    const added = [];
+    for (let i = 0; i < count; i++) {
+      const spec = C.monsterToken(entry, Object.values(vtt.tokens).map((t) => t.name));
+      const tok = addToken({ name: spec.name, size: spec.size, hp: spec.hp, ac: spec.ac, monsterId: spec.monsterId, color: '#7a2b2b', hidden: hidden });
+      if (!tok) continue;
+      const r = window.Dice ? window.Dice.roll(window.Dice.d20(spec.initBonus)) : null;
+      addInitEntry({ name: tok.name, tokenId: tok.id, hidden: hidden, init: r ? r.total : null });
+      added.push(tok);
+    }
+    renderInitiative();
+    flashStatus('Added ' + added.length + ' × ' + entry.name + ' (initiative rolled)');
+    return added;
+  }
+
+  function openMonsterPicker() {
+    if (!isDm()) return;
+    closePopups();
+    const pop = document.createElement('div');
+    pop.className = 'vtt-pop vtt-form vtt-monster-pick';
+    pop.innerHTML = '<div class="vtt-pop-title">Add Monster</div>' +
+      '<div class="vtt-row"><input type="search" data-f="q" placeholder="Search: goblin, dragon, CR 1…" aria-label="Search monsters">' +
+      '<select data-f="rs" aria-label="Rules"><option value="2014">2014</option><option value="2024">2024</option></select></div>' +
+      '<div class="vtt-row"><label>How many <input type="number" data-f="n" min="1" max="12" value="1"></label>' +
+      '<label><input type="checkbox" data-f="hidden"> Hidden</label></div>' +
+      '<div class="vtt-monster-list" data-f="list"><div class="vtt-monster-empty">Loading…</div></div>';
+    const q = pop.querySelector('[data-f="q"]');
+    const rs = pop.querySelector('[data-f="rs"]');
+    const list = pop.querySelector('[data-f="list"]');
+    const draw = () => {
+      loadMonsters(rs.value).then((all) => {
+        const term = q.value.trim().toLowerCase();
+        const crTerm = /^cr\s*(\S+)$/.exec(term);
+        const hits = all.filter((m) => crTerm ? String(m.cr) === crTerm[1] : (!term || m.name.toLowerCase().includes(term) || String(m.type || '').toLowerCase().includes(term)))
+          .sort((a, b) => a.name.localeCompare(b.name)).slice(0, 40);
+        list.innerHTML = '';
+        if (!hits.length) { const e = document.createElement('div'); e.className = 'vtt-monster-empty'; e.textContent = 'Nothing matches.'; list.appendChild(e); return; }
+        hits.forEach((m) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'vtt-monster-row';
+          const name = document.createElement('span');
+          name.textContent = m.name;
+          const meta = document.createElement('small');
+          meta.textContent = 'CR ' + m.cr + ' · AC ' + m.ac + ' · HP ' + m.hp;
+          b.append(name, meta);
+          b.onclick = () => {
+            const n = Math.max(1, Math.min(12, parseInt(pop.querySelector('[data-f="n"]').value, 10) || 1));
+            addMonsters(m, n, pop.querySelector('[data-f="hidden"]').checked);
+            closePopups();
+          };
+          list.appendChild(b);
+        });
+      }).catch((err) => { list.textContent = err.message; });
+    };
+    q.addEventListener('input', draw);
+    rs.addEventListener('change', draw);
+    root.querySelector('.vtt-stage').appendChild(pop);
+    pop.style.left = '12px';
+    pop.style.top = '12px';
+    draw();
+    q.focus();
+  }
+
+  // The monster's stat block over the map; its actions roll into the log (the DM's 🙈 switch applies).
+  let statCrit = null;   // 'tokenId:action' after a natural 20 on that attack: the next damage roll doubles its dice
+  function openStatBlock(t) {
+    findMonster(t.monsterId).then((m) => {
+      if (!m) { flashStatus('This monster is not in the catalog any more.'); return; }
+      closePopups();
+      const C = window.Combat;
+      const box = document.createElement('div');
+      box.className = 'vtt-pop vtt-statblock';
+      const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+      const head = el('div', 'vtt-sb-head');
+      head.append(el('div', 'vtt-pop-title', t.name + (t.name !== m.name ? ' (' + m.name + ')' : '')), button('✕', closePopups));
+      box.appendChild(head);
+      box.appendChild(el('div', 'vtt-sb-sub', [m.size, m.type, m.alignment].filter(Boolean).join(' · ')));
+      const hp = t.hp || {};
+      box.appendChild(el('div', 'vtt-sb-line', 'AC ' + m.ac + (m.acNote ? ' (' + m.acNote + ')' : '') + ' · HP ' + (hp.current !== undefined ? hp.current + ' / ' + hp.max : m.hp) + ' (' + (m.hitDice || '') + ') · Speed ' + (m.speed || '')));
+      const abil = el('div', 'vtt-sb-abil');
+      C.abilityLine(m).forEach((a) => {
+        const b = button(a.key.toUpperCase() + ' ' + a.score + ' (' + a.mod + ')', () => roll('1d20' + (a.mod === '+0' ? '' : a.mod), { label: t.name + ': ' + a.key.toUpperCase() + ' check' }));
+        b.title = 'Roll a ' + a.key.toUpperCase() + ' check';
+        abil.appendChild(b);
+      });
+      box.appendChild(abil);
+      [['Saves', m.saves], ['Skills', m.skills], ['Senses', m.senses], ['Languages', m.languages], ['Challenge', m.cr !== undefined ? m.cr + ' (' + m.xp + ' XP)' : '']]
+        .forEach(([k, v]) => { if (v) box.appendChild(el('div', 'vtt-sb-line', k + ': ' + v)); });
+      const section = (title, list, withRolls) => {
+        if (!list || !list.length) return;
+        box.appendChild(el('div', 'vtt-sb-title', title));
+        list.forEach((a) => {
+          const row = el('div', 'vtt-sb-action');
+          const text = el('div', 'vtt-sb-text');
+          text.append(el('b', '', a.name + '. '), document.createTextNode(a.desc || ''));
+          row.appendChild(text);
+          if (withRolls) {
+            const r = C.actionRolls(a);
+            const rolls = el('div', 'vtt-row');
+            const key = t.id + ':' + a.name;
+            if (r.attack) rolls.appendChild(button('🎲 ' + r.attack.replace('1d20', ''), () => {
+              const e = roll(r.attack, { label: t.name + ': ' + a.name });
+              statCrit = e && e.crit ? key : null;
+            }));
+            r.damage.forEach((d) => rolls.appendChild(button(d.expr + (d.type ? ' ' + d.type : ''), () => {
+              const crit = statCrit === key && window.SheetMaths;
+              statCrit = null;
+              roll(crit ? window.SheetMaths.critDamage(d.expr) : d.expr, { label: t.name + ': ' + a.name + (crit ? ' critical' : '') + ' damage' });
+            })));
+            if (r.dc) rolls.appendChild(el('span', 'vtt-sb-dc', r.dc));
+            if (rolls.childNodes.length) row.appendChild(rolls);
+          }
+          box.appendChild(row);
+        });
+      };
+      section('Traits', m.traits, false);
+      section('Actions', m.actions, true);
+      section('Legendary actions', m.legendary, true);
+      box.appendChild(el('div', 'vtt-sb-credit', m.ruleset === '2024' ? 'SRD 5.2, CC-BY-4.0' : 'SRD 5.1, CC-BY-4.0'));
+      root.querySelector('.vtt-stage').appendChild(box);
+    }).catch((err) => flashStatus(err.message));
+  }
+
   function openTokenMenu(t, p) {
     closePopups();
     selectedId = t.id;
@@ -2726,6 +2897,13 @@
     });
     pop.appendChild(sizeRow);
 
+    if (t.ac && isDm()) {
+      const acLine = document.createElement('div');
+      acLine.className = 'vtt-hp';
+      acLine.textContent = '🛡 AC ' + t.ac;
+      pop.appendChild(acLine);
+    }
+    if (t.monsterId && isDm()) pop.appendChild(button('📜 Stat block', () => { closePopups(); openStatBlock(t); }));
     pop.appendChild(hpSection(t));
     if (isDm()) pop.appendChild(conditionsSection(t));
 
