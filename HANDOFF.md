@@ -1,6 +1,63 @@
 # Handoff: MamiRock D&D site
 
-State on 2026-11-06 (evening), for the next working session. Start with "Where things stand", then "Next plan" at the end of the Next steps section.
+State on 2026-11-07 (afternoon), for the next working session. **Start with "Resume here"** just below; the rest of this file is reference.
+
+## Resume here
+
+**Where work stopped:** feature plan step **2 (dice)**, on branch `zar` (cut from `karakter-aktarma`), last commit `fd8e92c` "Dice step 1". Step 2.1 (the engine, `dice.js`) is done and tested; nothing is wired into the page yet. `zar` is **not pushed**.
+
+**Do next: step 2.2**, then wait for the user's "go" before 2.3.
+
+**How every step is executed** (agreed with the user; also in their Claude memory):
+1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
+2. Inside a section, do **one numbered step**, then: run `npm test` (Node) **and** `tests/browser-runner.html` (add new test files to its `FILES` list), check the page in the browser (desktop and 375 px phone width, no horizontal scroll), update this file's step list, and **commit** (message ends with the Co-Authored-By line). Then report in Turkish and **wait for the user's go** before the next step, unless they say "sormadan … bitir".
+3. Testing on the live database: stub every write first (`window.save`, `fbSaveInventory`, `fbSaveInventoryInstant`, `fbSaveVtt`, `fbCampaignUpdate`, `fbWriteCharacterSheet`), reload the page afterwards. Never create real accounts.
+4. **Push** a section's branch only when the user asks (they usually ask at the end of a section). **Do not merge into `main`** until the whole plan is done: then one merge of everything (the chain is linear, so `main` fast-forwards), on the user's word.
+5. Downloads (e.g. sample files) only with the user's permission. Put them in the scratchpad, never in the repo.
+6. Write commit messages and this file in English; talk to the user in Turkish.
+
+### Remaining plan, one line per step
+
+**2. Dice** (branch `zar`)
+- 2.2 In `vtt.js`, replace the d4–d100 buttons' single-die `rollDie(sides)` with `Dice.roll(expr, { mode })`: keep the quick buttons (they roll `1dX`), add a text box for an expression (Enter rolls, the last 10 kept in localStorage) and an Advantage / Normal / Disadvantage switch; write the log entry as `{ by, expr, total, text, crit, fumble, label?, at }` (old entries `{ die, result }` must still show) and show the per-die text in the log; load `dice.js` in `index.html` before `vtt.js`.
+- 2.3 Hidden DM rolls: a "🙈 Hidden" toggle for DMs; hidden entries go to `vtt/<room>/logHidden` (only DMs render it) and the shared log gets `{ by, hidden: true, at }` so players see "DM rolled in secret"; note in the UI that without Firebase Auth this is hidden in the app only.
+- 2.4 Click-to-roll on the sheet: ability checks, saves, skills, initiative, death saves (and later attacks) become buttons that roll `Dice.d20(bonus)` with the label ("Perception"), honour the Adv/Normal/Dis switch (a small switch in the character strip), post to the active campaign's table log (export a `window.VTT.postRoll(entry)` from `vtt.js` that works even when the Table section was never opened) and show a toast; a death save result updates the death-save boxes.
+- 2.5 Tests (`tests/dice.test.js` grows; log entry shape), docs, push when asked.
+
+**3. Sheet maths** (new branch, e.g. `sayfa-hesaplari`)
+- 3.1 Weapons: for each equipped weapon, attack bonus (PB if proficient + STR, or DEX for finesse/ranged, the higher for finesse) and damage (die + mod, versatile), using `rules/catalog/srd5*-items.json` when `fromCatalog` or the name matches; an "Actions" block on Overview; each line click-to-rolls (step 2.4's roller).
+- 3.2 Spell attack and save DC per spellcasting class, and cantrip damage scaling by level, on Overview and in the Spells tab.
+- 3.3 AC from armour: already computed from equipped items (`calculateCharacterAC`); add Unarmored Defense (barbarian CON, monk WIS), Draconic Resilience and the Defense fighting style from the build, and test it.
+- 3.4 Feature text and limited uses: SRD 5.1 feature descriptions and `uses` (count by level or ability mod, reset short/long) in a new `rules/srd5-features.js`; `featuresFromDerived` fills the sheet's feature cards (`maxUses`, reset), which the rest buttons already reset. Source: 5e-bits `5e-SRD-Features.json` / `5e-SRD-Traits.json` (same pipeline as `tools/build-srd-catalogs.js`).
+- 3.5 Prepared spells: a "prepared today" mark in the Spells tab, the engine's `prepared` count as the limit, always-prepared spells locked, wizards prepare from their spellbook.
+- 3.6 DM "grant a level": a DM button on a player's sheet sets `pendingLevelUp`; the player sees a banner and makes the level-up choices themselves.
+- 3.7 Also fix the D&D Beyond import flaw: drop heading "features" (Hit Points, Proficiencies, Equipment, Age, Size, Speed, Languages, Ability Score Increase) in `fromDdbJson`, with a test.
+
+**4. Combat** (new branch, e.g. `savas`)
+- 4.1 Conditions: the 15 SRD conditions (+ exhaustion levels) on tokens (small icons) and as a list on the sheet; DM sets them from the token menu, the player from the sheet; text from `rules/catalog/srd5*-conditions.json`.
+- 4.2 Damage and healing from the token menu ("− X HP / + X HP"); on a player token it writes the character sheet's HP (`inventories/<id>/hp`), on an NPC the token's own HP.
+- 4.3 Monsters on the map: "Add monster" in the VTT opens the Monsters catalog; the token gets HP, AC and an initiative roll from the stat block; the stat block opens from the token and its attacks click-to-roll (`attack`, `damage` fields are already in the catalog).
+- 4.4 Encounter builder: pick monsters, see the 2014 XP-budget difficulty (Easy…Deadly) for the party's levels; "Place on map" drops them as tokens.
+
+**5. Map** (new branch, e.g. `harita`)
+- 5.1 Several scenes per campaign: `vtt/<campaign>/scenes/<id>` with a DM scene list; "Show to players" switches everyone; migrate the existing single map into the first scene.
+- 5.2 Freehand drawing on the map (pen, line, rectangle, circle, erase) and a DM-only layer (drawings and tokens hidden from players).
+- 5.3 Automatic fog: when a player token moves, fog opens around it within its vision radius; radius per token (token menu, default set by the DM, darkvision from the sheet), brush shape round with an adjustable size; manual reveal/cover stays.
+- 5.4 Walls: the DM draws wall lines; automatic fog does not open behind walls (simple line-of-sight on the grid, no lighting).
+- 5.5 Handouts: the DM shows an image or a journal note to all or some players as a pop-up.
+
+**7. PDF and printing** (new branch, e.g. `pdf-yazdirma`)
+- 7.1 Print CSS for the Character section (Overview, Inventory, Spells, Features on paper), "🖨 Print / Save as PDF" in the account menu.
+- 7.2 Fill the official 2014 fillable sheet with pdf-lib from the character (the reverse of `fromPdfFields`; field names are listed in `character-transfer.js`) and download it.
+
+**8. Sound** (new branch, e.g. `ses`)
+- 8.1 A DM ambience player on the Table: a link or an uploaded short file, play/pause/volume synced to everyone in the campaign (`vtt/<campaign>/audio`). Other sites' extensions are not worth emulating (decided 2026-11-07).
+
+**Last: Help** (new branch, e.g. `yardim`)
+- A "❓ Help" / "How to use" page reachable from the account menu: sections (Campaign, Character, Table, Rules, Notes), roles per campaign, invites, homebrew and the item store, importing characters, dice expressions, and whatever the plan added.
+
+**Then:** on the user's word, merge everything into `main` (fast-forward from the last branch), push `main`.
+
 
 **Also read `DIFFERENCES.md`** (Turkish): how the whole site, not just the character builder, compares with D&D Beyond (and its Maps VTT), Roll20, Foundry VTT and Owlbear Rodeo, including differences in how things work (accounts, permissions, data and syncing, dice). It ends with proposed work beyond the builder plan: E (table: dice expressions and hidden rolls, conditions, applying damage, SRD monsters and an encounter builder, several scenes, map drawing and a DM layer, walls and vision, handouts), F (saving sheets field by field instead of whole-object `set()`, campaign backup, undo, copying homebrew and maps between campaigns), G (a searchable SRD rules tab, SRD items), H (= phase D here). Each claim there is marked "(arandı)" (searched that day, sources listed) or "(genel bilgi)" (general knowledge, not re-checked); re-check before building on one. Ask the user which phase to start; the builder plan (A–D) was the default until they choose.
 
@@ -8,17 +65,17 @@ State on 2026-11-06 (evening), for the next working session. Start with "Where t
 
 | Branch | State |
 |---|---|
-| `main` | VTT, initiative tracker, LEGACY_BG fix and the campaign system: `main`, `origin/main` and `kampanya-sistemi` are the same commit (`20cd8a8`). |
+| `main` | `1421cb4` (pushed): everything up to the role model and the new layout. `kampanya-sistemi`, `karakter-olusturucu`, `arayuz-duzeni` and `kampanya-rolleri` are all contained in it (fast-forwarded 2026-11-07). The feature-plan branches below are **not** in `main` yet. |
 | `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
-| `kampanya-sistemi` | Campaign system. Same commit as `main`. Pushed. |
-| `arayuz-duzeni` | Cut from `karakter-olusturucu` on 2026-11-07. Holds `LAYOUT_UI.md`, the plan for per-campaign roles and the new layout. Not pushed. |
-| `zar` | Cut from `karakter-aktarma` for feature plan step 2 (dice). **Current branch.** Not pushed. |
+| `kampanya-sistemi` | Campaign system. Contained in `main`. |
+| `arayuz-duzeni` | Holds `LAYOUT_UI.md` (the role and layout plan). Contained in `main`. |
+| `zar` | Cut from `karakter-aktarma` for feature plan step 2 (dice). **Current branch**, last commit `fd8e92c` (+ this handoff). Not pushed. |
 | `karakter-aktarma` | Cut from `kataloglar` for feature plan step 1 (character import). Done and pushed. |
 | `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). Done and pushed. Not merged: everything goes into `main` in one merge when the whole plan is done. |
-| `kampanya-rolleri` | Cut from `arayuz-duzeni`. **Current branch.** Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
-| `karakter-olusturucu` | Character builder and the spell plan, cut from `kampanya-sistemi`. Pushed up to `25decde`; the spell-plan commits after it (steps 7–14 and this handoff) are **not pushed**. **Not merged** into `main`. |
+| `kampanya-rolleri` | Cut from `arayuz-duzeni`. Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
+| `karakter-olusturucu` | Character builder and the spell plan. Contained in `main`. |
 
-On `karakter-olusturucu`, after `main` (oldest first): character builder (`a55568f` … `dd0a121`, 8 commits), spell steps 1–6 (`957264d` … `40c0de2`), docs (`25decde`), then unpushed: step 7 `f61d72b`, 8 `fcf3a63`, 9 `6566754`, 10 `b720e27`, 11 `5a82711`, 12 `9cd44e5`, 14 `bbac6cb`, and the commit adding the "Next plan" below. `git log --oneline main..karakter-olusturucu` lists them.
+Branch chain of the feature plan: `main` → `kataloglar` (step 6) → `karakter-aktarma` (step 1) → `zar` (step 2). `git log --oneline main..zar` lists everything not yet in `main`.
 
 ## Run and test
 
@@ -32,7 +89,7 @@ npm test
 ```
 Runs all tests (`node --test "tests/*.test.js"`): 128 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
-On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
+Node v24 and git are installed on the 2026-11-07 machine (`/c/Program Files/nodejs/node`). In the Claude desktop app the site runs through `.claude/launch.json` ("start" = `npm run start`, port 3000) in the browser pane. Python is not installed; use Node for scripts. In bash, avoid `node -e` with text containing a single quote (write a script file instead).
 
 ## Character builder: how it fits together
 
@@ -130,6 +187,8 @@ Step 2, dice (branch `zar`, cut from `karakter-aktarma`):
 
 ## Next plan: closing the gaps with other character builders
 
+**Superseded on 2026-11-07 by the feature plan in "Resume here"**, which folds phases A and C2 into its steps 3 and 7. Kept for its details.
+
 Written 2026-11-06 after comparing this builder with D&D Beyond, Roll20's Charactermancer and Foundry VTT's dnd5e system (from what those are generally known to offer; not re-checked live). Everything here stays within SRD 5.1 / 5.2 (CC-BY-4.0) or the campaign's homebrew: no book text. Do the phases in order; inside a phase the items are independent. Same working rules as above (ask before push/merge, stub saves when testing, tests at the end of a phase, commit per item).
 
 What we already do as well or better: rules validation with DM-set strictness, multiclass prerequisites, per-campaign homebrew (species, subraces, backgrounds, feats, subclasses, spells), converting old sheets, Quick Build, the VTT link (portrait token, party button, HP bar), spells refreshed from the catalog. What the others have that we don't:
@@ -172,7 +231,9 @@ Note: on the machine used on 2026-11-06 evening, Node.js was not installed and `
 
 ## Working rules agreed with the user
 
-- Do not push or merge unless asked.
+- Do not push unless asked. Do not merge into `main` until the whole feature plan is done (then one merge, on the user's word).
+- One new branch per plan section, cut from the previous section's branch; commit after each step and wait for the user's go (see "Resume here").
+- The "How to use" / Help page is the very last task.
 - End commit messages with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 - The site uses the live shared database:
   - Test only with throwaway data, or with stubbed saves (`window.save`, `fbSaveInventory`, `fbSaveVtt`).
