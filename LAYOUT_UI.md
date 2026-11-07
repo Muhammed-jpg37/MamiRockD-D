@@ -131,6 +131,10 @@ Kaynaklar:
 **R6. Kampanyayı devretme.**
 - Owner, kampanyanın sahipliğini bir co-DM'e devreder ve kendisi co-DM olarak kalır.
 - Onay için kampanyanın adı yazılır, silmedeki gibi.
+- **Yapıldı.**
+  - ⚙ Manage ekranında, owner'a her co-DM satırında **👑 Make owner** düğmesi görünür.
+  - `Campaigns.transferOwnership(campId, nick)` önce kampanyayı yeniden okur. Çağıran kişinin owner, alıcının co-DM olduğunu kontrol eder. Sonra `owner` alanını değiştirir; eski owner co-DM olarak kalır.
+  - Sadece co-DM'e devredilebilir. Bir oyuncuya devretmek için önce onu co-DM yapmak gerekir.
 
 ---
 

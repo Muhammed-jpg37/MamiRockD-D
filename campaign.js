@@ -590,6 +590,23 @@
     return window.fbCampaignUpdate({ ['campaigns/' + campId + '/members/' + nick + '/role']: role === 'dm' ? 'dm' : 'player' });
   }
 
+  // The owner hands the campaign to one of its co-DMs and stays on as a co-DM.
+  // Only a co-DM can receive it, so the new owner already has the DM's rights and knows the table.
+  function transferOwnership(campId, toNick) {
+    const nick = myKey();
+    return window.fbCampaignGet('campaigns/' + campId).then((c) => {
+      if (!c || c.owner !== nick) throw new Error('Only the owner can hand over the campaign.');
+      const to = c.members && c.members[toNick];
+      if (!to || to.role !== 'dm') throw new Error('Make ' + toNick + ' a co-DM first; only a co-DM can become the owner.');
+      const patch = {};
+      patch['campaigns/' + campId + '/owner'] = toNick;
+      patch['campaigns/' + campId + '/members/' + nick + '/role'] = 'dm';
+      return window.fbCampaignUpdate(patch).then(() => {
+        if (active && active.id === campId) { active.owner = toNick; window.activeCampaign = Object.assign({}, active); }
+      });
+    });
+  }
+
   // Removing someone also renews the invite code, so the old link can't bring them back.
   function removeMember(campId, nick, opts) {
     const patch = {};
@@ -717,6 +734,14 @@
           if (n !== c.owner) {
             if (isOwner && m.role !== 'dm') act('⬆ Co-DM', 'Make ' + n + ' a co-DM', () => setMemberRole(campId, n, 'dm').then(() => reopen(n + ' is now a co-DM.'), fail));
             if (isOwner && m.role === 'dm') act('⬇ Player', 'Make ' + n + ' a player again', () => setMemberRole(campId, n, 'player').then(() => reopen(n + ' is a player again.'), fail));
+            if (isOwner && m.role === 'dm') act('👑 Make owner', 'Hand "' + c.name + '" over to ' + n + '; you stay on as a co-DM', () => {
+              const typed = prompt('Hand "' + c.name + '" over to ' + (names[n] || n) + ' (' + n + ')?\n' +
+                'They can then delete the campaign, change roles and remove you. You stay on as a co-DM.\n\n' +
+                'Type the campaign\'s name to confirm:');
+              if (typed === null) return;
+              if (typed.trim() !== c.name) { fail(new Error('The name did not match. Nothing changed.')); return; }
+              transferOwnership(campId, n).then(() => reopen((names[n] || n) + ' now owns "' + c.name + '". You are a co-DM.'), fail);
+            });
             if (n === nick) {
               act('Leave', 'Leave this campaign', () => {
                 if (!confirm('Leave "' + c.name + '"?')) return;
@@ -1496,6 +1521,7 @@
     renewInvite: renewInvite,
     renameCampaign: renameCampaign,
     setMemberRole: setMemberRole,
+    transferOwnership: transferOwnership,
     removeMember: removeMember,
     deleteCampaign: deleteCampaign,
     copyInvite: copyInvite,

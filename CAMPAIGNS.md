@@ -6,6 +6,8 @@ Kodun çoğu `campaign.js` içinde. `index.html` tarafında Firebase fonksiyonla
 
 ## Kullanım
 
+**Rol hesaba değil kampanyaya aittir.** Kayıtta rol seçilmez. Bir hesap bir kampanyada DM, başka birinde oyuncu olabilir. Kampanya seçili değilken rol yoktur ve üst barda "No campaign" yazar. Eski `accounts/<nick>.role` alanı sadece ilk kampanya geçişinde okunur.
+
 **Giriş sonrası:**
 - Hatırlanan kampanya (ya da tek kampanya) otomatik açılır. Yoksa kampanya ekranı gelir.
 - Kampanya ekranında üç seçenek var: listeden girmek, **yeni kampanya** açmak (açan kişi o kampanyanın DM'idir) ya da **davet koduyla katılmak**.
@@ -23,6 +25,7 @@ Kodun çoğu `campaign.js` içinde. `index.html` tarafında Firebase fonksiyonla
 - Kampanyanın adını değiştirir.
 - Davet linkini kopyalar ve **yeni kod** üretir. Yeni kod üretilince eski kod ve link çalışmaz.
 - **Sahip:** oyuncuyu co-DM yapar ya da geri alır, herkesi çıkarabilir, kampanyayı siler (adını yazarak onaylar).
+- **Sahip:** kampanyayı bir co-DM'e devreder (👑 Make owner, adını yazarak onaylar). Kendisi co-DM olarak kalır.
 - **Co-DM:** oyuncuları çıkarabilir.
 - **Herkes** (sahip hariç) kampanyadan ayrılabilir.
 - Biri çıkarılınca davet kodu otomatik yenilenir.
@@ -40,6 +43,11 @@ Kodun çoğu `campaign.js` içinde. `index.html` tarafında Firebase fonksiyonla
 - Token sahibi listesi yalnızca o kampanyanın oyuncularını gösterir.
 - HP çubuğu, oyuncunun o kampanyadaki karakterinden okunur.
 - DM'in oyuncu açılır listesi, kampanyadaki oyuncuları karakter adlarıyla gösterir.
+
+**DM barı:**
+- Oyuncu listesinde sadece kampanyanın oyuncuları var. "DM Master Vault" yok.
+- 🎁 Gift Loot, kampanyanın eşya deposundan (homebrew → Items) ya da elle yazılan bir isimle eşya verir.
+- 👁 View as player: DM, kampanyayı seçili oyuncunun gördüğü gibi, oyuncu yetkileriyle görür. Alttaki bant DM görünümüne döndürür.
 
 **Oyuncu ekleme:** DM oyuncu hesabı açmaz. Oyuncular yalnızca davet koduyla ya da davet linkiyle katılır. DM barındaki "📨 Invite players" düğmesi kampanyanın güncel davet linkini kopyalar.
 
