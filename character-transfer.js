@@ -424,9 +424,117 @@
     return 'unknown';
   }
 
+  /* ---------- A sheet into a fillable PDF (feature plan 7.2) ----------
+     The reverse of fromPdfFields. Field names follow the official 2014 fillable sheet (some with
+     their odd spellings: "SlightofHand", "CHamod", "Animal"), each with a few alternatives;
+     fillPdf (campaign.js) matches them loosely (norm), like the importer.
+     sheet: the site's sheet; extra (worked out by the page): { name, ac, attacks: [{ name, toHitText,
+     damage, damageType }], spellcasting: [{ name, ability, saveDc, attackText }], spellsByLevel: { 0: [...] } }.
+     -> [{ names: [...], value: 'text' } | { names: [...], checked: bool }] */
+  function toPdfFields(sheet, extra) {
+    const s = sheet || {};
+    const cs = s.characterStats || {};
+    const x = extra || {};
+    const out = [];
+    const text = (names, value) => { if (value !== undefined && value !== null && String(value) !== '') out.push({ names: [].concat(names), value: String(value) }); };
+    const check = (n, on) => out.push({ names: ['Check Box ' + n], checked: !!on });
+    const sign = (n) => (n >= 0 ? '+' : '') + n;
+    const score = (a) => Number(cs[a] !== undefined ? cs[a] : 10);
+    const mod = (a) => Math.floor((score(a) - 10) / 2);
+    const pb = Number(cs.profBonus) || 2;
+    const bg = (s.features && s.features.backgroundInfo) || {};
+
+    text(['CharacterName', 'Character Name', 'CharacterName 2'], x.name);
+    text(['ClassLevel', 'Class & Level', 'Class Level'], (cs.characterClass || '') + ' ' + (cs.level || 1) + (cs.subclass ? ' (' + cs.subclass + ')' : ''));
+    text(['Race', 'Race ', 'Species'], [cs.species, cs.subrace].filter(Boolean).join(' '));
+    text(['Background'], bg.name);
+    text(['Alignment'], bg.alignment);
+    text(['XP', 'Experience Points'], s.xp);
+    ABILITIES.forEach((a) => {
+      const up = a.toUpperCase();
+      text([up, ABILITY_NAMES[a]], score(a));
+      text([up + 'mod', a === 'cha' ? 'CHamod' : up + 'mod', up + ' Mod'], sign(mod(a)));
+    });
+    text(['ProfBonus', 'Proficiency Bonus'], sign(pb));
+    text(['AC', 'Armor Class'], x.ac);
+    text(['Initiative'], sign(Number(cs.initBonus) || mod('dex')));
+    text(['Speed'], cs.speed);
+    const hp = s.hp || {};
+    text(['HPMax', 'HP Max', 'Hit Point Maximum'], hp.max);
+    text(['HPCurrent', 'HP Current', 'Current Hit Points'], hp.current);
+    if (Number(hp.temp) > 0) text(['HPTemp', 'Temp HP'], hp.temp);
+
+    // Saves and skills: the written bonus and the proficiency box.
+    const level = (v) => (v === true ? 1 : Number(v) || 0);
+    ABILITIES.forEach((a) => {
+      const p = level((cs.saveProfs || {})[a]);
+      const bonus = mod(a) + Math.floor(pb * p) + (Number((cs.saveCustomBonuses || {})[a]) || 0);
+      const nm = ABILITY_NAMES[a].charAt(0).toUpperCase() + ABILITY_NAMES[a].slice(1);
+      text(['ST ' + nm, nm + ' Save'], sign(bonus));
+      check(SAVE_BOXES[a], p >= 1);
+    });
+    SKILLS.forEach(([skill, ab, names], i) => {
+      const p = level((cs.skillProfs || {})[skill]);
+      const bonus = mod(ab) + Math.floor(pb * p) + (Number((cs.skillCustomBonuses || {})[skill]) || 0);
+      const official = skill === 'Sleight of Hand' ? 'SlightofHand' : skill === 'Animal Handling' ? 'Animal' : skill;
+      text([official].concat(names, [skill]), sign(bonus));
+      check(23 + i, p >= 1);
+    });
+    const perc = mod('wis') + Math.floor(pb * level((cs.skillProfs || {}).Perception)) + (Number((cs.skillCustomBonuses || {}).Perception) || 0);
+    text(['Passive', 'Passive Perception', 'Passive Wisdom (Perception)'], 10 + perc);
+
+    const prof = [['Languages', cs.languages], ['Armor', cs.armorProf], ['Weapons', cs.weaponProf], ['Tools', cs.toolProf]]
+      .filter((p) => p[1]).map((p) => p[0] + ': ' + p[1]).join('\n');
+    text(['ProficienciesLang', 'Proficiencies & Languages', 'Other Proficiencies and Languages'], prof);
+
+    // Weapons: the sheet's first three attack rows; the rest in the attacks box.
+    const attacks = x.attacks || [];
+    const rows = [['Wpn Name', 'Wpn1 AtkBonus', 'Wpn1 Damage'], ['Wpn Name 2', 'Wpn2 AtkBonus', 'Wpn2 Damage'], ['Wpn Name 3', 'Wpn3 AtkBonus', 'Wpn3 Damage']];
+    attacks.slice(0, 3).forEach((a, i) => {
+      text([rows[i][0]], a.name);
+      text([rows[i][1]], a.toHitText);
+      text([rows[i][2]], [a.damage, a.damageType].filter(Boolean).join(' '));
+    });
+    const more = attacks.slice(3).map((a) => a.name + ' ' + a.toHitText + ', ' + [a.damage, a.damageType].filter(Boolean).join(' '));
+    const sc = (x.spellcasting || []).map((c) => c.name + ' (' + String(c.ability).toUpperCase() + '): spell save DC ' + c.saveDc + ', spell attack ' + c.attackText);
+    // The official sheet keeps spells in numbered boxes on page 3 whose order is not known here,
+    // so the spell names also go into this box.
+    const sp = x.spellsByLevel || {};
+    const spellLines = Object.keys(sp).sort((a, b) => a - b).filter((lv) => sp[lv] && sp[lv].length)
+      .map((lv) => (Number(lv) === 0 ? 'Cantrips' : 'Level ' + lv) + ': ' + sp[lv].join(', '));
+    text(['AttacksSpellcasting', 'Attacks & Spellcasting'], more.concat(sc, spellLines).join('\n'));
+    if (x.spellcasting && x.spellcasting[0]) {
+      const c = x.spellcasting[0];
+      text(['Spellcasting Class 2', 'Spellcasting Class'], c.name);
+      text(['SpellcastingAbility 2', 'Spellcasting Ability'], String(c.ability).toUpperCase());
+      text(['SpellSaveDC  2', 'SpellSaveDC 2', 'Spell Save DC'], c.saveDc);
+      text(['SpellAtkBonus 2', 'Spell Attack Bonus'], c.attackText);
+    }
+
+    const cur = s.currency || {};
+    text(['CP'], cur.copper); text(['SP'], cur.silver); text(['EP'], cur.electrum); text(['GP'], cur.gold); text(['PP'], cur.platinum);
+    const items = (s.items || []).filter((it) => it && it.name).map((it) => (Number(it.qty) > 1 ? it.qty + ' ' : '') + it.name);
+    text(['Equipment', 'Inventory'], items.join('\n'));
+    text(['PersonalityTraits', 'Personality Traits'], bg.personality);
+    text(['Ideals'], bg.ideals);
+    text(['Bonds'], bg.bonds);
+    text(['Flaws'], bg.flaws);
+    text(['Backstory', 'Character Backstory'], bg.backstory);
+    const feats = ((s.features && s.features.items) || []).filter((f) => f && f.name).map((f) => f.name + (f.maxUses > 0 ? ' (' + f.maxUses + '/' + (f.resetType === 'Short Rest' ? 'short' : 'long') + ' rest)' : ''));
+    text(['Features and Traits', 'Features & Traits'], feats.join('\n'));
+
+    // Sheets with one free spell box get the list there too.
+    text(['Spells', 'Spell List', 'SpellsList'], spellLines.join('\n'));
+
+    const ds = s.deathSaves || {};
+    [12, 13, 14].forEach((n, i) => check(n, (ds.successes || [])[i]));
+    [15, 16, 17].forEach((n, i) => check(n, (ds.failures || [])[i]));
+    return out;
+  }
+
   root.CharacterTransfer = {
     FORMAT: FORMAT, VERSION: VERSION, makeExport: makeExport, parseExport: parseExport, fileName: fileName, clean: clean,
-    fromPdfFields: fromPdfFields, sheetFromPdf: sheetFromPdf, parseClassLevel: parseClassLevel,
+    fromPdfFields: fromPdfFields, sheetFromPdf: sheetFromPdf, parseClassLevel: parseClassLevel, toPdfFields: toPdfFields, normFieldName: norm,
     fromDdbJson: fromDdbJson, detectJson: detectJson, stripHtml: stripHtml
   };
 })(typeof window !== 'undefined' ? window : this);

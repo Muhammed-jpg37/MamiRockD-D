@@ -377,6 +377,31 @@
     }).catch((err) => { throw /encrypt/i.test(String(err && err.message)) ? new Error('That PDF is password-protected.') : err; });
   }
 
+  // Fills a fillable PDF (feature plan 7.2): entries from CharacterTransfer.toPdfFields, each with
+  // name candidates matched loosely to the form's fields. Resolves with { bytes, filled, fields }.
+  function fillPdf(bytes, entries) {
+    const T = window.CharacterTransfer;
+    return loadPdfLib().then((PDFLib) => PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true }).then((doc) => {
+      let form;
+      try { form = doc.getForm(); } catch (e) { form = null; }
+      const fields = form ? form.getFields() : [];
+      if (!fields.length) throw new Error('That PDF has no form fields to fill. Pick a fillable character sheet (the official 2014 one works).');
+      const byNorm = {};
+      fields.forEach((f) => { const k = T.normFieldName(f.getName()); if (!byNorm[k]) byNorm[k] = f; });
+      let filled = 0;
+      (entries || []).forEach((e) => {
+        const f = e.names.map((n) => byNorm[T.normFieldName(n)]).find(Boolean);
+        if (!f) return;
+        try {
+          if (e.checked !== undefined && typeof f.check === 'function') { if (e.checked) f.check(); else f.uncheck(); filled++; }
+          else if (e.value !== undefined && typeof f.setText === 'function') { f.setText(e.value); filled++; }
+        } catch (err) { /* a field that refuses the value is skipped */ }
+      });
+      try { form.updateFieldAppearances(); } catch (e) { /* some fonts can't redraw; the values are still set */ }
+      return doc.save().then((out) => ({ bytes: out, filled: filled, fields: fields.length }));
+    })).catch((err) => { throw /encrypt/i.test(String(err && err.message)) ? new Error('That PDF is password-protected.') : err; });
+  }
+
   // Asks for a filled-in PDF character sheet and makes a new character from its fields.
   // Resolves with { id, name, warnings }, or null when no file was picked.
   function importCharacterPdf() {
@@ -1676,6 +1701,7 @@
     importCharacterPdf: importCharacterPdf,
     importCharacterFields: importCharacterFields,
     readPdfFields: readPdfFields,
+    fillPdf: fillPdf,
     saveImportedCharacter: saveImportedCharacter,
     deleteCharacter: deleteCharacter,
     MAX_CHARACTERS: MAX_CHARACTERS,

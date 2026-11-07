@@ -5637,6 +5637,7 @@
             <button type="button" role="menuitem" onclick="closeUserMenu(); openSettings()" title="Coins, carry capacity, theme and font of the open sheet">⚙ Settings</button>
             <button type="button" role="menuitem" class="bg-trigger" onclick="closeUserMenu(); toggleBgPanel()" title="Wallpaper for this character">🎨 Wallpaper</button>
             <button type="button" role="menuitem" onclick="closeUserMenu(); printSheet()" title="The open character on paper: Overview, Inventory, Spells and Features. Choose Save as PDF in the print window for a file.">🖨 Print / Save as PDF</button>
+            <button type="button" role="menuitem" onclick="closeUserMenu(); fillPdfSheet()" title="Pick a blank fillable character sheet PDF (the official 2014 one works); the open character is written into it and downloaded.">📄 Fill a PDF character sheet…</button>
             <button type="button" role="menuitem" onclick="closeUserMenu(); logoutCurrentUser()" title="Log out / Switch User">🚪 Exit</button>
           </div>
         </div>
@@ -9725,6 +9726,58 @@
       setTimeout(function () { window.print(); }, 50);
     }
     window.printSheet = printSheet;
+
+    /* ---------- Fill a PDF character sheet (feature plan 7.2) ----------
+       The player picks a blank fillable sheet (the official 2014 one; the site does not ship it),
+       CharacterTransfer.toPdfFields lays the open character out in its fields and Campaigns.fillPdf
+       (pdf-lib, loaded on first use) fills it; the result downloads as "<name>.pdf". */
+    function pdfExtras() {
+      const cs = state.characterStats || {};
+      const M = window.SheetMaths;
+      const bonuses = getEquippedItemBonuses();
+      const extra = { name: (document.getElementById('strip-name') || {}).textContent || 'Character', ac: calculateCharacterAC(bonuses).totalAc, attacks: [], spellcasting: [], spellsByLevel: {} };
+      if (M) {
+        computeSheetActions(cs, bonuses);
+        extra.attacks = sheetAttacks.filter(function (a) { return !a.isSpell; }).map(function (a) { return { name: a.name, toHitText: a.toHitText, damage: a.damage, damageType: a.damageType }; })
+          .concat(sheetAttacks.filter(function (a) { return a.isSpell && a.cantrip.kind === 'attack'; }).map(function (a) { return { name: a.name, toHitText: a.toHitText, damage: a.damage, damageType: a.damageType }; }));
+        extra.spellcasting = sheetSpellStats.map(function (st) { return { name: st.name, ability: st.ability, saveDc: st.saveDc, attackText: st.attackText }; });
+      }
+      ((state.spellbook && state.spellbook.list) || []).forEach(function (sp) {
+        const lv = Number(sp.levelNum);
+        if (!isFinite(lv)) return;
+        (extra.spellsByLevel[lv] = extra.spellsByLevel[lv] || []).push(sp.name + (sp.prepared ? ' (P)' : ''));
+      });
+      return extra;
+    }
+
+    function fillPdfSheet() {
+      if (!window.CharacterTransfer || !window.Campaigns || typeof window.Campaigns.fillPdf !== 'function') { toast('The PDF tools are still loading. Try again in a moment.'); return; }
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/pdf,.pdf';
+      input.onchange = function () {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        if (file.size > 20 * 1024 * 1024) { alert('That PDF is too big (over 20 MB).'); return; }
+        toast('📄 Filling the sheet…', 3000);
+        file.arrayBuffer().then(function (buf) {
+          const extra = pdfExtras();
+          return window.Campaigns.fillPdf(buf, window.CharacterTransfer.toPdfFields(state, extra)).then(function (r) {
+            const blob = new Blob([r.bytes], { type: 'application/pdf' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = String(extra.name || 'character').replace(/[\\/:*?"<>|]+/g, '').trim().slice(0, 60) + '.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+            toast('📄 ' + r.filled + ' of ' + r.fields + ' fields filled. ' + (r.filled < 20 ? 'Few fields matched: is this the official 2014 sheet?' : 'Check it before you print.'), 6000);
+          });
+        }).catch(function (err) { alert(err && err.message ? err.message : String(err)); });
+      };
+      input.click();
+    }
+    window.fillPdfSheet = fillPdfSheet;
 
     /* ---------- Conditions on the sheet (feature plan 4.1, combat.js) ----------
        state.conditions = { poisoned: true, ..., exhaustion: 2 }. The table reads it for the

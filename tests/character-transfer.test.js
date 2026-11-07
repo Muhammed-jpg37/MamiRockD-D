@@ -201,3 +201,38 @@ test('D&D Beyond: description headings are not imported as features', () => {
   fighter.classFeatures.push({ definition: { name: 'Ability Score Improvement', requiredLevel: 4 } });
   assert.ok(T.fromDdbJson(d, { spellIndex: SPELLS }).patch.featureCards.some((c) => c.name === 'Ability Score Improvement'));
 });
+
+/* ---------- 7.2 A sheet into a fillable PDF ---------- */
+
+test('PDF out: a sheet becomes the official form fields, and reads back the same', () => {
+  const sheet = JSON.parse(JSON.stringify(SHEET));
+  sheet.characterStats = Object.assign({}, sheet.characterStats, { str: 16, dex: 14, con: 12, int: 10, wis: 13, cha: 8, profBonus: 2, level: 3, characterClass: 'Fighter', species: 'Dwarf',
+    saveProfs: { str: 1, con: 1 }, skillProfs: { Athletics: 1, Perception: 2 }, skillCustomBonuses: {}, saveCustomBonuses: {}, speed: 25 });
+  sheet.hp = { max: 28, current: 20, temp: 0 };
+  sheet.currency = { platinum: 0, gold: 15, electrum: 0, silver: 3, copper: 0 };
+  sheet.deathSaves = { successes: [true, false, false], failures: [false, false, false] };
+  const entries = T.toPdfFields(sheet, { name: 'Brakka', ac: 18, attacks: [{ name: 'Warhammer', toHitText: '+5', damage: '1d8+3', damageType: 'bludgeoning' }],
+    spellcasting: [], spellsByLevel: {} });
+  const val = (n) => { const e = entries.find((x) => x.names.includes(n)); return e && (e.value !== undefined ? e.value : e.checked); };
+  assert.equal(val('CharacterName'), 'Brakka');
+  assert.equal(val('ClassLevel'), 'Fighter 3');
+  assert.equal(val('STRmod'), '+3');
+  assert.equal(val('CHamod'), '-1', 'the official sheet spells it CHamod');
+  assert.equal(val('ST Strength'), '+5');
+  assert.equal(val('Check Box 11'), true, 'STR save box');
+  assert.equal(val('Athletics'), '+5');
+  assert.equal(val('Perception'), '+5', 'expertise: +1 WIS + 2 × 2');
+  assert.equal(val('Passive'), '15');
+  assert.equal(val('Wpn Name'), 'Warhammer');
+  assert.equal(val('Wpn1 Damage'), '1d8+3 bludgeoning');
+  assert.equal(val('AC'), '18');
+  assert.equal(val('Check Box 12'), true, 'one death save success');
+  // Reading it back with the importer gives the same character.
+  const fields = {};
+  entries.forEach((e) => { fields[e.names[0]] = e.value !== undefined ? e.value : e.checked; });
+  const back = T.fromPdfFields(fields, {}).patch;
+  assert.deepEqual([back.characterStats.str, back.characterStats.cha, back.characterStats.level], [16, 8, 3]);
+  assert.deepEqual(back.characterStats.saveProfs, { str: 1, con: 1 });
+  assert.deepEqual(back.characterStats.skillProfs, { Athletics: 1, Perception: 2 });
+  assert.deepEqual([back.hp.max, back.hp.current, back.currency.gold], [28, 20, 15]);
+});
