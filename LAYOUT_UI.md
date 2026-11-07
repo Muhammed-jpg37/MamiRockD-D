@@ -144,7 +144,7 @@ Kaynaklar:
 
 - Solda logo.
 - Belirgin bir **kampanya seçici**: `🏰 Kampanya adı ▾`. Açılınca kampanya listesi, "kodla katıl" ve "yeni kampanya" çıkar.
-- Üç ana sekme: **Kampanya · Karakter · Masa**.
+- Dört ana sekme: **Kampanya · Karakter · Masa · Notlar**. Notlar 2026-11-07'de eklendi: kişisel not alanı hesaba ait (`loadNotesState(nickname)`), bir karaktere ya da kampanyaya değil. Bu yüzden Karakter'in altında değil, ayrı bir bölüm.
 - Sağda canlı bağlantı noktası ve kullanıcı menüsü (`👤 nick · rol ▾`). Ayarlar, Wallpaper, Karakterlerim ve Exit bu menüye girer.
 
 Üst bardan çıkanlar: HP, para ve ağırlık Karakter ekranına; "+ Add Item" Envanter sekmesine; DM barı ilgili ekranlara dağılır.
@@ -179,7 +179,7 @@ Kaynaklar:
 │ (portre) Ad ▾          HP 38/45 −/+  AC 17  Init +2  Hız 30   │
 │ İnsan Savaşçı 5        Altın 120     [Level up][Forge][Dinlen]│
 ├───────────────────────────────────────────────────────────────┤
-│ Genel | Envanter | Büyüler | Özellikler | Notlar              │
+│ Genel | Envanter | Büyüler | Özellikler                       │
 ├────────────────────┬────────────────────┬─────────────────────┤
 │ Yetenekler,        │ Beceriler          │ Saldırılar,         │
 │ kurtarma zarları   │                    │ buff/debuff, duyular│
@@ -192,7 +192,7 @@ Kaynaklar:
   - Inventory → Envanter (Equipped Items ve "+ Add Item" burada)
   - Spell System → Büyüler
   - Features & Traits → Özellikler
-  - D&D Notes → Notlar
+  - D&D Notes → karakter sekmesi değil, üst barda ayrı **Notes** bölümü
   - Character Stats & Bonuses → Genel
 
 ### Ekran 3: Masa (VTT)
@@ -246,9 +246,10 @@ Kaynaklar:
   - Masa açıkken `switchMainTab('vtt')` sayfaya `activeTab` yazmıyor ve kayıt yapmıyor.
   - Karakter bölümü: eski başlık (alt başlık, dört sekme, HP / para / ağırlık / + Add Item) ve DM barı `.character-only` sınıfında. Bu sınıf diğer iki bölümde gizleniyor.
   - Kampanya bölümü şimdilik bir iskelet (`renderCampaignHome`): kampanya adı, rolün; Masaya git, Karakter, Günlük, Kampanya değiştir düğmeleri. DM için ek olarak Manage, Invite, Homebrew ve Item store. Asıl ekran L2'de yapılacak.
-  - Telefonda (375 px) üç bölümde de sayfa yatay kaymıyor. VTT araç çubuğu kendi içinde kayıyor; bu L4/L5'te ele alınacak.
+  - Telefonda (375 px) bölümlerin hiçbirinde sayfa yatay kaymıyor. VTT araç çubuğu kendi içinde kayıyor; bu L4/L5'te ele alınacak.
+  - Ek: **📓 Notes** dördüncü bölüm oldu, karakter sekmelerinden çıktı. Not alanı eskisi gibi tam ekran açılıyor. İçindeki "🎒 Character Screen" düğmesinin yerinde artık **⬅ Back** var; gelinen bölüme döndürüyor. Notes'u açmak sayfaya bir şey yazmıyor. 480 px'in altında dört sekme eşit sütunlara sığıyor.
 - **L2.** Kampanya ekranı.
-- **L3.** Karakter ekranı: karakter şeridi ve beş sekme. Mevcut panellerin taşınması.
+- **L3.** Karakter ekranı: karakter şeridi ve dört sekme (Genel, Envanter, Büyüler, Özellikler). Mevcut panellerin taşınması.
 - **L4.** Masa ekranı: tam genişlik harita, sol araçlar, sağ panel.
 - **L5.** Telefon düzeni.
 - **L6.** Role göre görünürlük ve açılış ekranı; "Oyuncu olarak gör" (R5) ile kontrol.
