@@ -404,6 +404,25 @@
     };
   }
 
+  /* ---------- 3.6 A level granted by the DM ---------- */
+
+  // The sheet's pendingLevelUp: { levels, by, at }. The DM grants; the player takes them one by one.
+  function grantLevel(pending, by, at) {
+    const levels = (pending && Number(pending.levels)) || 0;
+    return { levels: Math.min(20, levels + 1), by: String(by || 'DM').slice(0, 40), at: Number(at) || Date.now() };
+  }
+  function takeLevel(pending) {
+    const levels = (pending && Number(pending.levels)) || 0;
+    return levels > 1 ? Object.assign({}, pending, { levels: levels - 1 }) : null;
+  }
+  // Which banner the sheet shows: 'player' (level up now), 'dm' (the DM looking at a player's sheet:
+  // granted, waiting), or null. viewer: { isDm, ownSheet }.
+  function levelUpBanner(pending, viewer) {
+    if (!pending || !(Number(pending.levels) > 0)) return null;
+    viewer = viewer || {};
+    return viewer.isDm && !viewer.ownSheet ? 'dm' : 'player';
+  }
+
   // A critical hit rolls the damage dice twice (SRD 5.1): "1d8+3" -> "2d8+3", "2d6+1d4-1" -> "4d6+2d4-1".
   function critDamage(expr) {
     return String(expr || '').replace(/(\d*)d(\d+)/gi, (m, n, sides) => (2 * (Number(n) || 1)) + 'd' + sides);
@@ -424,5 +443,6 @@
     cantripTier: cantripTier, scaleDice: scaleDice, cantripLine: cantripLine,
     acFeatures: acFeatures, armorClass: armorClass,
     PREPARERS: PREPARERS, preparedPlan: preparedPlan,
+    grantLevel: grantLevel, takeLevel: takeLevel, levelUpBanner: levelUpBanner,
   };
 })(typeof window !== 'undefined' ? window : this);

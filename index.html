@@ -368,6 +368,11 @@
     .prep-toggle.on { border-color: var(--success); color: var(--success); }
     .prep-lock { font-size: 11px; color: var(--gold-bright); align-self: center; white-space: nowrap; }
     .spell-list-item.unprepared .spell-name { opacity: 0.7; }
+    /* A level granted by the DM (feature plan 3.6) */
+    .level-up-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 12px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 8px; background: color-mix(in srgb, var(--accent) 16%, var(--panel-2)); }
+    .level-up-banner .lub-text { flex: 1 1 220px; font-size: 13px; color: var(--text); }
+    .level-up-banner .lub-text b { color: var(--gold-bright); }
+    .level-up-banner .lub-acts { display: flex; flex-wrap: wrap; gap: 6px; }
     /* Phones: the buttons go under the spell's text instead of pushing the card sideways. */
     @media (max-width: 640px) {
       .spell-list-item { flex-wrap: wrap; }
@@ -5604,6 +5609,8 @@
 
     <!-- CHARACTER STRIP (LAYOUT_UI.md, L3): who this sheet is and the numbers you need at a glance,
          on every sheet tab. Filled by renderCharacterStats() (name, portrait, AC / Init / Speed). -->
+    <!-- A level granted by the DM (feature plan 3.6): filled by renderLevelUpBanner(). -->
+    <div class="level-up-banner character-only" id="level-up-banner" role="status" style="display:none"></div>
     <div class="header char-strip character-only">
       <div class="strip-id">
         <div class="strip-portrait" id="strip-portrait" aria-hidden="true"></div>
@@ -5681,6 +5688,7 @@
       </select>
       <div id="dm-status-tag" class="dm-status-tag">Inspecting: Self</div>
       <button type="button" class="btn small" style="font-size:11px; padding:4px 10px;" onclick="openDmGiftLootModal()">🎁 Gift Loot</button>
+      <button type="button" class="btn ghost small" id="dm-grant-level-btn" style="font-size:11px; padding:4px 10px;" onclick="dmGrantLevel()" title="Give this player a level. They make the level-up choices themselves.">⬆ Grant a level</button>
       <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="window.Campaigns && window.Campaigns.copyInvite()" title="Players join with the campaign's invite link or code">📨 Invite players</button>
       <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="window.Campaigns && window.Campaigns.viewAsPlayer(document.getElementById('dm-player-dropdown').value)" title="See the campaign as the picked player sees it, with player rights">👁 View as player</button>
     </div>
@@ -9655,6 +9663,70 @@
     // ⚔ Forge on a builder-made sheet: apply the changed choices, keeping gear, spells,
     // notes, current HP (moved by the change in max), spent slots and features the player added.
     // ⬆ Level up on a builder-made sheet: one more level, saved like an edit (current HP rises by the gain).
+    /* ---------- A level granted by the DM (feature plan 3.6, SheetMaths.grantLevel / takeLevel) ----------
+       The DM, looking at a player's sheet, sets state.pendingLevelUp = { levels, by, at }; it is saved
+       with the sheet like any DM edit. The player sees a banner and makes the choices in the usual
+       level-up screen; saving it takes one granted level. Plain sheets: the banner offers the
+       conversion (openLevelUp does), or "Done by hand". */
+    function viewerOfSheet() {
+      const isDm = !!(currentUser && currentUser.role === 'dm');
+      const target = String(activeInventoryUser || (currentUser ? currentUser.nickname : '')).toLowerCase();
+      return { isDm: isDm, ownSheet: !isDm || target === String(currentUser.nickname || '').toLowerCase() };
+    }
+
+    function dmGrantLevel() {
+      const v = viewerOfSheet();
+      if (!v.isDm || v.ownSheet || !window.SheetMaths) { toast('Pick a player in the DM panel first.'); return; }
+      const name = (document.getElementById('strip-name') || {}).textContent || activeInventoryUser;
+      const cs = state.characterStats || {};
+      const pending = state.pendingLevelUp;
+      const already = pending && pending.levels ? ' (' + pending.levels + ' already waiting)' : '';
+      if (!confirm('Give ' + name + ' a level' + already + '?\n\nThey are level ' + (cs.level || '?') + ' now. They make the level-up choices themselves; until then their sheet shows a banner.')) return;
+      state.pendingLevelUp = window.SheetMaths.grantLevel(pending, currentUser.nickname, Date.now());
+      save();
+      renderLevelUpBanner();
+      toast('⬆ ' + name + ' can level up now.');
+    }
+
+    function dmCancelGrantedLevel() {
+      if (!state.pendingLevelUp || !confirm('Take back the level(s) you granted?')) return;
+      delete state.pendingLevelUp;
+      save();
+      renderLevelUpBanner();
+    }
+
+    // "Done by hand": the player raised the level themselves (plain sheets without the builder).
+    function takeGrantedLevelByHand() {
+      if (!state.pendingLevelUp || !window.SheetMaths) return;
+      if (!confirm('Mark one granted level as done? Use this when you raised the level yourself with ⚙️ Edit Stats.')) return;
+      const next = window.SheetMaths.takeLevel(state.pendingLevelUp);
+      if (next) state.pendingLevelUp = next; else delete state.pendingLevelUp;
+      save();
+      renderLevelUpBanner();
+    }
+
+    function renderLevelUpBanner() {
+      const box = document.getElementById('level-up-banner');
+      if (!box) return;
+      const p = state && state.pendingLevelUp;
+      const kind = window.SheetMaths ? window.SheetMaths.levelUpBanner(p, viewerOfSheet()) : null;
+      const btn = document.getElementById('dm-grant-level-btn');
+      if (btn) btn.disabled = viewerOfSheet().ownSheet;
+      if (!kind) { box.style.display = 'none'; box.innerHTML = ''; return; }
+      const n = Number(p.levels) || 1;
+      const levels = n === 1 ? 'a level' : n + ' levels';
+      box.style.display = '';
+      if (kind === 'dm') {
+        box.innerHTML = '<div class="lub-text">⬆ You granted <b>' + levels + '</b>. The player makes the choices on their sheet.</div>' +
+          '<div class="lub-acts"><button type="button" class="btn ghost small" onclick="dmCancelGrantedLevel()">Take back</button></div>';
+        return;
+      }
+      box.innerHTML = '<div class="lub-text">🎉 <b>' + escapeHtml(p.by || 'Your DM') + '</b> granted you <b>' + levels + '</b>! Make the level-up choices now.</div>' +
+        '<div class="lub-acts"><button type="button" class="btn small" onclick="openLevelUp()">⬆ Level up</button>' +
+        (state.build ? '' : '<button type="button" class="btn ghost small" onclick="takeGrantedLevelByHand()" title="For sheets without the character builder">✔ Done by hand</button>') +
+        '</div>';
+    }
+
     function openLevelUp() {
       if (!builderAvailable() || !state) return;
       if (!state.build) {
@@ -9664,7 +9736,15 @@
       const rules = builderRules();
       CharacterBuilder.levelUp({
         rules: rules, opts: builderOpts(), build: seedSpellPicks(JSON.parse(JSON.stringify(state.build)), rules),
-        onDone: (result) => applyRebuiltCharacter(result, '⬆ ' + (result.build.name || 'Character') + ' is now level ' + result.derived.level + '!')
+        onDone: (result) => {
+          // A level the DM granted is used up (saved together with the new level).
+          if (state.pendingLevelUp && window.SheetMaths) {
+            const next = window.SheetMaths.takeLevel(state.pendingLevelUp);
+            if (next) state.pendingLevelUp = next; else delete state.pendingLevelUp;
+          }
+          applyRebuiltCharacter(result, '⬆ ' + (result.build.name || 'Character') + ' is now level ' + result.derived.level + '!');
+          renderLevelUpBanner();
+        }
       });
     }
     window.openLevelUp = openLevelUp;
@@ -10228,6 +10308,7 @@
       renderDetail();
       if (typeof renderFeaturesView === 'function') renderFeaturesView();
       if (typeof renderHpTracker === 'function') renderHpTracker();
+      renderLevelUpBanner();
     }
 
     function renderHeader() {

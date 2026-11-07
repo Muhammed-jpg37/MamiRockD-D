@@ -289,3 +289,21 @@ test('sheet maths: wizards prepare from their spellbook', () => {
   const plain = M.preparedPlan([{ name: 'Homebrew Zap', levelNum: 2 }], M.castingClasses({ characterClass: 'Druid', level: 3 }), { wis: 12 });
   assert.equal(plain.spells[0].status, 'preparable');
 });
+
+/* ---------- 3.6 A level granted by the DM ---------- */
+
+test('sheet maths: the DM grants levels, the player takes them one by one', () => {
+  let p = M.grantLevel(null, 'Mami', 100);
+  assert.deepEqual(p, { levels: 1, by: 'Mami', at: 100 });
+  p = M.grantLevel(p, 'Mami', 200);
+  assert.equal(p.levels, 2);
+  p = M.takeLevel(p);
+  assert.equal(p.levels, 1);
+  assert.equal(M.takeLevel(p), null, 'the last one clears it');
+  assert.equal(M.takeLevel(null), null);
+  assert.equal(M.levelUpBanner(null, { isDm: false }), null);
+  assert.equal(M.levelUpBanner({ levels: 1 }, { isDm: false }), 'player');
+  assert.equal(M.levelUpBanner({ levels: 1 }, { isDm: true, ownSheet: false }), 'dm');
+  assert.equal(M.levelUpBanner({ levels: 1 }, { isDm: true, ownSheet: true }), 'player', 'a DM with their own character takes it too');
+  assert.equal(M.levelUpBanner({ levels: 0 }, {}), null);
+});
