@@ -253,6 +253,94 @@
       flex-wrap: wrap;
     }
 
+    /* ---------- Top bar and sections (LAYOUT_UI.md, L1) ---------- */
+    .topbar {
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      grid-template-areas: "brand campaign tabs right";
+      align-items: center;
+      gap: 12px 16px;
+      padding: 0 0 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-brand {
+      grid-area: brand;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 1px;
+      color: var(--gold-bright);
+      white-space: nowrap;
+    }
+    .topbar-campaign { grid-area: campaign; display: flex; align-items: center; gap: 6px; min-width: 0; }
+    /* #id: beats campaign.js's own .camp-chip rule, which is injected later */
+    #auth-user-bar .camp-chip { font-size: 14px; padding: 6px 12px; max-width: 260px; flex-shrink: 0; }
+    #auth-user-bar #campaign-chip { border-color: var(--gold); color: var(--gold-bright); }
+    .section-tabs { grid-area: tabs; display: flex; justify-content: center; gap: 6px; }
+    .section-tab {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 1px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--text-dim);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .section-tab:hover { color: var(--text); border-color: var(--border); }
+    .section-tab.active { color: var(--gold-bright); border-color: var(--gold); background: color-mix(in srgb, var(--accent) 18%, transparent); }
+    .topbar-right { grid-area: right; display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+    /* In the top bar the sync badge is just its dot; the state is in its tooltip and colour. */
+    .topbar .cloud-sync-badge { padding: 6px; }
+    .topbar #cloud-sync-text { display: none; }
+    .user-menu { position: relative; }
+    .user-menu-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--well-3); color: var(--text);
+      border: 1px solid var(--border); border-radius: 20px;
+      padding: 4px 10px 4px 12px; font-size: 12px; cursor: pointer;
+    }
+    .user-menu-btn strong { color: var(--accent-2-strong); font-family: var(--font-display); }
+    .user-menu-list {
+      display: none; position: absolute; right: 0; top: calc(100% + 6px); z-index: 1000;
+      min-width: 190px; padding: 6px; flex-direction: column; gap: 2px;
+      background: var(--panel); border: 1px solid var(--border-bright); border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .6);
+    }
+    .user-menu.open .user-menu-list { display: flex; }
+    .user-menu-list button {
+      text-align: left; background: transparent; border: 0; border-radius: 6px;
+      color: var(--text); padding: 8px 10px; font-size: 13px; cursor: pointer;
+    }
+    .user-menu-list button:hover, .user-menu-list button:focus-visible { background: var(--panel-3); }
+    body[data-section="campaign"] .character-only,
+    body[data-section="table"] .character-only { display: none !important; }
+    .campaign-home { max-width: 760px; margin: 8px auto 0; }
+    .campaign-home-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+    .campaign-home-card h2 { font-family: var(--font-display); color: var(--gold-bright); margin: 2px 0 6px; font-size: 24px; }
+    .campaign-home-card p { color: var(--text-dim); margin: 0 0 14px; }
+    .campaign-home-kicker { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-faint); margin-top: 6px; }
+    .campaign-home-acts { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
+    @media (max-width: 900px) {
+      .topbar { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "brand campaign right" "tabs tabs tabs"; }
+      .section-tabs { justify-content: stretch; }
+      .section-tab { flex: 1; padding: 8px 6px; font-size: 13px; }
+      .topbar-brand { font-size: 16px; }
+      #auth-user-bar #campaign-chip { max-width: 150px; }
+      .header.character-only .title-block { min-width: 0; width: 100%; }
+      .header.character-only .system-nav-tabs { flex-wrap: wrap; gap: 6px; }
+      .header.character-only .nav-tab-btn { padding: 6px 10px; font-size: 12px; }
+    }
+    @media (max-width: 480px) {
+      .user-menu-btn strong, #cloud-sync-text { display: none; }
+      .topbar-brand { display: none; }
+      .topbar { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "campaign right" "tabs tabs"; }
+    }
+
     .stat-pill {
       background: var(--panel-2);
       border: 1px solid var(--border);
@@ -5244,35 +5332,52 @@
 
   <div class="frame">
 
-    <div class="header">
-      <div class="title-block">
-        <h1>⚔ MAMİ ROCK ENVANTER</h1>
-        <div class="sub" id="campaign-sub">Party Inventory Ledger</div>
-        <div class="system-nav-tabs">
-          <button class="nav-tab-btn active" id="tab-btn-inventory" onclick="switchMainTab('inventory')">🎒 Inventory
-            System</button>
-          <button class="nav-tab-btn" id="tab-btn-spells" onclick="switchMainTab('spells')">✨ Spell System</button>
-          <button class="nav-tab-btn" id="tab-btn-features" onclick="switchMainTab('features')">📜 Features &
-            Traits</button>
-          <button class="nav-tab-btn" id="tab-btn-notes" onclick="switchMainTab('notes')">📓 D&D Notes</button>
-          <button class="nav-tab-btn" id="tab-btn-vtt" onclick="switchMainTab('vtt')">🗺 VTT</button>
+    <!-- TOP BAR (LAYOUT_UI.md, L1): the same on every screen. The campaign picker,
+         the three sections (Campaign / Character / Table) and the account menu. -->
+    <div class="topbar" id="topbar">
+      <div class="topbar-brand">⚔ MamiRock</div>
+      <!-- campaign.js puts the 🏰 campaign picker and the 📖 journal button in here -->
+      <div class="topbar-campaign" id="auth-user-bar"></div>
+      <nav class="section-tabs" aria-label="Sections">
+        <button type="button" class="section-tab" id="section-btn-campaign" onclick="showSection('campaign')">🏰 Campaign</button>
+        <button type="button" class="section-tab" id="section-btn-character" onclick="showSection('character')">🧙 Character</button>
+        <button type="button" class="section-tab" id="section-btn-table" onclick="showSection('table')">🗺 Table</button>
+      </nav>
+      <div class="topbar-right">
+        <!-- REALTIME FIREBASE STATUS BADGE -->
+        <div class="cloud-sync-badge" id="cloud-sync-badge" title="Firebase Realtime Database: Connected & Live">
+          <span class="sync-dot"></span>
+          <span id="cloud-sync-text">🟢 Firebase Live</span>
         </div>
-      </div>
-      <div class="header-stats">
-        <!-- USER SESSION BADGE -->
-                  <!-- REALTIME FIREBASE STATUS BADGE -->
-          <div class="cloud-sync-badge" id="cloud-sync-badge" title="Firebase Realtime Database: Connected & Live">
-            <span class="sync-dot"></span>
-            <span id="cloud-sync-text">🟢 Firebase Live</span>
-          </div>
-        <div class="auth-user-bar" id="auth-user-bar">
-          <div class="auth-user-badge" id="auth-user-info">
+        <div class="user-menu" id="user-menu">
+          <button type="button" class="user-menu-btn" id="user-menu-btn" onclick="toggleUserMenu()" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu-list">
             <span id="auth-user-icon">👤</span>
             <strong id="auth-user-name">Adventurer</strong>
             <span id="auth-user-role" class="auth-user-role-tag player">Player</span>
+            <span aria-hidden="true">▾</span>
+          </button>
+          <div class="user-menu-list" id="user-menu-list" role="menu">
+            <button type="button" role="menuitem" onclick="closeUserMenu(); window.Campaigns && window.Campaigns.openCharacters()">🎭 My characters</button>
+            <button type="button" role="menuitem" onclick="closeUserMenu(); openSettings()" title="Coins, carry capacity, theme and font of the open sheet">⚙ Settings</button>
+            <button type="button" role="menuitem" class="bg-trigger" onclick="closeUserMenu(); toggleBgPanel()" title="Wallpaper for this character">🎨 Wallpaper</button>
+            <button type="button" role="menuitem" onclick="closeUserMenu(); logoutCurrentUser()" title="Log out / Switch User">🚪 Exit</button>
           </div>
-          <button type="button" class="btn ghost small" style="padding:3px 8px; font-size:11px;" onclick="logoutCurrentUser()" title="Log out / Switch User">🚪 Exit</button>
         </div>
+      </div>
+    </div>
+
+    <!-- CHARACTER HEADER: only in the Character section (L3 turns it into the character strip) -->
+    <div class="header character-only">
+      <div class="title-block">
+        <div class="sub" id="campaign-sub">Party Inventory Ledger</div>
+        <div class="system-nav-tabs">
+          <button class="nav-tab-btn active" id="tab-btn-inventory" onclick="switchMainTab('inventory')">🎒 Inventory</button>
+          <button class="nav-tab-btn" id="tab-btn-spells" onclick="switchMainTab('spells')">✨ Spells</button>
+          <button class="nav-tab-btn" id="tab-btn-features" onclick="switchMainTab('features')">📜 Features</button>
+          <button class="nav-tab-btn" id="tab-btn-notes" onclick="switchMainTab('notes')">📓 Notes</button>
+        </div>
+      </div>
+      <div class="header-stats">
 
         <!-- HP TRACKER WIDGET -->
         <div class="stat-pill hp-pill" id="hp-pill" title="Click to open HP Management Modal"
@@ -5317,14 +5422,12 @@
             <div class="weight-bar-fill" id="weight-fill"></div>
           </div>
         </div>
-        <button class="btn ghost small" onclick="openSettings()">⚙ Settings</button>
-        <button class="btn ghost small bg-trigger" onclick="toggleBgPanel()" title="Wallpaper for this character">🎨 Wallpaper</button>
         <button class="btn" onclick="openItemModal()">+ Add Item</button>
       </div>
     </div>
 
         <!-- DM CONTROL BAR (Visible only to Dungeon Master) -->
-    <div id="dm-control-bar" class="dm-control-bar" style="display: none;">
+    <div id="dm-control-bar" class="dm-control-bar character-only" style="display: none;">
       <div class="dm-control-badge">👑 DUNGEON MASTER PANEL</div>
       <div class="dm-control-label">Viewing Inventory:</div>
       <select id="dm-player-dropdown" class="dm-player-dropdown" onchange="dmSwitchActivePlayer(this.value)">
@@ -5521,6 +5624,9 @@
 
     <!-- VIRTUAL TABLETOP (logic and styles live in vtt.js) -->
     <div id="vtt-view-container" style="display:none"></div>
+
+    <!-- CAMPAIGN SECTION (L1 skeleton; L2 builds the real campaign screen). Filled by renderCampaignHome(). -->
+    <div id="campaign-view-container" class="campaign-home" style="display:none"></div>
 
     <!-- D&D CAMPAIGN NOTES WORKSPACE -->
     <div id="notes-view-container" class="fullscreen-notes">
@@ -6704,9 +6810,109 @@
     };
 
 
+    /* ---------- SECTIONS (LAYOUT_UI.md, L1): Campaign / Character / Table ----------
+       The section is the viewer's choice, kept in this browser (not on the sheet), so loading
+       another character never throws you out of the Table or the Campaign screen.
+       Character = the sheet tabs (inventory, spells, features, notes); Table = the VTT. */
+    var SECTIONS = ['campaign', 'character', 'table'];
+    var currentSection = (function () {
+      try { const s = localStorage.getItem('dnd-section'); return SECTIONS.indexOf(s) >= 0 ? s : 'character'; } catch (e) { return 'character'; }
+    })();
+
+    function markSection(sec) {
+      currentSection = sec;
+      try { localStorage.setItem('dnd-section', sec); } catch (e) { }
+      document.body.dataset.section = sec;
+      SECTIONS.forEach(function (s) {
+        const b = document.getElementById('section-btn-' + s);
+        if (b) { b.classList.toggle('active', s === sec); b.setAttribute('aria-current', s === sec ? 'page' : 'false'); }
+      });
+    }
+
+    // The sheet tab to show in the Character section (older sheets may have saved 'vtt').
+    function characterTab() {
+      const t = state && state.activeTab;
+      return (t && t !== 'vtt') ? t : 'inventory';
+    }
+
+    function showSection(sec) {
+      if (SECTIONS.indexOf(sec) < 0) sec = 'character';
+      if (sec === 'table') { switchMainTab('vtt'); return; }
+      if (sec === 'character') { switchMainTab(characterTab()); return; }
+      ['inventory-view-container', 'spellbook-view-container', 'features-view-container', 'notes-view-container', 'vtt-view-container'].forEach(function (id) {
+        const v = document.getElementById(id);
+        if (v) v.style.display = 'none';
+      });
+      markSection('campaign');
+      const home = document.getElementById('campaign-view-container');
+      if (home) home.style.display = 'block';
+      renderCampaignHome();
+    }
+    window.showSection = showSection;
+
+    // L1 skeleton of the Campaign section: what the campaign is, your role in it, and the
+    // campaign tools that used to hide behind the 🏰 chip. L2 adds the party, journal and invite.
+    function renderCampaignHome() {
+      const box = document.getElementById('campaign-view-container');
+      if (!box || currentSection !== 'campaign') return;
+      const c = window.activeCampaign;
+      const C = window.Campaigns;
+      if (!c || !C) {
+        box.innerHTML = '<div class="campaign-home-card"><h2>No campaign open</h2>' +
+          '<p>Start your own campaign (you are its DM) or join one with an invite code.</p>' +
+          '<div class="campaign-home-acts"><button type="button" class="btn" onclick="window.Campaigns && window.Campaigns.openPicker()">🏰 Pick or start a campaign</button></div></div>';
+        return;
+      }
+      const isDm = c.role === 'dm';
+      const viewing = C.viewingAs && C.viewingAs();
+      const role = viewing ? 'Player (DM view as ' + viewing.name + ')' : isDm ? (c.owner === (currentUser && currentUser.nickname.toLowerCase()) ? 'Dungeon Master · owner' : 'Dungeon Master · co-DM') : 'Player';
+      const btn = (label, fn, cls) => '<button type="button" class="btn' + (cls ? ' ' + cls : ' ghost') + '" onclick="' + fn + '">' + label + '</button>';
+      let html = '<div class="campaign-home-card">' +
+        '<div class="campaign-home-kicker">Campaign</div>' +
+        '<h2>' + escapeHtml(c.name) + '</h2>' +
+        '<p>You are: <strong>' + escapeHtml(role) + '</strong></p>' +
+        '<div class="campaign-home-acts">' +
+        btn('🗺 Go to the table', "showSection('table')", ' ') +
+        btn('🧙 ' + (isDm && !viewing ? 'Players\' sheets' : 'My character'), "showSection('character')") +
+        btn('📖 Journal', 'window.Campaigns.openJournal()') +
+        btn('🔄 Switch campaign', 'window.Campaigns.openPicker()') +
+        '</div>';
+      if (isDm && !viewing) {
+        html += '<div class="campaign-home-kicker">DM tools</div><div class="campaign-home-acts">' +
+          btn('⚙ Manage', "window.Campaigns.openManage(window.activeCampaign.id)") +
+          btn('📨 Invite players', 'window.Campaigns.copyInvite()') +
+          btn('📜 Homebrew', "window.HomebrewEditor && window.HomebrewEditor.open(window.activeCampaign.id, window.activeCampaign.name)") +
+          btn('📦 Item store', "window.HomebrewEditor && window.HomebrewEditor.open(window.activeCampaign.id, window.activeCampaign.name, 'items')") +
+          '</div>';
+      }
+      box.innerHTML = html + '</div>';
+    }
+    window.addEventListener('campaignchange', renderCampaignHome);
+    window.addEventListener('campaignmembers', renderCampaignHome);
+
+    /* ---------- ACCOUNT MENU (top bar, right) ---------- */
+    function toggleUserMenu(force) {
+      const menu = document.getElementById('user-menu');
+      const btn = document.getElementById('user-menu-btn');
+      if (!menu) return;
+      const open = typeof force === 'boolean' ? force : !menu.classList.contains('open');
+      menu.classList.toggle('open', open);
+      if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    function closeUserMenu() { toggleUserMenu(false); }
+    document.addEventListener('click', function (e) {
+      const menu = document.getElementById('user-menu');
+      if (menu && menu.classList.contains('open') && !menu.contains(e.target)) closeUserMenu();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeUserMenu(); });
+
     function switchMainTab(tabName) {
       if (!tabName) tabName = 'inventory';
-      state.activeTab = tabName;
+      // The VTT is the Table section, not a sheet tab: it isn't remembered on the sheet.
+      if (tabName !== 'vtt') state.activeTab = tabName;
+      const campView = document.getElementById('campaign-view-container');
+      if (campView) campView.style.display = 'none';
+      markSection(tabName === 'vtt' ? 'table' : 'character');
       const invView = document.getElementById('inventory-view-container');
       const spellView = document.getElementById('spellbook-view-container');
       const featuresView = document.getElementById('features-view-container');
@@ -6746,7 +6952,7 @@
       } else if (tabName === 'vtt') {
         window.initVtt?.();
       }
-      save();
+      if (tabName !== 'vtt') save();
     }
 
 
@@ -9619,7 +9825,7 @@
 
     function renderAll() {
       renderCharacterStats();
-      switchMainTab(state.activeTab || "inventory");
+      showSection(currentSection);
       renderHeader();
       renderDoll();
       renderActiveEffects();
@@ -14404,6 +14610,7 @@
       if (!badge || !label) return;
       badge.className = 'cloud-sync-badge ' + (status === 'syncing' ? 'syncing' : (status === 'offline' ? 'offline' : ''));
       label.textContent = text || (status === 'syncing' ? '🔄 Syncing...' : (status === 'offline' ? '⚠️ Offline' : '🟢 Firebase Live'));
+      badge.title = label.textContent;   // the top bar shows only the dot
     }
     window.updateSyncBadge = updateSyncBadge;
 

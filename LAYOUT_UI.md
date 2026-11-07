@@ -240,6 +240,13 @@ Kaynaklar:
 ### Düzen adımları (taslak, rol modeli bitince netleşir)
 
 - **L1.** Üst bar ve kampanya seçici; Kampanya / Karakter / Masa sekme iskeleti.
+  - **Yapıldı.**
+  - `#topbar`: solda logo, sonra kampanya seçici. `#auth-user-bar` artık sadece `campaign.js`'in 🏰 düğmesini ve 📖 günlük düğmesini tutuyor. Ortada üç bölüm sekmesi. Sağda senkron noktası (durum tooltip'te) ve hesap menüsü: 🎭 My characters, ⚙ Settings, 🎨 Wallpaper, 🚪 Exit.
+  - `showSection('campaign' | 'character' | 'table')`: bölüm karakterin sayfasında değil, tarayıcıda (`localStorage` `dnd-section`) saklanıyor. Başka bir karakter yüklenince bölüm değişmiyor. `renderAll()` artık `showSection(currentSection)` çağırıyor.
+  - Masa açıkken `switchMainTab('vtt')` sayfaya `activeTab` yazmıyor ve kayıt yapmıyor.
+  - Karakter bölümü: eski başlık (alt başlık, dört sekme, HP / para / ağırlık / + Add Item) ve DM barı `.character-only` sınıfında. Bu sınıf diğer iki bölümde gizleniyor.
+  - Kampanya bölümü şimdilik bir iskelet (`renderCampaignHome`): kampanya adı, rolün; Masaya git, Karakter, Günlük, Kampanya değiştir düğmeleri. DM için ek olarak Manage, Invite, Homebrew ve Item store. Asıl ekran L2'de yapılacak.
+  - Telefonda (375 px) üç bölümde de sayfa yatay kaymıyor. VTT araç çubuğu kendi içinde kayıyor; bu L4/L5'te ele alınacak.
 - **L2.** Kampanya ekranı.
 - **L3.** Karakter ekranı: karakter şeridi ve beş sekme. Mevcut panellerin taşınması.
 - **L4.** Masa ekranı: tam genişlik harita, sol araçlar, sağ panel.
