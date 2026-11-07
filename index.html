@@ -360,6 +360,19 @@
     .action-sub { margin: 8px 0 2px; font-family: var(--font-display); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-2-strong); }
     .action-dc { font-family: var(--font-mono); font-weight: 700; font-size: 11px; padding: 2px 6px; border: 1px dashed var(--border); border-radius: 4px; color: var(--gold-bright); }
     .spellcasting-card .action-sub:first-child { margin-top: 0; }
+    /* Prepared spells (feature plan 3.5) */
+    .spell-prepared-status { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .prep-count { font-size: 11px; color: var(--text-dim); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+    .prep-count b { color: var(--gold-bright); font-family: var(--font-mono); }
+    .prep-count.over b { color: var(--danger-strong); }
+    .prep-toggle.on { border-color: var(--success); color: var(--success); }
+    .prep-lock { font-size: 11px; color: var(--gold-bright); align-self: center; white-space: nowrap; }
+    .spell-list-item.unprepared .spell-name { opacity: 0.7; }
+    /* Phones: the buttons go under the spell's text instead of pushing the card sideways. */
+    @media (max-width: 640px) {
+      .spell-list-item { flex-wrap: wrap; }
+      .spell-list-item .spell-actions { flex-wrap: wrap; flex-shrink: 1; width: 100%; justify-content: flex-end; }
+    }
     .strip-dice-mode button { background: var(--panel-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 4px 6px; cursor: pointer; }
     .strip-dice-mode button:first-child { border-radius: 6px 0 0 6px; }
     .strip-dice-mode button:last-child { border-radius: 0 6px 6px 0; }
@@ -9374,7 +9387,10 @@
     function syncBuildSpellsToSheet(sheet, derived, rules) {
       if (!rules.spells || !derived || !derived.spellcasting || !derived.spellcasting.spells) return;
       sheet.spellbook = sheet.spellbook || {};
-      const list = (Array.isArray(sheet.spellbook.list) ? sheet.spellbook.list : []).filter((s) => !s.fromBuild);
+      const old = Array.isArray(sheet.spellbook.list) ? sheet.spellbook.list : [];
+      const list = old.filter((s) => !s.fromBuild);
+      // Today's preparations survive a rebuild (feature plan 3.5).
+      const wasPrepared = new Set(old.filter((s) => s.fromBuild && s.prepared).map((s) => s.name));
       derived.spellcasting.spells.forEach((x) => {
         const sp = rules.spells[x.id];
         if (!sp) return;
@@ -9389,7 +9405,7 @@
         // A spell the player added by hand is kept as theirs, not doubled.
         if (list.some((s) => isSameSpell(s, Object.assign({ aliases: (cat && cat.aliases) || [] }, entry)))) return;
         if (list.some((s) => s.fromBuild && s.name === entry.name)) return;
-        list.push(Object.assign(entry, { fromBuild: true, buildKind: x.kind }));
+        list.push(Object.assign(entry, { fromBuild: true, buildKind: x.kind, buildClass: x.source }, wasPrepared.has(entry.name) ? { prepared: true } : {}));
       });
       sheet.spellbook.list = list;
     }
@@ -10459,6 +10475,7 @@
           '<div>' +
           '<div class="panel-title" style="font-size:18px; margin:0;">📖 My Spell List (Prepared & Learned)</div>' +
           '<div class="spell-status" id="spell-list-status" style="margin-top:2px;">0 saved</div>' +
+          '<div class="spell-prepared-status" id="spell-prepared-status" style="display:none"></div>' +
           '</div>' +
           '<div style="display:flex; gap:8px; align-items:center;">' +
           '<input type="text" id="my-spells-search" class="my-spells-filter" data-my-filter="query" placeholder="🔍 Search my spells..." oninput="updateMySpellsSearch(this.value)" style="padding:6px 12px; font-size:12px; max-width:200px; border-radius:6px; background:var(--well-2); border:1px solid var(--border); color:var(--text);">' +
@@ -11286,6 +11303,16 @@
       const statusBox = document.getElementById('spell-catalog-status');
       const errorBox = document.getElementById('spell-catalog-error');
       const listStatusBox = document.getElementById('spell-list-status');
+      const prepPlan = spellPreparedPlan(rawList);
+      const prepStatus = document.getElementById('spell-prepared-status');
+      if (prepStatus) {
+        prepStatus.style.display = prepPlan.classes.length ? '' : 'none';
+        prepStatus.innerHTML = prepPlan.classes.map(function (c) {
+          return '<span class="prep-count' + (c.count > c.limit ? ' over' : '') + '" title="' + escapeHtml(c.name) + ' prepares ' + c.limit + ' spells today (' +
+            (c.from === 'spellbook' ? 'from the spellbook' : 'from the class list') + '); cantrips and always-prepared spells do not count.">📿 ' +
+            escapeHtml(c.name) + ' prepared: <b>' + c.count + ' / ' + c.limit + '</b></span>';
+        }).join(' ');
+      }
 
       const countsPerLevel = {};
       for (let l = 0; l <= 9; l++) countsPerLevel[l] = 0;
@@ -11389,7 +11416,15 @@
               (catalogSpell && catalogSpell.concentration ? ' <span class="badge" title="Needs concentration">Conc.</span>' : '') +
               (catalogSpell && catalogSpell.ritual ? ' <span class="badge" title="Can be cast as a ritual">Ritual</span>' : '') +
               (catalogSpell && catalogSpell.detail === 'name-only' ? ' <span class="badge" title="Not in the SRD: see the book">📕 Book only</span>' : '');
-            return '<div class="spell-list-item">' +
+            const prep = prepPlan.spells[rawList.indexOf(spell)] || { status: 'other' };
+            let prepHtml = '';
+            if (prep.status === 'always') prepHtml = '<span class="prep-lock" title="Always prepared by your class or subclass; does not count against the limit">🔒 Always prepared</span>';
+            else if (prep.status === 'preparable') {
+              const blocked = !prep.prepared && prepPlan.full[prep.classId];
+              prepHtml = '<button type="button" class="btn small prep-toggle' + (prep.prepared ? ' on' : ' ghost') + '"' + (blocked ? ' disabled title="You have prepared as many spells as you can today. Unprepare one first."' : ' title="Prepared today: you can cast it with your spell slots"') +
+                ' aria-pressed="' + prep.prepared + '" onclick="toggleSpellPrepared(\'' + escapedName + '\', \'' + rs + '\')">' + (prep.prepared ? '✅ Prepared' : '☐ Prepare') + '</button>';
+            }
+            return '<div class="spell-list-item' + (prep.status === 'preparable' && !prep.prepared ? ' unprepared' : '') + '">' +
               '<div style="flex:1;">' +
               '<div class="spell-name">' + escapeHtml(spell.name) + '</div>' +
               '<div class="spell-meta">' + classBadge + ' ' + levelBadge + ' ' + (schoolBadge ? '<span class="badge school">' + escapeHtml(schoolBadge) + '</span>' : '') + flagBadges + ' ' + damageBadge + (scalingBadge ? ' ' + scalingBadge : '') + (spell.source ? ' · <span class="badge" title="' + escapeHtml(typeof getSourceFullName === 'function' ? getSourceFullName(spell.source) : spell.source) + '" style="border-color:color-mix(in srgb, var(--accent-2) 50%, transparent); color:var(--accent-2-strong); background:var(--well-2); font-size:11px;">📚 ' + escapeHtml(typeof getSourceShortLabel === 'function' ? getSourceShortLabel(spell.source) : spell.source) + '</span>' : '') + '</div>' +
@@ -11397,6 +11432,7 @@
               '</div>' +
               '<div class="spell-actions">' +
               '<button class="btn ghost small" title="View D&D Beyond style spell details" onclick="openSpellDetailModal(\'' + escapedName + '\', \'' + rs + '\')">👁️ View</button>' +
+              prepHtml +
               '<button class="btn ghost small" onclick="removeSpellFromList(\'' + escapedName + '\', \'' + rs + '\')">Remove</button>' +
               '</div>' +
               '</div>';
@@ -12254,6 +12290,28 @@
 
     // ruleset tells the 2014 and 2024 versions of a saved spell apart; without it
     // every saved spell of that name goes.
+    /* ---------- Prepared spells (feature plan 3.5, SheetMaths.preparedPlan) ---------- */
+    function spellPreparedPlan(list) {
+      if (!window.SheetMaths || !state.characterStats) return { classes: [], spells: [], full: {} };
+      const M = window.SheetMaths;
+      const cs = state.characterStats;
+      const scores = M.effectiveScores(cs, getEquippedItemBonuses().totals);
+      return M.preparedPlan(list || [], M.castingClasses(cs, state.build, window.RULES_SRD5), scores);
+    }
+
+    function toggleSpellPrepared(name, ruleset) {
+      const list = (state.spellbook && state.spellbook.list) || [];
+      const i = list.findIndex(function (s) { return s.name === name && (!ruleset || spellRuleset(s) === ruleset); });
+      if (i < 0) return;
+      const plan = spellPreparedPlan(list);
+      const p = plan.spells[i];
+      if (!p || p.status !== 'preparable') return;
+      if (!p.prepared && plan.full[p.classId]) { toast('You have prepared as many spells as you can today. Unprepare one first.'); return; }
+      list[i].prepared = !p.prepared;
+      save();
+      renderSpellbookMenu();
+    }
+
     function removeSpellFromList(name, ruleset) {
       state.spellbook.list = state.spellbook.list.filter(function (spell) {
         return !(spell.name === name && (!ruleset || spellRuleset(spell) === ruleset));

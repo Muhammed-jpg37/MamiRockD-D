@@ -136,9 +136,9 @@ const srdSpell = (name) => SRD_SPELLS.find((s) => s.name === name);
 
 test('sheet maths: spellcasting classes from the build, or from the class text', () => {
   const build = { classes: [{ id: 'fighter', level: 3 }, { id: 'wizard', level: 2 }, { id: 'paladin', level: 1 }] };
-  assert.deepEqual(M.castingClasses({}, build, SRD_RULES), [{ id: 'wizard', name: 'Wizard', level: 2, ability: 'int' }],
+  assert.deepEqual(M.castingClasses({}, build, SRD_RULES), [{ id: 'wizard', name: 'Wizard', level: 2, ability: 'int', prepares: { divisor: 1, from: 'spellbook' } }],
     'fighters do not cast; a level 1 paladin does not cast yet');
-  assert.deepEqual(M.castingClasses({ characterClass: 'Cleric', level: 7 }), [{ id: 'cleric', name: 'Cleric', level: 7, ability: 'wis' }]);
+  assert.deepEqual(M.castingClasses({ characterClass: 'Cleric', level: 7 }), [{ id: 'cleric', name: 'Cleric', level: 7, ability: 'wis', prepares: { divisor: 1, from: 'list' } }]);
   assert.deepEqual(M.castingClasses({ characterClass: 'Bard 3 / Warlock 2', level: 5 }).map((c) => c.id + c.level + c.ability), ['bard3cha', 'warlock2cha']);
   assert.deepEqual(M.castingClasses({ characterClass: 'Ranger', level: 1 }), [], 'rangers cast from level 2');
   assert.deepEqual(M.castingClasses({ characterClass: 'Dungeon Master', level: 20 }), []);
@@ -236,4 +236,56 @@ test('sheet maths: AC features from a plain sheet', () => {
   assert.equal(M.acFeatures({ characterClass: 'Sorcerer', subclass: 'Wild Magic' }).unarmored.length, 0);
   assert.equal(M.acFeatures({ characterClass: 'Fighter' }, null, null, ['Second Wind', 'Fighting Style: Defense']).defenseStyle, true);
   assert.equal(M.acFeatures({ characterClass: 'Wizard' }).unarmored.length, 0);
+});
+
+/* ---------- 3.5 Prepared spells ---------- */
+
+test('sheet maths: how many spells each class prepares today', () => {
+  const cleric = M.castingClasses({ characterClass: 'Cleric', level: 5 });
+  assert.deepEqual(M.preparedPlan([], cleric, { wis: 16 }).classes, [{ id: 'cleric', name: 'Cleric', from: 'list', limit: 8, count: 0 }], 'WIS +3 + level 5');
+  const paladin = M.castingClasses({ characterClass: 'Paladin', level: 5 });
+  assert.equal(M.preparedPlan([], paladin, { cha: 14 }).classes[0].limit, 4, 'CHA +2 + half of 5');
+  assert.equal(M.preparedPlan([], M.castingClasses({ characterClass: 'Wizard', level: 1 }), { int: 6 }).classes[0].limit, 1, 'at least one');
+  assert.deepEqual(M.preparedPlan([], M.castingClasses({ characterClass: 'Bard', level: 5 }), { cha: 18 }).classes, [], 'bards know their spells');
+  // From the builder: the rules say who prepares.
+  const fromBuild = M.castingClasses({}, { classes: [{ id: 'druid', level: 3 }] }, SRD_RULES);
+  assert.equal(M.preparedPlan([], fromBuild, { wis: 14 }).classes[0].limit, 5);
+});
+
+test('sheet maths: which saved spells can be prepared', () => {
+  const classes = M.castingClasses({}, { classes: [{ id: 'cleric', level: 3 }, { id: 'bard', level: 2 }] }, SRD_RULES);
+  const list = [
+    { name: 'Sacred Flame', levelNum: 0 },
+    { name: 'Bless', levelNum: 1, fromBuild: true, buildKind: 'always', buildClass: 'cleric' },
+    { name: 'Healing Word', levelNum: 1, classes: ['Bard', 'Cleric', 'Druid'], prepared: true },
+    { name: 'Guiding Bolt', levelNum: 1, classes: ['Cleric'] },
+    { name: 'Charm Person', levelNum: 1, fromBuild: true, buildKind: 'known', buildClass: 'bard' },
+    { name: 'Thunderwave', levelNum: 1, classes: ['Bard', 'Druid', 'Sorcerer', 'Wizard'] },
+    { name: 'Magic Missile', levelNum: 1, classes: ['Sorcerer', 'Wizard'] },
+  ];
+  const plan = M.preparedPlan(list, classes, { wis: 14, cha: 14 });
+  assert.deepEqual(plan.spells.map((s) => s.status), ['cantrip', 'always', 'preparable', 'preparable', 'ready', 'ready', 'other']);
+  assert.equal(plan.spells[2].classId, 'cleric');
+  assert.deepEqual(plan.classes, [{ id: 'cleric', name: 'Cleric', from: 'list', limit: 5, count: 1 }], 'always-prepared spells do not count');
+  assert.deepEqual(plan.full, {});
+  const full = M.preparedPlan(list.map((s) => Object.assign({}, s, { prepared: s.name === 'Healing Word' || s.name === 'Guiding Bolt' })), classes, { wis: 1, cha: 14 });
+  assert.equal(full.classes[0].limit, 1);
+  assert.equal(full.classes[0].count, 2);
+  assert.equal(full.full.cleric, true);
+});
+
+test('sheet maths: wizards prepare from their spellbook', () => {
+  const classes = M.castingClasses({}, { classes: [{ id: 'wizard', level: 4 }] }, SRD_RULES);
+  const list = [
+    { name: 'Shield', levelNum: 1, fromBuild: true, buildKind: 'spellbook', buildClass: 'wizard', prepared: true },
+    { name: 'Sleep', levelNum: 1, classes: ['Bard', 'Sorcerer', 'Wizard'] },
+    { name: 'Cure Wounds', levelNum: 1, classes: ['Bard', 'Cleric', 'Druid', 'Paladin', 'Ranger'] },
+  ];
+  const plan = M.preparedPlan(list, classes, { int: 16 });
+  assert.deepEqual(plan.spells.map((s) => s.status + ':' + s.classId), ['preparable:wizard', 'preparable:wizard', 'other:null']);
+  assert.equal(plan.classes[0].limit, 7);
+  assert.equal(plan.classes[0].count, 1);
+  // A plain one-class sheet: a spell saved without a class list is theirs.
+  const plain = M.preparedPlan([{ name: 'Homebrew Zap', levelNum: 2 }], M.castingClasses({ characterClass: 'Druid', level: 3 }), { wis: 12 });
+  assert.equal(plain.spells[0].status, 'preparable');
 });

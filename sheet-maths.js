@@ -176,6 +176,9 @@
   const CASTER_ABILITY = { bard: 'cha', cleric: 'wis', druid: 'wis', paladin: 'cha', ranger: 'wis', sorcerer: 'cha', warlock: 'cha', wizard: 'int', artificer: 'int' };
   // Half casters (2014) cast from level 2.
   const FIRST_CASTING_LEVEL = { paladin: 2, ranger: 2 };
+  // Classes that prepare spells each day (SRD 5.1): ability mod + class level / divisor.
+  // The wizard prepares from the spellbook; the others from their whole class list.
+  const PREPARERS = { cleric: { divisor: 1, from: 'list' }, druid: { divisor: 1, from: 'list' }, paladin: { divisor: 2, from: 'list' }, wizard: { divisor: 1, from: 'spellbook' } };
 
   // The sheet's spellcasting classes: [{ id, name, level, ability }].
   // From the builder's build when there is one (rules: RULES_SRD5 with homebrew merged),
@@ -189,7 +192,9 @@
         const sc = def && def.spellcasting;
         const level = Number(c.level) || 0;
         if (!sc || !sc.ability || level < (FIRST_CASTING_LEVEL[c.id] || 1)) return;
-        out.push({ id: c.id, name: def.name, level: level, ability: sc.ability });
+        const entry = { id: c.id, name: def.name, level: level, ability: sc.ability };
+        if (sc.prepared) entry.prepares = { divisor: sc.prepared.levelDivisor || 1, from: sc.prepared.from || 'list' };
+        out.push(entry);
       });
       return out;
     }
@@ -202,9 +207,54 @@
       const level = m && m[2] ? Number(m[2]) : (parts.length === 1 ? Number(cs.level) || 1 : 0);
       const ability = CASTER_ABILITY[id];
       if (!ability || level < (FIRST_CASTING_LEVEL[id] || 1)) return;
-      out.push({ id: id, name: name, level: level, ability: ability });
+      const entry = { id: id, name: name, level: level, ability: ability };
+      if (PREPARERS[id]) entry.prepares = Object.assign({}, PREPARERS[id]);
+      out.push(entry);
     });
     return out;
+  }
+
+  /* ---------- 3.5 Prepared spells ---------- */
+
+  // Which saved spells can be prepared, by which class, and how many each class may prepare today.
+  // list: the sheet's spells (state.spellbook.list: name, levelNum, classes, fromBuild, buildKind,
+  //       buildClass, prepared); classes: castingClasses(); scores: current ability scores.
+  // -> { classes: [{ id, name, limit, count, from }], spells: [{ status, classId, prepared }] (same order
+  //      as list), full: { classId: true when at the limit } }
+  // status: 'cantrip' | 'always' (always prepared, locked) | 'ready' (known / innate: no preparing)
+  //         | 'preparable' | 'other' (no class of this character prepares it)
+  function preparedPlan(list, classes, scores) {
+    const preparers = (classes || []).filter((c) => c.prepares);
+    const knowers = (classes || []).filter((c) => !c.prepares);
+    const planClasses = preparers.map((c) => ({
+      id: c.id, name: c.name, from: c.prepares.from,
+      limit: Math.max(1, mod((scores || {})[c.ability]) + Math.floor(c.level / (c.prepares.divisor || 1))),
+      count: 0,
+    }));
+    const byId = {};
+    planClasses.forEach((c) => { byId[c.id] = c; });
+    const onList = (spell, c) => (spell.classes || []).some((x) => String(x).toLowerCase() === c.id || String(x).toLowerCase() === String(c.name).toLowerCase());
+    const spells = (list || []).map((spell) => {
+      const level = Number(spell && (spell.levelNum !== undefined ? spell.levelNum : spell.level)) || 0;
+      if (!spell || level === 0) return { status: 'cantrip', classId: null, prepared: false };
+      const kind = spell.buildKind;
+      if (kind === 'always') return { status: 'always', classId: spell.buildClass || null, prepared: true };
+      if (kind === 'known' || kind === 'secret' || kind === 'arcanum' || kind === 'innate') return { status: 'ready', classId: spell.buildClass || null, prepared: false };
+      let c = null;
+      if (kind === 'spellbook') c = byId.wizard || null;
+      else if (spell.buildClass && byId[spell.buildClass]) c = byId[spell.buildClass];
+      else c = planClasses.find((p) => onList(spell, p)) || null;
+      if (!c && knowers.some((k) => onList(spell, k))) return { status: 'ready', classId: null, prepared: false };
+      // A spell with no class list on a single preparing caster's sheet is theirs to prepare.
+      if (!c && !(spell.classes || []).length && planClasses.length === 1) c = planClasses[0];
+      if (!c) return { status: 'other', classId: null, prepared: false };
+      const prepared = !!spell.prepared;
+      if (prepared) c.count++;
+      return { status: 'preparable', classId: c.id, prepared: prepared };
+    });
+    const full = {};
+    planClasses.forEach((c) => { if (c.count >= c.limit) full[c.id] = true; });
+    return { classes: planClasses, spells: spells, full: full };
   }
 
   // Save DC = 8 + PB + mod, spell attack = PB + mod, per class.
@@ -373,5 +423,6 @@
     CASTER_ABILITY: CASTER_ABILITY, castingClasses: castingClasses, spellStats: spellStats,
     cantripTier: cantripTier, scaleDice: scaleDice, cantripLine: cantripLine,
     acFeatures: acFeatures, armorClass: armorClass,
+    PREPARERS: PREPARERS, preparedPlan: preparedPlan,
   };
 })(typeof window !== 'undefined' ? window : this);
