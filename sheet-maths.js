@@ -275,6 +275,85 @@
     };
   }
 
+  /* ---------- 3.3 Armour class ---------- */
+
+  // What the character's classes and choices add to AC, from the builder build when there is one,
+  // else from the sheet's class / subclass text and feature card names.
+  // -> { unarmored: [{ source, base, add: ['con'], noShield }], defenseStyle: bool }
+  function acFeatures(cs, build, rules, featureNames) {
+    cs = cs || {};
+    const unarmored = [];
+    let defenseStyle = false;
+    if (build && Array.isArray(build.classes) && build.classes.length && rules && rules.classes) {
+      build.classes.forEach((c) => {
+        const def = c && rules.classes[c.id];
+        if (!def) return;
+        if (def.unarmoredDefense) {
+          unarmored.push({ source: def.name + ' Unarmored Defense', base: 10, add: def.unarmoredDefense.filter((a) => a !== 'dex'), noShield: c.id === 'monk' });
+        }
+        const sub = c.subclass && def.subclasses && def.subclasses[c.subclass];
+        if (sub && sub.unarmoredBase) unarmored.push({ source: sub.name + ' (Draconic Resilience)', base: sub.unarmoredBase, add: [], noShield: false });
+      });
+      const styles = (build.choices && build.choices.fightingStyles) || {};
+      defenseStyle = Object.keys(styles).some((k) => styles[k] === 'defense');
+    } else {
+      const text = String(cs.characterClass || '').toLowerCase();
+      if (/\bbarbarian\b/.test(text)) unarmored.push({ source: 'Barbarian Unarmored Defense', base: 10, add: ['con'], noShield: false });
+      if (/\bmonk\b/.test(text)) unarmored.push({ source: 'Monk Unarmored Defense', base: 10, add: ['wis'], noShield: true });
+      if (/\bsorcerer\b/.test(text) && /draconic/i.test(String(cs.subclass || ''))) unarmored.push({ source: 'Draconic Resilience', base: 13, add: [], noShield: false });
+    }
+    if (!defenseStyle) defenseStyle = (featureNames || []).some((n) => /fighting style:\s*defen[cs]e\b/i.test(String(n)));
+    return { unarmored: unarmored, defenseStyle: defenseStyle };
+  }
+
+  // The sheet's AC.
+  // o: { scores (with item bonuses), armor: { name, ac, category: 'Light'|'Medium'|'Heavy' } | null,
+  //      shield, magic, custom (numbers), dexMode: 'auto'|'none'|'full'|'cap2',
+  //      manualBase: the player's own unarmoured base (DEX is added to it) or undefined,
+  //      features: acFeatures() }
+  // -> { totalAc, baseAc, armorName, armorCategory, dexContribution, dexMod, dexMode, abilityBonus,
+  //      shieldAc, magicAc, customAcBonus, defenseBonus, source }
+  function armorClass(o) {
+    o = o || {};
+    const m = (k) => mod((o.scores || {})[k]);
+    const dexMod = m('dex');
+    const dexMode = o.dexMode || 'auto';
+    const feats = o.features || { unarmored: [], defenseStyle: false };
+    const shield = Number(o.shield) || 0;
+    let baseAc = 10, armorName = 'Unarmored', armorCategory = 'Unarmored', abilityBonus = 0, source = 'Unarmored';
+    if (o.armor) {
+      baseAc = Number(o.armor.ac) || 10;
+      armorName = o.armor.name || 'Armor';
+      armorCategory = o.armor.category || 'Medium';
+      source = armorName;
+    } else {
+      // The best unarmoured formula: the player's own base, or a class feature.
+      const manual = o.manualBase !== undefined && o.manualBase !== null && o.manualBase !== '' ? Number(o.manualBase) : 10;
+      baseAc = manual;
+      source = manual === 10 ? 'Unarmored' : 'Unarmored (set by hand)';
+      (feats.unarmored || []).forEach((u) => {
+        if (u.noShield && shield) return;
+        const bonus = (u.add || []).reduce((s, a) => s + m(a), 0);
+        if (u.base + bonus > baseAc + abilityBonus) { baseAc = u.base; abilityBonus = bonus; source = u.source; }
+      });
+    }
+    let dexContribution;
+    if (dexMode === 'none') dexContribution = 0;
+    else if (dexMode === 'full') dexContribution = dexMod;
+    else if (dexMode === 'cap2') dexContribution = Math.min(2, dexMod);
+    else dexContribution = armorCategory === 'Heavy' ? 0 : armorCategory === 'Medium' ? Math.min(2, dexMod) : dexMod;
+    // Defense fighting style: +1 while wearing armour.
+    const defenseBonus = feats.defenseStyle && o.armor ? 1 : 0;
+    const magicAc = Number(o.magic) || 0;
+    const customAc = Number(o.custom) || 0;
+    return {
+      totalAc: baseAc + abilityBonus + dexContribution + shield + magicAc + customAc + defenseBonus,
+      baseAc: baseAc, armorName: armorName, armorCategory: armorCategory,
+      dexContribution: dexContribution, dexMod: dexMod, dexMode: dexMode, abilityBonus: abilityBonus,
+      shieldAc: shield, magicAc: magicAc, customAcBonus: customAc, defenseBonus: defenseBonus, source: source,
+    };
+  }
+
   // A critical hit rolls the damage dice twice (SRD 5.1): "1d8+3" -> "2d8+3", "2d6+1d4-1" -> "4d6+2d4-1".
   function critDamage(expr) {
     return String(expr || '').replace(/(\d*)d(\d+)/gi, (m, n, sides) => (2 * (Number(n) || 1)) + 'd' + sides);
@@ -293,5 +372,6 @@
     effectiveScores: effectiveScores, critDamage: critDamage,
     CASTER_ABILITY: CASTER_ABILITY, castingClasses: castingClasses, spellStats: spellStats,
     cantripTier: cantripTier, scaleDice: scaleDice, cantripLine: cantripLine,
+    acFeatures: acFeatures, armorClass: armorClass,
   };
 })(typeof window !== 'undefined' ? window : this);

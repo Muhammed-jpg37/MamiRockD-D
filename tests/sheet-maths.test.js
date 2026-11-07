@@ -188,3 +188,52 @@ test('sheet maths: Eldritch Blast adds beams; non-damage and levelled spells giv
   assert.equal(homebrew.damageType, 'cold');
   assert.equal(homebrew.kind, 'attack');
 });
+
+/* ---------- 3.3 Armour class ---------- */
+
+const AC = (o) => M.armorClass(o).totalAc;
+
+test('sheet maths: armour, DEX caps, shield and magic', () => {
+  const scores = { dex: 16 };
+  assert.equal(AC({ scores }), 13, 'unarmoured: 10 + DEX');
+  assert.equal(AC({ scores, armor: { name: 'Leather', ac: 11, category: 'Light' } }), 14);
+  assert.equal(AC({ scores, armor: { name: 'Scale mail', ac: 14, category: 'Medium' } }), 16, 'medium armour caps DEX at +2');
+  assert.equal(AC({ scores, armor: { name: 'Plate', ac: 18, category: 'Heavy' }, shield: 2, magic: 1 }), 21, 'heavy armour ignores DEX');
+  assert.equal(AC({ scores, dexMode: 'none' }), 10);
+  assert.equal(AC({ scores, manualBase: 12, custom: 1 }), 16, 'a base set by hand still adds DEX');
+});
+
+test('sheet maths: Unarmored Defense, Draconic Resilience and the Defense style', () => {
+  const build = (classes, styles) => ({ classes: classes, choices: { fightingStyles: styles || {} } });
+  const barb = M.acFeatures({}, build([{ id: 'barbarian', level: 1 }]), SRD_RULES);
+  assert.equal(barb.unarmored[0].add.join(), 'con');
+  assert.equal(AC({ scores: { dex: 14, con: 16 }, features: barb }), 15, '10 + DEX + CON');
+  assert.equal(AC({ scores: { dex: 14, con: 16 }, features: barb, shield: 2 }), 17, 'barbarians keep it with a shield');
+  assert.equal(AC({ scores: { dex: 14, con: 16 }, features: barb, armor: { name: 'Chain shirt', ac: 13, category: 'Medium' } }), 15, 'armour replaces it');
+  assert.equal(M.armorClass({ scores: { dex: 14, con: 16 }, features: barb }).source, 'Barbarian Unarmored Defense');
+
+  const monk = M.acFeatures({}, build([{ id: 'monk', level: 3 }]), SRD_RULES);
+  assert.equal(AC({ scores: { dex: 16, wis: 16 }, features: monk }), 16, '10 + DEX + WIS');
+  assert.equal(AC({ scores: { dex: 16, wis: 16 }, features: monk, shield: 2 }), 15, 'monks lose it with a shield');
+
+  const dragon = M.acFeatures({}, build([{ id: 'sorcerer', level: 1, subclass: 'draconic' }]), SRD_RULES);
+  assert.equal(dragon.unarmored.length, 1, 'draconic bloodline found in the rules');
+  assert.equal(AC({ scores: { dex: 14 }, features: dragon }), 15, '13 + DEX');
+
+  // A low CON never makes it worse than plain 10 + DEX.
+  assert.equal(AC({ scores: { dex: 14, con: 8 }, features: barb }), 12);
+
+  const fighter = M.acFeatures({}, build([{ id: 'fighter', level: 1 }], { 'fighter:1': 'defense' }), SRD_RULES);
+  assert.equal(fighter.defenseStyle, true);
+  assert.equal(AC({ scores: { dex: 10 }, features: fighter, armor: { name: 'Chain mail', ac: 16, category: 'Heavy' } }), 17, '+1 in armour');
+  assert.equal(AC({ scores: { dex: 10 }, features: fighter }), 10, 'nothing without armour');
+});
+
+test('sheet maths: AC features from a plain sheet', () => {
+  assert.equal(M.acFeatures({ characterClass: 'Barbarian' }).unarmored[0].add.join(), 'con');
+  assert.equal(M.acFeatures({ characterClass: 'Fighter 2 / Monk 3' }).unarmored[0].noShield, true);
+  assert.equal(M.acFeatures({ characterClass: 'Sorcerer', subclass: 'Draconic Bloodline' }).unarmored[0].base, 13);
+  assert.equal(M.acFeatures({ characterClass: 'Sorcerer', subclass: 'Wild Magic' }).unarmored.length, 0);
+  assert.equal(M.acFeatures({ characterClass: 'Fighter' }, null, null, ['Second Wind', 'Fighting Style: Defense']).defenseStyle, true);
+  assert.equal(M.acFeatures({ characterClass: 'Wizard' }).unarmored.length, 0);
+});

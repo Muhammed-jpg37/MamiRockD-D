@@ -7345,9 +7345,13 @@
         });
 
         // 2. Armor and AC Classification
-        const isChest = item.slot === 'chest' || item.type === 'Armor';
-        const isShield = item.type === 'Shield' || (item.slot === 'off' && (item.type === 'Shield' || /shield/i.test(item.name)));
-        const explicitAc = sb.ac !== undefined && sb.ac !== null ? Number(sb.ac) : 0;
+        // Builder starter gear (feature plan 3.3) uses category 'armor' / 'shield', baseAc, armorType
+        // and acBonus instead of type, statBonuses.ac and armorCategory.
+        const isChest = item.slot === 'chest' || item.type === 'Armor' || item.category === 'armor';
+        const isShield = item.type === 'Shield' || item.category === 'shield' || (item.slot === 'off' && (item.type === 'Shield' || /shield/i.test(item.name)));
+        const explicitAc = sb.ac !== undefined && sb.ac !== null && Number(sb.ac) !== 0 ? Number(sb.ac)
+          : (item.category === 'armor' && Number(item.baseAc) ? Number(item.baseAc) : (item.category === 'shield' && Number(item.acBonus) ? Number(item.acBonus) : 0));
+        if (!item.armorCategory && ['Light', 'Medium', 'Heavy'].includes(item.armorType)) item = Object.assign({}, item, { armorCategory: item.armorType });
         const isExplicitArmorCat = item.armorCategory === 'Medium' || item.armorCategory === 'Light' || item.armorCategory === 'Heavy';
         const isBaseArmor = isChest && !isShield && (explicitAc >= 10 || isExplicitArmorCat || /armor|mail|plate|hide|leather/i.test(item.name));
 
@@ -7470,65 +7474,45 @@
       };
     }
 
+    // The sheet's AC (feature plan 3.3: SheetMaths.armorClass). Armour from the equipped items;
+    // without armour the best of: the player's own unarmoured base, Unarmored Defense (barbarian
+    // CON, monk WIS without a shield), Draconic Resilience (13); DEX by the armour's category;
+    // shield, magic and the custom bonus; +1 for the Defense fighting style while armoured.
     function calculateCharacterAC(itemBonuses) {
       if (!itemBonuses) itemBonuses = getEquippedItemBonuses();
       const cs = state.characterStats || {};
-      const effDex = Number(cs.dex !== undefined ? cs.dex : 10) + (itemBonuses.totals.dex || 0);
-      const dexMod = getAbilityMod(effDex);
-
-      // 1. Base Armor AC
-      let baseAc = 10;
-      let armorName = 'Unarmored';
-      let armorCategory = 'Unarmored';
-
-      if (itemBonuses.baseArmorItem) {
-        baseAc = itemBonuses.baseArmorAc;
-        armorName = itemBonuses.baseArmorItem.name;
-        armorCategory = itemBonuses.baseArmorCategory || 'Medium';
-      } else {
-        baseAc = Number(cs.unarmoredBaseAc !== undefined ? cs.unarmoredBaseAc : (cs.ac !== undefined && cs.ac >= 10 ? cs.ac : 10));
-      }
-
-      // 2. DEX Contribution: Add / Remove DEX modifier
-      // cs.acDexMode: 'auto' (5e rules), 'none' (remove DEX), 'full' (always add full DEX), 'cap2' (max +2)
-      const dexMode = cs.acDexMode || 'auto';
-      let dexContribution = 0;
-
-      if (dexMode === 'none') {
-        dexContribution = 0; // Explicitly removed!
-      } else if (dexMode === 'full') {
-        dexContribution = dexMod;
-      } else if (dexMode === 'cap2') {
-        dexContribution = Math.min(2, dexMod);
-      } else {
-        // 'auto' - Standard 5e Rules
-        if (armorCategory === 'Heavy') {
-          dexContribution = 0;
-        } else if (armorCategory === 'Medium') {
-          dexContribution = Math.min(2, dexMod);
-        } else {
-          // Light or Unarmored
-          dexContribution = dexMod;
-        }
-      }
-
-      const shieldAc = itemBonuses.shieldBonus || 0;
-      const magicAc = itemBonuses.otherAcBonuses || 0;
-      const customAc = Number(cs.acCustomBonus || 0);
-      const totalAc = baseAc + dexContribution + shieldAc + magicAc + customAc;
-
-      return {
-        totalAc: totalAc,
-        baseAc: baseAc,
-        armorName: armorName,
-        armorCategory: armorCategory,
-        dexContribution: dexContribution,
-        dexMod: dexMod,
-        dexMode: dexMode,
-        shieldAc: shieldAc,
-        magicAc: magicAc,
-        customAcBonus: customAc
+      const M = window.SheetMaths;
+      // The unarmoured base the player set by hand. A builder sheet's cs.ac is a total that
+      // already holds DEX (and armour), so it is not a base; older plain sheets kept their base in cs.ac.
+      let manualBase;
+      if (cs.unarmoredBaseAc !== undefined && cs.unarmoredBaseAc !== null && cs.unarmoredBaseAc !== '') manualBase = Number(cs.unarmoredBaseAc);
+      else if (!state.build) manualBase = (cs.ac !== undefined && cs.ac >= 10) ? Number(cs.ac) : 10;
+      const armor = itemBonuses.baseArmorItem
+        ? { name: itemBonuses.baseArmorItem.name, ac: itemBonuses.baseArmorAc, category: itemBonuses.baseArmorCategory || 'Medium' }
+        : null;
+      const input = {
+        scores: { dex: Number(cs.dex !== undefined ? cs.dex : 10) + (itemBonuses.totals.dex || 0),
+          con: Number(cs.con !== undefined ? cs.con : 10) + (itemBonuses.totals.con || 0),
+          wis: Number(cs.wis !== undefined ? cs.wis : 10) + (itemBonuses.totals.wis || 0) },
+        armor: armor,
+        shield: itemBonuses.shieldBonus || 0,
+        magic: itemBonuses.otherAcBonuses || 0,
+        custom: Number(cs.acCustomBonus || 0),
+        dexMode: cs.acDexMode || 'auto',
+        manualBase: manualBase
       };
+      if (!M) {
+        // sheet-maths.js not loaded yet (it is deferred): armour, DEX and bonuses only.
+        const dexMod = getAbilityMod(input.scores.dex);
+        const cat = armor ? armor.category : 'Unarmored';
+        const dexC = input.dexMode === 'none' ? 0 : cat === 'Heavy' ? 0 : cat === 'Medium' ? Math.min(2, dexMod) : dexMod;
+        const base = armor ? Number(armor.ac) : (manualBase || 10);
+        return { totalAc: base + dexC + input.shield + input.magic + input.custom, baseAc: base, armorName: armor ? armor.name : 'Unarmored', armorCategory: cat,
+          dexContribution: dexC, dexMod: dexMod, dexMode: input.dexMode, shieldAc: input.shield, magicAc: input.magic, customAcBonus: input.custom, abilityBonus: 0, defenseBonus: 0, source: armor ? armor.name : 'Unarmored' };
+      }
+      const featureNames = ((state.features && state.features.items) || []).map(function (f) { return f && f.name; });
+      input.features = M.acFeatures(cs, state.build, window.RULES_SRD5, featureNames);
+      return M.armorClass(input);
     }
 
     function toggleAcDexMode() {
@@ -7814,7 +7798,7 @@
         combatBarEl.innerHTML = `<div class="combat-pill" style="cursor:pointer;" title="Click to change Proficiency Bonus" onclick="quickEditStat('profBonus')"><div class="val">${formatMod(prof)}</div><div class="lbl">Prof</div></div>
       <div class="combat-pill" style="cursor:pointer;" title="Base: ${baseSpeed}ft${speedBonus ? ' (' + (speedBonus > 0 ? '+' : '') + speedBonus + ' item)' : ''}. Click to change Speed" onclick="quickEditStat('speed')"><div class="val">${totalSpeed}ft${speedTag}</div><div class="lbl">Speed</div></div>
       <div class="combat-pill" style="cursor:pointer;" title="Base: ${formatMod(baseInit)}${initBonus ? ' (' + (initBonus > 0 ? '+' : '') + initBonus + ' item)' : ''}. Click to change Initiative Bonus" onclick="quickEditStat('initBonus')"><div class="val">${formatMod(totalInit)}${initTag}</div><div class="lbl">Init</div></div>
-      <div class="combat-pill" style="cursor:pointer;" title="AC: ${acInfo.totalAc} (${acInfo.armorName}: ${acInfo.baseAc} + DEX: ${acInfo.dexContribution >= 0 ? '+' : ''}${acInfo.dexContribution}${acInfo.shieldAc ? ' + Shield: +' + acInfo.shieldAc : ''}${acInfo.magicAc ? ' + Magic: +' + acInfo.magicAc : ''}). Click to configure AC & DEX bonus" onclick="quickEditAC()"><div class="val">${acInfo.totalAc}${acTag}</div><div class="lbl" style="display:flex; align-items:center; justify-content:center; gap:3px;">AC <span onclick="event.stopPropagation(); toggleAcDexMode();" title="${dexBadgeTitle}" style="font-size:8px; padding:1px 4px; border-radius:3px; background:color-mix(in srgb, var(--accent) 25%, transparent); color:var(--gold-bright); font-weight:bold; cursor:pointer;">${dexBadgeText}</span></div></div>`;
+      <div class="combat-pill" style="cursor:pointer;" title="AC: ${acInfo.totalAc} (${escapeHtml(acInfo.source || acInfo.armorName)}: ${acInfo.baseAc}${acInfo.abilityBonus ? ' + ' + acInfo.abilityBonus : ''} + DEX: ${acInfo.dexContribution >= 0 ? '+' : ''}${acInfo.dexContribution}${acInfo.shieldAc ? ' + Shield: +' + acInfo.shieldAc : ''}${acInfo.magicAc ? ' + Magic: +' + acInfo.magicAc : ''}${acInfo.defenseBonus ? ' + Defense style: +1' : ''}${acInfo.customAcBonus ? ' + Custom: ' + acInfo.customAcBonus : ''}). Click to configure AC & DEX bonus" onclick="quickEditAC()"><div class="val">${acInfo.totalAc}${acTag}</div><div class="lbl" style="display:flex; align-items:center; justify-content:center; gap:3px;">AC <span onclick="event.stopPropagation(); toggleAcDexMode();" title="${dexBadgeTitle}" style="font-size:8px; padding:1px 4px; border-radius:3px; background:color-mix(in srgb, var(--accent) 25%, transparent); color:var(--gold-bright); font-weight:bold; cursor:pointer;">${dexBadgeText}</span></div></div>`;
       }
 
       // The character strip's AC / Init / Speed: the same numbers, same click-to-edit as the Overview pills.
