@@ -5194,41 +5194,6 @@
     </div>
   </div>
 
-  <!-- DM CREATE PLAYER MODAL -->
-  <div class="overlay" id="dm-create-player-overlay">
-    <div class="modal" style="max-width: 420px;">
-      <div class="modal-header">
-        <div class="modal-title">👑 Create New Player Account</div>
-        <button class="btn-close" onclick="closeDmCreatePlayerModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;">Create an individual account and inventory for a player at your table.</div>
-        <div class="field" style="margin-bottom: 12px;">
-          <label>Player Nickname</label>
-          <input type="text" id="dm-new-player-nickname" placeholder="e.g. Aragorn">
-        </div>
-        <div class="field" style="margin-bottom: 12px;">
-          <label>Password</label>
-          <input type="text" id="dm-new-player-password" value="123" placeholder="Password">
-        </div>
-        <div class="field" style="margin-bottom: 12px;">
-          <label>Character Class &amp; Level</label>
-          <div style="display:flex; gap:8px;">
-            <input type="text" id="dm-new-player-class" placeholder="e.g. Ranger" style="flex:2;">
-            <input type="number" id="dm-new-player-level" value="5" min="1" max="20" style="flex:1;">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
-        <button class="btn ghost small" onclick="closeDmCreatePlayerModal()">Cancel</button>
-        <div style="display:flex; gap:8px;">
-          <button class="btn small" style="background:linear-gradient(180deg, var(--gold-bright), var(--accent)); color:#000; font-weight:bold;" onclick="dmOpenHeroForgeForPlayer()">⚔ Hero Forge</button>
-          <button class="btn small" onclick="dmSubmitCreatePlayer()">✨ Quick Create</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- DM QUICK GIFT LOOT MODAL -->
   <div class="overlay" id="dm-gift-loot-overlay">
     <div class="modal" style="max-width: 440px;">
@@ -5367,7 +5332,7 @@
       </select>
       <div id="dm-status-tag" class="dm-status-tag">Inspecting: Self</div>
       <button type="button" class="btn small" style="font-size:11px; padding:4px 10px;" onclick="openDmGiftLootModal()">🎁 Gift Loot</button>
-      <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="openDmCreatePlayerModal()">+ New Player</button>
+      <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="window.Campaigns && window.Campaigns.copyInvite()" title="Players join with the campaign's invite link or code">📨 Invite players</button>
     </div>
     <div class="layout" id="inventory-view-container">
       <!-- COL 1 (FAR LEFT): Character Stats & Bonuses Panel -->
@@ -8450,7 +8415,6 @@
     let forgeNickname = '';
     let forgePassword = '123';
     let forgeRole = 'player';
-    let forgeIsDmCreation = false;
     let forgeIsEditMode = false;
     let forgeSelectedClass = 'Fighter';
     let forgeSelectedSpecies = 'Human';
@@ -8467,7 +8431,6 @@
       forgeNickname = options.nickname || (activeInventoryUser || (currentUser ? currentUser.nickname : 'Adventurer'));
       forgePassword = options.password || '123';
       forgeRole = options.role || 'player';
-      forgeIsDmCreation = !!options.isDmCreation;
       forgeIsEditMode = !!options.isEditMode;
       forgeCharacterId = options.characterId || null;
       forgeOnDone = typeof options.onDone === 'function' ? options.onDone : null;
@@ -8827,12 +8790,6 @@
 
       if (onDone) {
         onDone(doneId);
-      } else if (forgeIsDmCreation) {
-        if (window.Campaigns) window.Campaigns.addCreatedPlayer(nickname);
-        populateDmPlayerDropdown();
-        if (confirm('Player "' + nickname + '" forged! Switch to inspect their sheet now?')) {
-          dmSwitchActivePlayer(nickname);
-        }
       } else {
         const accounts = getStoredAccounts();
         const acc = accounts[nickname.toLowerCase()] || { nickname: nickname, role: forgeRole || 'player' };
@@ -8972,10 +8929,6 @@
 
       if (typeof options.onDone === 'function') {
         options.onDone(options.characterId, { name: display });
-      } else if (options.isDmCreation) {
-        if (window.Campaigns) window.Campaigns.addCreatedPlayer(nickname);
-        populateDmPlayerDropdown();
-        if (confirm('Player "' + nickname + '" created! Switch to inspect their sheet now?')) dmSwitchActivePlayer(nickname);
       } else {
         const accounts = getStoredAccounts();
         loginUser(accounts[nickname.toLowerCase()] || { nickname: nickname, role: options.role || 'player' });
@@ -9568,100 +9521,6 @@
       if (typeof window.fbListenToBackgroundImage === 'function') window.fbListenToBackgroundImage(characterId);
     }
     window.switchActiveCharacter = switchActiveCharacter;
-
-    function openDmCreatePlayerModal() {
-      const ov = document.getElementById('dm-create-player-overlay');
-      if (ov) ov.classList.add('open');
-      const nickInput = document.getElementById('dm-new-player-nickname');
-      if (nickInput) { nickInput.value = ''; nickInput.focus(); }
-    }
-
-    function closeDmCreatePlayerModal() {
-      const ov = document.getElementById('dm-create-player-overlay');
-      if (ov) ov.classList.remove('open');
-    }
-
-    function dmOpenHeroForgeForPlayer() {
-      const nickInput = document.getElementById('dm-new-player-nickname');
-      const passInput = document.getElementById('dm-new-player-password');
-      const classInput = document.getElementById('dm-new-player-class');
-      const lvlInput = document.getElementById('dm-new-player-level');
-
-      const nickname = (nickInput ? nickInput.value : '').trim();
-      const password = (passInput ? passInput.value : '123').trim() || '123';
-      const charClass = (classInput ? classInput.value : 'Fighter').trim() || 'Fighter';
-      const level = parseInt(lvlInput ? lvlInput.value : '5', 10) || 5;
-
-      if (!nickname) {
-        alert('Please enter a nickname for the player.');
-        return;
-      }
-      const accounts = getStoredAccounts();
-      if (accounts[nickname.toLowerCase()]) {
-        alert('An account with this nickname already exists!');
-        return;
-      }
-      closeDmCreatePlayerModal();
-      openCharacterForgeModal({
-        nickname: nickname,
-        password: password,
-        role: 'player',
-        isDmCreation: true,
-        initialClass: charClass,
-        initialLevel: level
-      });
-    }
-    window.dmOpenHeroForgeForPlayer = dmOpenHeroForgeForPlayer;
-
-    function dmSubmitCreatePlayer() {
-      const nickInput = document.getElementById('dm-new-player-nickname');
-      const passInput = document.getElementById('dm-new-player-password');
-      const classInput = document.getElementById('dm-new-player-class');
-      const lvlInput = document.getElementById('dm-new-player-level');
-
-      const nickname = (nickInput ? nickInput.value : '').trim();
-      const password = (passInput ? passInput.value : '123').trim() || '123';
-      const charClass = (classInput ? classInput.value : 'Fighter').trim() || 'Fighter';
-      const level = parseInt(lvlInput ? lvlInput.value : '5', 10) || 5;
-
-      if (!nickname) {
-        alert('Please enter a nickname for the player.');
-        return;
-      }
-
-      const accounts = getStoredAccounts();
-      if (accounts[nickname.toLowerCase()]) {
-        alert('An account with this nickname already exists!');
-        return;
-      }
-
-      const newAccount = {
-        nickname: nickname,
-        password: password,
-        role: 'player',
-        createdAt: Date.now()
-      };
-      saveStoredAccount(newAccount);
-
-      // Create initial state for this player
-      const pState = getDefaultState(nickname);
-      pState.characterStats.characterClass = charClass;
-      pState.characterStats.level = level;
-      localStorage.setItem(STORAGE_INV_PREFIX + nickname.toLowerCase(), JSON.stringify(pState));
-
-      if (typeof window.fbSaveInventory === 'function') {
-        window.fbSaveInventory(nickname, pState);
-      }
-
-      // ...and into the DM's active campaign (the dropdown refreshes when the member list does)
-      if (window.Campaigns) window.Campaigns.addCreatedPlayer(nickname);
-      populateDmPlayerDropdown();
-      closeDmCreatePlayerModal();
-
-      if (confirm('Player "' + nickname + '" created! Do you want to switch to their inventory now?')) {
-        dmSwitchActivePlayer(nickname);
-      }
-    }
 
     function openDmGiftLootModal() {
       const ov = document.getElementById('dm-gift-loot-overlay');

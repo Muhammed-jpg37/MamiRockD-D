@@ -608,18 +608,20 @@
     });
   }
 
-  // A DM created a player account (quick create or the forge): make it a member of the
-  // active campaign, playing the character that came with the account.
-  function addCreatedPlayer(nickname) {
-    const nick = String(nickname || '').toLowerCase();
-    if (!nick || !active || active.role !== 'dm') return Promise.resolve();
-    const now = Date.now();
-    const patch = {};
-    patch['characters/' + nick] = { name: String(nickname), owner: nick, createdAt: now };
-    patch['users/' + nick + '/characters/' + nick] = true;
-    patch['users/' + nick + '/campaigns/' + active.id] = true;
-    patch['campaigns/' + active.id + '/members/' + nick] = { role: 'player', character: nick, joinedAt: now };
-    return window.fbCampaignUpdate(patch).catch((err) => console.warn('Could not add the new player to the campaign:', err));
+  // Players join only with the invite code or link (DMs no longer make accounts for them).
+  // Reads the current code, since a DM may have made a new one since this campaign was opened.
+  function copyInvite() {
+    const say = (text) => (typeof window.toast === 'function' ? window.toast(text, 6000) : alert(text));
+    if (!active || active.role !== 'dm') { say('Open one of your campaigns first.'); return Promise.resolve(); }
+    return window.fbCampaignGet('campaigns/' + active.id + '/inviteCode').then((code) => {
+      code = code || active.inviteCode;
+      if (!code) { say('This campaign has no invite code. Make one in ⚙ Manage.'); return; }
+      active.inviteCode = code;
+      const link = inviteLink(code);
+      return copyText(link).then(
+        () => say('📨 Invite link copied. Code: ' + code),
+        () => say('📨 Invite code: ' + code + ' · link: ' + link));
+    }).catch((err) => say('Could not read the invite code: ' + (err.message || err)));
   }
 
   function openManage(campId) {
@@ -1429,7 +1431,7 @@
     setMemberRole: setMemberRole,
     removeMember: removeMember,
     deleteCampaign: deleteCampaign,
-    addCreatedPlayer: addCreatedPlayer,
+    copyInvite: copyInvite,
     memberList: memberList,
     characterOf: characterOf,
     characterName: characterName,

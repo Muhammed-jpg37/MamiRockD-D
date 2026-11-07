@@ -113,6 +113,10 @@ Kaynaklar:
 
 **R4. "+ New Player" kalkar.**
 - Davet kodu ve davet linki, kampanya ekranında görünür bir yere taşınır (bkz. düzen, Kampanya ekranı).
+- **Yapıldı.**
+  - Kaldırılanlar: "+ New Player" penceresi, `dmSubmitCreatePlayer`, `dmOpenHeroForgeForPlayer`, Forge'daki `isDmCreation` dalları ve `Campaigns.addCreatedPlayer`.
+  - DM barında artık **📨 Invite players** düğmesi var. `Campaigns.copyInvite()` kampanyanın güncel kodunu okur ve linki kopyalar. Pano izni yoksa kod ve link ekranda gösterilir.
+  - Kampanya ekranına taşıma L2'de yapılacak.
 
 **R5. "Oyuncu olarak gör".**
 - DM kendi kampanyasında ekranı bir oyuncunun gördüğü gibi açabilir (Roll20'deki "Launch as player").

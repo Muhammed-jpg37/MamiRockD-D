@@ -41,7 +41,7 @@ Kodun çoğu `campaign.js` içinde. `index.html` tarafında Firebase fonksiyonla
 - HP çubuğu, oyuncunun o kampanyadaki karakterinden okunur.
 - DM'in oyuncu açılır listesi, kampanyadaki oyuncuları karakter adlarıyla gösterir.
 
-**DM'in oluşturduğu oyuncular** (hızlı oluşturma ya da forge) DM'in aktif kampanyasına otomatik eklenir.
+**Oyuncu ekleme:** DM oyuncu hesabı açmaz. Oyuncular yalnızca davet koduyla ya da davet linkiyle katılır. DM barındaki "📨 Invite players" düğmesi kampanyanın güncel davet linkini kopyalar.
 
 ## Veri yapısı
 
