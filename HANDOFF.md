@@ -4,9 +4,9 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ## Resume here
 
-**Where work stopped:** feature plan step **2 (dice)**, on branch `zar` (cut from `karakter-aktarma`), last commit `fd8e92c` "Dice step 1". Step 2.1 (the engine, `dice.js`) is done and tested; nothing is wired into the page yet. `zar` is **not pushed**.
+**Where work stopped:** feature plan step **2 (dice)**, on branch `zar` (cut from `karakter-aktarma`). Steps 2.1 (engine, `dice.js`) and 2.2 (the table's dice bar uses it) are done. `zar` is **not pushed**.
 
-**Do next: step 2.2**, then wait for the user's "go" before 2.3.
+**Do next: step 2.3**, then wait for the user's "go" before 2.4.
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
 1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
@@ -19,7 +19,7 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 ### Remaining plan, one line per step
 
 **2. Dice** (branch `zar`)
-- 2.2 In `vtt.js`, replace the d4–d100 buttons' single-die `rollDie(sides)` with `Dice.roll(expr, { mode })`: keep the quick buttons (they roll `1dX`), add a text box for an expression (Enter rolls, the last 10 kept in localStorage) and an Advantage / Normal / Disadvantage switch; write the log entry as `{ by, expr, total, text, crit, fumble, label?, at }` (old entries `{ die, result }` must still show) and show the per-die text in the log; load `dice.js` in `index.html` before `vtt.js`.
+- 2.2 Done (see "Step 2, dice" below).
 - 2.3 Hidden DM rolls: a "🙈 Hidden" toggle for DMs; hidden entries go to `vtt/<room>/logHidden` (only DMs render it) and the shared log gets `{ by, hidden: true, at }` so players see "DM rolled in secret"; note in the UI that without Firebase Auth this is hidden in the app only.
 - 2.4 Click-to-roll on the sheet: ability checks, saves, skills, initiative, death saves (and later attacks) become buttons that roll `Dice.d20(bonus)` with the label ("Perception"), honour the Adv/Normal/Dis switch (a small switch in the character strip), post to the active campaign's table log (export a `window.VTT.postRoll(entry)` from `vtt.js` that works even when the Table section was never opened) and show a toast; a death save result updates the death-save boxes.
 - 2.5 Tests (`tests/dice.test.js` grows; log entry shape), docs, push when asked.
@@ -183,7 +183,8 @@ Step 1 is done (branch `karakter-aktarma`, pushed). A real D&D Beyond JSON (a Wa
 
 Step 2, dice (branch `zar`, cut from `karakter-aktarma`):
 1. Engine: done. `dice.js` (`window.Dice`, no DOM): `NdX`, `d%`, numbers, `+`/`-`, keep/drop (`kh`, `k`, `kl`, `dh`, `dl`), advantage/disadvantage on the first single d20, natural 20/1 flags, a text with every die (dropped ones struck through), limits (100 dice, 1000 sides, 20 parts, 120 characters) and messages for bad input. Random numbers come from `crypto.getRandomValues` without modulo bias. Tests: `tests/dice.test.js`.
-2. Next: the table's dice bar takes an expression and an Advantage / Normal / Disadvantage switch, and the roll log shows each die.
+2. Table dice bar: done. `index.html` loads `dice.js` before `vtt.js`. The d4–d100 quick buttons roll `1dX` through `Dice.roll`; next to them an expression box (Enter rolls; a bad expression turns the box red and shows the message; the last 10 good ones are offered back through a `<datalist>`, kept in localStorage `vtt-dice-history`) and an **Adv / Norm / Dis** switch (remembered in localStorage `vtt-dice-mode`; a d20 quick button honours it too). In `vtt.js`: `roll(expr, { label, mode })` builds the log entry `{ by, expr, total, text, crit, fumble, label?, at }` and `postRoll(entry)` writes it (same key scheme and 20-entry trim as before); both `roll` and `rollDie` are on `window.vttApi`. The log shows the label (or the expression), the total, and under it the per-die text; old `{ by, die, result, at }` entries still show as before. `firebase-rules/database.rules.json` (still a proposal) accepts either shape. On phones the dice group wraps onto a second line instead of scrolling sideways. Checked in the browser with writes stubbed (desktop and 375 px, no horizontal scroll); 128 tests pass in Node and in the browser runner.
+3. Next: hidden DM rolls (2.3).
 
 ## Next plan: closing the gaps with other character builders
 

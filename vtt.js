@@ -133,6 +133,14 @@
       .vtt-cat-meta { font-size: 11px; color: var(--text-muted); text-transform: capitalize; }
       .vtt-cat-empty { grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--text-muted); }
       .vtt-dice button { min-width: 0; padding-left: 6px; padding-right: 6px; }
+      .vtt-dice-expr { display: flex; flex: none; }
+      .vtt-dice-expr input { width: 92px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px 6px; font-family: var(--font-mono); font-size: 13px; }
+      .vtt-dice-expr input.vtt-bad { border-color: var(--danger-strong); }
+      .vtt-dice-mode { display: inline-flex; flex: none; }
+      .vtt-dice-mode .btn { border-radius: 0; }
+      .vtt-dice-mode .btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+      .vtt-dice-mode .btn:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+      .vtt-dice-mode .btn.vtt-on { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
       .vtt-body { flex: 1; min-height: 0; display: flex; }
       .vtt-rail { display: flex; flex-direction: column; gap: 10px; padding: 8px 6px; border-right: 1px solid var(--border); background: linear-gradient(180deg, var(--panel-hi), var(--panel-lo)); overflow-y: auto; }
       .vtt-rail .vtt-group { flex-direction: column; gap: 4px; }
@@ -174,7 +182,9 @@
       }
       .vtt-log-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 4px 10px; font-family: var(--font-display); font-size: 11px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
       .vtt-log-list { overflow-y: auto; padding: 4px 0; }
-      .vtt-log-row { display: grid; grid-template-columns: 1fr auto 34px; gap: 8px; align-items: baseline; padding: 2px 10px; font-size: 13px; }
+      .vtt-log-row { display: grid; grid-template-columns: 1fr auto 34px; gap: 0 8px; align-items: baseline; padding: 2px 10px; font-size: 13px; }
+      .vtt-log-what { font-family: var(--font-mono); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px; }
+      .vtt-log-detail { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); overflow-wrap: anywhere; }
       .vtt-log-row b { font-family: var(--font-mono); text-align: right; color: var(--text); }
       .vtt-log-row.vtt-log-new { background: color-mix(in srgb, var(--accent) 14%, transparent); }
       .vtt-log-who { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-dim); }
@@ -201,7 +211,9 @@
         .vtt-dm-toggle { display: inline-flex; }
         #vtt-view-container:not(.vtt-dmtools-open) .vtt-toolbar > .vtt-group.vtt-dm-only { display: none; }
         .vtt-toolbar { flex-wrap: wrap; }
-        .vtt-dice { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; }
+        .vtt-dice { flex-wrap: wrap; row-gap: 4px; max-width: 100%; }
+        .vtt-dice-expr { flex: 1 1 80px; }
+        .vtt-dice-expr input { width: 100%; }
         /* Phones: the rail becomes a row under the toolbar, the side panel a sheet over the map's foot. */
         .vtt-body { flex-direction: column; position: relative; }
         .vtt-rail { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 6px; }
@@ -259,6 +271,15 @@
         <div class="vtt-group vtt-dice" data-el="dice">
           <span title="Roll a die; everyone sees the result">🎲</span>
           ${DICE.map((d) => '<button class="btn small ghost" data-roll="' + d + '">d' + d + '</button>').join('')}
+          <form class="vtt-dice-expr" data-el="dice-form" autocomplete="off">
+            <input type="text" data-el="dice-expr" list="vtt-dice-history" maxlength="120" placeholder="1d20+5" aria-label="Roll an expression, like 2d6+3 or 4d6kh3" title="Type a roll (1d20+5, 2d6+3, 4d6kh3, d%) and press Enter">
+            <datalist id="vtt-dice-history" data-el="dice-history"></datalist>
+          </form>
+          <span class="vtt-dice-mode" role="group" aria-label="Advantage">
+            <button type="button" class="btn small ghost" data-mode="adv" title="Advantage: the d20 is rolled twice, the higher counts">Adv</button>
+            <button type="button" class="btn small ghost" data-mode="normal" title="Normal roll">Norm</button>
+            <button type="button" class="btn small ghost" data-mode="dis" title="Disadvantage: the d20 is rolled twice, the lower counts">Dis</button>
+          </span>
         </div>
         <div class="vtt-group">
           <button class="btn small ghost" data-act="zoom-out" title="Zoom out">−</button>
@@ -305,9 +326,21 @@
     const el = (name) => root.querySelector('[data-el="' + name + '"]');
     syncGridInputs();
 
+    const exprInput = el('dice-expr');
+    exprInput.dataset.help = exprInput.title;
+    exprInput.addEventListener('input', () => { exprInput.classList.remove('vtt-bad'); exprInput.title = exprInput.dataset.help; });
+    el('dice-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (rollExpr(exprInput.value)) exprInput.value = '';
+    });
+    setRollMode(rollMode);
+    renderDiceHistory();
+
     root.addEventListener('click', (e) => {
       const die = e.target.closest('[data-roll]');
       if (die) { rollDie(parseInt(die.dataset.roll, 10)); return; }
+      const modeBtn = e.target.closest('[data-mode]');
+      if (modeBtn) { setRollMode(modeBtn.dataset.mode); return; }
       const toolBtn = e.target.closest('[data-tool]');
       if (toolBtn) { setTool(tool === toolBtn.dataset.tool ? null : toolBtn.dataset.tool); return; }
       if (e.target.closest('[data-act="clear-shapes"]')) { clearMyShapes(); return; }
@@ -1953,14 +1986,88 @@
 
   const DICE = [4, 6, 8, 10, 12, 20, 100];
   const LOG_KEEP = 20;
-  vtt.log = {};        // vtt/main/log: { key: { by, die, result, at } }, keys sort by time
+  // vtt/<room>/log: { key: entry }, keys sort by time. entry = { by, expr, total, text, crit, fumble, label?, at };
+  // entries written before the dice engine are { by, die, result, at } and still show.
+  vtt.log = {};
   let logOpen = false;
   let lastLogKey = null;
 
+  const MODE_KEY = 'vtt-dice-mode';
+  const HISTORY_KEY = 'vtt-dice-history';
+  const HISTORY_KEEP = 10;
+  // Per-browser conveniences only; a private window may refuse storage.
+  const store = {
+    get(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* not remembered */ } },
+  };
+  let rollMode = ['adv', 'dis'].includes(store.get(MODE_KEY)) ? store.get(MODE_KEY) : 'normal';
+
+  function setRollMode(mode) {
+    rollMode = mode === 'adv' || mode === 'dis' ? mode : 'normal';
+    store.set(MODE_KEY, rollMode);
+    if (root) root.querySelectorAll('[data-mode]').forEach((b) => {
+      const on = b.dataset.mode === rollMode;
+      b.classList.toggle('vtt-on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+
+  function diceHistory() {
+    try {
+      const h = JSON.parse(store.get(HISTORY_KEY) || '[]');
+      return Array.isArray(h) ? h.filter((x) => typeof x === 'string').slice(0, HISTORY_KEEP) : [];
+    } catch (e) { return []; }
+  }
+  function rememberExpr(expr) {
+    store.set(HISTORY_KEY, JSON.stringify([expr].concat(diceHistory().filter((x) => x !== expr)).slice(0, HISTORY_KEEP)));
+    renderDiceHistory();
+  }
+  function renderDiceHistory() {
+    const dl = root && root.querySelector('[data-el="dice-history"]');
+    if (!dl) return;
+    dl.innerHTML = '';
+    diceHistory().forEach((x) => { const o = document.createElement('option'); o.value = x; dl.appendChild(o); });
+  }
+
+  // A quick button: one die of that size (a d20 honours the Adv / Dis switch).
   function rollDie(sides) {
-    const result = 1 + Math.floor(Math.random() * sides);
+    return roll('1d' + sides);
+  }
+
+  // The expression box. Returns true when it rolled (the last 10 are offered again).
+  function rollExpr(text) {
+    const expr = String(text || '').trim();
+    if (!expr || !roll(expr)) return false;
+    rememberExpr(expr);
+    return true;
+  }
+
+  // Rolls with window.Dice (dice.js) and posts the result to the shared log.
+  // opts.label: what the roll is for ("Perception"); opts.mode overrides the Adv / Dis switch.
+  // Returns the log entry, or null when the expression could not be read.
+  function roll(expr, opts) {
+    opts = opts || {};
+    const input = root && root.querySelector('[data-el="dice-expr"]');
+    let r;
+    try {
+      r = window.Dice.roll(expr, { mode: opts.mode || rollMode });
+    } catch (err) {
+      if (input) { input.classList.add('vtt-bad'); input.title = err.message; }
+      flashStatus(err.message);
+      return null;
+    }
     const u = window.currentUser;
-    const entry = { by: (u && u.nickname) || 'Guest', die: sides, result: result, at: Date.now() };
+    const entry = {
+      by: String((u && u.nickname) || 'Guest').slice(0, 40),
+      expr: r.expr, total: r.total, text: r.text.slice(0, 400),
+      crit: r.crit, fumble: r.fumble, at: Date.now(),
+    };
+    if (opts.label) entry.label = String(opts.label).slice(0, 60);
+    postRoll(entry);
+    return entry;
+  }
+
+  function postRoll(entry) {
     // Zero-padded time first so keys sort chronologically; random tail avoids clashes.
     const key = String(entry.at).padStart(15, '0') + Math.random().toString(36).slice(2, 6);
     vtt.log[key] = entry;
@@ -1997,17 +2104,29 @@
       who.className = 'vtt-log-who';
       who.textContent = e.by || '?';
       const what = document.createElement('span');
-      what.textContent = 'd' + e.die;
+      what.className = 'vtt-log-what';
       const res = document.createElement('b');
-      res.textContent = e.result;
-      if (e.die === 20 && e.result === 20) res.className = 'vtt-crit';
-      if (e.die === 20 && e.result === 1) res.className = 'vtt-fumble';
+      const old = e.expr === undefined;
+      what.textContent = old ? 'd' + e.die : (e.label || e.expr || '');
+      res.textContent = old ? e.result : e.total;
+      const crit = old ? e.die === 20 && e.result === 20 : !!e.crit;
+      const fumble = old ? e.die === 20 && e.result === 1 : !!e.fumble;
+      if (crit) res.className = 'vtt-crit';
+      if (fumble) res.className = 'vtt-fumble';
       row.append(who, what, res);
+      if (!old && e.text) {
+        // Every die: "2d20kh1 (17, 4̶) + 5 = 22".
+        const detail = document.createElement('span');
+        detail.className = 'vtt-log-detail';
+        detail.textContent = e.text;
+        row.title = (e.label ? e.label + ': ' : '') + e.text;
+        row.appendChild(detail);
+      }
       list.appendChild(row);
     });
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, findGrid: findGrid };
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid };
 
   /* ---------- Coordinates ---------- */
 

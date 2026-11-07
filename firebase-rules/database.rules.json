@@ -208,8 +208,14 @@
         "log": {
           "$entry": {
             ".write": true,
-            ".validate": "newData.hasChildren(['by', 'die', 'result', 'at'])",
+            ".validate": "newData.hasChildren(['by', 'die', 'result', 'at']) || newData.hasChildren(['by', 'expr', 'total', 'text', 'at'])",
             "by": { ".validate": "newData.isString() && newData.val().length <= 40" },
+            "expr": { ".validate": "newData.isString() && newData.val().length <= 200" },
+            "total": { ".validate": "newData.isNumber()" },
+            "text": { ".validate": "newData.isString() && newData.val().length <= 400" },
+            "crit": { ".validate": "newData.isBoolean()" },
+            "fumble": { ".validate": "newData.isBoolean()" },
+            "label": { ".validate": "newData.isString() && newData.val().length <= 60" },
             "die": { ".validate": "newData.isNumber() && newData.val() >= 2 && newData.val() <= 100" },
             "result": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= newData.parent().child('die').val()" },
             "at": { ".validate": "newData.isNumber()" },
