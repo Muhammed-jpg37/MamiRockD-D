@@ -127,3 +127,64 @@ test('sheet maths: a critical hit doubles the damage dice, not the modifier', ()
   assert.equal(M.critDamage('d6'), '2d6');
   assert.equal(M.critDamage('1+3'), '1+3');
 });
+
+/* ---------- 3.2 Spellcasting ---------- */
+
+const SRD_RULES = require('../rules/srd5.js');
+const SRD_SPELLS = require('../rules/srd5-spells.js');
+const srdSpell = (name) => SRD_SPELLS.find((s) => s.name === name);
+
+test('sheet maths: spellcasting classes from the build, or from the class text', () => {
+  const build = { classes: [{ id: 'fighter', level: 3 }, { id: 'wizard', level: 2 }, { id: 'paladin', level: 1 }] };
+  assert.deepEqual(M.castingClasses({}, build, SRD_RULES), [{ id: 'wizard', name: 'Wizard', level: 2, ability: 'int' }],
+    'fighters do not cast; a level 1 paladin does not cast yet');
+  assert.deepEqual(M.castingClasses({ characterClass: 'Cleric', level: 7 }), [{ id: 'cleric', name: 'Cleric', level: 7, ability: 'wis' }]);
+  assert.deepEqual(M.castingClasses({ characterClass: 'Bard 3 / Warlock 2', level: 5 }).map((c) => c.id + c.level + c.ability), ['bard3cha', 'warlock2cha']);
+  assert.deepEqual(M.castingClasses({ characterClass: 'Ranger', level: 1 }), [], 'rangers cast from level 2');
+  assert.deepEqual(M.castingClasses({ characterClass: 'Dungeon Master', level: 20 }), []);
+});
+
+test('sheet maths: save DC is 8 + PB + mod, spell attack PB + mod', () => {
+  const [w] = M.spellStats([{ id: 'wizard', name: 'Wizard', level: 5, ability: 'int' }], { int: 18 }, 3);
+  assert.equal(w.saveDc, 15);
+  assert.equal(w.attack, 7);
+  assert.equal(w.attackText, '+7');
+  const [b] = M.spellStats([{ id: 'bard', name: 'Bard', level: 1, ability: 'cha' }], { cha: 8 }, 2, { dc: 1, attack: 1 });
+  assert.equal(b.saveDc, 10);
+  assert.equal(b.attackText, '+2');
+});
+
+test('sheet maths: cantrips scale at levels 5, 11 and 17', () => {
+  assert.deepEqual([1, 4, 5, 10, 11, 16, 17, 20].map(M.cantripTier), [1, 1, 2, 2, 3, 3, 4, 4]);
+  assert.equal(M.scaleDice('1d10', 3), '3d10');
+  assert.equal(M.scaleDice('d8', 2), '2d8');
+  const stats = M.spellStats([{ id: 'wizard', name: 'Wizard', level: 11, ability: 'int' }], { int: 16 }, 4);
+  const bolt = M.cantripLine({ name: 'Fire Bolt', levelNum: 0 }, srdSpell('Fire Bolt'), stats, 11);
+  assert.equal(bolt.kind, 'attack');
+  assert.equal(bolt.attackText, '+7');
+  assert.equal(bolt.damage, '3d10');
+  assert.equal(bolt.damageType, 'fire');
+  assert.equal(bolt.className, 'Wizard');
+
+  const cleric = M.spellStats([{ id: 'cleric', name: 'Cleric', level: 5, ability: 'wis' }], { wis: 16 }, 3);
+  const flame = M.cantripLine({ name: 'Sacred Flame', levelNum: 0 }, srdSpell('Sacred Flame'), cleric, 5);
+  assert.equal(flame.kind, 'save');
+  assert.equal(flame.save, 'dex');
+  assert.equal(flame.saveDc, 14);
+  assert.equal(flame.damage, '2d8');
+  assert.equal(flame.attack, null);
+});
+
+test('sheet maths: Eldritch Blast adds beams; non-damage and levelled spells give no line', () => {
+  const lock = M.spellStats([{ id: 'warlock', name: 'Warlock', level: 17, ability: 'cha' }], { cha: 20 }, 6);
+  const eb = M.cantripLine({ name: 'Eldritch Blast', levelNum: 0 }, srdSpell('Eldritch Blast'), lock, 17);
+  assert.equal(eb.beams, 4);
+  assert.equal(eb.damage, '1d10');
+  assert.equal(M.cantripLine({ name: 'Guidance', levelNum: 0 }, srdSpell('Guidance'), lock, 17), null);
+  assert.equal(M.cantripLine({ name: 'Fireball', levelNum: 3 }, srdSpell('Fireball'), lock, 17), null);
+  // A spell without SRD data uses the sheet's own damage text.
+  const homebrew = M.cantripLine({ name: 'Frost Pop', levelNum: 0, damage: '1d6 Cold', desc: 'Make a ranged spell attack.' }, null, lock, 5);
+  assert.equal(homebrew.damage, '2d6');
+  assert.equal(homebrew.damageType, 'cold');
+  assert.equal(homebrew.kind, 'attack');
+});

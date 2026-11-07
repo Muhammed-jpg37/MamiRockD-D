@@ -4,9 +4,9 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ## Resume here
 
-**Where work stopped:** feature plan section **3 (sheet maths)**, on branch `sayfa-hesaplari` (cut from `zar`, which is done and pushed). Step 3.1 (weapon attacks) is done. `sayfa-hesaplari` is **not pushed**.
+**Where work stopped:** feature plan section **3 (sheet maths)**, on branch `sayfa-hesaplari` (cut from `zar`, which is done and pushed). Steps 3.1 (weapon attacks) and 3.2 (spellcasting) are done. `sayfa-hesaplari` is **not pushed**.
 
-**Do next: step 3.2**, then wait for the user's go before 3.3.
+**Do next: step 3.3**, then wait for the user's go before 3.4.
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
 1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
@@ -22,7 +22,7 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 **3. Sheet maths** (branch `sayfa-hesaplari`, cut from `zar`)
 - 3.1 Done (see "Step 3, sheet maths" below).
-- 3.2 Spell attack and save DC per spellcasting class, and cantrip damage scaling by level, on Overview and in the Spells tab.
+- 3.2 Done (see "Step 3, sheet maths" below).
 - 3.3 AC from armour: already computed from equipped items (`calculateCharacterAC`); add Unarmored Defense (barbarian CON, monk WIS), Draconic Resilience and the Defense fighting style from the build, and test it.
 - 3.4 Feature text and limited uses: SRD 5.1 feature descriptions and `uses` (count by level or ability mod, reset short/long) in a new `rules/srd5-features.js`; `featuresFromDerived` fills the sheet's feature cards (`maxUses`, reset), which the rest buttons already reset. Source: 5e-bits `5e-SRD-Features.json` / `5e-SRD-Traits.json` (same pipeline as `tools/build-srd-catalogs.js`).
 - 3.5 Prepared spells: a "prepared today" mark in the Spells tab, the engine's `prepared` count as the limit, always-prepared spells locked, wizards prepare from their spellbook.
@@ -84,7 +84,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 138 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 142 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 Node v24 and git are installed on the 2026-11-07 machine (`/c/Program Files/nodejs/node`). In the Claude desktop app the site runs through `.claude/launch.json` ("start" = `npm run start`, port 3000) in the browser pane. Python is not installed; use Node for scripts. In bash, avoid `node -e` with text containing a single quote (write a script file instead).
 
@@ -123,7 +123,7 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 - The ⚔ Forge edit screen only shows choices for the **first** class. Multiclass choices are made in the level-up dialog.
 - A character built with campaign homebrew can only be re-edited inside that campaign.
 - Feature descriptions are names only, and builder features have no limited uses (Rage, Ki, Channel Divinity…); the sheet's feature cards support uses but they stay empty (plan A1).
-- Weapon attacks and damage are on Overview's Actions box (feature plan 3.1); spell attack / save DC and Unarmored Defense etc. are still missing (3.2, 3.3).
+- Weapon attacks and damage are on Overview's Actions box (feature plan 3.1); spell attack and save DC per class and cantrip damage too (3.2); Unarmored Defense etc. are still missing (3.3).
 - Click-to-roll from the sheet covers checks, saves, skills, initiative and death saves (feature plan 2.4); attacks wait for 3.1.
 - No "prepared today" in the Spells tab and no check of the prepared count (B2). Spell picks in the builder are 2014 (SRD 5.1) only; 2024 spells exist only in the Spells tab catalog (C1).
 - Existing builder-made characters must complete their spell picks before an edit or level up can be saved (seeded from their Spells tab where possible).
@@ -189,6 +189,7 @@ Section 2 is done (branch `zar`, pushed 2026-11-07).
 
 Step 3, sheet maths (branch `sayfa-hesaplari`, cut from `zar`):
 1. Weapon attacks: done. New `sheet-maths.js` (`window.SheetMaths`, no DOM; loaded in `index.html` after `dice.js`). `weaponAttacks(items, { scores, prof, cs, catalogs })` gives one line per equipped weapon (main hand, off hand, then the rest): ability (STR; DEX for ranged; finesse takes the higher), to-hit (ability mod + PB if proficient + magic bonus from "+N" in the name or `attackBonus`), damage and versatile damage (die + mod), damage type, range/reach, notes. Damage comes from the SRD equipment catalog (`findWeapon`: `fromCatalog` id, else the name: plurals, "Crossbow, hand" = "Hand crossbow", "Elven longsword" ends in "longsword", "Staff of …" is a quarterstaff), else from the item's own `damage` text (builder starter items, "1d8/1d10 Slashing"). Proficiency (`weaponProficient`): the Simple/Martial switches, the "Weapons" line (`weaponProf`) or old `weapons` notes, by category or by weapon name; Simple + Martial together cover any weapon. Off-hand weapons add no positive ability modifier to damage (two-weapon fighting). On Overview, an **⚔️ Actions** box under the Prof/Speed/Init/AC pills: name, a short line (melee / thrown / range, type, ability, notes), **🎲 +to-hit**, damage and "2h" versatile buttons; they roll through `sheetRoll` (which now takes `opts.expr`) into the table log. After a natural 20 on an attack, that weapon's next damage roll doubles its dice (`critDamage`) and is labelled "critical". The catalogs load once through `RulesCatalog.load('items', '2014' | '2024')`; until then items with their own damage text still show. Tests: `tests/sheet-maths.test.js` (6). 138 tests pass in Node and in the browser runner. Checked in the browser with writes stubbed and test weapons added in memory (desktop and 375 px); the DM account has no sheet in that campaign, so the sheet was made visible in memory.
+2. Spellcasting: done. `SheetMaths.castingClasses(cs, build, rules)` finds the spellcasting classes: from the builder build (`state.build.classes` with each class's `spellcasting.ability` in `RULES_SRD5`; paladins and rangers from level 2), else from the class text ("Wizard", "Bard 3 / Warlock 2") with a built-in ability table (`CASTER_ABILITY`, SRD classes plus artificer). `spellStats` gives save DC (8 + PB + mod) and spell attack (PB + mod) per class from the sheet's current scores (item bonuses included). `cantripLine(spell, srdEntry, stats, level)` gives each damaging cantrip on the sheet's spell list: attack or save (from the SRD data's `attack` / `save`, else the text), damage dice scaled at character levels 5 / 11 / 17 (`cantripTier`, `scaleDice`; Eldritch Blast adds beams instead), damage type, range and the class whose DC/attack it uses; spells without SRD data use their own damage text. In `index.html`: `computeSheetActions` builds weapons + cantrips; `spellcastingRowsHtml` draws a "✨ Spellcasting" part (per class: DC and 🎲 spell attack; per cantrip: 🎲 attack or "DC n ABL", and the damage button) at the end of Overview's Actions box and in a new card above the spell slots in the Spells tab (`#spellcasting-card`, refreshed by `renderSpellSlots`). Cantrip attacks share the weapons' crit handling. Tests: 4 more in `tests/sheet-maths.test.js` (142 in all, Node and browser runner). Checked in the browser with writes stubbed and a Wizard 5 set up in memory (narrow pane ~340 px and 1280 px).
 
 ## Next plan: closing the gaps with other character builders
 

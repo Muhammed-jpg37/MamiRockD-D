@@ -356,6 +356,9 @@
     .action-roll:hover, .action-roll:focus-visible { border-color: var(--gold); }
     .action-roll.dmg { color: var(--text); }
     .action-none, .action-empty { font-size: 11px; color: var(--text-muted); }
+    .action-sub { margin: 8px 0 2px; font-family: var(--font-display); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-2-strong); }
+    .action-dc { font-family: var(--font-mono); font-weight: 700; font-size: 11px; padding: 2px 6px; border: 1px dashed var(--border); border-radius: 4px; color: var(--gold-bright); }
+    .spellcasting-card .action-sub:first-child { margin-top: 0; }
     .strip-dice-mode button { background: var(--panel-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 4px 6px; cursor: pointer; }
     .strip-dice-mode button:first-child { border-radius: 6px 0 0 6px; }
     .strip-dice-mode button:last-child { border-radius: 0 6px 6px 0; }
@@ -10328,7 +10331,8 @@
       if (!menu) return;
       if (!menu.dataset.initialized) {
         menu.dataset.initialized = '1';
-        menu.innerHTML = '<div class="spell-slots-card" id="spell-slots-container"></div>' +
+        menu.innerHTML = '<div class="spell-slots-card actions-box spellcasting-card" id="spellcasting-card" style="display:none"></div>' +
+          '<div class="spell-slots-card" id="spell-slots-container"></div>' +
           '<div class="spellbook-filter-bar">' +
           '<input type="text" id="spell-search-input" class="my-spells-filter" data-my-filter="query" placeholder="🔍 Search my spells by name, description, damage, or tags..." value="' + escapeHtml(mySpellsFilters.query || '') + '" oninput="updateMySpellsSearch(this.value)">' +
           '<select id="spell-class-filter" class="my-spells-filter" data-my-filter="classFilter" onchange="updateMySpellsClassFilter(this.value)">' +
@@ -10588,6 +10592,7 @@
     }
 
     function renderSpellSlots() {
+      renderSpellcastingCard();
       const container = document.getElementById('spell-slots-container');
       if (!container) return;
       const slots = state.spellSlots || { max: {}, used: {} };
@@ -12334,18 +12339,74 @@
       });
     }
 
+    // Works out sheetAttacks (equipped weapons, then damaging cantrips) and sheetSpellStats
+    // (save DC and spell attack per spellcasting class, feature plan 3.2).
+    let sheetSpellStats = [];
+    function computeSheetActions(cs, itemBonuses) {
+      const M = window.SheetMaths;
+      const scores = M.effectiveScores(cs, itemBonuses && itemBonuses.totals);
+      const prof = cs.profBonus || 2;
+      const weapons = M.weaponAttacks(state.items || [], { scores: scores, prof: prof, cs: cs, catalogs: sheetWeaponCatalogs || {} });
+      sheetSpellStats = M.spellStats(M.castingClasses(cs, state.build, window.RULES_SRD5), scores, prof);
+      const srd = window.SPELLS_SRD5 || [];
+      const level = Number(cs.level) || 1;
+      const cantrips = sheetSpellStats.length ? ((state.spellbook && state.spellbook.list) || []).map(function (sp) {
+        const entry = (sp.ruleset !== '2024') ? srd.find(function (s) { return s.name.toLowerCase() === String(sp.name || '').toLowerCase(); }) : null;
+        return M.cantripLine(sp, entry || null, sheetSpellStats, level);
+      }).filter(Boolean) : [];
+      // Two cantrips of the same name (2014 and 2024 copies) show once.
+      const seen = {};
+      const spellAttacks = cantrips.filter(function (c) { const k = c.name.toLowerCase(); if (seen[k]) return false; seen[k] = true; return true; }).map(function (c) {
+        return { name: c.name, isSpell: true, cantrip: c, toHit: c.attack, toHitText: c.attackText, damage: c.damage, versatile: null, damageType: c.damageType };
+      });
+      sheetAttacks = weapons.concat(spellAttacks);
+      return { weapons: weapons.length };
+    }
+
+    // The spellcasting lines (classes, then cantrips) shared by Overview's Actions box and the Spells tab.
+    function spellcastingRowsHtml() {
+      const classRows = sheetSpellStats.map(function (s) {
+        return '<div class="action-row">' +
+          '<div class="action-name"><span>' + escapeHtml(s.name) + ' spellcasting</span><small>' + s.ability.toUpperCase() + ' · level ' + s.level + '</small></div>' +
+          '<div class="action-rolls">' +
+          '<span class="action-dc" title="Spell save DC = 8 + proficiency + ' + s.ability.toUpperCase() + ' modifier">DC ' + s.saveDc + '</span>' +
+          '<button type="button" class="action-roll" title="Spell attack = proficiency + ' + s.ability.toUpperCase() + ' modifier. Click to roll." onclick="sheetRoll(\'' + escapeHtml(escapeJs(s.name)) + ' spell attack\', ' + s.attack + ')">🎲 ' + s.attackText + '</button>' +
+          '</div></div>';
+      }).join('');
+      const cantripRows = sheetAttacks.map(function (a, i) {
+        if (!a.isSpell) return '';
+        const c = a.cantrip;
+        const meta = [c.kind === 'attack' ? c.attackType + ' spell attack' : c.kind === 'save' ? c.save.toUpperCase() + ' save' : 'no roll to hit',
+          c.damageType, c.range, c.beams > 1 ? c.beams + ' beams, roll each' : '', c.className].filter(Boolean).join(' · ');
+        return '<div class="action-row">' +
+          '<div class="action-name"><span>' + escapeHtml(c.name) + ' <small>(cantrip)</small></span><small>' + escapeHtml(meta) + '</small></div>' +
+          '<div class="action-rolls">' +
+          (c.kind === 'attack' && c.attack !== null ? '<button type="button" class="action-roll" title="Spell attack. Click to roll." onclick="actionRoll(' + i + ', \'attack\')">🎲 ' + c.attackText + '</button>' : '') +
+          (c.kind === 'save' && c.saveDc ? '<span class="action-dc" title="The target rolls a ' + c.save.toUpperCase() + ' save against this DC">DC ' + c.saveDc + ' ' + c.save.toUpperCase() + '</span>' : '') +
+          '<button type="button" class="action-roll dmg" title="Roll damage (scales at levels 5, 11 and 17)" onclick="actionRoll(' + i + ', \'damage\')">' + escapeHtml(a.damage) + '</button>' +
+          '</div></div>';
+      }).join('');
+      if (!classRows && !cantripRows) return '';
+      return '<div class="action-sub">✨ Spellcasting</div>' + classRows + cantripRows;
+    }
+
+    // The Spells tab shows the same spellcasting lines above the spell slots.
+    function renderSpellcastingCard() {
+      const card = document.getElementById('spellcasting-card');
+      if (!card || !window.SheetMaths || !state.characterStats) return;
+      computeSheetActions(state.characterStats, getEquippedItemBonuses());
+      const html = spellcastingRowsHtml();
+      card.style.display = html ? '' : 'none';
+      card.innerHTML = html;
+    }
+
     function renderActionsBlock(cs, itemBonuses) {
       const box = document.getElementById('actions-box');
       if (!box || !window.SheetMaths) return;
       loadSheetWeaponCatalogs();
-      const M = window.SheetMaths;
-      sheetAttacks = M.weaponAttacks(state.items || [], {
-        scores: M.effectiveScores(cs, itemBonuses && itemBonuses.totals),
-        prof: cs.profBonus || 2,
-        cs: cs,
-        catalogs: sheetWeaponCatalogs || {}
-      });
+      computeSheetActions(cs, itemBonuses);
       const rows = sheetAttacks.map(function (a, i) {
+        if (a.isSpell) return '';
         const reach = a.reach ? 'melee, reach 10 ft' : 'melee';
         const where = a.ranged ? 'range ' + a.range + ' ft' : (a.range ? reach + ', thrown ' + a.range + ' ft' : reach);
         const meta = [where, a.damageType, a.ability.toUpperCase()]
@@ -12360,7 +12421,9 @@
           '</div></div>';
       }).join('');
       box.innerHTML = '<div class="dnd-box-title">⚔️ ACTIONS</div>' +
-        (rows || '<div class="action-empty">No weapon equipped. Equip one in the Inventory tab and its attack shows here.</div>');
+        (rows || '<div class="action-empty">No weapon equipped. Equip one in the Inventory tab and its attack shows here.</div>') +
+        spellcastingRowsHtml();
+      renderSpellcastingCard();
     }
 
     // sheet-maths.js is a deferred script: draw the block again once it has run.

@@ -169,6 +169,112 @@
       .map((it) => weaponAttack(it, opts));
   }
 
+  /* ---------- 3.2 Spellcasting: save DC, spell attack, cantrips ---------- */
+
+  // Spellcasting ability by class name, for sheets without a builder build (SRD 5.1 classes,
+  // plus the artificer, which old sheets may name).
+  const CASTER_ABILITY = { bard: 'cha', cleric: 'wis', druid: 'wis', paladin: 'cha', ranger: 'wis', sorcerer: 'cha', warlock: 'cha', wizard: 'int', artificer: 'int' };
+  // Half casters (2014) cast from level 2.
+  const FIRST_CASTING_LEVEL = { paladin: 2, ranger: 2 };
+
+  // The sheet's spellcasting classes: [{ id, name, level, ability }].
+  // From the builder's build when there is one (rules: RULES_SRD5 with homebrew merged),
+  // else from the class text ("Wizard", "Fighter 3 / Wizard 2") and the sheet's level.
+  function castingClasses(cs, build, rules) {
+    cs = cs || {};
+    const out = [];
+    if (build && Array.isArray(build.classes) && build.classes.length && rules && rules.classes) {
+      build.classes.forEach((c) => {
+        const def = c && rules.classes[c.id];
+        const sc = def && def.spellcasting;
+        const level = Number(c.level) || 0;
+        if (!sc || !sc.ability || level < (FIRST_CASTING_LEVEL[c.id] || 1)) return;
+        out.push({ id: c.id, name: def.name, level: level, ability: sc.ability });
+      });
+      return out;
+    }
+    const text = String(cs.characterClass || '');
+    const parts = text.split('/').map((p) => p.trim()).filter(Boolean);
+    parts.forEach((p) => {
+      const m = p.match(/^(.*?)\s*(\d+)?$/);
+      const name = (m ? m[1] : p).trim();
+      const id = name.toLowerCase();
+      const level = m && m[2] ? Number(m[2]) : (parts.length === 1 ? Number(cs.level) || 1 : 0);
+      const ability = CASTER_ABILITY[id];
+      if (!ability || level < (FIRST_CASTING_LEVEL[id] || 1)) return;
+      out.push({ id: id, name: name, level: level, ability: ability });
+    });
+    return out;
+  }
+
+  // Save DC = 8 + PB + mod, spell attack = PB + mod, per class.
+  // bonus: { dc, attack } from items (e.g. a +1 wand), added to every class.
+  function spellStats(classes, scores, prof, bonus) {
+    bonus = bonus || {};
+    return (classes || []).map((c) => {
+      const m = mod((scores || {})[c.ability]);
+      const attack = (Number(prof) || 0) + m + (Number(bonus.attack) || 0);
+      return Object.assign({}, c, { saveDc: 8 + (Number(prof) || 0) + m + (Number(bonus.dc) || 0), attack: attack, attackText: signed(attack) });
+    });
+  }
+
+  // Cantrip damage grows at character levels 5, 11 and 17: "1d10" -> "2d10" at 5th.
+  function cantripTier(level) {
+    const L = Number(level) || 1;
+    return 1 + (L >= 5 ? 1 : 0) + (L >= 11 ? 1 : 0) + (L >= 17 ? 1 : 0);
+  }
+  function scaleDice(dice, times) {
+    return String(dice).replace(/^(\d*)d(\d+)$/i, (m, n, s) => ((Number(n) || 1) * times) + 'd' + s);
+  }
+
+  const ABILITY_NAMES = { strength: 'str', dexterity: 'dex', constitution: 'con', intelligence: 'int', wisdom: 'wis', charisma: 'cha' };
+
+  // One cantrip line for a spell from the sheet's list.
+  // srd: the matching entry of rules/srd5-spells.js (attack, save, damageType, desc), or null.
+  // stats: spellStats() result; level: character level.
+  // -> null for a cantrip that deals no damage, else
+  //    { name, kind: 'attack' | 'save' | 'damage', attack, attackText, save, saveDc, damage, damageType,
+  //      beams, className, range }
+  function cantripLine(spell, srd, stats, level) {
+    if (!spell || Number(spell.levelNum !== undefined ? spell.levelNum : spell.level) !== 0) return null;
+    const desc = srd ? [].concat(srd.desc || []).join(' ') : String(spell.desc || '');
+    let dice = null, type = '';
+    const m = desc.match(/(\d+d\d+)\s+([a-z]+)\s+damage/i);
+    if (m) { dice = m[1]; type = m[2].toLowerCase(); }
+    if (!dice && spell.damage) {
+      const d = String(spell.damage).match(/^(\d+d\d+)\s*([a-z]+)?/i);
+      if (d) { dice = d[1]; type = (d[2] || '').toLowerCase(); }
+    }
+    if (!dice) return null;
+    if (srd && srd.damageType) type = String(srd.damageType).toLowerCase();
+    // Which class casts it: the first caster whose list has it, else the first caster.
+    const classes = (srd && srd.classes) || (spell.classes || []).map((c) => String(c).toLowerCase());
+    const st = (stats || []).find((s) => classes.includes(s.id)) || (stats || [])[0] || null;
+    const tier = cantripTier(level);
+    // Eldritch Blast makes more beams instead of bigger dice.
+    const beams = /more than one beam/i.test(desc) ? tier : 1;
+    let save = srd && srd.save ? srd.save : null;
+    if (!save) {
+      const s = desc.match(/(strength|dexterity|constitution|intelligence|wisdom|charisma) saving throw/i);
+      if (s) save = ABILITY_NAMES[s[1].toLowerCase()];
+    }
+    const attack = (srd && srd.attack) || (/spell attack/i.test(desc) ? (/melee spell attack/i.test(desc) ? 'melee' : 'ranged') : null);
+    return {
+      name: spell.name,
+      kind: attack ? 'attack' : save ? 'save' : 'damage',
+      attackType: attack,
+      attack: attack && st ? st.attack : null,
+      attackText: attack && st ? st.attackText : null,
+      save: save,
+      saveDc: save && st ? st.saveDc : null,
+      damage: beams > 1 ? dice : scaleDice(dice, tier),
+      damageType: type,
+      beams: beams,
+      className: st ? st.name : null,
+      range: (srd && srd.range) || spell.range || null,
+    };
+  }
+
   // A critical hit rolls the damage dice twice (SRD 5.1): "1d8+3" -> "2d8+3", "2d6+1d4-1" -> "4d6+2d4-1".
   function critDamage(expr) {
     return String(expr || '').replace(/(\d*)d(\d+)/gi, (m, n, sides) => (2 * (Number(n) || 1)) + 'd' + sides);
@@ -185,5 +291,7 @@
     mod: mod, nameKey: nameKey, magicBonus: magicBonus, findWeapon: findWeapon, isWeaponItem: isWeaponItem,
     weaponProficient: weaponProficient, parseDamage: parseDamage, weaponAttack: weaponAttack, weaponAttacks: weaponAttacks,
     effectiveScores: effectiveScores, critDamage: critDamage,
+    CASTER_ABILITY: CASTER_ABILITY, castingClasses: castingClasses, spellStats: spellStats,
+    cantripTier: cantripTier, scaleDice: scaleDice, cantripLine: cantripLine,
   };
 })(typeof window !== 'undefined' ? window : this);
