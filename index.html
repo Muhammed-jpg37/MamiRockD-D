@@ -357,6 +357,23 @@
       .strip-portrait { width: 44px; height: 44px; }
     }
 
+    /* Table section (L4): the bar under the map */
+    .table-only { display: none !important; }
+    body[data-section="table"] .table-only { display: flex !important; }
+    .table-char-bar { align-items: center; gap: 8px 12px; flex-wrap: wrap; margin-top: 8px; padding: 8px 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; }
+    .tcb-name { font-family: var(--font-display); color: var(--gold-bright); font-size: 15px; }
+    .tcb-hp { display: flex; align-items: center; gap: 8px; }
+    .tcb-hp em { color: var(--accent-2-strong); font-style: normal; }
+    .tcb-hp-bar { width: 110px; height: 7px; background: var(--well-3); border-radius: 4px; overflow: hidden; }
+    .tcb-hp-fill { display: block; height: 100%; background: var(--success); }
+    .tcb-hp-fill.mid { background: var(--warning, #c9a227); }
+    .tcb-hp-fill.low { background: var(--danger); }
+    .tcb-ac { color: var(--text-dim); }
+    .tcb-open { margin-left: auto; }
+    body[data-section="table"] #vtt-view-container { height: calc(100vh - 210px); height: calc(100dvh - 210px); }
+    @media (max-width: 1100px) { body[data-section="table"] #vtt-view-container { height: calc(100dvh - 240px); } }
+    body[data-section="table"] .frame { padding-bottom: 12px; }
+
     /* Campaign screen (campaign-home.js, L2) */
     .campaign-home { max-width: 1200px; margin: 4px auto 0; }
     .ch-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 16px; align-items: start; }
@@ -5726,6 +5743,8 @@
 
     <!-- VIRTUAL TABLETOP (logic and styles live in vtt.js) -->
     <div id="vtt-view-container" style="display:none"></div>
+    <!-- Table section: the open sheet's essentials under the map (L4). Filled by renderTableBar(). -->
+    <div class="table-char-bar table-only" id="table-char-bar"></div>
 
     <!-- CAMPAIGN SECTION (L1 skeleton; L2 builds the real campaign screen). Filled by renderCampaignHome(). -->
     <div id="campaign-view-container" class="campaign-home" style="display:none"></div>
@@ -7999,9 +8018,31 @@
       syncHpModalInputs();
     }
 
+    // Under the map: whose sheet is open, HP with damage / heal, AC, and the way back to the sheet.
+    function renderTableBar() {
+      const bar = document.getElementById('table-char-bar');
+      if (!bar || !currentUser) return;
+      const hp = state.hp || { current: 0, max: 0, temp: 0 };
+      const max = Number(hp.max) || 0, cur = Math.max(0, Number(hp.current) || 0), temp = Number(hp.temp) || 0;
+      const pct = max ? Math.min(100, Math.round(cur / max * 100)) : 0;
+      const nameEl = document.getElementById('strip-name');
+      const name = nameEl ? nameEl.textContent : (activeInventoryUser || '');
+      let ac = '';
+      try { ac = calculateCharacterAC(getEquippedItemBonuses()).totalAc; } catch (e) { }
+      bar.innerHTML =
+        '<span class="tcb-name" title="The sheet open in the Character section">🧙 ' + escapeHtml(name) + '</span>' +
+        '<span class="tcb-hp" title="Hit points"><span class="tcb-hp-text">❤️ ' + cur + ' / ' + max + (temp ? ' <em>+' + temp + '</em>' : '') + '</span>' +
+        '<span class="tcb-hp-bar"><span class="tcb-hp-fill' + (pct <= 25 ? ' low' : pct <= 50 ? ' mid' : '') + '" style="width:' + pct + '%"></span></span></span>' +
+        '<button type="button" class="hp-btn dmg" onclick="quickDamageHP(event)">− Dmg</button>' +
+        '<button type="button" class="hp-btn heal" onclick="quickHealHP(event)">+ Heal</button>' +
+        (ac !== '' ? '<span class="tcb-ac" title="Armour Class">🛡 AC ' + ac + '</span>' : '') +
+        '<button type="button" class="btn ghost small tcb-open" onclick="showSection(&quot;character&quot;)">Open sheet</button>';
+    }
+
     function renderHpTracker() {
       if (!state.hp) state.hp = { current: 45, max: 45, temp: 0 };
       const hp = state.hp;
+      setTimeout(renderTableBar, 0);   // the bar under the map shows the same HP
       if (hp.current === undefined) hp.current = 45;
       if (hp.max === undefined) hp.max = 45;
       if (hp.temp === undefined) hp.temp = 0;
@@ -9960,6 +10001,7 @@
     }
 
     function renderHeader() {
+      renderTableBar();
       const cs = state.characterStats || {};
       const subEl = document.getElementById('campaign-sub');
       if (subEl) {

@@ -271,5 +271,13 @@ Kaynaklar:
   - Varsayılan sekme Overview. Eski sayfalarda kayıtlı `inventory` sekmesi Inventory'yi açar.
   - DM barı yerinde duruyor. Oyuncu seçicinin isim yanına taşınması yapılmadı; telefonda büyük kalıyor (L5).
 - **L4.** Masa ekranı: tam genişlik harita, sol araçlar, sağ panel.
+  - **Yapıldı.** Değişiklik `vtt.js` içinde.
+    - Üstteki araç çubuğunda harita, ızgara, token ve sis grupları (DM), zarlar ve yakınlaştırma kaldı.
+    - Ölçü ve şablon araçları (📏 ◯ ◁ ━ ▢ 🧹), ⚔ inisiyatif ve 📜 zar logu düğmeleri soldaki dikey raya (`.vtt-rail`) taşındı.
+    - İnisiyatif ve "Recent rolls" artık haritanın üstünde yüzmüyor. Sağdaki `.vtt-side` panelinde alt alta duruyorlar; ikisi de kapalıyken panel gizleniyor. Harita panel açılınca daralıyor; canvas'ı mevcut `ResizeObserver` boyutluyor.
+    - Panelin açılıp kapanma mantığı (`initOpen`, `logOpen`) değişmedi.
+  - Haritanın altında bir **karakter barı** var (`renderTableBar`, `#table-char-bar`): açık sayfanın adı, HP çubuğu, − Dmg / + Heal, AC ve "Open sheet". HP değişince güncelleniyor.
+  - Masa ekranı pencereye tam oturuyor; sayfa dikey kaymıyor.
+  - Telefonda ray, araç çubuğunun altında yatay bir satır oluyor. Sağ panel haritanın altından açılan bir çekmece gibi duruyor.
 - **L5.** Telefon düzeni.
 - **L6.** Role göre görünürlük ve açılış ekranı; "Oyuncu olarak gör" (R5) ile kontrol.

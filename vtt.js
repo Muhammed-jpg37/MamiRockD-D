@@ -132,6 +132,16 @@
       .vtt-cat-meta { font-size: 11px; color: var(--text-muted); text-transform: capitalize; }
       .vtt-cat-empty { grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--text-muted); }
       .vtt-dice button { min-width: 0; padding-left: 6px; padding-right: 6px; }
+      .vtt-body { flex: 1; min-height: 0; display: flex; }
+      .vtt-rail { display: flex; flex-direction: column; gap: 10px; padding: 8px 6px; border-right: 1px solid var(--border); background: linear-gradient(180deg, var(--panel-hi), var(--panel-lo)); overflow-y: auto; }
+      .vtt-rail .vtt-group { flex-direction: column; gap: 4px; }
+      .vtt-rail .vtt-group + .vtt-group { padding-left: 0; border-left: none; padding-top: 10px; border-top: 1px solid var(--border); }
+      .vtt-rail .btn { width: 36px; min-width: 0; padding-left: 0; padding-right: 0; justify-content: center; }
+      .vtt-rail .btn.vtt-on { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+      .vtt-side { width: 270px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 8px; border-left: 1px solid var(--border); background: var(--panel-lo); overflow-y: auto; }
+      .vtt-side:not(:has(> [data-el]:not([style*="none"]))) { display: none; }
+      .vtt-side .vtt-init, .vtt-side .vtt-log { position: static; width: auto; max-width: none; max-height: none; min-height: 0; }
+      .vtt-side .vtt-log { flex: 1; }
       .vtt-init {
         position: absolute; right: 10px; top: 10px; z-index: 14; width: 250px; max-width: calc(100% - 20px); max-height: calc(100% - 20px);
         display: flex; flex-direction: column;
@@ -187,6 +197,12 @@
       @media (max-width: 640px) {
         #vtt-view-container { height: calc(100dvh - 120px); min-height: 360px; }
         .vtt-group + .vtt-group { padding-left: 0; border-left: none; }
+        /* Phones: the rail becomes a row under the toolbar, the side panel a sheet over the map's foot. */
+        .vtt-body { flex-direction: column; position: relative; }
+        .vtt-rail { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 6px; }
+        .vtt-rail .vtt-group { flex-direction: row; }
+        .vtt-rail .vtt-group + .vtt-group { padding-top: 0; border-top: none; padding-left: 8px; border-left: 1px solid var(--border); }
+        .vtt-side { position: absolute; left: 0; right: 0; bottom: 0; width: auto; max-height: 50%; z-index: 16; border-left: none; border-top: 1px solid var(--line-strong); box-shadow: var(--shadow-2); }
       }
     `;
     const style = document.createElement('style');
@@ -233,21 +249,9 @@
           </select>
           <button class="btn small ghost" data-act="fog-reset" title="Cover the whole map again">↺</button>
         </div>
-        <div class="vtt-group">
-          <button class="btn small ghost" data-act="initiative" title="Initiative order">⚔ Init</button>
-        </div>
-        <div class="vtt-group vtt-tools">
-          <button class="btn small ghost" data-tool="ruler" title="Ruler: drag to measure (everyone sees it while you drag)">📏</button>
-          <button class="btn small ghost" data-tool="circle" title="Circle / sphere: drag out from the centre">◯</button>
-          <button class="btn small ghost" data-tool="cone" title="Cone: drag from where it starts">◁</button>
-          <button class="btn small ghost" data-tool="line" title="Line (5 ft wide): drag from where it starts">━</button>
-          <button class="btn small ghost" data-tool="square" title="Cube: drag from one corner">▢</button>
-          <button class="btn small ghost" data-act="clear-shapes" title="Remove your templates (the DM removes all). Right-click one to remove just that.">🧹</button>
-        </div>
         <div class="vtt-group vtt-dice" data-el="dice">
           <span title="Roll a die; everyone sees the result">🎲</span>
           ${DICE.map((d) => '<button class="btn small ghost" data-roll="' + d + '">d' + d + '</button>').join('')}
-          <button class="btn small ghost" data-act="log" title="Show or hide recent rolls">📜</button>
         </div>
         <div class="vtt-group">
           <button class="btn small ghost" data-act="zoom-out" title="Zoom out">−</button>
@@ -256,15 +260,35 @@
           <button class="btn small ghost" data-act="fit" title="Fit map to screen">⤢ Fit</button>
         </div>
       </div>
-      <div class="vtt-stage">
-        <canvas></canvas>
-        <div class="vtt-status" data-el="status" style="display:none"></div>
-        <div class="vtt-init" data-el="init" style="display:none"></div>
-        <div class="vtt-log" data-el="log" style="display:none">
-          <div class="vtt-log-head">Recent rolls <button class="btn small ghost" data-act="log" title="Hide">✕</button></div>
-          <div class="vtt-log-list" data-el="log-list"></div>
+      <!-- Table layout (LAYOUT_UI.md, L4): tools on a rail at the left, the map in the middle,
+           initiative and recent rolls in a side panel at the right (shown while either is open). -->
+      <div class="vtt-body">
+        <div class="vtt-rail" aria-label="Map tools">
+        <div class="vtt-group vtt-tools" role="group">
+          <button class="btn small ghost" data-tool="ruler" title="Ruler: drag to measure (everyone sees it while you drag)">📏</button>
+          <button class="btn small ghost" data-tool="circle" title="Circle / sphere: drag out from the centre">◯</button>
+          <button class="btn small ghost" data-tool="cone" title="Cone: drag from where it starts">◁</button>
+          <button class="btn small ghost" data-tool="line" title="Line (5 ft wide): drag from where it starts">━</button>
+          <button class="btn small ghost" data-tool="square" title="Cube: drag from one corner">▢</button>
+          <button class="btn small ghost" data-act="clear-shapes" title="Remove your templates (the DM removes all). Right-click one to remove just that.">🧹</button>
         </div>
-        <div class="vtt-hint" data-el="hint"><span data-el="hint-title">Load a map to begin</span><br><small>Drag to pan · wheel or pinch to zoom</small></div>
+          <div class="vtt-group">
+            <button class="btn small ghost" data-act="initiative" title="Initiative order">⚔</button>
+            <button class="btn small ghost" data-act="log" title="Show or hide recent rolls">📜</button>
+          </div>
+        </div>
+        <div class="vtt-stage">
+          <canvas></canvas>
+          <div class="vtt-status" data-el="status" style="display:none"></div>
+          <div class="vtt-hint" data-el="hint"><span data-el="hint-title">Load a map to begin</span><br><small>Drag to pan · wheel or pinch to zoom</small></div>
+        </div>
+        <div class="vtt-side">
+          <div class="vtt-init" data-el="init" style="display:none"></div>
+          <div class="vtt-log" data-el="log" style="display:none">
+            <div class="vtt-log-head">Recent rolls <button class="btn small ghost" data-act="log" title="Hide">✕</button></div>
+            <div class="vtt-log-list" data-el="log-list"></div>
+          </div>
+        </div>
       </div>
     `;
 
