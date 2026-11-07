@@ -63,6 +63,7 @@
   <script src="rules/srd5-spells.js" defer></script>
   <script src="character-engine.js" defer></script>
   <script src="character-builder.js" defer></script>
+  <script src="character-transfer.js" defer></script>
   <script src="campaign.js" defer></script>
   <script src="homebrew-editor.js" defer></script>
   <script src="campaign-home.js" defer></script>
@@ -15225,6 +15226,14 @@
     window.fbCharacterSheet = function(key) {
       if (!db || !sheetKeyOk(key)) return Promise.resolve(null);
       return get(ref(db, 'inventories/' + key.toLowerCase())).then((snap) => snap.val());
+    };
+
+    // Writes a whole sheet under a new key (character import); resolves once it is stored.
+    window.fbWriteCharacterSheet = function(key, sheet) {
+      if (!db || !sheetKeyOk(key)) return Promise.reject(new Error('Bad character id'));
+      const payload = cleanData(sheet);
+      if (payload && payload.spellbook) delete payload.spellbook.catalog;
+      return set(ref(db, 'inventories/' + key.toLowerCase()), payload);
     };
 
     // Copies a sheet to a new key; `changes` are top-level fields to replace (e.g. campaign, build).

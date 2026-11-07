@@ -12,7 +12,8 @@ State on 2026-11-06 (evening), for the next working session. Start with "Where t
 | `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
 | `kampanya-sistemi` | Campaign system. Same commit as `main`. Pushed. |
 | `arayuz-duzeni` | Cut from `karakter-olusturucu` on 2026-11-07. Holds `LAYOUT_UI.md`, the plan for per-campaign roles and the new layout. Not pushed. |
-| `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). **Current branch.** Not pushed. |
+| `karakter-aktarma` | Cut from `kataloglar` for feature plan step 1 (character import). **Current branch.** Not pushed. |
+| `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). Done and pushed. Not merged: everything goes into `main` in one merge when the whole plan is done. |
 | `kampanya-rolleri` | Cut from `arayuz-duzeni`. **Current branch.** Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
 | `karakter-olusturucu` | Character builder and the spell plan, cut from `kampanya-sistemi`. Pushed up to `25decde`; the spell-plan commits after it (steps 7–14 and this handoff) are **not pushed**. **Not merged** into `main`. |
 
@@ -28,7 +29,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 110 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 113 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
 
@@ -107,7 +108,11 @@ Step 6 so far (branch `kataloglar`):
 2. Rules section: done. **📚 Rules** is a fifth section in the top bar (`rules-catalog.js`, `#rules-view-container`). Tabs: Rules (2014 only), Conditions, Equipment, Magic items, Monsters; a 2014 / 2024 switch; search (names, and the text of rules and conditions) and a filter per tab (chapter, kind, rarity, CR band); the entry on the right (on phones the list and the entry take turns, with ← List). Files load on first use and stay for the session; the last tab and ruleset are remembered in the browser. The CC-BY attribution of the loaded file shows under it. Tests: `tests/rules-catalog.test.js`.
 3. Adding from the catalog: done. Equipment and magic item entries in Rules have **➕ Add to <sheet>** (the sheet open in the Character section; hidden for a DM with no player sheets) and, for DMs, **📦 Add to item store**. `RulesCatalog.toStoreDef` turns a catalog entry into the item store shape (weapons: Simple/Martial, slot main; armour: base AC, Light/Medium/Heavy, slot chest; shields +2, slot off; magic items: rarity, attunement, a slot guessed from the name), and `HomebrewEditor.itemForSheet` into a sheet item, so armour from the catalog sets AC the way the sheet already computes it. The homebrew Items form gained "Armour category" and "Weapon category". Sheet items remember `fromCatalog` (e.g. `srd51:longsword`).
 
-Step 6 is done. Next in the plan: **1** character import, on its own new branch.
+Step 6 is done (branch `kataloglar`, pushed).
+
+Step 1, character import (branch `karakter-aktarma`, cut from `kataloglar`):
+1. Site files: done. `character-transfer.js` (no DOM; tested) writes and reads `{ format: "mamirock-character", version: 1, name, sheet }`. In 🎭 My characters each character has **⬇** (download `<name>.mamirock.json`, without the shared spell catalog) and the list has **⬆ From a file…**, which makes a new character of the account (`Campaigns.importCharacterText` / `saveImportedCharacter`, `fbWriteCharacterSheet`). Imports keep only items with a name and portraits that are `data:image/` under 200 KB, and take the file's name. Tests: `tests/character-transfer.test.js`.
+2. Next: read fillable PDF character sheets (pdf.js), map their fields, and send them through `buildFromSheet` and the review screen.
 
 ## Next plan: closing the gaps with other character builders
 

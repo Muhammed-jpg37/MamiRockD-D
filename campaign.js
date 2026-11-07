@@ -281,6 +281,72 @@
     });
   }
 
+  /* ---------- Character files: export one, import one (character-transfer.js) ---------- */
+
+  // Downloads the character as a .mamirock.json file (sheet, gear, spells, notes on the sheet).
+  function exportCharacter(id) {
+    const nick = myKey();
+    const T = window.CharacterTransfer;
+    if (!nick || !T) return Promise.reject(new Error('Log in first'));
+    return Promise.all([window.fbCampaignGet('characters/' + id), window.fbCharacterSheet(id)]).then(([c, sheet]) => {
+      if (!c || c.owner !== nick) throw new Error('That is not your character');
+      const data = T.makeExport(sheet, c.name);
+      const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = T.fileName(c.name);
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      return c.name;
+    });
+  }
+
+  // Asks for a file and makes a new character of this account from it. Resolves with
+  // { id, name, warnings }, or null when no file was picked.
+  function importCharacterFile() {
+    const nick = myKey();
+    const T = window.CharacterTransfer;
+    if (!nick || !T) return Promise.reject(new Error('Log in first'));
+    return new Promise((resolve, reject) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json,application/json';
+      input.onchange = () => {
+        const file = input.files && input.files[0];
+        if (!file) { resolve(null); return; }
+        file.text().then((text) => importCharacterText(text)).then(resolve, reject);
+      };
+      input.click();
+    });
+  }
+
+  function importCharacterText(text) {
+    const nick = myKey();
+    const T = window.CharacterTransfer;
+    if (!nick || !T) return Promise.reject(new Error('Log in first'));
+    let parsed;
+    try { parsed = T.parseExport(text); } catch (e) { return Promise.reject(e); }
+    return saveImportedCharacter(parsed);
+  }
+
+  // Stores an imported character ({ name, sheet, warnings }) as a new character of this account.
+  function saveImportedCharacter(parsed) {
+    const nick = myKey();
+    return loadMyCharacters(nick).then((mine) => {
+      if (mine.length >= MAX_CHARACTERS) throw new Error('You have ' + MAX_CHARACTERS + ' characters, the most an account can have. Delete one first.');
+      if (typeof window.fbWriteCharacterSheet !== 'function') throw new Error('Not connected yet');
+      const id = 'ch' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      return window.fbWriteCharacterSheet(id, parsed.sheet).then(() => window.fbCampaignUpdate({
+        ['characters/' + id]: { name: parsed.name, owner: nick, createdAt: Date.now() },
+        ['users/' + nick + '/characters/' + id]: true
+      })).then(() => {
+        charNames[id] = parsed.name;
+        return { id: id, name: parsed.name, warnings: parsed.warnings || [] };
+      });
+    });
+  }
+
   // Refuses while a campaign still uses the character, and for the account's own first character.
   function deleteCharacter(id) {
     const nick = myKey();
@@ -381,6 +447,7 @@
         act('🖼', ch.portrait ? 'Change portrait (also the map token)' : 'Add a portrait (also the map token)', () => pickCharacterPortrait(ch.id).then(() => openCharacters('Portrait saved for "' + ch.name + '".'), fail));
         if (ch.portrait) act('🚫', 'Remove portrait', () => setCharacterPortrait(ch.id, null).then(() => openCharacters('Portrait removed.'), fail));
         act('📄', 'Make a copy', () => copyCharacter(ch.id).then(() => openCharacters('Copied "' + ch.name + '".'), fail));
+        act('⬇', 'Download as a file (to keep a backup or move it to another account)', () => exportCharacter(ch.id).then((n) => say('Downloaded "' + n + '".'), fail));
         act('🗑', ch.legacy ? "Your account's own character can't be deleted" : 'Delete', () => {
           if (ch.legacy) { say("This is your account's own character (it opens when you log in), so it can't be deleted.", true); return; }
           if (!confirm('Delete "' + ch.name + '" and its sheet, gear and spells? This can not be undone.')) return;
@@ -396,6 +463,15 @@
         card.appendChild(form('Character name', 'Create', (name) => {
           createCharacter(name).then(() => openCharacters('Created "' + name + '".'), (err) => openCharacters(err.message || String(err), true));
         }, 40));
+        card.appendChild(el('div', 'camp-section', 'Import a character'));
+        const imp = el('button', 'btn ghost small', '⬆ From a file…');
+        imp.type = 'button';
+        imp.title = 'A .mamirock.json file downloaded with ⬇';
+        imp.onclick = () => importCharacterFile().then((r) => {
+          if (!r) return;
+          openCharacters('Imported "' + r.name + '".' + (r.warnings.length ? ' ' + r.warnings.join(' ') : ''));
+        }, fail);
+        card.appendChild(imp);
       }
       card.appendChild(msgBox);
       if (message) say(message, isError);
@@ -1502,6 +1578,10 @@
     openCharacters: openCharacters,
     renameCharacter: renameCharacter,
     copyCharacter: copyCharacter,
+    exportCharacter: exportCharacter,
+    importCharacterFile: importCharacterFile,
+    importCharacterText: importCharacterText,
+    saveImportedCharacter: saveImportedCharacter,
     deleteCharacter: deleteCharacter,
     MAX_CHARACTERS: MAX_CHARACTERS,
     createCharacter: createCharacter,
