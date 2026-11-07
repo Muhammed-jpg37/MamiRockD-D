@@ -99,9 +99,13 @@
   let migrating = false;
 
   // Runs once, for a DM, after asking. Only adds records.
+  // Before campaigns the role lived on the account, so this one check still reads
+  // accounts/<nick>.role (currentUser.role is the campaign role, and there is none yet here).
   function migrateIfNeeded() {
     const u = window.currentUser;
-    if (migrating || !u || u.role !== 'dm') return Promise.resolve(false);
+    let acc = null;
+    try { acc = u && typeof getStoredAccounts === 'function' ? getStoredAccounts()[String(u.nickname).toLowerCase()] : null; } catch (e) { }
+    if (migrating || !u || !acc || acc.role !== 'dm') return Promise.resolve(false);
     try { if (sessionStorage.getItem(SKIP_KEY)) return Promise.resolve(false); } catch (e) { }
     migrating = true;
     return previewMigration()
@@ -458,7 +462,7 @@
     const u = window.currentUser;
     if (u && u.role !== c.role && typeof loginUser === 'function') {
       applyingRole = true;
-      try { loginUser(Object.assign({}, u, { role: c.role })); }
+      try { loginUser(u, c.role); }
       finally { applyingRole = false; }
     }
     closePicker();

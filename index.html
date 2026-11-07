@@ -9351,10 +9351,14 @@
       }
     }
 
-    function loginUser(account) {
+    // campaignRole: only campaign.js passes it, with the account's role in the active campaign.
+    // An account has no role of its own (accounts/<nick>.role is ignored), so until a campaign
+    // is active everyone counts as a player and the campaign screen comes up.
+    function loginUser(account, campaignRole) {
       if (typeof saveNotes === 'function' && currentUser && currentUser.nickname !== account.nickname) {
         saveNotes();
       }
+      account = Object.assign({}, account, { role: campaignRole === 'dm' ? 'dm' : 'player' });
       currentUser = account;
       activeInventoryUser = account.nickname;
       currentNotesOwner = account.nickname;
@@ -9371,14 +9375,8 @@
 
       // Update Header User Badge
       const nameEl = document.getElementById('auth-user-name');
-      const roleEl = document.getElementById('auth-user-role');
-      const iconEl = document.getElementById('auth-user-icon');
       if (nameEl) nameEl.textContent = account.nickname;
-      if (roleEl) {
-        roleEl.textContent = account.role === 'dm' ? 'Dungeon Master' : 'Player';
-        roleEl.className = 'auth-user-role-tag ' + (account.role === 'dm' ? 'dm' : 'player');
-      }
-      if (iconEl) iconEl.textContent = account.role === 'dm' ? '👑' : '👤';
+      renderRoleBadge();
 
       // Setup DM Panel or regular view
       const dmBar = document.getElementById('dm-control-bar');
@@ -9420,6 +9418,21 @@
       // Campaign set-up (campaign.js; a restored session runs it once that file loads)
       if (window.Campaigns) window.Campaigns.onLogin(account);
     }
+
+    // The header shows the role in the active campaign; with no campaign there is no role yet.
+    function renderRoleBadge() {
+      const roleEl = document.getElementById('auth-user-role');
+      const iconEl = document.getElementById('auth-user-icon');
+      const inCampaign = !!(window.activeCampaign && currentUser);
+      const isDm = inCampaign && currentUser.role === 'dm';
+      if (roleEl) {
+        roleEl.textContent = !inCampaign ? 'No campaign' : isDm ? 'Dungeon Master' : 'Player';
+        roleEl.className = 'auth-user-role-tag ' + (isDm ? 'dm' : 'player');
+        roleEl.title = inCampaign ? 'Your role in ' + window.activeCampaign.name : 'Pick or start a campaign';
+      }
+      if (iconEl) iconEl.textContent = isDm ? '👑' : '👤';
+    }
+    window.addEventListener('campaignchange', renderRoleBadge);
 
     function logoutCurrentUser() {
       save();

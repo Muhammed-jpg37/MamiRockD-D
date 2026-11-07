@@ -93,6 +93,7 @@ Kaynaklar:
 - Kampanya seçili değilken rol yoktur ve kampanya ekranı gösterilir.
 - Üst bar kampanyadaki rolü yazar, örneğin "SA AS · DM".
 - `currentUser.role` okuyan yerler (DM barı, VTT yetkileri, `getDefaultState`) kampanya rolüne bağlanır.
+- **Yapıldı.** `loginUser(account, campaignRole)` hesabın rolünü yok sayar. İkinci parametreyi sadece `campaign.js` (`activate`) verir. Kampanya yokken herkes `player` sayılır. Üst bardaki etiket `renderRoleBadge()` ile kampanyadaki rolü gösterir, kampanya yoksa "No campaign" yazar. Tek istisna eski kampanya geçişi (`migrateIfNeeded`): o hâlâ `accounts/<nick>.role` okur, çünkü kampanyalardan önceki DM'i bulmak için başka yol yok.
 
 **R3. DM Master Vault yerine kampanyanın eşya deposu.**
 - Homebrew editörüne (`homebrew-editor.js`) bir **Items** sekmesi eklenir. Diğer homebrew türleri gibi `campaigns/<id>/homebrew/items/<id>` altında saklanır.
