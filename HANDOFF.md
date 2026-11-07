@@ -4,7 +4,7 @@ State on 2026-11-07 (evening), for the next working session. **Start with "Resum
 
 ## Resume here
 
-**Where work stopped:** feature plan sections **6, 1, 2, 3, 4, 7 and 8 are done** and, on the user's word on 2026-11-07, **merged into `main`** (fast-forward, `main` = `c9210f5` "Sound step 1", no merge commit). `main` is **26 commits ahead of `origin/main` and not pushed**: the user pushes it themselves. The local `savas` and `pdf-ses` branches are not pushed either (both are contained in `main`).
+**Where work stopped:** feature plan sections **6, 1, 2, 3, 4, 7 and 8 are done** and, on the user's word on 2026-11-07, **merged into `main`** (fast-forward, `main` = `c9210f5` "Sound step 1", no merge commit). The user pushed `main` (`origin/main` = `c9210f5`) and `savas`; `origin/pdf-ses` stops at `bf7a85e` (its last two commits reached GitHub through `main`). Commits after that (this handoff) may not be pushed yet: `git log --oneline origin/main..main`.
 
 **Left in the plan:** section **5 (map)**, then the **Help page**. Order changed on 2026-11-07 (7 and 8 were done before 5) to save tokens; 5 is the biggest section, best started in a fresh session from this file.
 
@@ -40,9 +40,9 @@ Done and in `main` (details further down, under "Step 1" … "Steps 7 and 8"): *
 
 | Branch | State |
 |---|---|
-| `main` | `c9210f5` locally: everything done so far (the role model and layout, and feature plan sections 6, 1, 2, 3, 4, 7, 8), fast-forwarded on 2026-11-07. **Not pushed** (`origin/main` = `1421cb4`, 26 commits behind). **Current branch.** |
-| `pdf-ses` | Cut from `savas` for feature plan steps 7 (PDF) and 8 (sound), one branch for both. Contained in `main`. Not pushed. |
-| `savas` | Cut from `sayfa-hesaplari` for feature plan step 4 (combat). Contained in `main`. Not pushed. |
+| `main` | Everything done so far (the role model and layout, and feature plan sections 6, 1, 2, 3, 4, 7, 8), fast-forwarded to `c9210f5` on 2026-11-07 and pushed by the user; handoff commits on top. **Current branch.** |
+| `pdf-ses` | Cut from `savas` for feature plan steps 7 (PDF) and 8 (sound), one branch for both. Contained in `main`. On GitHub up to `bf7a85e`. |
+| `savas` | Cut from `sayfa-hesaplari` for feature plan step 4 (combat). Contained in `main`. Pushed. |
 | `sayfa-hesaplari` | Step 3 (sheet maths). Contained in `main`. Pushed. |
 | `zar` | Step 2 (dice). Contained in `main`. Pushed. |
 | `karakter-aktarma` | Step 1 (character import). Contained in `main`. Pushed. |
