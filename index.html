@@ -72,6 +72,7 @@
   <script src="vtt-catalog.js" defer></script>
   <script src="dice.js" defer></script>
   <script src="sheet-maths.js" defer></script>
+  <script src="combat.js" defer></script>
   <script src="vtt.js" defer></script>
   <style>
     /* ============================================================
@@ -368,6 +369,15 @@
     .prep-toggle.on { border-color: var(--success); color: var(--success); }
     .prep-lock { font-size: 11px; color: var(--gold-bright); align-self: center; white-space: nowrap; }
     .spell-list-item.unprepared .spell-name { opacity: 0.7; }
+    /* Conditions (feature plan 4.1) */
+    .conditions-panel .cond-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .cond-chip { background: var(--well-2); border: 1px solid var(--border); border-radius: 999px; color: var(--text-dim); font: inherit; font-size: 11px; padding: 2px 8px; cursor: pointer; }
+    .cond-chip.on { border-color: var(--danger-bright, var(--danger)); color: var(--text); background: color-mix(in srgb, var(--danger) 22%, var(--well-2)); }
+    .cond-exh { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-dim); }
+    .cond-exh select { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font: inherit; font-size: 11px; }
+    .cond-active { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .cond-active div { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+    .cond-active b { color: var(--text); }
     /* A level granted by the DM (feature plan 3.6) */
     .level-up-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 12px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 8px; background: color-mix(in srgb, var(--accent) 16%, var(--panel-2)); }
     .level-up-banner .lub-text { flex: 1 1 220px; font-size: 13px; color: var(--text); }
@@ -5822,6 +5832,8 @@
             <div id="active-effects-list"></div>
           </div>
         </div>
+        <!-- Conditions (feature plan 4.1): filled by renderConditionsPanel(). -->
+        <div class="death-save-panel conditions-panel sheet-overview-part" id="conditions-panel" style="margin-bottom:12px;"></div>
         <div class="death-save-panel sheet-overview-part" style="margin-bottom:12px;">
           <div class="death-save-head">
             <div class="panel-title">Death Saving Throws</div>
@@ -9663,6 +9675,55 @@
     // ⚔ Forge on a builder-made sheet: apply the changed choices, keeping gear, spells,
     // notes, current HP (moved by the change in max), spent slots and features the player added.
     // ⬆ Level up on a builder-made sheet: one more level, saved like an edit (current HP rises by the gain).
+    /* ---------- Conditions on the sheet (feature plan 4.1, combat.js) ----------
+       state.conditions = { poisoned: true, ..., exhaustion: 2 }. The table reads it for the
+       character's token; the DM can also change it from the token menu (one field write). */
+    let conditionTexts = null;   // id -> rules text, from rules/catalog/srd51-conditions.json
+    function loadConditionTexts() {
+      if (conditionTexts || !window.RulesCatalog) return;
+      conditionTexts = {};
+      window.RulesCatalog.load('conditions', '2014').then(function (d) {
+        (d.entries || []).forEach(function (e) { conditionTexts[e.id] = (e.desc || []).join('\n'); });
+        renderConditionsPanel();
+      }).catch(function () { });
+    }
+
+    function renderConditionsPanel() {
+      const box = document.getElementById('conditions-panel');
+      if (!box || !window.Combat) return;
+      loadConditionTexts();
+      const C = window.Combat;
+      const cur = C.normalize(state.conditions);
+      const text = function (id) { return (conditionTexts && conditionTexts[id]) || ''; };
+      const chips = C.CONDITIONS.filter(function (c) { return c.id !== 'exhaustion'; }).map(function (c) {
+        return '<button type="button" class="cond-chip' + (cur[c.id] ? ' on' : '') + '" aria-pressed="' + !!cur[c.id] + '" title="' + escapeHtml(text(c.id)) + '" onclick="toggleSheetCondition(\'' + c.id + '\')">' + c.icon + ' ' + c.name + '</button>';
+      }).join('');
+      let opts = '';
+      for (let n = 0; n <= 6; n++) opts += '<option value="' + n + '"' + ((cur.exhaustion || 0) === n ? ' selected' : '') + '>' + (n ? n + ': ' + C.EXHAUSTION[n] : 'none') + '</option>';
+      const list = C.active(cur).map(function (c) {
+        const t = c.id === 'exhaustion' ? 'Level ' + c.level + ': ' + C.EXHAUSTION.slice(1, c.level + 1).join('; ') + '.' : text(c.id).replace(/^- /gm, '• ');
+        return '<div><b>' + c.icon + ' ' + escapeHtml(c.label) + '</b>' + (t ? ' — ' + escapeHtml(t).replace(/\n/g, ' ') : '') + '</div>';
+      }).join('');
+      box.innerHTML = '<div class="death-save-head"><div class="panel-title" style="font-size:16px;">🩹 Conditions</div></div>' +
+        '<div class="cond-grid">' + chips + '</div>' +
+        '<div class="cond-grid"><label class="cond-exh">😩 Exhaustion <select onchange="setSheetExhaustion(this.value)">' + opts + '</select></label></div>' +
+        (list ? '<div class="cond-active">' + list + '</div>' : '');
+    }
+
+    function toggleSheetCondition(id) {
+      if (!window.Combat) return;
+      state.conditions = window.Combat.toggle(state.conditions, id);
+      save();
+      renderConditionsPanel();
+    }
+
+    function setSheetExhaustion(level) {
+      if (!window.Combat) return;
+      state.conditions = window.Combat.setExhaustion(state.conditions, level);
+      save();
+      renderConditionsPanel();
+    }
+
     /* ---------- A level granted by the DM (feature plan 3.6, SheetMaths.grantLevel / takeLevel) ----------
        The DM, looking at a player's sheet, sets state.pendingLevelUp = { levels, by, at }; it is saved
        with the sheet like any DM edit. The player sees a banner and makes the choices in the usual
@@ -10309,6 +10370,7 @@
       if (typeof renderFeaturesView === 'function') renderFeaturesView();
       if (typeof renderHpTracker === 'function') renderHpTracker();
       renderLevelUpBanner();
+      renderConditionsPanel();
     }
 
     function renderHeader() {
@@ -15645,6 +15707,20 @@
     /* Character sheets (inventories/<key>) for the "My characters" screen in campaign.js.
        key is a character id: 'ch…' for builder characters, the nickname for older ones. */
     const sheetKeyOk = (k) => typeof k === 'string' && /^[^.#$\[\]\/]{1,60}$/.test(k);
+    const SHEET_FIELDS = ['conditions', 'hp'];   // fields the table may read or write on a sheet (feature plan 4)
+
+    // Calls callback(value) now and on every change of one field of a character sheet.
+    window.fbListenToSheetField = function(key, field, callback) {
+      if (!db || !sheetKeyOk(key) || !SHEET_FIELDS.includes(field) || typeof callback !== 'function') return () => {};
+      return onValue(ref(db, 'inventories/' + key.toLowerCase() + '/' + field), (snapshot) => callback(snapshot.val()));
+    };
+
+    // Writes one field of a character sheet (conditions or HP set from the table).
+    window.fbSaveSheetField = function(key, field, value) {
+      if (!db || !sheetKeyOk(key) || !SHEET_FIELDS.includes(field)) return Promise.resolve();
+      return set(ref(db, 'inventories/' + key.toLowerCase() + '/' + field), value === undefined ? null : value)
+        .catch((err) => console.warn('Firebase sheet field save error:', err));
+    };
 
     window.fbCharacterSheet = function(key) {
       if (!db || !sheetKeyOk(key)) return Promise.resolve(null);

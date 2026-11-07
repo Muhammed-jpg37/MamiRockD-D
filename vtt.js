@@ -192,6 +192,11 @@
       .vtt-log-row b.vtt-crit { color: var(--success); }
       .vtt-log-row b.vtt-fumble { color: var(--danger-strong); }
       .vtt-hp { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
+      .vtt-conds { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
+      .vtt-cond-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
+      .vtt-cond-grid .btn { min-width: 0; padding: 2px 0; font-size: 14px; }
+      .vtt-cond-grid .btn.active { border-color: var(--danger-strong); box-shadow: 0 0 0 1px var(--danger-strong) inset; }
+      .vtt-cond-grid select { grid-column: span 2; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; }
       .vtt-hp .vtt-row { align-items: center; }
       .vtt-hp input { width: 56px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px 5px; font-family: var(--font-mono); }
       .vtt-status {
@@ -1326,6 +1331,7 @@
         color: t.color || TOKEN_COLORS[0],
         owner: t.owner || null,
         hp: (t.hp === undefined) ? null : t.hp,
+        conditions: t.conditions || null,
         hidden: !!t.hidden
       };
     });
@@ -1362,16 +1368,20 @@
     if (typeof window.fbListenToVttHp !== 'function') return;
     const owners = new Set(Object.values(vtt.tokens).map((t) => t.owner).filter(Boolean));
     // Each owner's character sheet gives the token its HP bar and, without a picture of its own, its portrait.
-    const stop = (e) => { if (e.unsub) e.unsub(); if (e.portraitUnsub) e.portraitUnsub(); };
+    const stop = (e) => { if (e.unsub) e.unsub(); if (e.portraitUnsub) e.portraitUnsub(); if (e.condUnsub) e.condUnsub(); };
     owners.forEach((key) => {
       const sheet = hpSheetOf(key);
       if (hpWatch[key] && hpWatch[key].sheet === sheet) return;
       if (hpWatch[key]) stop(hpWatch[key]);   // they switched character
-      const entry = { unsub: null, hp: null, sheet: sheet, portrait: null, portraitUnsub: null };
+      const entry = { unsub: null, hp: null, sheet: sheet, portrait: null, portraitUnsub: null, conditions: null, condUnsub: null };
       hpWatch[key] = entry;
       entry.unsub = window.fbListenToVttHp(sheet, (hp) => { entry.hp = hp; requestDraw(); });
       if (typeof window.fbListenToCharacterPortrait === 'function') {
         entry.portraitUnsub = window.fbListenToCharacterPortrait(sheet, (url) => { entry.portrait = url; requestDraw(); });
+      }
+      // Conditions set on the character sheet show on the token (feature plan 4.1).
+      if (typeof window.fbListenToSheetField === 'function') {
+        entry.condUnsub = window.fbListenToSheetField(sheet, 'conditions', (c) => { entry.conditions = c; requestDraw(); });
       }
     });
     Object.keys(hpWatch).forEach((key) => {
@@ -1386,6 +1396,60 @@
     if (t.img) return t.img;
     const w = t.owner && hpWatch[t.owner];
     return (w && w.portrait) || null;
+  }
+
+  // A token's conditions: a player token's come from its character sheet, a monster's from the token.
+  function tokenConditions(t) {
+    if (!window.Combat) return {};
+    if (t.owner) { const w = hpWatch[t.owner]; return window.Combat.normalize(w && w.conditions); }
+    return window.Combat.normalize(t.conditions);
+  }
+
+  // Changes a token's conditions. Player token: one field of the character sheet (DMs only);
+  // monster token: the token itself.
+  function setTokenConditions(t, next) {
+    const C = window.Combat;
+    if (!C || !isDm()) return;
+    const clean = C.normalize(next);
+    if (t.owner) {
+      const w = hpWatch[t.owner];
+      if (w) w.conditions = clean;
+      if (typeof window.fbSaveSheetField === 'function') window.fbSaveSheetField(hpSheetOf(t.owner), 'conditions', Object.keys(clean).length ? clean : null);
+      requestDraw();
+      return;
+    }
+    const cur = vtt.tokens[t.id];
+    if (!cur) return;
+    cur.conditions = Object.keys(clean).length ? clean : null;
+    onVttChange({ token: t.id });
+  }
+
+  // Small condition icons along the top of a token (at most 4, then "+n").
+  function drawConditions(t, r) {
+    if (!window.Combat) return;
+    const list = window.Combat.active(tokenConditions(t));
+    if (!list.length) return;
+    const size = Math.max(r.w * 0.24, 12 / view.zoom);
+    const shown = list.slice(0, 4);
+    const labels = shown.map((c) => c.id === 'exhaustion' ? c.icon + c.level : c.icon);
+    if (list.length > 4) labels.push('+' + (list.length - 4));
+    ctx.save();
+    ctx.font = Math.round(size * 0.72) + 'px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const total = labels.length * size;
+    let x = r.x + r.w / 2 - total / 2 + size / 2;
+    const y = r.y + size * 0.2;
+    labels.forEach((lab) => {
+      ctx.fillStyle = 'rgba(0,0,0,0.65)';
+      ctx.beginPath();
+      ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.fillText(lab, x, y + size * 0.04);
+      x += size;
+    });
+    ctx.restore();
   }
 
   // { current, max, temp } to show under a token, or null when this viewer shouldn't see one.
@@ -2154,7 +2218,7 @@
     });
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid };
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t) };
 
   // For the rest of the site (the sheet's click-to-roll). Works before the Table section was ever
   // opened: rolls post to the active campaign's log (vtt/<campaign>/log) as soon as there is one.
@@ -2361,6 +2425,7 @@
     ctx.fillStyle = '#fff';
     ctx.fillText(label, cx, ty + fs * 0.1);
     drawHpBar(t, r);
+    drawConditions(t, r);
     ctx.restore();
   }
 
@@ -2661,6 +2726,7 @@
     pop.appendChild(sizeRow);
 
     pop.appendChild(hpSection(t));
+    if (isDm()) pop.appendChild(conditionsSection(t));
 
     const ownerWrap = document.createElement('label');
     ownerWrap.className = 'vtt-owner';
@@ -2677,6 +2743,46 @@
 
     placePopup(pop, p);
     requestDraw();
+  }
+
+  // Condition chips in the token menu (DMs). Player tokens change their character sheet.
+  function conditionsSection(t) {
+    const C = window.Combat;
+    const wrap = document.createElement('div');
+    wrap.className = 'vtt-conds';
+    if (!C) return wrap;
+    const head = document.createElement('div');
+    head.textContent = '🩹 Conditions' + (t.owner ? ' (on ' + ownerName(t.owner) + "'s sheet)" : '');
+    wrap.appendChild(head);
+    const grid = document.createElement('div');
+    grid.className = 'vtt-cond-grid';
+    const draw = () => {
+      const cur = tokenConditions(vtt.tokens[t.id] || t);
+      grid.innerHTML = '';
+      C.CONDITIONS.forEach((c) => {
+        if (c.id === 'exhaustion') return;
+        const b = button(c.icon, () => { setTokenConditions(vtt.tokens[t.id] || t, C.toggle(tokenConditions(vtt.tokens[t.id] || t), c.id)); draw(); });
+        b.title = c.name;
+        b.setAttribute('aria-label', c.name);
+        b.setAttribute('aria-pressed', cur[c.id] ? 'true' : 'false');
+        if (cur[c.id]) b.classList.add('active');
+        grid.appendChild(b);
+      });
+      const exh = document.createElement('select');
+      exh.title = 'Exhaustion level';
+      for (let n = 0; n <= 6; n++) {
+        const o = document.createElement('option');
+        o.value = n;
+        o.textContent = n ? '😩 ' + n : '😩 –';
+        if ((cur.exhaustion || 0) === n) o.selected = true;
+        exh.appendChild(o);
+      }
+      exh.onchange = () => { setTokenConditions(vtt.tokens[t.id] || t, C.setExhaustion(tokenConditions(vtt.tokens[t.id] || t), exh.value)); draw(); };
+      grid.appendChild(exh);
+    };
+    draw();
+    wrap.appendChild(grid);
+    return wrap;
   }
 
   // Player tokens: HP is read from the character sheet and only changed there.

@@ -151,6 +151,9 @@
               "max": { ".validate": "newData.isNumber() && newData.val() > 0" },
               "$other": { ".validate": false }
             },
+            "conditions": {
+              "$condition": { ".validate": "($condition !== 'exhaustion' && newData.isBoolean()) || ($condition === 'exhaustion' && newData.isNumber() && newData.val() >= 1 && newData.val() <= 6)" }
+            },
             "$other": { ".validate": false }
           }
         },

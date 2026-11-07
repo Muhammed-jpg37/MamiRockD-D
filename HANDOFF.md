@@ -4,9 +4,9 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ## Resume here
 
-**Where work stopped:** feature plan section **3 (sheet maths) is done** (steps 3.1–3.7), on branch `sayfa-hesaplari` (cut from `zar`, which is done and pushed). `sayfa-hesaplari` is **not pushed** yet: push it when the user says so.
+**Where work stopped:** feature plan section **4 (combat)**, on branch `savas` (cut from `sayfa-hesaplari`; `zar` and `sayfa-hesaplari` are done and pushed). Step 4.1 (conditions) is done. `savas` is **not pushed** (the user pushes it themselves).
 
-**Do next: section 4 (combat)** on a new branch cut from `sayfa-hesaplari` (e.g. `savas`), starting with 4.1, after the user's go.
+**Do next: step 4.2.** On 2026-11-07 the user said to do all of section 4 (4.1–4.4) without asking, one commit per step, and that they push themselves; after 4.4, stop and report (sections 5, 7, 8 and Help wait for their word).
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
 1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
@@ -65,14 +65,15 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 | `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
 | `kampanya-sistemi` | Campaign system. Contained in `main`. |
 | `arayuz-duzeni` | Holds `LAYOUT_UI.md` (the role and layout plan). Contained in `main`. |
-| `sayfa-hesaplari` | Cut from `zar` for feature plan step 3 (sheet maths). **Current branch**. Not pushed. |
+| `sayfa-hesaplari` | Cut from `zar` for feature plan step 3 (sheet maths). Done and pushed. |
+| `savas` | Cut from `sayfa-hesaplari` for feature plan step 4 (combat). **Current branch**. Not pushed. |
 | `zar` | Cut from `karakter-aktarma` for feature plan step 2 (dice). Done and pushed. |
 | `karakter-aktarma` | Cut from `kataloglar` for feature plan step 1 (character import). Done and pushed. |
 | `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). Done and pushed. Not merged: everything goes into `main` in one merge when the whole plan is done. |
 | `kampanya-rolleri` | Cut from `arayuz-duzeni`. Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
 | `karakter-olusturucu` | Character builder and the spell plan. Contained in `main`. |
 
-Branch chain of the feature plan: `main` → `kataloglar` (step 6) → `karakter-aktarma` (step 1) → `zar` (step 2) → `sayfa-hesaplari` (step 3). `git log --oneline main..sayfa-hesaplari` lists everything not yet in `main`.
+Branch chain of the feature plan: `main` → `kataloglar` (step 6) → `karakter-aktarma` (step 1) → `zar` (step 2) → `sayfa-hesaplari` (step 3) → `savas` (step 4). `git log --oneline main..savas` lists everything not yet in `main`.
 
 ## Run and test
 
@@ -84,7 +85,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 153 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 156 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 Node v24 and git are installed on the 2026-11-07 machine (`/c/Program Files/nodejs/node`). In the Claude desktop app the site runs through `.claude/launch.json` ("start" = `npm run start`, port 3000) in the browser pane. Python is not installed; use Node for scripts. In bash, avoid `node -e` with text containing a single quote (write a script file instead).
 
@@ -196,7 +197,10 @@ Step 3, sheet maths (branch `sayfa-hesaplari`, cut from `zar`):
 6. DM grants a level: done. In the DM panel, **⬆ Grant a level** (`dmGrantLevel`; disabled on the DM's own vault) asks to confirm and sets `state.pendingLevelUp = { levels, by, at }` on the player's sheet (`SheetMaths.grantLevel`; granting again adds a level, up to 20), saved with the sheet like any DM edit. A banner above the character strip (`#level-up-banner`, `renderLevelUpBanner`, called from `renderAll`): the player sees "🎉 <DM> granted you a level!" with **⬆ Level up** (the usual `openLevelUp`; plain sheets get its conversion offer) and, on sheets without the builder, **✔ Done by hand**; the DM looking at that sheet sees "You granted a level" with **Take back**. Saving a level-up takes one granted level (`SheetMaths.takeLevel`, inside `openLevelUp`'s `onDone`, so it is saved with the new level). Which banner: `SheetMaths.levelUpBanner(pending, { isDm, ownSheet })`. **Note:** like Gift Loot, the DM's grant saves the whole player sheet (`fbSaveInventory` is a whole-object write), so a player editing their sheet at the same moment can lose one side's change; plan F (saving field by field) would fix that. Test: 1 more in `tests/sheet-maths.test.js` (152 in all). Checked in the browser with writes stubbed: as DM on a made-up player key (button enabled, two grants = 2 levels, DM banner), then as that player (banner, Done by hand twice clears it); ~340 px and 1280 px. The level-up screen's save path itself was not run in the browser (it needs a builder character).
 7. D&D Beyond import headings: done. `fromDdbJson` (`character-transfer.js`) leaves out entries named Hit Points, Proficiencies, Equipment, Age, Size, Speed, Languages, Ability Score Increase, Alignment and Creature Type (D&D Beyond lists a description's headings as features); "Ability Score Improvement" (a real class feature) stays. Test added to `tests/character-transfer.test.js` (153 in all, Node and browser runner). Not tried again with a real D&D Beyond file.
 
-Section 3 is done (branch `sayfa-hesaplari`, not pushed yet).
+Section 3 is done (branch `sayfa-hesaplari`, pushed 2026-11-07).
+
+Step 4, combat (branch `savas`, cut from `sayfa-hesaplari`):
+1. Conditions: done. New `combat.js` (`window.Combat`, no DOM; loaded after `sheet-maths.js`): the 15 SRD conditions with icons (`CONDITIONS`), exhaustion levels 1–6 (`EXHAUSTION`), `normalize` / `toggle` / `setExhaustion` / `active` / `summary` on a `{ poisoned: true, …, exhaustion: 2 }` object. On the sheet, Overview has a **🩹 Conditions** panel above the death saves (`renderConditionsPanel`, `toggleSheetCondition`, `setSheetExhaustion`; `state.conditions`): chips with the SRD text as tooltip (`rules/catalog/srd51-conditions.json` via `RulesCatalog.load('conditions', '2014')`), an exhaustion select, and the active conditions with their text. On the table, a token shows up to 4 condition icons along its top (+n): a player token's come from its character sheet (`inventories/<sheet>/conditions`, read with the new `fbListenToSheetField` next to the HP listener), a monster token's from the token (`tokens/<id>/conditions`). DMs get condition buttons and an exhaustion select in the token menu (`conditionsSection`, `setTokenConditions`); for a player token that writes only the sheet's `conditions` field (new `fbSaveSheetField`, allowed fields `conditions` and `hp`), never the whole sheet. `firebase-rules/database.rules.json` (proposal) accepts `conditions` on tokens. `window.vttApi` also has `openTokenMenu` and `tokenConditions` for testing. Tests: `tests/combat.test.js` (3; in the browser runner). 156 tests pass. Checked in the browser with writes stubbed (sheet panel; a monster token's conditions saved on the token; a player token's sent as one sheet field). The canvas did not redraw at higher zoom in the hidden pane, so the icons were only seen small.
 
 ## Next plan: closing the gaps with other character builders
 
