@@ -321,6 +321,42 @@
     body[data-section="campaign"] .character-only,
     body[data-section="table"] .character-only,
     body[data-section="notes"] .character-only { display: none !important; }
+    /* Character strip, sheet tabs and the Overview / Inventory halves (L3) */
+    .char-strip { gap: 14px 20px; padding-bottom: 12px; margin-bottom: 12px; }
+    .strip-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .strip-portrait { width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0; background: var(--well-3) center / cover no-repeat; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 22px; color: var(--gold-bright); }
+    .strip-name { font-family: var(--font-display); font-weight: 900; font-size: 22px; color: var(--gold-bright); line-height: 1.15; overflow-wrap: anywhere; }
+    .char-strip .title-block .sub { letter-spacing: 1px; text-transform: none; font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+    .char-strip .header-stats { gap: 8px; align-items: stretch; }
+    /* In the strip the pills are compact: coins as one total (the split is in its tooltip). */
+    .char-strip .stat-pill { min-width: 0; padding: 6px 10px; }
+    .char-strip .stat-pill .val { font-size: 16px; }
+    .char-strip .coin-breakdown { display: none; }
+    .char-strip .hp-pill { min-width: 170px; }
+    .strip-combat { display: flex; gap: 6px; }
+    .strip-pill { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 58px; padding: 6px 8px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font: inherit; }
+    .strip-pill:hover { border-color: var(--gold); }
+    .strip-pill .v { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--gold-bright); }
+    .strip-pill .l { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+    .sheet-tabs { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .sheet-tabs .system-nav-tabs { margin-top: 0; flex-wrap: wrap; }
+    .sheet-add-item { display: none; }
+    body[data-sheet-tab="inventory"] .sheet-add-item { display: inline-flex; }
+    #inventory-view-container.sheet-mode-overview .sheet-inventory-part,
+    #inventory-view-container.sheet-mode-inventory .sheet-overview-part { display: none !important; }
+    #inventory-view-container.sheet-mode-overview { grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); }
+    #inventory-view-container.sheet-mode-inventory { grid-template-columns: 240px minmax(0, 1fr) 300px; }
+    @media (max-width: 1100px) {
+      #inventory-view-container.sheet-mode-inventory { grid-template-columns: 220px minmax(0, 1fr); }
+      #inventory-view-container.sheet-mode-inventory .side-trackers-column { grid-column: 1 / -1; }
+    }
+    @media (max-width: 760px) {
+      #inventory-view-container.sheet-mode-overview,
+      #inventory-view-container.sheet-mode-inventory { grid-template-columns: minmax(0, 1fr); }
+      .strip-name { font-size: 18px; }
+      .strip-portrait { width: 44px; height: 44px; }
+    }
+
     /* Campaign screen (campaign-home.js, L2) */
     .campaign-home { max-width: 1200px; margin: 4px auto 0; }
     .ch-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 16px; align-items: start; }
@@ -5422,17 +5458,18 @@
       </div>
     </div>
 
-    <!-- CHARACTER HEADER: only in the Character section (L3 turns it into the character strip) -->
-    <div class="header character-only">
-      <div class="title-block">
-        <div class="sub" id="campaign-sub">Party Inventory Ledger</div>
-        <div class="system-nav-tabs">
-          <button class="nav-tab-btn active" id="tab-btn-inventory" onclick="switchMainTab('inventory')">🎒 Inventory</button>
-          <button class="nav-tab-btn" id="tab-btn-spells" onclick="switchMainTab('spells')">✨ Spells</button>
-          <button class="nav-tab-btn" id="tab-btn-features" onclick="switchMainTab('features')">📜 Features</button>
+    <!-- CHARACTER STRIP (LAYOUT_UI.md, L3): who this sheet is and the numbers you need at a glance,
+         on every sheet tab. Filled by renderCharacterStats() (name, portrait, AC / Init / Speed). -->
+    <div class="header char-strip character-only">
+      <div class="strip-id">
+        <div class="strip-portrait" id="strip-portrait" aria-hidden="true"></div>
+        <div class="title-block">
+          <div class="strip-name" id="strip-name">Character</div>
+          <div class="sub" id="campaign-sub">Party Inventory Ledger</div>
         </div>
       </div>
       <div class="header-stats">
+        <div class="strip-combat" id="strip-combat"></div>
 
         <!-- HP TRACKER WIDGET -->
         <div class="stat-pill hp-pill" id="hp-pill" title="Click to open HP Management Modal"
@@ -5477,8 +5514,18 @@
             <div class="weight-bar-fill" id="weight-fill"></div>
           </div>
         </div>
-        <button class="btn" onclick="openItemModal()">+ Add Item</button>
       </div>
+    </div>
+
+    <!-- SHEET TABS: Overview (stats, skills, effects) and Inventory used to be one crowded screen -->
+    <div class="sheet-tabs character-only">
+      <div class="system-nav-tabs" role="tablist" aria-label="Sheet">
+        <button class="nav-tab-btn active" id="tab-btn-overview" onclick="switchMainTab('overview')">📊 Overview</button>
+        <button class="nav-tab-btn" id="tab-btn-inventory" onclick="switchMainTab('inventory')">🎒 Inventory</button>
+        <button class="nav-tab-btn" id="tab-btn-spells" onclick="switchMainTab('spells')">✨ Spells</button>
+        <button class="nav-tab-btn" id="tab-btn-features" onclick="switchMainTab('features')">📜 Features</button>
+      </div>
+      <button class="btn sheet-add-item" onclick="openItemModal()">+ Add Item</button>
     </div>
 
         <!-- DM CONTROL BAR (Visible only to Dungeon Master) -->
@@ -5495,7 +5542,7 @@
     </div>
     <div class="layout" id="inventory-view-container">
       <!-- COL 1 (FAR LEFT): Character Stats & Bonuses Panel -->
-      <div class="panel dnd-stats-column">
+      <div class="panel dnd-stats-column sheet-overview-part">
         <div class="dnd-stats-panel" id="dnd-stats-panel">
           <div class="dnd-section-head">
             <div class="dnd-section-title">📊 Character Stats & Bonuses</div>
@@ -5545,13 +5592,13 @@
       </div>
 
       <!-- COL 2 (EQUIPPED): Paper Doll Only -->
-      <div class="panel equipped-column" style="display:flex; flex-direction:column; align-items:center;">
+      <div class="panel equipped-column sheet-inventory-part" style="display:flex; flex-direction:column; align-items:center;">
         <div class="panel-title" style="width:100%; text-align:center;">Equipped Items</div>
         <div class="doll" id="doll" style="margin:10px auto 0;"></div>
       </div>
 
       <!-- COL 3 (CENTER): Inventory Grid -->
-      <div class="panel inventory-column">
+      <div class="panel inventory-column sheet-inventory-part">
         <div class="panel-title">Inventory</div>
         <!-- DM INSPECTION NOTIFICATION BANNER -->
         <div id="dm-inspecting-notice" class="dm-inspecting-banner" style="display: none;">
@@ -5602,7 +5649,7 @@
 
 <!-- COL 4 (FAR RIGHT): Active Effects, Death Saves, Attunement & Details -->
       <div class="panel side-trackers-column">
-        <div class="active-effects-panel" style="margin-bottom:12px;">
+        <div class="active-effects-panel sheet-overview-part" style="margin-bottom:12px;">
           <div class="active-effects-head"
             style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
             <div class="panel-title" style="margin:0;">Active Effects</div>
@@ -5613,7 +5660,7 @@
             <div id="active-effects-list"></div>
           </div>
         </div>
-        <div class="death-save-panel" style="margin-bottom:12px;">
+        <div class="death-save-panel sheet-overview-part" style="margin-bottom:12px;">
           <div class="death-save-head">
             <div class="panel-title">Death Saving Throws</div>
             <button class="btn ghost small death-save-toggle" onclick="toggleDeathSaveMenu()"
@@ -5621,7 +5668,7 @@
           </div>
           <div id="death-save-menu"></div>
         </div>
-        <div class="attunement-panel" style="margin-bottom:12px;">
+        <div class="attunement-panel sheet-inventory-part" style="margin-bottom:12px;">
           <div class="attunement-head">
             <div class="panel-title">Attunement</div>
             <button class="btn ghost small attunement-toggle" onclick="toggleAttunementMenu()"
@@ -5629,7 +5676,7 @@
           </div>
           <div id="attunement-menu"></div>
         </div>
-        <div class="detail-panel-section"
+        <div class="detail-panel-section sheet-inventory-part"
           style="border-top:1px solid var(--border); padding-top:10px; margin-top:10px;">
           <div class="panel-title">Item Details</div>
           <div id="detail-panel">
@@ -6892,7 +6939,7 @@
     // The sheet tab to show in the Character section (older sheets may have saved 'vtt').
     function characterTab() {
       const t = state && state.activeTab;
-      return (t && t !== 'vtt' && t !== 'notes') ? t : 'inventory';
+      return (t && t !== 'vtt' && t !== 'notes') ? t : 'overview';
     }
 
     function showSection(sec) {
@@ -6941,7 +6988,7 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeUserMenu(); });
 
     function switchMainTab(tabName) {
-      if (!tabName) tabName = 'inventory';
+      if (!tabName) tabName = 'overview';
       // The VTT (Table) and the notes workspace (Notes) are sections, not sheet tabs:
       // they aren't remembered on the sheet, and opening them saves nothing.
       const isSheetTab = tabName !== 'vtt' && tabName !== 'notes';
@@ -6960,7 +7007,16 @@
       const vttView = document.getElementById('vtt-view-container');
       const btnVtt = document.getElementById('tab-btn-vtt');
 
-      if (invView) invView.style.display = (tabName === 'inventory') ? 'grid' : 'none';
+      // Overview and Inventory are two halves of the same 4-column view (CSS: .sheet-mode-*).
+      const isSheetHalf = tabName === 'overview' || tabName === 'inventory';
+      if (invView) {
+        invView.style.display = isSheetHalf ? 'grid' : 'none';
+        invView.classList.toggle('sheet-mode-overview', tabName === 'overview');
+        invView.classList.toggle('sheet-mode-inventory', tabName === 'inventory');
+      }
+      document.body.dataset.sheetTab = tabName;
+      const btnOverview = document.getElementById('tab-btn-overview');
+      if (btnOverview) btnOverview.classList.toggle('active', tabName === 'overview');
       if (spellView) spellView.style.display = (tabName === 'spells') ? 'block' : 'none';
       if (featuresView) featuresView.style.display = (tabName === 'features') ? 'block' : 'none';
       if (notesView) notesView.style.display = (tabName === 'notes') ? 'flex' : 'none';
@@ -7481,6 +7537,22 @@
       if (profInput) profInput.value = pb;
     }
 
+    // Name and portrait at the left of the character strip. The name is the character's own
+    // (campaign record or builder); older sheets fall back to their sheet title.
+    function renderStripIdentity() {
+      const nameEl = document.getElementById('strip-name');
+      const picEl = document.getElementById('strip-portrait');
+      const key = activeInventoryUser || (currentUser ? currentUser.nickname : '');
+      const fromCampaign = window.Campaigns && typeof window.Campaigns.characterName === 'function' ? window.Campaigns.characterName(key) : null;
+      const name = fromCampaign || (state.build && state.build.name) || state.campaign || key || 'Character';
+      if (nameEl) nameEl.textContent = name;
+      if (picEl) {
+        const url = (state.build && state.build.details && state.build.details.portrait) || state.portrait || '';
+        if (url) { picEl.style.backgroundImage = 'url("' + String(url).replace(/"/g, '%22') + '")'; picEl.textContent = ''; }
+        else { picEl.style.backgroundImage = ''; picEl.textContent = String(name).slice(0, 1).toUpperCase(); }
+      }
+    }
+
     function renderCharacterStats() {
       if (!state.characterStats) {
         state.characterStats = {
@@ -7520,8 +7592,9 @@
       const subEl = document.getElementById('campaign-sub');
       if (subEl) {
         const classStr = 'Lvl ' + cs.level + ' ' + cs.characterClass + (cs.subclass ? ' (' + cs.subclass + ')' : '') + ' · ' + cs.species + (cs.subrace ? ' (' + cs.subrace + ')' : '');
-        subEl.textContent = (state.campaign || 'Party Inventory Ledger') + ' | ' + classStr;
+        subEl.textContent = classStr;
       }
+      renderStripIdentity();
 
       // Equipped Item Bonuses Tracker
       const itemBonuses = getEquippedItemBonuses();
@@ -7579,6 +7652,18 @@
       <div class="combat-pill" style="cursor:pointer;" title="Base: ${baseSpeed}ft${speedBonus ? ' (' + (speedBonus > 0 ? '+' : '') + speedBonus + ' item)' : ''}. Click to change Speed" onclick="quickEditStat('speed')"><div class="val">${totalSpeed}ft${speedTag}</div><div class="lbl">Speed</div></div>
       <div class="combat-pill" style="cursor:pointer;" title="Base: ${formatMod(baseInit)}${initBonus ? ' (' + (initBonus > 0 ? '+' : '') + initBonus + ' item)' : ''}. Click to change Initiative Bonus" onclick="quickEditStat('initBonus')"><div class="val">${formatMod(totalInit)}${initTag}</div><div class="lbl">Init</div></div>
       <div class="combat-pill" style="cursor:pointer;" title="AC: ${acInfo.totalAc} (${acInfo.armorName}: ${acInfo.baseAc} + DEX: ${acInfo.dexContribution >= 0 ? '+' : ''}${acInfo.dexContribution}${acInfo.shieldAc ? ' + Shield: +' + acInfo.shieldAc : ''}${acInfo.magicAc ? ' + Magic: +' + acInfo.magicAc : ''}). Click to configure AC & DEX bonus" onclick="quickEditAC()"><div class="val">${acInfo.totalAc}${acTag}</div><div class="lbl" style="display:flex; align-items:center; justify-content:center; gap:3px;">AC <span onclick="event.stopPropagation(); toggleAcDexMode();" title="${dexBadgeTitle}" style="font-size:8px; padding:1px 4px; border-radius:3px; background:color-mix(in srgb, var(--accent) 25%, transparent); color:var(--gold-bright); font-weight:bold; cursor:pointer;">${dexBadgeText}</span></div></div>`;
+      }
+
+      // The character strip's AC / Init / Speed: the same numbers, same click-to-edit as the Overview pills.
+      const stripCombat = document.getElementById('strip-combat');
+      if (stripCombat) {
+        const ac = calculateCharacterAC(itemBonuses).totalAc;
+        const init = (cs.initBonus || 0) + (itemBonuses.totals.init || 0);
+        const spd = (cs.speed || 25) + (itemBonuses.totals.speed || 0);
+        stripCombat.innerHTML =
+          '<button type="button" class="strip-pill" onclick="quickEditAC()" title="Armour Class"><span class="v">' + ac + '</span><span class="l">AC</span></button>' +
+          '<button type="button" class="strip-pill" onclick="quickEditStat(\'initBonus\')" title="Initiative"><span class="v">' + formatMod(init) + '</span><span class="l">Init</span></button>' +
+          '<button type="button" class="strip-pill" onclick="quickEditStat(\'speed\')" title="Speed"><span class="v">' + spd + '</span><span class="l">Speed</span></button>';
       }
 
       // Equipped Item Bonuses Summary Strip
@@ -9879,8 +9964,9 @@
       const subEl = document.getElementById('campaign-sub');
       if (subEl) {
         const classStr = 'Lvl ' + (cs.level || 5) + ' ' + (cs.characterClass || 'Bard') + (cs.subclass ? ' (' + cs.subclass + ')' : '') + ' · ' + (cs.species || 'Half-Elf') + (cs.subrace ? ' (' + cs.subrace + ')' : '');
-        subEl.textContent = (state.campaign || 'Party Inventory Ledger') + ' | ' + classStr;
+        subEl.textContent = classStr;   // the name is in the strip above it (renderStripIdentity)
       }
+      renderStripIdentity();
 
       const currency = state.currency || { platinum: 0, gold: 0, electrum: 0, silver: 0, copper: 0 };
       const coinOrder = [
@@ -9897,6 +9983,7 @@
 
       const coinBrkEl = document.getElementById('coin-breakdown');
       if (coinBrkEl) coinBrkEl.innerHTML = coinOrder.map(function (item) { return '<span>' + item[1].toLocaleString() + ' ' + item[0] + '</span>'; }).join('');
+      if (coinTotEl && coinTotEl.parentElement) coinTotEl.parentElement.title = coinOrder.map(function (item) { return item[1].toLocaleString() + ' ' + item[0]; }).join(' · ');
 
       const totalW = (state.items || []).reduce((s, i) => s + (i.weight || 0) * (i.qty || 1), 0);
       const weightValEl = document.getElementById('weight-val');

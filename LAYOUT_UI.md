@@ -262,6 +262,14 @@ Kaynaklar:
   - Testler: `tests/campaign-home.test.js` (HP çubuğu, zaman yazısı). Toplam 100 test.
   - Gerçek oyuncularla denenmedi. Dolu hâl sahte üye, not ve HP verisiyle denendi.
 - **L3.** Karakter ekranı: karakter şeridi ve dört sekme (Genel, Envanter, Büyüler, Özellikler). Mevcut panellerin taşınması.
+  - **Yapıldı.**
+  - **Karakter şeridi** (`.char-strip`): portre (yoksa baş harf), karakterin adı (`renderStripIdentity`: kampanya kaydı, builder ya da eski sheet başlığı), seviye · sınıf · tür. Yanında AC / Init / Speed (tıklayınca eskisi gibi düzenleniyor), HP, para (dökümü tooltip'te) ve taşıma ağırlığı.
+  - **Sekmeler:** 📊 Overview · 🎒 Inventory · ✨ Spells · 📜 Features.
+    - Eski dört sütunlu ekran ikiye bölündü. Overview'da istatistikler, beceriler, aktif etkiler ve ölüm kurtarma zarları var. Inventory'de giyilenler, çanta, attunement ve eşya detayı var.
+    - İkisi aynı `#inventory-view-container`. Sütunlar `.sheet-overview-part` / `.sheet-inventory-part` sınıflarıyla, `.sheet-mode-*` moduna göre gizleniyor.
+    - "+ Add Item" sadece Inventory sekmesinde, sekme satırının sağında.
+  - Varsayılan sekme Overview. Eski sayfalarda kayıtlı `inventory` sekmesi Inventory'yi açar.
+  - DM barı yerinde duruyor. Oyuncu seçicinin isim yanına taşınması yapılmadı; telefonda büyük kalıyor (L5).
 - **L4.** Masa ekranı: tam genişlik harita, sol araçlar, sağ panel.
 - **L5.** Telefon düzeni.
 - **L6.** Role göre görünürlük ve açılış ekranı; "Oyuncu olarak gör" (R5) ile kontrol.
