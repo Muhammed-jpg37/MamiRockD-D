@@ -12,7 +12,8 @@ State on 2026-11-06 (evening), for the next working session. Start with "Where t
 | `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
 | `kampanya-sistemi` | Campaign system. Same commit as `main`. Pushed. |
 | `arayuz-duzeni` | Cut from `karakter-olusturucu` on 2026-11-07. Holds `LAYOUT_UI.md`, the plan for per-campaign roles and the new layout. Not pushed. |
-| `kampanya-rolleri` | Cut from `arayuz-duzeni`. **Current branch.** Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed up to `e35b4d2` (L1) by the user; the Notes section, L2–L6 and this handoff after it are not pushed. Not merged. Read `LAYOUT_UI.md` for what changed where. |
+| `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). **Current branch.** Not pushed. |
+| `kampanya-rolleri` | Cut from `arayuz-duzeni`. **Current branch.** Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
 | `karakter-olusturucu` | Character builder and the spell plan, cut from `kampanya-sistemi`. Pushed up to `25decde`; the spell-plan commits after it (steps 7–14 and this handoff) are **not pushed**. **Not merged** into `main`. |
 
 On `karakter-olusturucu`, after `main` (oldest first): character builder (`a55568f` … `dd0a121`, 8 commits), spell steps 1–6 (`957264d` … `40c0de2`), docs (`25decde`), then unpushed: step 7 `f61d72b`, 8 `fcf3a63`, 9 `6566754`, 10 `b720e27`, 11 `5a82711`, 12 `9cd44e5`, 14 `bbac6cb`, and the commit adding the "Next plan" below. `git log --oneline main..karakter-olusturucu` lists them.
@@ -27,7 +28,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 100 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 105 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
 
@@ -96,6 +97,14 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 14. Tests and docs: done. `tests/engine-spells.test.js` (25 tests: subclass/species spell data, spell limits, options, validation, level up, derive, homebrew spells); 93 tests in all pass in `tests/browser-runner.html`; `npm test` not yet run (no Node here). `CHARACTERS.md` has a "Büyüler" section and the new files, paths and tests.
 
 The spell plan is finished except step 13 (postponed).
+
+## Feature plan (agreed 2026-11-07)
+
+Every new piece of work goes on its own new branch. Order: **6** catalogs → **1** character import (site JSON, fillable PDF fields, a D&D Beyond JSON file the player downloads) → **2** dice (`NdX+M`, advantage, hidden DM rolls, click-to-roll from the sheet) → **3** sheet maths (attacks, AC from armour, feature text and uses, prepared spells, a DM "grant a level" the player then takes) → **4** combat (conditions, damage from the token, monster stat blocks, encounter builder) → **5** map (several scenes, drawing and a DM layer, fog that opens around player tokens with a set radius, walls, handouts) → **7** PDF (print CSS, filling the official sheet) → **8** sound (a simple ambience player; other sites' extensions are not worth emulating). A "How to use" / Help section comes last, after all of these.
+
+Step 6 so far (branch `kataloglar`):
+1. Data: done. `tools/build-srd-catalogs.js` turns the 5e-bits data (2014 and 2024) into `rules/catalog/*.json`: monsters, equipment, magic items, conditions, and the SRD 5.1 rule sections (the 2024 data has none). Licence and attribution in `rules/catalog/LICENSE.md` and in each file's `meta`. Tests: `tests/catalogs.test.js`.
+2. Next: a searchable **📚 Rules** section that loads these files only when opened; then adding catalog items to a sheet and to the campaign item store; a visible CC-BY attribution.
 
 ## Next plan: closing the gaps with other character builders
 
