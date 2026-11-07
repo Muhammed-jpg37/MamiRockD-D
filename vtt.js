@@ -214,6 +214,20 @@
       .vtt-sb-action .btn { min-width: 0; padding: 2px 6px; font-size: 11px; font-family: var(--font-mono); }
       .vtt-sb-dc { font-family: var(--font-mono); font-size: 11px; color: var(--gold-bright, var(--accent)); align-self: center; }
       .vtt-sb-credit { margin-top: 6px; font-size: 10px; color: var(--text-muted); }
+      .vtt-encounter { left: 12px; top: 12px; width: min(420px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+      .vtt-encounter input[type=search] { flex: 1; min-width: 0; }
+      .vtt-enc-hits { max-height: 160px; min-height: 0; }
+      .vtt-enc-lines { display: flex; flex-direction: column; gap: 3px; }
+      .vtt-enc-line { display: flex; align-items: center; gap: 4px; }
+      .vtt-enc-line span { flex: 1; min-width: 0; }
+      .vtt-enc-line .btn { min-width: 0; padding: 1px 6px; }
+      .vtt-enc-line b { font-family: var(--font-mono); }
+      .vtt-enc-sum { display: flex; flex-direction: column; gap: 3px; color: var(--text-dim); }
+      .vtt-enc-diff { align-self: flex-start; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); font-family: var(--font-display); color: var(--text); }
+      .vtt-enc-easy { border-color: var(--success); color: var(--success); }
+      .vtt-enc-medium { border-color: var(--accent); color: var(--accent); }
+      .vtt-enc-hard { border-color: var(--warn, #c9962f); color: var(--warn, #c9962f); }
+      .vtt-enc-deadly { border-color: var(--danger-strong); color: var(--danger-strong); }
       .vtt-conds { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-dim); padding: 2px 0; }
       .vtt-cond-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
       .vtt-cond-grid .btn { min-width: 0; padding: 2px 0; font-size: 14px; }
@@ -284,6 +298,7 @@
         <div class="vtt-group vtt-dm-only">
           <button class="btn small ghost" data-act="add-token">➕ Add Token</button>
           <button class="btn small ghost" data-act="add-monster" title="SRD monsters with HP, AC, initiative and their stat block">🐉 Add Monster</button>
+          <button class="btn small ghost" data-act="encounter" title="Plan an encounter: XP budget and difficulty for your party">⚖ Encounter</button>
           <button class="btn small ghost" data-act="add-party" title="A token for each player in this campaign who is not on the map yet">👥 Party</button>
           <button class="btn small ghost" data-act="catalog" title="Ready-made maps and tokens">📚 Catalog</button>
           <input type="file" accept="image/*" data-el="token-file" hidden>
@@ -394,6 +409,7 @@
       else if (act === 'map-url') promptMapUrl();
       else if (act === 'add-token') openAddTokenForm(btn);
       else if (act === 'add-monster') openMonsterPicker(btn);
+      else if (act === 'encounter') openEncounterBuilder();
       else if (act === 'add-party') addPartyTokens();
       else if (act === 'zoom-in') zoomAt(canvasCenter(), 1.25);
       else if (act === 'zoom-out') zoomAt(canvasCenter(), 0.8);
@@ -2247,7 +2263,7 @@
     });
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t), changeTokenHp: (t, d) => changeTokenHp(t, d), addMonsters: (e, n, h) => addMonsters(e, n, h), openStatBlock: (t) => openStatBlock(t), loadMonsters: (rs) => loadMonsters(rs) };
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t), changeTokenHp: (t, d) => changeTokenHp(t, d), addMonsters: (e, n, h) => addMonsters(e, n, h), openStatBlock: (t) => openStatBlock(t), loadMonsters: (rs) => loadMonsters(rs), openEncounterBuilder: () => openEncounterBuilder() };
 
   // For the rest of the site (the sheet's click-to-roll). Works before the Table section was ever
   // opened: rolls post to the active campaign's log (vtt/<campaign>/log) as soon as there is one.
@@ -2800,6 +2816,122 @@
     pop.style.left = '12px';
     pop.style.top = '12px';
     draw();
+    q.focus();
+  }
+
+  /* ---------- Encounter builder (feature plan 4.4; Combat.encounter) ---------- */
+
+  let encounterLines = [];      // [{ entry, count }] while the page is open
+  let encounterParty = null;    // the party levels text, once filled in
+
+  // The levels of the campaign's player characters, read from their sheets: "3, 3, 4".
+  function guessPartyLevels() {
+    const members = window.Campaigns && typeof window.Campaigns.memberList === 'function' ? window.Campaigns.memberList() : [];
+    const chars = members.filter((m) => m.role === 'player' && m.character).map((m) => m.character);
+    if (!chars.length || typeof window.fbCharacterSheet !== 'function') return Promise.resolve('');
+    return Promise.all(chars.map((c) => window.fbCharacterSheet(c).then((sh) => (sh && sh.characterStats && Number(sh.characterStats.level)) || null).catch(() => null)))
+      .then((levels) => levels.filter(Boolean).join(', '));
+  }
+
+  function openEncounterBuilder() {
+    if (!isDm()) return;
+    closePopups();
+    const C = window.Combat;
+    const pop = document.createElement('div');
+    pop.className = 'vtt-pop vtt-form vtt-encounter';
+    pop.innerHTML = '<div class="vtt-sb-head"><div class="vtt-pop-title">Encounter</div></div>' +
+      '<label>Party levels <input type="text" data-f="party" placeholder="e.g. 3, 3, 4, 2"></label>' +
+      '<div class="vtt-row"><input type="search" data-f="q" placeholder="Add a monster: name, type or cr 2" aria-label="Search monsters">' +
+      '<select data-f="rs" aria-label="Rules"><option value="2014">2014</option><option value="2024">2024</option></select></div>' +
+      '<div class="vtt-monster-list vtt-enc-hits" data-f="hits"></div>' +
+      '<div class="vtt-enc-lines" data-f="lines"></div>' +
+      '<div class="vtt-enc-sum" data-f="sum"></div>' +
+      '<div class="vtt-row"><label><input type="checkbox" data-f="hidden"> Hidden</label>' +
+      '<button type="button" class="btn small" data-f="place">🗺 Place on map</button>' +
+      '<button type="button" class="btn small ghost" data-f="clear">Clear</button></div>';
+    const $ = (k) => pop.querySelector('[data-f="' + k + '"]');
+    const head = pop.querySelector('.vtt-sb-head');
+    head.appendChild(button('✕', closePopups));
+
+    const party = $('party');
+    if (encounterParty !== null) party.value = encounterParty;
+    else guessPartyLevels().then((txt) => { if (txt && !party.value) { party.value = txt; encounterParty = txt; drawSum(); } });
+    party.addEventListener('input', () => { encounterParty = party.value; drawSum(); });
+
+    const drawSum = () => {
+      const e = C.encounter(encounterLines.map((l) => ({ xp: l.entry.xp, count: l.count })), party.value);
+      const sum = $('sum');
+      sum.innerHTML = '';
+      const badge = document.createElement('div');
+      badge.className = 'vtt-enc-diff vtt-enc-' + e.difficulty.toLowerCase().replace(/[^a-z]/g, '');
+      badge.textContent = e.difficulty === '—' ? (C.partyLevels(party.value).length ? 'Add monsters' : 'Type the party levels') : e.difficulty;
+      const lines = document.createElement('div');
+      lines.textContent = e.monsters + ' monster' + (e.monsters === 1 ? '' : 's') + ' · ' + e.xp + ' XP × ' + e.multiplier + ' = ' + e.adjusted + ' adjusted XP' +
+        (C.partyLevels(party.value).length ? ' · party: easy ' + e.thresholds.easy + ', medium ' + e.thresholds.medium + ', hard ' + e.thresholds.hard + ', deadly ' + e.thresholds.deadly + ' · ' + e.perPlayer + ' XP each' : '');
+      sum.append(badge, lines);
+    };
+
+    const drawLines = () => {
+      const box = $('lines');
+      box.innerHTML = '';
+      encounterLines.forEach((l, i) => {
+        const row = document.createElement('div');
+        row.className = 'vtt-enc-line';
+        const name = document.createElement('span');
+        name.textContent = l.entry.name + ' (CR ' + l.entry.cr + ', ' + l.entry.xp + ' XP)';
+        const count = document.createElement('b');
+        count.textContent = '× ' + l.count;
+        row.append(name, button('−', () => { l.count -= 1; if (l.count < 1) encounterLines.splice(i, 1); drawLines(); }), count,
+          button('+', () => { l.count = Math.min(20, l.count + 1); drawLines(); }), button('✕', () => { encounterLines.splice(i, 1); drawLines(); }));
+        box.appendChild(row);
+      });
+      drawSum();
+    };
+
+    const q = $('q');
+    const rs = $('rs');
+    const drawHits = () => {
+      const hits = $('hits');
+      const term = q.value.trim().toLowerCase();
+      if (!term) { hits.innerHTML = ''; return; }
+      loadMonsters(rs.value).then((all) => {
+        const crTerm = /^cr\s*(\S+)$/.exec(term);
+        const found = all.filter((m) => crTerm ? String(m.cr) === crTerm[1] : (m.name.toLowerCase().includes(term) || String(m.type || '').toLowerCase().includes(term)))
+          .sort((a, b) => a.name.localeCompare(b.name)).slice(0, 12);
+        hits.innerHTML = '';
+        found.forEach((m) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'vtt-monster-row';
+          const nm = document.createElement('span');
+          nm.textContent = '+ ' + m.name;
+          const meta = document.createElement('small');
+          meta.textContent = 'CR ' + m.cr + ' · ' + m.xp + ' XP';
+          b.append(nm, meta);
+          b.onclick = () => {
+            const have = encounterLines.find((l) => l.entry.id === m.id && l.entry.ruleset === m.ruleset);
+            if (have) have.count = Math.min(20, have.count + 1); else encounterLines.push({ entry: m, count: 1 });
+            drawLines();
+          };
+          hits.appendChild(b);
+        });
+      }).catch((err) => { $('hits').textContent = err.message; });
+    };
+    q.addEventListener('input', drawHits);
+    rs.addEventListener('change', drawHits);
+
+    $('place').onclick = () => {
+      if (!encounterLines.length) { flashStatus('Add monsters first'); return; }
+      const hidden = $('hidden').checked;
+      let n = 0;
+      encounterLines.forEach((l) => { n += addMonsters(l.entry, l.count, hidden).length; });
+      closePopups();
+      flashStatus('Placed ' + n + ' monster' + (n === 1 ? '' : 's') + ' (initiative rolled)');
+    };
+    $('clear').onclick = () => { encounterLines = []; drawLines(); };
+
+    root.querySelector('.vtt-stage').appendChild(pop);
+    drawLines();
     q.focus();
   }
 

@@ -18,6 +18,10 @@ Sitedeki mevcut sekme sistemine "🗺 VTT" sekmesi eklendi. Kodun neredeyse tama
 | Zar atıcı (d4–d100) ve ortak log (son 20 atış) | ✔ | ✔ |
 | Zar ifadesi (`1d20+5`, `2d6+3`, `4d6kh3`, `d%`; Enter ile atılır, son 10 ifade önerilir) ve Adv / Norm / Dis anahtarı. Logda her zar görünür | ✔ | ✔ |
 | 🙈 Gizli zar: oyuncular yalnızca "rolled in secret" görür | ✔ | Göremez, atamaz |
+| Durumlar (15 SRD durumu + yorgunluk): token'da simge; DM token menüsünden, oyuncu sayfasından değiştirir | ✔ | Görür, kendi sayfasından değiştirir |
+| Token menüsünden hasar / iyileştirme (önce geçici HP); oyuncu token'ı karakter sayfasının HP'sini değiştirir | ✔ | Kendi token'ında |
+| 🐉 SRD canavarı ekleme: HP, AC, inisiyatif zarı; 📜 stat blok ve tıklanınca atılan saldırılar | ✔ | – |
+| ⚖ Karşılaşma kurucu: parti seviyeleri, XP bütçesi, zorluk (2014), haritaya yerleştirme | ✔ | – |
 | Karakter sayfasından zar: yetenek, kurtarma, beceri, inisiyatif, ölüm kurtarma (🎲 butonları). Masa hiç açılmamış olsa da kampanyanın loguna düşer | ✔ | ✔ |
 | Inisiyatif sırası: tur sayacı, sıradaki karakter, haritada sıradaki token'ın etrafında halka | ✔ Yönetir (ekleme, değer girme, NPC'lere d20, ileri/geri, gizleme, bitirme) | Görür. Gizli girişleri ve sisteki düşmanları görmez |
 | Cetvel: sürükleyerek ölçüm (kare ve feet), sürüklerken herkes görür | ✔ | ✔ |
@@ -30,7 +34,7 @@ Tüm değişiklikler Firebase üzerinden anlık eşleşiyor.
 ```
 vtt/<kampanya>/map            { url, width, height }
 vtt/<kampanya>/grid           { size, visible, color, opacity, offsetX, offsetY }   offset = haritadaki bir ızgara çizgisinin konumu (px)
-vtt/<kampanya>/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden, hp? }   x/y = ızgara hücresi
+vtt/<kampanya>/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden, hp?, conditions?, ac?, monsterId? }   x/y = ızgara hücresi
 vtt/<kampanya>/fog            { enabled, revealed: { "x_y": true } }
 vtt/<kampanya>/log/<key>      { by, expr, total, text, crit, fumble, label?, at }   en yeni 20 kayıt tutulur
                               eski kayıtlar { by, die, result, at } hâlâ gösterilir; gizli zar burada { by, hidden: true, at }
@@ -40,7 +44,7 @@ vtt/<kampanya>/shapes/<id>    { kind, ox, oy, ex, ey, by, color }   kare cinsind
 vtt/<kampanya>/measure/<sekme> { who, ax, ay, bx, by, color, at }   yalnızca sürükleme sürerken var
 ```
 
-Oyuncu HP'si ayrıca saklanmıyor, doğrudan `inventories/<nickname>/hp` okunuyor. HP hâlâ yalnızca karakter sayfasından değiştiriliyor.
+Oyuncu HP'si ve durumları ayrıca saklanmıyor, doğrudan `inventories/<karakter>/hp` ve `inventories/<karakter>/conditions` okunuyor. Masadan değişince yalnızca o alan yazılıyor (`fbSaveSheetField`), sayfanın tamamı değil.
 
 ## Zar
 

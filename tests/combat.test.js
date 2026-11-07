@@ -62,3 +62,27 @@ test('combat: stat block actions give attack, damage and DC rolls', () => {
   const Dice = require('../dice.js').Dice || globalThis.Dice;
   MONSTERS.forEach((m) => (m.actions || []).forEach((a) => C.actionRolls(a).damage.forEach((d) => assert.ok(Dice.isValid(d.expr), m.id + ' ' + a.name + ' ' + d.expr))));
 });
+
+/* ---------- 4.4 Encounter difficulty ---------- */
+
+test('combat: encounter multiplier by number of monsters and party size', () => {
+  assert.deepEqual([1, 2, 3, 6, 7, 10, 11, 14, 15, 30].map((n) => C.multiplier(n, 4)), [1, 1.5, 2, 2, 2.5, 2.5, 3, 3, 4, 4]);
+  assert.equal(C.multiplier(1, 2), 1.5, 'small party: one step up');
+  assert.equal(C.multiplier(1, 6), 0.5, 'large party: one step down');
+  assert.equal(C.multiplier(15, 2), 5);
+  assert.deepEqual(C.partyLevels('3, 3; 4 2 x 25 0'), [3, 3, 4, 2]);
+});
+
+test('combat: encounter difficulty from the party thresholds', () => {
+  // Four level 3 characters: easy 300, medium 600, hard 900, deadly 1600.
+  const party = [3, 3, 3, 3];
+  let e = C.encounter([{ xp: 50, count: 6 }], party);   // six goblins: 300 XP × 2
+  assert.deepEqual([e.monsters, e.xp, e.multiplier, e.adjusted, e.difficulty], [6, 300, 2, 600, 'Medium']);
+  assert.deepEqual(e.thresholds, { easy: 300, medium: 600, hard: 900, deadly: 1600 });
+  assert.equal(e.perPlayer, 75);
+  e = C.encounter([{ xp: 450, count: 1 }, { xp: 200, count: 2 }], party);   // 850 × 2 = 1700
+  assert.equal(e.difficulty, 'Deadly');
+  assert.equal(C.encounter([{ xp: 10, count: 1 }], party).difficulty, 'Trivial');
+  assert.equal(C.encounter([], party).difficulty, '—');
+  assert.equal(C.encounter([{ xp: 100, count: 1 }], []).difficulty, '—', 'no party, no rating');
+});

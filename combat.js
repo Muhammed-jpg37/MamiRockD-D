@@ -158,10 +158,66 @@
     return ['str', 'dex', 'con', 'int', 'wis', 'cha'].map((k) => ({ key: k, score: Number(ab[k]) || 10, mod: signed(mod(ab[k])) }));
   }
 
+  /* ---------- 4.4 Encounter difficulty (2014 XP budget) ----------
+     The 2014 rules' numbers for building encounters (XP thresholds per character level and the
+     multiplier for the number of monsters); only the numbers are used here, no book text. */
+
+  // [easy, medium, hard, deadly] per character level 1..20.
+  const XP_THRESHOLDS = [null,
+    [25, 50, 75, 100], [50, 100, 150, 200], [75, 150, 225, 400], [125, 250, 375, 500], [250, 500, 750, 1100],
+    [300, 600, 900, 1400], [350, 750, 1100, 1700], [450, 900, 1400, 2100], [550, 1100, 1600, 2400], [600, 1200, 1900, 2800],
+    [800, 1600, 2400, 3600], [1000, 2000, 3000, 4500], [1100, 2200, 3400, 5100], [1250, 2500, 3800, 5700], [1400, 2800, 4300, 6400],
+    [1600, 3200, 4800, 7200], [2000, 3900, 5900, 8800], [2100, 4200, 6300, 9500], [2400, 4900, 7300, 10900], [2800, 5700, 8500, 12700],
+  ];
+  const MULTIPLIERS = [0.5, 1, 1.5, 2, 2.5, 3, 4, 5];
+  const DIFFICULTIES = ['Easy', 'Medium', 'Hard', 'Deadly'];
+
+  // "3, 3, 4, 2" or [3, 3, 4, 2] -> [3, 3, 4, 2] (levels 1..20 only).
+  function partyLevels(input) {
+    const list = Array.isArray(input) ? input : String(input || '').split(/[\s,;]+/);
+    return list.map((x) => Math.floor(Number(x))).filter((n) => n >= 1 && n <= 20);
+  }
+
+  // Multiplier for the number of monsters, moved one step for small (< 3) or large (6+) parties.
+  function multiplier(monsters, partySize) {
+    const n = Math.max(0, Math.floor(Number(monsters) || 0));
+    if (!n) return 1;
+    let i = n === 1 ? 1 : n === 2 ? 2 : n <= 6 ? 3 : n <= 10 ? 4 : n <= 14 ? 5 : 6;
+    if (partySize > 0 && partySize < 3) i += 1;
+    else if (partySize >= 6) i -= 1;
+    return MULTIPLIERS[Math.max(0, Math.min(MULTIPLIERS.length - 1, i))];
+  }
+
+  // lines: [{ xp, count }] (xp per monster). levels: party levels.
+  // -> { monsters, xp (total), multiplier, adjusted, thresholds: { easy, medium, hard, deadly }, difficulty, perPlayer }
+  function encounter(lines, levels) {
+    const party = partyLevels(levels);
+    let monsters = 0, xp = 0;
+    (lines || []).forEach((l) => {
+      const c = Math.max(0, Math.floor(Number(l.count) || 0));
+      monsters += c;
+      xp += c * (Number(l.xp) || 0);
+    });
+    const m = multiplier(monsters, party.length);
+    const adjusted = Math.round(xp * m);
+    const t = [0, 0, 0, 0];
+    party.forEach((lv) => XP_THRESHOLDS[lv].forEach((v, i) => { t[i] += v; }));
+    let difficulty = party.length ? 'Trivial' : '—';
+    if (party.length) DIFFICULTIES.forEach((d, i) => { if (adjusted >= t[i]) difficulty = d; });
+    if (!monsters) difficulty = '—';
+    return {
+      monsters: monsters, xp: xp, multiplier: m, adjusted: adjusted,
+      thresholds: { easy: t[0], medium: t[1], hard: t[2], deadly: t[3] },
+      difficulty: difficulty,
+      perPlayer: party.length ? Math.floor(xp / party.length) : 0,
+    };
+  }
+
   root.Combat = {
     CONDITIONS: CONDITIONS, EXHAUSTION: EXHAUSTION, byId: (id) => BY_ID[id] || null,
     normalize: normalize, toggle: toggle, setExhaustion: setExhaustion, active: active, summary: summary,
     applyHp: applyHp,
     nextName: nextName, monsterToken: monsterToken, actionRolls: actionRolls, abilityLine: abilityLine, SIZE_CELLS: SIZE_CELLS,
+    XP_THRESHOLDS: XP_THRESHOLDS, partyLevels: partyLevels, multiplier: multiplier, encounter: encounter,
   };
 })(typeof window !== 'undefined' ? window : this);
