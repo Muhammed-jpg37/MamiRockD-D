@@ -325,6 +325,19 @@
     const nick = myKey();
     const T = window.CharacterTransfer;
     if (!nick || !T) return Promise.reject(new Error('Log in first'));
+    if (typeof text === 'string' && text.length > 5000000) return Promise.reject(new Error('That file is too large to be a character (over 5 MB).'));
+    // A D&D Beyond character file goes through the same path as a PDF: read, then put on an empty sheet.
+    if (T.detectJson(text) === 'ddb') {
+      const spellIndex = {};
+      (window.SPELLS_SRD5 || []).forEach((s) => { spellIndex[s.name.toLowerCase()] = s; });
+      let read;
+      try { read = T.fromDdbJson(JSON.parse(text), { spellIndex: spellIndex }); } catch (e) { return Promise.reject(e); }
+      const base = typeof window.getDefaultState === 'function' ? window.getDefaultState(read.name) : {};
+      const fromDdb = T.sheetFromPdf(base, read);
+      fromDdb.sheet.importedFrom = 'ddb';
+      fromDdb.warnings = read.warnings.concat(fromDdb.warnings || []);
+      return saveImportedCharacter(fromDdb).then((r) => Object.assign(r, { source: 'ddb' }));
+    }
     let parsed;
     try { parsed = T.parseExport(text); } catch (e) { return Promise.reject(e); }
     return saveImportedCharacter(parsed);
@@ -532,12 +545,16 @@
         card.appendChild(el('div', 'camp-section', 'Import a character'));
         const imp = el('button', 'btn ghost small', '⬆ From a file…');
         imp.type = 'button';
-        imp.title = 'A .mamirock.json file downloaded with ⬇';
+        imp.title = 'A .mamirock.json file downloaded with ⬇, or a D&D Beyond character JSON file';
         imp.onclick = () => importCharacterFile().then((r) => {
           if (!r) return;
-          openCharacters('Imported "' + r.name + '".' + (r.warnings.length ? ' ' + r.warnings.join(' ') : ''));
+          openCharacters('Imported "' + r.name + '"' + (r.source === 'ddb' ? ' from D&D Beyond. To check it in the character builder, open it and press ⚔ Forge.' : '.') + (r.warnings.length ? ' Notes: ' + r.warnings.join(' ') : ''));
         }, fail);
         card.appendChild(imp);
+        // How to get the D&D Beyond file: the player saves their own (public) character's JSON.
+        const help = el('details', 'camp-help');
+        help.appendChild(el('summary', '', 'From D&D Beyond?'));
+        help.appendChild(el('div', 'camp-meta', 'On D&D Beyond, make the character public (Edit → Home → Character Privacy: Public). Then open character-service.dndbeyond.com/character/v5/character/ followed by the number at the end of your character\'s address, save the page as a .json file, and import it here with "From a file…". This is not an official D&D Beyond feature and may stop working.'));
         const impPdf = el('button', 'btn ghost small', '📄 From a PDF character sheet…');
         impPdf.type = 'button';
         impPdf.title = 'A filled-in, fillable PDF sheet (the official 5e sheet and similar). Scanned PDFs can not be read.';
@@ -546,6 +563,7 @@
           openCharacters('Imported "' + r.name + '" from the PDF. To check it in the character builder, open it and press ⚔ Forge (it offers to convert it).' + (r.warnings.length ? ' Notes: ' + r.warnings.join(' ') : ''));
         }, fail); };
         card.appendChild(impPdf);
+        card.appendChild(help);
       }
       card.appendChild(msgBox);
       if (message) say(message, isError);

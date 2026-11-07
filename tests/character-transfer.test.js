@@ -130,3 +130,59 @@ test('PDF sheets: what the PDF gives is enough for the character builder convers
   assert.equal(out.build.classes[0].id, 'rogue');
   assert.equal(out.build.species, 'halfling');
 });
+
+// D&D Beyond character JSON. tests/fixtures/ddb-character.json is a made-up file in the shape
+// community tools describe; it is not a real export (none was available on 2026-11-07).
+const DDB_TEXT = require('fs').readFileSync(require('path').join(__dirname, 'fixtures', 'ddb-character.json'), 'utf8');
+
+test('D&D Beyond: the file is recognised, and scores add species and ASI bonuses', () => {
+  assert.equal(T.detectJson(DDB_TEXT), 'ddb');
+  assert.equal(T.detectJson(JSON.stringify(T.makeExport(SHEET, 'X'))), 'site');
+  assert.equal(T.detectJson('{"a":1}'), 'unknown');
+  assert.equal(T.detectJson('nope'), 'invalid');
+  const r = T.fromDdbJson(JSON.parse(DDB_TEXT), { spellIndex: SPELLS });
+  const cs = r.patch.characterStats;
+  assert.equal(r.name, 'Brakka Stonehelm');
+  assert.deepEqual([cs.characterClass, cs.subclass, cs.level, cs.profBonus], ['Fighter', 'Champion', 5, 3]);
+  assert.deepEqual([cs.species, cs.subrace, cs.speed], ['Dwarf', 'Hill', 25]);
+  assert.deepEqual([cs.str, cs.dex, cs.con, cs.int, cs.wis, cs.cha], [17, 10, 16, 8, 14, 12]);
+  assert.deepEqual(cs.saveProfs, { str: 1, con: 1 });
+  assert.deepEqual(cs.skillProfs, { Athletics: 2, Intimidation: 1 });
+  assert.deepEqual([cs.armorProf, cs.weaponProf, cs.toolProf, cs.languages], ['Heavy Armor, Shields', 'Martial Weapons', "Smith's Tools", 'Common, Dwarvish']);
+  assert.ok(r.warnings.some((w) => /Multiclass "Fighter 4 \/ Cleric 1"/.test(w)));
+  assert.ok(r.warnings.some((w) => /portrait/.test(w)));
+});
+
+test('D&D Beyond: HP, coins, gear with AC, spells, features and background', () => {
+  const r = T.fromDdbJson(JSON.parse(DDB_TEXT), { spellIndex: SPELLS });
+  assert.deepEqual(r.patch.hp, { max: 51, current: 44, temp: 3 }, '36 + CON +3 × 5 levels, 7 damage taken');
+  assert.deepEqual(r.patch.currency, { platinum: 1, gold: 55, electrum: 0, silver: 30, copper: 12 });
+  const by = (n) => r.patch.items.find((i) => i.name === n);
+  assert.deepEqual([by('Chain Mail').type, by('Chain Mail').armorCategory, by('Chain Mail').statBonuses.ac, by('Chain Mail').equipped], ['Armor', 'Heavy', 16, true]);
+  assert.deepEqual([by('Shield').type, by('Shield').statBonuses.ac, by('Shield').equipped], ['Shield', 2, true]);
+  assert.deepEqual([by('Warhammer').proficiencyType, by('Warhammer').equipped], ['Martial', true]);
+  assert.equal(by('Handaxe').equipped, false, 'one item per slot is equipped');
+  assert.equal(by('Potion of Healing').qty, 2);
+  assert.equal(by('Cloak of Protection').attunementRequired, true);
+  assert.equal(by('Chain Mail').desc, 'Made of interlocking metal rings.');
+  if (Object.keys(SPELLS).length) assert.deepEqual(r.patch.spells.map((s) => s.name + ':' + s.levelNum), ['Bless:1', 'Cure Wounds:1', 'Toll the Dead:0', 'Sacred Flame:0']);
+  assert.deepEqual(r.patch.featureCards.map((c) => c.name), ['Second Wind', 'Action Surge', 'Spellcasting', 'Darkvision', 'Dwarven Resilience', 'Athlete'], 'Extra Attack (level 5) is above Fighter 4');
+  assert.deepEqual([r.patch.backgroundInfo.name, r.patch.backgroundInfo.alignment, r.patch.backgroundInfo.personality], ['Soldier', 'Lawful Good', 'I face problems head-on.']);
+  assert.deepEqual(r.patch.deathSaves.successes, [true, true, false]);
+  assert.equal(r.patch.xp, 2700);
+});
+
+test('D&D Beyond: a sheet the site and the builder can use; files that are not characters are refused', () => {
+  const read = T.fromDdbJson(JSON.parse(DDB_TEXT));
+  const { sheet } = T.sheetFromPdf({ items: [{ name: 'Staff of the Magi' }], characterStats: {} }, read);
+  assert.equal(sheet.campaign, "Brakka Stonehelm's Vault");
+  assert.equal(sheet.items.length, 7);
+  const single = JSON.parse(DDB_TEXT);
+  single.data.classes = [single.data.classes[1]];
+  const E = require('../character-engine.js');
+  const out = E.buildFromSheet(T.fromDdbJson(single).patch.characterStats, JSON.parse(JSON.stringify(require('../rules/srd5.js'))), { name: 'Brakka' });
+  assert.ok(out.ok, out.reason);
+  assert.deepEqual([out.build.classes[0].id, out.build.species, out.build.subrace], ['fighter', 'dwarf', 'hill']);
+  assert.throws(() => T.fromDdbJson({ data: { name: 'x' } }), /not a D&D Beyond character file/);
+  assert.equal(T.stripHtml('<p>A &amp; B</p><p>C</p>'), 'A & B\nC');
+});

@@ -29,7 +29,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 118 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 121 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
 
@@ -117,7 +117,11 @@ Step 1, character import (branch `karakter-aktarma`, cut from `kataloglar`):
    - Read: name, class and level (multiclass: first class, total level, with a note), species, background, alignment, scores, PB, AC (base = AC − DEX so the sheet doesn't add DEX twice), initiative, speed, HP, saves, skills (a written bonus of mod + 2×PB = expertise), languages and armour/weapon/tool lines, coins, equipment lines with counts, spell names (levels from the SRD data; others kept by name), death saves, personality/ideals/bonds/flaws/backstory; long text boxes become "Imported from PDF" feature cards.
    - The imported character is a plain sheet. Opening it and pressing ⚔ Forge offers the existing conversion to the character builder, whose review screen shows what was guessed (checked in a test with `buildFromSheet`). Non-SRD classes stay plain sheets.
    - Not tried: a real D&D Beyond PDF (no sample yet; its field names may differ), scanned or flattened PDFs (refused with a message), password-protected PDFs.
-3. Next: a D&D Beyond JSON file the player downloads themselves.
+3. D&D Beyond JSON: done, **not yet checked with a real file**. "⬆ From a file…" now also takes a D&D Beyond character JSON (`CharacterTransfer.detectJson` tells it from a site file; `fromDdbJson` reads it into the same shape as the PDF reader, `sheetFromPdf` builds the sheet). A "From D&D Beyond?" note under the buttons tells the player how to save their own public character's JSON from character-service.dndbeyond.com/character/v5/character/<id>.
+   - Read: name, classes (starting class first; multiclass note), subclass, species/subrace, speed, scores (base + bonus/override stats + "<ability>-score" bonus modifiers), PB from level, save and skill proficiencies and expertise, armour/weapon/tool proficiencies and languages, HP (base + CON × level, minus damage taken, temp), coins, inventory (armour with AC and category, shields, weapons Simple/Martial, potions, rings, wondrous items; one equipped item per slot), spells from classes, species, feats and items (prepared kept), class features up to the class level, species traits and feats as names only (D&D Beyond's texts are book text), background, alignment, personality and notes, death saves, XP. The portrait is a web link and is not copied.
+   - The field names are the ones community tools use; D&D Beyond's JSON is not an official API and has changed before. Tests use `tests/fixtures/ddb-character.json`, a made-up file in that shape. **When a real file is available, compare it with the fixture first.**
+
+Step 1 is done, except checking a real D&D Beyond PDF and JSON. Next in the plan: **2** dice, on a new branch cut from `karakter-aktarma`.
 
 ## Next plan: closing the gaps with other character builders
 

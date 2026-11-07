@@ -1,0 +1,70 @@
+{
+  "id": 0,
+  "success": true,
+  "message": "Synthetic test file in the shape community tools describe for D&D Beyond's character service (v5). Not a real export; made up for tests/character-transfer.test.js.",
+  "data": {
+    "id": 123456789,
+    "name": "Brakka Stonehelm",
+    "alignmentId": 1,
+    "currentXp": 2700,
+    "stats": [{ "id": 1, "value": 15 }, { "id": 2, "value": 10 }, { "id": 3, "value": 14 }, { "id": 4, "value": 8 }, { "id": 5, "value": 13 }, { "id": 6, "value": 12 }],
+    "bonusStats": [{ "id": 1, "value": null }, { "id": 2, "value": null }, { "id": 3, "value": null }, { "id": 4, "value": null }, { "id": 5, "value": null }, { "id": 6, "value": null }],
+    "overrideStats": [{ "id": 1, "value": null }, { "id": 2, "value": null }, { "id": 3, "value": null }, { "id": 4, "value": null }, { "id": 5, "value": null }, { "id": 6, "value": null }],
+    "race": {
+      "fullName": "Hill Dwarf", "baseName": "Dwarf", "subRaceShortName": "Hill",
+      "weightSpeeds": { "normal": { "walk": 25 } },
+      "racialTraits": [{ "definition": { "name": "Darkvision" } }, { "definition": { "name": "Dwarven Resilience" } }]
+    },
+    "classes": [
+      { "level": 1, "isStartingClass": false, "definition": { "name": "Cleric" }, "subclassDefinition": { "name": "Life Domain" },
+        "classFeatures": [{ "definition": { "name": "Spellcasting", "requiredLevel": 1 } }] },
+      { "level": 4, "isStartingClass": true, "definition": { "name": "Fighter" }, "subclassDefinition": { "name": "Champion" },
+        "classFeatures": [{ "definition": { "name": "Second Wind", "requiredLevel": 1 } }, { "definition": { "name": "Action Surge", "requiredLevel": 2 } }, { "definition": { "name": "Extra Attack", "requiredLevel": 5 } }] }
+    ],
+    "background": { "definition": { "name": "Soldier" } },
+    "baseHitPoints": 36, "bonusHitPoints": null, "overrideHitPoints": null, "removedHitPoints": 7, "temporaryHitPoints": 3,
+    "currencies": { "cp": 12, "sp": 30, "gp": 55, "ep": 0, "pp": 1 },
+    "deathSaves": { "failCount": 1, "successCount": 2 },
+    "modifiers": {
+      "race": [
+        { "type": "bonus", "subType": "constitution-score", "value": 2 },
+        { "type": "bonus", "subType": "wisdom-score", "value": 1 },
+        { "type": "language", "subType": "common", "friendlySubtypeName": "Common" },
+        { "type": "language", "subType": "dwarvish", "friendlySubtypeName": "Dwarvish" },
+        { "type": "proficiency", "subType": "smiths-tools", "friendlySubtypeName": "Smith's Tools" }
+      ],
+      "class": [
+        { "type": "proficiency", "subType": "strength-saving-throws", "friendlySubtypeName": "Strength Saving Throws" },
+        { "type": "proficiency", "subType": "constitution-saving-throws", "friendlySubtypeName": "Constitution Saving Throws" },
+        { "type": "proficiency", "subType": "heavy-armor", "friendlySubtypeName": "Heavy Armor" },
+        { "type": "proficiency", "subType": "shields", "friendlySubtypeName": "Shields" },
+        { "type": "proficiency", "subType": "martial-weapons", "friendlySubtypeName": "Martial Weapons" },
+        { "type": "proficiency", "subType": "athletics", "friendlySubtypeName": "Athletics" },
+        { "type": "bonus", "subType": "strength-score", "value": 2 }
+      ],
+      "background": [
+        { "type": "proficiency", "subType": "intimidation", "friendlySubtypeName": "Intimidation" },
+        { "type": "proficiency", "subType": "athletics", "friendlySubtypeName": "Athletics" }
+      ],
+      "feat": [{ "type": "expertise", "subType": "athletics", "friendlySubtypeName": "Athletics" }],
+      "item": []
+    },
+    "inventory": [
+      { "quantity": 1, "equipped": true, "definition": { "name": "Chain Mail", "filterType": "Armor", "type": "Heavy Armor", "armorTypeId": 3, "armorClass": 16, "weight": 55, "description": "<p>Made of interlocking metal rings.</p>" } },
+      { "quantity": 1, "equipped": true, "definition": { "name": "Shield", "filterType": "Armor", "type": "Shield", "armorTypeId": 4, "armorClass": 2, "weight": 6 } },
+      { "quantity": 1, "equipped": true, "definition": { "name": "Warhammer", "filterType": "Weapon", "type": "Warhammer", "categoryId": 2, "weight": 2 } },
+      { "quantity": 1, "equipped": true, "definition": { "name": "Handaxe", "filterType": "Weapon", "type": "Handaxe", "categoryId": 1, "weight": 2 } },
+      { "quantity": 2, "equipped": false, "definition": { "name": "Potion of Healing", "filterType": "Potion", "rarity": "Common", "weight": 0.5 } },
+      { "quantity": 1, "equipped": false, "definition": { "name": "Cloak of Protection", "filterType": "Wondrous item", "rarity": "Uncommon", "canAttune": true } },
+      { "quantity": 10, "equipped": false, "definition": { "name": "Torch", "filterType": "Other Gear", "weight": 1 } }
+    ],
+    "classSpells": [
+      { "spells": [{ "prepared": true, "definition": { "name": "Bless", "level": 1 } }, { "alwaysPrepared": true, "definition": { "name": "Cure Wounds", "level": 1 } }, { "definition": { "name": "Toll the Dead", "level": 0 } }] }
+    ],
+    "spells": { "race": [], "class": [{ "definition": { "name": "Sacred Flame", "level": 0 } }], "item": [], "feat": [] },
+    "feats": [{ "definition": { "name": "Athlete" } }],
+    "traits": { "personalityTraits": "<p>I face problems head-on.</p>", "ideals": "Responsibility.", "bonds": "My old company.", "flaws": "I obey the strong." },
+    "notes": { "backstory": "Served ten years in the <strong>Iron Guard</strong>.", "allies": "The Iron Guard" },
+    "decorations": { "avatarUrl": "https://www.dndbeyond.com/avatars/example.png" }
+  }
+}

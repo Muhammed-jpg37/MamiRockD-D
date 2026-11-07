@@ -252,8 +252,178 @@
     return clean(s, read.name);
   }
 
+  /* ---------- D&D Beyond character JSON (step 1.3) ----------
+     The file a player saves from D&D Beyond's character service for their own character
+     (character-service.dndbeyond.com/character/v5/character/<id>; the character must be
+     public). It is not an official API and its shape has changed before, so every field is
+     read defensively and anything missing becomes a note. The field names below are the
+     ones community tools use (data.stats, classes[].definition, modifiers.*, inventory[]…);
+     NOT yet checked against a real file. Returns the same { name, patch, warnings } as
+     fromPdfFields, so sheetFromPdf builds the sheet. */
+
+  const DDB_ABIL = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+  const DDB_ALIGN = { 1: 'Lawful Good', 2: 'Neutral Good', 3: 'Chaotic Good', 4: 'Lawful Neutral', 5: 'Neutral', 6: 'Chaotic Neutral', 7: 'Lawful Evil', 8: 'Neutral Evil', 9: 'Chaotic Evil' };
+  const stripHtml = (s) => String(s || '').replace(/<\/(p|li|div|h\d)>/gi, '\n').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;|&rsquo;/g, "'").replace(/\n{3,}/g, '\n\n').trim();
+  const arr = (x) => (Array.isArray(x) ? x : []);
+  const SKILL_KEYS = {};
+  SKILLS.forEach(([skill]) => { SKILL_KEYS[skill.toLowerCase().replace(/\s+/g, '-')] = skill; });
+
+  function fromDdbJson(obj, opts) {
+    opts = opts || {};
+    const d = obj && (obj.data || obj.character || obj);
+    if (!d || !Array.isArray(d.stats) || !Array.isArray(d.classes)) throw new Error('That is not a D&D Beyond character file (no stats or classes in it).');
+    const warnings = [];
+    const name = String(d.name || 'Imported character').slice(0, 40);
+
+    const mods = [];
+    Object.keys(d.modifiers || {}).forEach((k) => arr(d.modifiers[k]).forEach((m) => { if (m && typeof m === 'object') mods.push(m); }));
+    const modsOf = (type, sub) => mods.filter((m) => m.type === type && (sub instanceof RegExp ? sub.test(m.subType || '') : m.subType === sub));
+
+    // Classes: the starting class first; the sheet has one class line.
+    const classes = arr(d.classes).slice().sort((a, b) => (b.isStartingClass ? 1 : 0) - (a.isStartingClass ? 1 : 0));
+    const level = Math.max(1, Math.min(20, classes.reduce((n, c) => n + (Number(c.level) || 0), 0) || 1));
+    const clsName = (c) => (c && c.definition && c.definition.name) || '';
+    if (classes.length > 1) warnings.push('Multiclass "' + classes.map((c) => clsName(c) + ' ' + c.level).join(' / ') + '": the sheet keeps ' + clsName(classes[0]) + ' as its class and ' + level + ' as the total level.');
+    const sub = classes[0] && classes[0].subclassDefinition && classes[0].subclassDefinition.name;
+
+    const race = d.race || {};
+    const cs = {
+      characterClass: clsName(classes[0]) || 'Fighter', subclass: sub || '', level: level,
+      species: race.baseName || race.fullName || 'Human', subrace: race.subRaceShortName || (race.fullName && race.baseName && race.fullName !== race.baseName ? race.fullName : ''),
+      armorProf: '', weaponProf: '', toolProf: '', languages: '', saveNotes: '', senseNotes: '',
+      saveProfs: {}, skillProfs: {}, saveCustomBonuses: {}, skillCustomBonuses: {}
+    };
+
+    // Scores: base + bonuses from species, feats, ASIs… unless the player set an override.
+    DDB_ABIL.forEach((a, i) => {
+      const id = i + 1;
+      const pick = (list) => { const s = arr(list).find((x) => x && x.id === id); return s && s.value != null ? Number(s.value) : null; };
+      const base = pick(d.stats);
+      const override = pick(d.overrideStats);
+      const bonus = (pick(d.bonusStats) || 0) + modsOf('bonus', ABILITY_NAMES[a] + '-score').reduce((n, m) => n + (Number(m.value) || 0), 0);
+      cs[a] = override || Math.max(1, Math.min(30, (base || 10) + bonus));
+    });
+    cs.profBonus = Math.ceil(level / 4) + 1;
+    const mod = (a) => Math.floor((cs[a] - 10) / 2);
+
+    DDB_ABIL.forEach((a) => { if (modsOf('proficiency', ABILITY_NAMES[a] + '-saving-throws').length) cs.saveProfs[a] = 1; });
+    Object.keys(SKILL_KEYS).forEach((k) => {
+      if (modsOf('expertise', k).length) cs.skillProfs[SKILL_KEYS[k]] = 2;
+      else if (modsOf('proficiency', k).length) cs.skillProfs[SKILL_KEYS[k]] = 1;
+    });
+
+    // Proficiencies by kind, from the modifiers' readable names.
+    const profNames = mods.filter((m) => m.type === 'proficiency' && m.friendlySubtypeName && !/saving throws|^(acrobatics|animal|arcana|athletics|deception|history|insight|intimidation|investigation|medicine|nature|perception|performance|persuasion|religion|sleight|stealth|survival)/i.test(m.friendlySubtypeName)).map((m) => m.friendlySubtypeName);
+    const uniq = (a) => Array.from(new Set(a));
+    cs.armorProf = uniq(profNames.filter((n) => /armor|shield/i.test(n))).join(', ');
+    cs.toolProf = uniq(profNames.filter((n) => /tools?|kit|supplies|instrument|set\b|utensils|vehicles?/i.test(n))).join(', ');
+    cs.weaponProf = uniq(profNames.filter((n) => !/armor|shield|tools?|kit|supplies|instrument|set\b|utensils|vehicles?/i.test(n))).join(', ');
+    cs.languages = uniq(mods.filter((m) => m.type === 'language').map((m) => m.friendlySubtypeName).filter(Boolean)).join(', ');
+
+    const walk = race.weightSpeeds && race.weightSpeeds.normal && race.weightSpeeds.normal.walk;
+    cs.speed = Number(walk) || 30;
+    cs.initBonus = mod('dex');
+
+    // HP: D&D Beyond stores the rolled/average part; CON is added per level.
+    const baseHp = Number(d.baseHitPoints) || 0;
+    const maxHp = Number(d.overrideHitPoints) || Math.max(1, baseHp + (Number(d.bonusHitPoints) || 0) + mod('con') * level);
+    if (!baseHp && !d.overrideHitPoints) warnings.push('No hit points in the file; set to ' + maxHp + '.');
+    const hp = { max: maxHp, current: Math.max(0, maxHp - (Number(d.removedHitPoints) || 0)), temp: Math.max(0, Number(d.temporaryHitPoints) || 0) };
+
+    const cur = d.currencies || {};
+    const currency = { platinum: Number(cur.pp) || 0, gold: Number(cur.gp) || 0, electrum: Number(cur.ep) || 0, silver: Number(cur.sp) || 0, copper: Number(cur.cp) || 0 };
+
+    // Inventory: armour keeps its AC and category, so the sheet works out AC itself.
+    const usedSlots = {};
+    const items = arr(d.inventory).slice(0, 200).map((inv, i) => {
+      const def = (inv && inv.definition) || {};
+      if (!def.name) return null;
+      const ft = String(def.filterType || def.type || '');
+      const armorType = Number(def.armorTypeId);
+      let type = 'Misc', slot = null, armorCategory = null, ac = 0, prof = null;
+      if (/weapon/i.test(ft)) { type = 'Weapon'; slot = 'main'; prof = /martial/i.test(def.type || '') || def.categoryId === 2 ? 'Martial' : 'Simple'; }
+      else if (/armor/i.test(ft) && armorType === 4) { type = 'Shield'; slot = 'off'; armorCategory = 'Bonus'; ac = Number(def.armorClass) || 2; }
+      else if (/armor/i.test(ft)) { type = 'Armor'; slot = 'chest'; armorCategory = armorType === 1 ? 'Light' : armorType === 3 ? 'Heavy' : 'Medium'; ac = Number(def.armorClass) || 0; }
+      else if (/potion|scroll/i.test(ft)) type = 'Consumable';
+      else if (/ring/i.test(ft)) { type = 'Ring'; slot = 'ring1'; }
+      else if (/wondrous/i.test(ft)) type = 'Wondrous Item';
+      else if (/ammunition/i.test(ft) || /ammunition/i.test(def.type || '')) type = 'Ammunition';
+      let equipped = !!inv.equipped && !!slot;
+      if (equipped) { if (usedSlots[slot]) equipped = false; else usedSlots[slot] = true; }
+      const rarity = /^(common|uncommon|rare|very rare|legendary|artifact)$/i.test(def.rarity || '') ? def.rarity.replace(/\b\w/g, (c) => c.toUpperCase()) : 'Common';
+      return {
+        id: 'ddb_item_' + i + '_' + Date.now().toString(36), name: String(def.name).slice(0, 80),
+        icon: type === 'Weapon' ? '⚔️' : type === 'Armor' ? '🥋' : type === 'Shield' ? '🛡️' : type === 'Consumable' ? '🧪' : type === 'Ring' ? '💍' : '🎒',
+        type: type, armorCategory: armorCategory, rarity: rarity, slot: slot, weight: Number(def.weight) || 0,
+        qty: Math.max(1, Math.min(999, Number(inv.quantity) || 1)), desc: stripHtml(def.description || def.snippet).slice(0, 3000),
+        attunementRequired: !!def.canAttune, proficiencyType: prof, buffs: [], debuffs: [],
+        statBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0, ac: ac, init: 0, speed: 0 }, skillBonuses: {}, equipped: equipped
+      };
+    }).filter(Boolean);
+    // No armour on: the sheet's unarmoured AC is 10 (+ DEX it adds itself).
+    cs.unarmoredBaseAc = 10;
+    cs.ac = 10 + mod('dex');
+
+    // Spells from classes, species, feats and items.
+    const spellDefs = [];
+    arr(d.classSpells).forEach((cl) => arr(cl && cl.spells).forEach((s) => spellDefs.push(s)));
+    Object.keys(d.spells || {}).forEach((k) => arr(d.spells[k]).forEach((s) => spellDefs.push(s)));
+    const known = opts.spellIndex || {};
+    const seen = new Set();
+    const spells = [];
+    spellDefs.forEach((s) => {
+      const def = (s && s.definition) || {};
+      if (!def.name || seen.has(def.name.toLowerCase())) return;
+      seen.add(def.name.toLowerCase());
+      const sp = known[def.name.toLowerCase()];
+      const lvl = sp ? sp.level : (def.level != null ? Number(def.level) : null);
+      spells.push({ name: sp ? sp.name : def.name, ruleset: '2014', levelNum: lvl, levelText: lvl === 0 ? 'Cantrip' : lvl ? 'Level ' + lvl : '', source: sp ? 'SRD' : 'Imported', importedFrom: 'ddb', prepared: !!(s.prepared || s.alwaysPrepared) });
+    });
+    const unknownSpells = spells.filter((s) => s.source === 'Imported').map((s) => s.name);
+    if (unknownSpells.length) warnings.push('Not in the SRD spell list, kept by name only: ' + unknownSpells.slice(0, 8).join(', ') + (unknownSpells.length > 8 ? '…' : '') + '.');
+
+    // Features as names (D&D Beyond's texts are book text; only names are kept).
+    const cards = [];
+    const addCard = (category, title, nm, source) => { if (nm) cards.push({ id: 'ddb_' + cards.length + '_' + Date.now().toString(36), category: category, title: title, name: String(nm).slice(0, 80), source: source, desc: '' }); };
+    classes.forEach((c) => arr(c.classFeatures).forEach((f) => {
+      const def = (f && f.definition) || {};
+      if (def.name && (def.requiredLevel == null || def.requiredLevel <= c.level)) addCard('CLASS', clsName(c) + ' Features', def.name, 'Level ' + (def.requiredLevel || 1));
+    }));
+    arr(race.racialTraits).forEach((t) => addCard('SPECIES', (race.fullName || cs.species) + ' Traits', t && t.definition && t.definition.name, race.fullName || cs.species));
+    arr(d.feats).forEach((f) => addCard('FEATS', 'Feats', f && f.definition && f.definition.name, 'Feat'));
+
+    const traits = d.traits || {};
+    const notes = d.notes || {};
+    const bg = (d.background && d.background.definition) || (d.background && d.background.customBackground) || {};
+    const background = {
+      name: bg.name || '', alignment: DDB_ALIGN[d.alignmentId] || '',
+      personality: stripHtml(traits.personalityTraits), ideals: stripHtml(traits.ideals), bonds: stripHtml(traits.bonds), flaws: stripHtml(traits.flaws),
+      backstory: [stripHtml(notes.backstory), notes.allies ? 'Allies: ' + stripHtml(notes.allies) : '', notes.organizations ? 'Organizations: ' + stripHtml(notes.organizations) : ''].filter(Boolean).join('\n\n')
+    };
+    const dsv = d.deathSaves || {};
+    const deathSaves = { open: true, successes: [0, 1, 2].map((i) => i < (Number(dsv.successCount) || 0)), failures: [0, 1, 2].map((i) => i < (Number(dsv.failCount) || 0)) };
+    if (d.decorations && d.decorations.avatarUrl) warnings.push('The D&D Beyond portrait is a web link and was not copied; add a picture with 🖼 in My characters.');
+
+    return {
+      name: name,
+      patch: { characterStats: cs, hp: hp, currency: currency, items: items, spells: spells, featureCards: cards, backgroundInfo: background, deathSaves: deathSaves, xp: Number(d.currentXp) || 0 },
+      warnings: warnings
+    };
+  }
+
+  // Which reader a .json file needs: the site's own file, or D&D Beyond's.
+  function detectJson(text) {
+    let data;
+    try { data = JSON.parse(text); } catch (e) { return 'invalid'; }
+    if (data && data.format === FORMAT) return 'site';
+    const d = data && (data.data || data.character || data);
+    if (d && Array.isArray(d.stats) && Array.isArray(d.classes)) return 'ddb';
+    return 'unknown';
+  }
+
   root.CharacterTransfer = {
     FORMAT: FORMAT, VERSION: VERSION, makeExport: makeExport, parseExport: parseExport, fileName: fileName, clean: clean,
-    fromPdfFields: fromPdfFields, sheetFromPdf: sheetFromPdf, parseClassLevel: parseClassLevel
+    fromPdfFields: fromPdfFields, sheetFromPdf: sheetFromPdf, parseClassLevel: parseClassLevel,
+    fromDdbJson: fromDdbJson, detectJson: detectJson, stripHtml: stripHtml
   };
 })(typeof window !== 'undefined' ? window : this);
