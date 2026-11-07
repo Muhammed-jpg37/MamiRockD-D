@@ -80,6 +80,7 @@
         border-bottom: 1px solid var(--border);
       }
       .vtt-group { display: flex; align-items: center; gap: 6px; }
+      .vtt-dm-toggle { display: none; }
       .vtt-group + .vtt-group { padding-left: 10px; border-left: 1px solid var(--border); }
       .vtt-toolbar label { font-family: var(--font-display); font-size: 11px; letter-spacing: .05em; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
       .vtt-toolbar input[type=number] { width: 58px; }
@@ -197,6 +198,10 @@
       @media (max-width: 640px) {
         #vtt-view-container { height: calc(100dvh - 120px); min-height: 360px; }
         .vtt-group + .vtt-group { padding-left: 0; border-left: none; }
+        .vtt-dm-toggle { display: inline-flex; }
+        #vtt-view-container:not(.vtt-dmtools-open) .vtt-toolbar > .vtt-group.vtt-dm-only { display: none; }
+        .vtt-toolbar { flex-wrap: wrap; }
+        .vtt-dice { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; }
         /* Phones: the rail becomes a row under the toolbar, the side panel a sheet over the map's foot. */
         .vtt-body { flex-direction: column; position: relative; }
         .vtt-rail { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 6px; }
@@ -221,6 +226,8 @@
 
     root.innerHTML = `
       <div class="vtt-toolbar">
+        <!-- Phones: the DM's map, grid, token and fog groups fold behind this (L5) -->
+        <button class="btn small ghost vtt-dm-toggle vtt-dm-only" data-act="dm-tools" aria-expanded="false">🛠 DM tools ▾</button>
         <div class="vtt-group vtt-dm-only">
           <button class="btn small ghost" data-act="load-map">🗺 Load Map</button>
           <button class="btn small ghost" data-act="map-url">🔗 Map URL</button>
@@ -305,6 +312,12 @@
       if (toolBtn) { setTool(tool === toolBtn.dataset.tool ? null : toolBtn.dataset.tool); return; }
       if (e.target.closest('[data-act="clear-shapes"]')) { clearMyShapes(); return; }
       if (e.target.closest('[data-act="initiative"]')) { initOpen = !initOpen; renderInitiative(); return; }
+      const dmToggle = e.target.closest('[data-act="dm-tools"]');
+      if (dmToggle) {
+        const open = root.classList.toggle('vtt-dmtools-open');
+        dmToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        return;
+      }
       const toggle = e.target.closest('[data-act="log"]');
       if (toggle) { logOpen = !logOpen; renderLog(); }
     });

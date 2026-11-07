@@ -280,4 +280,11 @@ Kaynaklar:
   - Masa ekranı pencereye tam oturuyor; sayfa dikey kaymıyor.
   - Telefonda ray, araç çubuğunun altında yatay bir satır oluyor. Sağ panel haritanın altından açılan bir çekmece gibi duruyor.
 - **L5.** Telefon düzeni.
+  - **Yapıldı** (375 px'te denendi). Dört bölümün ve dört sayfa sekmesinin hiçbirinde sayfa yatay kaymıyor.
+    - **Masa:** DM'in harita, ızgara, token ve sis grupları "🛠 DM tools ▾" düğmesinin arkasına katlanıyor (`vtt-dmtools-open`). Zar satırı kendi içinde kayıyor. Harita ekranın çoğunu alıyor.
+    - **DM barı:** Başlık ve etiket gizli, oyuncu seçici tam genişlikte, düğmeler satıra yayılıyor.
+    - **Karakter:** HP tam genişlikte, sekmeler ikişer ikişer, "+ Add Item" tam genişlikte, kenar boşlukları 12 px.
+    - **Spells:** "Search my spells" satırı artık taşmıyor (önceden 412 px'ti).
+  - Alt navigasyon çubuğu yapılmadı. Bölüm sekmeleri telefonda zaten üst barın ikinci satırında, dört eşit sütun hâlinde.
+  - Gerçek bir telefonda denenmedi; sadece tarayıcının telefon boyutunda.
 - **L6.** Role göre görünürlük ve açılış ekranı; "Oyuncu olarak gör" (R5) ile kontrol.
