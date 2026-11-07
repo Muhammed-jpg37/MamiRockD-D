@@ -249,6 +249,18 @@ Kaynaklar:
   - Telefonda (375 px) bölümlerin hiçbirinde sayfa yatay kaymıyor. VTT araç çubuğu kendi içinde kayıyor; bu L4/L5'te ele alınacak.
   - Ek: **📓 Notes** dördüncü bölüm oldu, karakter sekmelerinden çıktı. Not alanı eskisi gibi tam ekran açılıyor. İçindeki "🎒 Character Screen" düğmesinin yerinde artık **⬅ Back** var; gelinen bölüme döndürüyor. Notes'u açmak sayfaya bir şey yazmıyor. 480 px'in altında dört sekme eşit sütunlara sığıyor.
 - **L2.** Kampanya ekranı.
+  - **Yapıldı.** Ekran yeni bir dosyada: `campaign-home.js` (`CampaignHome.render(box)`, `CampaignHome.stop()`). `index.html`'deki `renderCampaignHome()` sadece onu çağırıyor.
+  - **Parti:** Karakteri olan her oyuncu için bir kart: portre (yoksa baş harf), karakter adı, seviye · sınıf · tür, oyuncunun nick'i, HP çubuğu (geçici HP dahil; %50 ve %25 altında renk değişiyor).
+    - DM her kartta "📖 Open sheet" görüyor; o sayfayı açıp Karakter bölümüne geçiyor. Oyuncu sadece kendi kartında "🧙 My sheet" görüyor.
+    - Karakteri olmayan oyuncular kesik çizgili kartla gösteriliyor. DM ve co-DM'ler başlıkta listeleniyor.
+  - **Günlük:** Görünür son 3 not (başlık, ne zaman, ilk 140 karakter; "only some players" etiketi). "Open journal" var; DM için ek olarak "New note".
+  - **Yan sütun:** Büyük "Go to the table" kartı, kampanya adı ve rolün, "Switch campaign".
+    - Karakteri seçilmemiş oyuncuya "Pick a character" kartı çıkıyor (`Campaigns.chooseCharacter()`).
+    - DM için davet kodu büyük yazıyla ve "Copy invite link" düğmesi; DM araçları: Manage, Homebrew, Item store, View as player.
+  - **Canlı veri:** HP ve portre, VTT'nin kullandığı dinleyicilerle (`fbListenToVttHp`, `fbListenToCharacterPortrait`) geliyor. Seviye ve sınıf, kart ilk açıldığında sheet'ten bir kez okunuyor (`fbCharacterSheet`). Dinleyiciler sadece Kampanya bölümü açıkken çalışıyor, başka bölüme geçince kapanıyor. Ekran hiçbir şey yazmıyor.
+  - Notlar değişince `campaign.js` bir `campaignnotes` olayı yayıyor ve ekran yenileniyor.
+  - Testler: `tests/campaign-home.test.js` (HP çubuğu, zaman yazısı). Toplam 100 test.
+  - Gerçek oyuncularla denenmedi. Dolu hâl sahte üye, not ve HP verisiyle denendi.
 - **L3.** Karakter ekranı: karakter şeridi ve dört sekme (Genel, Envanter, Büyüler, Özellikler). Mevcut panellerin taşınması.
 - **L4.** Masa ekranı: tam genişlik harita, sol araçlar, sağ panel.
 - **L5.** Telefon düzeni.

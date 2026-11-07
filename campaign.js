@@ -910,6 +910,7 @@
       renderJournalButton();
       // Keep an open journal current, but never under the DM's typing.
       if (document.getElementById('campaign-journal') && !journalEditing) openJournal();
+      window.dispatchEvent(new CustomEvent('campaignnotes'));   // the Campaign screen lists the latest
     });
   }
 
@@ -1525,6 +1526,7 @@
     removeMember: removeMember,
     deleteCampaign: deleteCampaign,
     copyInvite: copyInvite,
+    chooseCharacter: () => (active ? openCharacterChooser(active, 'Pick the character you play in ' + active.name + '.') : Promise.resolve()),
     viewAsPlayer: viewAsPlayer,
     stopViewingAs: stopViewingAs,
     viewingAs: () => (viewingAs ? Object.assign({}, viewingAs) : null),
