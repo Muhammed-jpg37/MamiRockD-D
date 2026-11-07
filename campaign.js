@@ -454,6 +454,10 @@
   function activate(c) {
     const nick = myKey();
     if (!nick) return;
+    // Switching campaigns (or a role change) ends "view as player".
+    viewingAs = null;
+    window.dmViewingAs = null;
+    renderViewAsBanner();
     active = c;
     window.activeCampaign = Object.assign({}, c);
     try { localStorage.setItem(ACTIVE_KEY_PREFIX + nick, c.id); } catch (e) { }
@@ -886,9 +890,9 @@
 
   function noteVisible(n) {
     if (!n) return false;
-    if (active && active.role === 'dm') return true;
+    if (active && active.role === 'dm' && !viewingAs) return true;
     if (n.visibleTo === 'all' || !n.visibleTo) return true;
-    return !!n.visibleTo[myKey()];
+    return !!n.visibleTo[viewingAs ? viewingAs.nick : myKey()];
   }
 
   // Newest first.
@@ -957,7 +961,7 @@
     if (!active) return;
     injectStyles();
     journalEditing = editId || null;
-    const isDmView = active.role === 'dm';
+    const isDmView = active.role === 'dm' && !viewingAs;
     const prevScroll = (document.querySelector('#campaign-journal .journal-list') || {}).scrollTop || 0;
     const openIds = new Set([...document.querySelectorAll('#campaign-journal .journal-note.open')].map((n) => n.dataset.id));
     const existing = document.getElementById('campaign-journal');
@@ -1104,6 +1108,7 @@
     const style = document.createElement('style');
     style.id = 'campaign-styles';
     style.textContent = `
+      .view-as-banner { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 99990; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; max-width: calc(100% - 24px); padding: 8px 12px; background: var(--panel); color: var(--text); border: 2px solid var(--accent); border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.6); font-size: 13px; }
       #campaign-picker {
         position: fixed; inset: 0; z-index: 99998; display: flex; align-items: center; justify-content: center; padding: 20px;
         background: radial-gradient(ellipse at center, var(--surface-2) 0%, var(--bg) 75%, var(--surface-inset) 100%);
@@ -1373,6 +1378,65 @@
     renderJournalButton();
   }
 
+  /* ---------- View as player (DMs) ---------- */
+  // A DM sees the campaign the way one of its players does: player rights everywhere
+  // (DM bar, VTT, journal), on that player's sheet. Only this screen changes; the DM's
+  // membership stays 'dm'. viewingAs: { nick, character, name } or null.
+  let viewingAs = null;
+
+  function viewAsPlayer(characterId) {
+    const u = window.currentUser;
+    if (!active || active.role !== 'dm' || !u || typeof loginUser !== 'function') return false;
+    // Through window.Campaigns, like the rest of the page, so a test can stand in a member list.
+    const list = window.Campaigns.memberList();
+    const m = list.find((x) => x.role === 'player' && x.character && x.character === characterId) ||
+      list.find((x) => x.role === 'player' && x.character);
+    if (!m) { alert('No player in ' + active.name + ' has a character yet. Share the invite code first.'); return false; }
+    viewingAs = { nick: m.nick, character: m.character, name: m.characterName || m.character };
+    window.dmViewingAs = viewingAs;
+    applyingRole = true;
+    try { loginUser(u, 'player'); } finally { applyingRole = false; }
+    if (typeof window.switchActiveCharacter === 'function') window.switchActiveCharacter(m.character, true);
+    renderViewAsBanner();
+    renderJournalButton();
+    window.dispatchEvent(new CustomEvent('campaignchange', { detail: window.activeCampaign }));
+    return true;
+  }
+
+  function stopViewingAs() {
+    if (!viewingAs) return;
+    const back = viewingAs.character;
+    viewingAs = null;
+    window.dmViewingAs = null;
+    renderViewAsBanner();
+    const u = window.currentUser;
+    if (active && active.role === 'dm' && u && typeof loginUser === 'function') {
+      applyingRole = true;
+      try { loginUser(u, 'dm'); } finally { applyingRole = false; }
+      // Back on the sheet that was being viewed, now with the DM's rights.
+      if (typeof window.dmSwitchActivePlayer === 'function') window.dmSwitchActivePlayer(back, true);
+    }
+    renderJournalButton();
+    window.dispatchEvent(new CustomEvent('campaignchange', { detail: window.activeCampaign }));
+  }
+
+  function renderViewAsBanner() {
+    let b = document.getElementById('view-as-banner');
+    if (!viewingAs) { if (b) b.remove(); return; }
+    if (!b) {
+      b = el('div', 'view-as-banner');
+      b.id = 'view-as-banner';
+      b.setAttribute('role', 'status');
+      document.body.appendChild(b);
+    }
+    b.innerHTML = '';
+    b.appendChild(el('span', '', '👁 Viewing ' + active.name + ' as ' + viewingAs.name + ' (' + viewingAs.nick + '), with player rights'));
+    const btn = el('button', 'btn small', '👑 Back to DM view');
+    btn.type = 'button';
+    btn.onclick = stopViewingAs;
+    b.appendChild(btn);
+  }
+
   /* ---------- Hooks ---------- */
 
   // Called at the end of loginUser(); also below, for a session restored before this file loaded.
@@ -1387,6 +1451,9 @@
   }
 
   function onLogout() {
+    viewingAs = null;
+    window.dmViewingAs = null;
+    renderViewAsBanner();
     active = null;
     window.activeCampaign = null;
     watchMembers(null);
@@ -1432,6 +1499,9 @@
     removeMember: removeMember,
     deleteCampaign: deleteCampaign,
     copyInvite: copyInvite,
+    viewAsPlayer: viewAsPlayer,
+    stopViewingAs: stopViewingAs,
+    viewingAs: () => (viewingAs ? Object.assign({}, viewingAs) : null),
     memberList: memberList,
     characterOf: characterOf,
     characterName: characterName,

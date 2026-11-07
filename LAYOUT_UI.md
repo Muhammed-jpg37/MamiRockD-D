@@ -121,6 +121,12 @@ Kaynaklar:
 **R5. "Oyuncu olarak gör".**
 - DM kendi kampanyasında ekranı bir oyuncunun gördüğü gibi açabilir (Roll20'deki "Launch as player").
 - Bu, düzenin oyuncu hâlini test etmek için de kullanılır.
+- **Yapıldı.**
+  - DM barında **👁 View as player** düğmesi var. Listede seçili oyuncuyla `Campaigns.viewAsPlayer(characterId)` çağrılır; seçili oyuncu yoksa ilk oyuncu kullanılır.
+  - Bu modda `currentUser.role` `player` olur. DM barı gizlenir, günlük o oyuncunun göreceği notları gösterir, ekranda o oyuncunun sayfası açılır.
+  - Altta "👁 Viewing … / 👑 Back to DM view" bandı çıkar. Üst barda "Player (DM view)" yazar.
+  - Kampanyadaki üyelik `dm` olarak kalır. Kampanya değişince ya da çıkış yapılınca mod kapanır.
+  - `switchActiveCharacter(id, skipSave)` ve `dmSwitchActivePlayer(id, skipSave)`, yeni açılmış bir sayfadan çıkarken kayıt yapmaz.
 
 **R6. Kampanyayı devretme.**
 - Owner, kampanyanın sahipliğini bir co-DM'e devreder ve kendisi co-DM olarak kalır.

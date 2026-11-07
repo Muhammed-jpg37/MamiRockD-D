@@ -5333,6 +5333,7 @@
       <div id="dm-status-tag" class="dm-status-tag">Inspecting: Self</div>
       <button type="button" class="btn small" style="font-size:11px; padding:4px 10px;" onclick="openDmGiftLootModal()">🎁 Gift Loot</button>
       <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="window.Campaigns && window.Campaigns.copyInvite()" title="Players join with the campaign's invite link or code">📨 Invite players</button>
+      <button type="button" class="btn ghost small" style="font-size:11px; padding:4px 10px;" onclick="window.Campaigns && window.Campaigns.viewAsPlayer(document.getElementById('dm-player-dropdown').value)" title="See the campaign as the picked player sees it, with player rights">👁 View as player</button>
     </div>
     <div class="layout" id="inventory-view-container">
       <!-- COL 1 (FAR LEFT): Character Stats & Bonuses Panel -->
@@ -9386,7 +9387,7 @@
       const inCampaign = !!(window.activeCampaign && currentUser);
       const isDm = inCampaign && currentUser.role === 'dm';
       if (roleEl) {
-        roleEl.textContent = !inCampaign ? 'No campaign' : isDm ? 'Dungeon Master' : 'Player';
+        roleEl.textContent = !inCampaign ? 'No campaign' : isDm ? 'Dungeon Master' : dmViewingAs ? 'Player (DM view)' : 'Player';
         roleEl.className = 'auth-user-role-tag ' + (isDm ? 'dm' : 'player');
         roleEl.title = inCampaign ? 'Your role in ' + window.activeCampaign.name : 'Pick or start a campaign';
       }
@@ -9506,10 +9507,11 @@
 
     // Shows one of the logged-in account's own characters (campaign.js picks which one).
     // characterId is the character's inventory key; for characters from before campaigns that's the nickname.
-    function switchActiveCharacter(characterId) {
+    // skipSave: leaving a sheet that was only just loaded (nothing to keep) writes nothing.
+    function switchActiveCharacter(characterId, skipSave) {
       if (!currentUser || !characterId) return;
       if (activeInventoryUser && activeInventoryUser.toLowerCase() === String(characterId).toLowerCase()) return;
-      save();   // keep edits to the sheet being left
+      if (!skipSave) save();   // keep edits to the sheet being left
       activeInventoryUser = characterId;
       load(characterId);
       normalizeState();
