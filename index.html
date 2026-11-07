@@ -5239,7 +5239,14 @@
       <div class="modal-body">
         <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;" id="dm-gift-target-desc">Give an item or coins directly to the active player's inventory.</div>
         <div class="field" style="margin-bottom: 12px;">
-          <label>Item Name</label>
+          <label>From the campaign's item store</label>
+          <div style="display:flex; gap:6px;">
+            <select id="dm-gift-store-item" style="flex:1;" onchange="dmGiftPickStoreItem(this.value)"></select>
+            <button type="button" class="btn ghost small" onclick="dmOpenItemStore()" title="Make or edit the campaign's items">📦 Items</button>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom: 12px;">
+          <label>…or a quick item by name</label>
           <input type="text" id="dm-gift-item-name" placeholder="e.g. Potion of Greater Healing">
         </div>
         <div style="display:flex; gap:10px; margin-bottom: 12px;">
@@ -9456,6 +9463,10 @@
     /* ========================================================
        DM CONTROLLER: INSPECT & EDIT OTHER PLAYERS' INVENTORIES
        ======================================================== */
+    // Set while a DM looks at the campaign as one of its players (R5, "View as player"):
+    // { character, nick }. `var` so the early startup code can read it before this line runs.
+    var dmViewingAs = null;
+
     function populateDmPlayerDropdown() {
       const select = document.getElementById('dm-player-dropdown');
       if (!select) return;
@@ -9463,28 +9474,33 @@
       const accounts = getStoredAccounts();
       const currentVal = activeInventoryUser || (currentUser ? currentUser.nickname : '__dm__');
 
-      let html = '<option value="__dm__">👑 My DM Master Vault</option>';
+      // No "DM Master Vault" any more: a DM has no sheet of their own in a campaign. Loot comes
+      // from the campaign's item store (🎁 Gift Loot), and a DM who wants to play makes a character.
+      // The old vault data (inventories/<dm nick>) is left untouched, only no longer offered.
+      const players = [];
       if (window.activeCampaign && window.Campaigns && typeof window.Campaigns.memberList === 'function') {
         // In a campaign: only its players, by the character they play there (value = that sheet's key).
         window.Campaigns.memberList().forEach(m => {
           if (m.role === 'dm' || !m.character) return;
-          html += '<option value="' + escapeHtml(m.character) + '">👤 ' + escapeHtml(m.characterName || m.character) + ' (' + escapeHtml(m.nick) + ')</option>';
+          players.push({ value: m.character, label: '👤 ' + (m.characterName || m.character) + ' (' + m.nick + ')' });
         });
       } else {
         Object.keys(accounts).sort().forEach(key => {
           const acc = accounts[key];
-          if (acc.role !== 'dm') {
-            html += '<option value="' + escapeHtml(acc.nickname) + '">👤 Player: ' + escapeHtml(acc.nickname) + '</option>';
-          }
+          if (acc.role !== 'dm') players.push({ value: acc.nickname, label: '👤 Player: ' + acc.nickname });
         });
       }
-      select.innerHTML = html;
+      select.innerHTML = (players.length ? '' : '<option value="__dm__">No players yet: share the invite code</option>') +
+        players.map(p => '<option value="' + escapeHtml(p.value) + '">' + escapeHtml(p.label) + '</option>').join('');
 
-      // Restore active selection
-      if (activeInventoryUser && activeInventoryUser.toLowerCase() !== currentUser.nickname.toLowerCase()) {
+      const onOwnSheet = !activeInventoryUser || activeInventoryUser.toLowerCase() === currentUser.nickname.toLowerCase();
+      if (!onOwnSheet && players.some(p => p.value === activeInventoryUser)) {
         select.value = activeInventoryUser;
+      } else if (players.length && currentUser.role === 'dm' && !dmViewingAs) {
+        // Still on the DM's own (old vault) sheet: open the first player's instead.
+        dmSwitchActivePlayer(players[0].value, true);
       } else {
-        select.value = '__dm__';
+        select.value = players.length ? players[0].value : '__dm__';
       }
     }
 
@@ -9493,11 +9509,12 @@
       if (currentUser && currentUser.role === 'dm') populateDmPlayerDropdown();
     });
 
-    function dmSwitchActivePlayer(targetName) {
+    // skipSave: leaving a sheet nobody edited (the DM's old vault, opened at login) writes nothing.
+    function dmSwitchActivePlayer(targetName, skipSave) {
       if (!currentUser || currentUser.role !== 'dm') return;
 
       // Save changes to current inventory before switching!
-      save();
+      if (!skipSave) save();
 
       const target = (!targetName || targetName === '__dm__') ? currentUser.nickname : targetName;
       activeInventoryUser = target;
@@ -9517,7 +9534,7 @@
       const targetLabel = (window.Campaigns && typeof window.Campaigns.characterName === 'function' && window.Campaigns.characterName(target)) || target;
       if (banner) banner.style.display = isInspectingOther ? 'flex' : 'none';
       if (bannerTarget) bannerTarget.textContent = targetLabel;
-      if (statusTag) statusTag.textContent = isInspectingOther ? ('Inspecting: ' + targetLabel) : 'Viewing: Master Vault';
+      if (statusTag) statusTag.textContent = isInspectingOther ? ('Inspecting: ' + targetLabel) : 'No player picked';
       if (select) select.value = isInspectingOther ? target : '__dm__';
 
       // Always ensure global spell catalog is attached to target player's state
@@ -9654,6 +9671,36 @@
       if (ov) ov.classList.add('open');
       const nameInput = document.getElementById('dm-gift-item-name');
       if (nameInput) { nameInput.value = ''; nameInput.focus(); }
+      renderGiftStoreOptions();
+    }
+
+    // The active campaign's item store (campaigns/<id>/homebrew/items, made in the homebrew editor).
+    function campaignStoreItems() {
+      const hb = (window.activeCampaign && window.Campaigns && typeof window.Campaigns.homebrew === 'function') ? window.Campaigns.homebrew() : {};
+      return (hb && hb.items) || {};
+    }
+
+    function renderGiftStoreOptions() {
+      const sel = document.getElementById('dm-gift-store-item');
+      if (!sel) return;
+      const items = campaignStoreItems();
+      const ids = Object.keys(items).sort((a, b) => String(items[a].name).localeCompare(String(items[b].name)));
+      sel.innerHTML = '<option value="">' + (ids.length ? '— Pick an item —' : 'No items yet: make some with 📦 Items') + '</option>' +
+        ids.map(id => '<option value="' + escapeHtml(id) + '">' + escapeHtml((items[id].icon || '🎁') + ' ' + items[id].name + ' · ' + (items[id].rarity || 'Common')) + '</option>').join('');
+    }
+    window.addEventListener('campaignrules', renderGiftStoreOptions);
+
+    // Picking a store item clears the quick name, so it's clear which one will be given.
+    function dmGiftPickStoreItem(id) {
+      const nameInput = document.getElementById('dm-gift-item-name');
+      if (id && nameInput) nameInput.value = '';
+    }
+
+    function dmOpenItemStore() {
+      const c = window.activeCampaign;
+      if (!c || !window.HomebrewEditor) { alert('Open a campaign first: the item store belongs to a campaign.'); return; }
+      closeDmGiftLootModal();
+      window.HomebrewEditor.open(c.id, c.name, 'items');
     }
 
     function closeDmGiftLootModal() {
@@ -9671,14 +9718,19 @@
       const qty = parseInt(qtyInput ? qtyInput.value : '1', 10) || 1;
       const rarity = (raritySelect ? raritySelect.value : 'rare') || 'rare';
       const coins = parseInt(coinsInput ? coinsInput.value : '0', 10) || 0;
+      const storeSelect = document.getElementById('dm-gift-store-item');
+      const storeId = storeSelect ? storeSelect.value : '';
+      const storeDef = storeId ? campaignStoreItems()[storeId] : null;
 
-      if (!itemName && coins <= 0) {
-        alert('Please enter an item name or a gold amount to gift.');
+      if (!storeDef && !itemName && coins <= 0) {
+        alert('Pick an item from the store, type an item name, or enter a gold amount to gift.');
         return;
       }
 
       state.items = state.items || [];
-      if (itemName) {
+      if (storeDef && window.HomebrewEditor) {
+        state.items.push(Object.assign({ id: 'gift_' + uid(), fromStore: storeId }, window.HomebrewEditor.itemForSheet(storeDef, qty)));
+      } else if (itemName) {
         state.items.push({
           id: 'gift_' + uid(),
           name: itemName,

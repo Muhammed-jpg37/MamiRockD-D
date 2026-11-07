@@ -823,7 +823,7 @@
   //   (the shape CharacterEngine.mergeRules() takes; spells in the shape of rules/srd5-spells.js)
   // campaigns/<id>/settings/builder: { allowManual, strict }
 
-  const HOMEBREW_GROUPS = ['species', 'backgrounds', 'feats', 'spells'];
+  const HOMEBREW_GROUPS = ['species', 'backgrounds', 'feats', 'spells', 'items'];
   const HOMEBREW_NESTED = ['subraces', 'subclasses'];
   let homebrew = {};
   let builderSettings = {};

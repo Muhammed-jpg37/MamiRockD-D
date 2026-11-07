@@ -103,6 +103,13 @@ Kaynaklar:
 - Mevcut vault verisi silinmez. Vault ekranı gösterilmez.
 - İstenirse vault'taki eşyalar bir kez depoya kopyalanabilir.
 - `firebase-rules/database.rules.json` dosyasına `homebrew/items` kuralı eklenir (kurallar hâlâ deploy edilmedi).
+- **Yapıldı.**
+  - Homebrew editöründe **Items** sekmesi var. Alanlar: ad, ikon, tür, nadirlik, slot, ağırlık, takılıyken AC bonusu, attunement, açıklama.
+  - `HomebrewEditor.open(campId, name, 'items')` doğrudan bu sekmeyi açar.
+  - `HomebrewEditor.itemForSheet(def, qty)` depodaki eşyayı sheet'in eşya biçimine çevirir. Verilen eşyada `fromStore: <id>` yazar.
+  - Gift Loot penceresinde "From the campaign's item store" seçicisi ve **📦 Items** düğmesi var. Elle ad yazmak da hâlâ çalışıyor.
+  - DM'in oyuncu listesinde "My DM Master Vault" yok. DM kampanyaya girince ilk oyuncunun sayfası açılır; bu geçiş kayıt yapmaz. Oyuncu yoksa listede "No players yet: share the invite code" yazar.
+  - Vault verisine dokunulmadı. Vault'tan depoya kopyalama yapılmadı; istenirse sonra eklenir.
 
 **R4. "+ New Player" kalkar.**
 - Davet kodu ve davet linki, kampanya ekranında görünür bir yere taşınır (bkz. düzen, Kampanya ekranı).

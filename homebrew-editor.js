@@ -93,6 +93,22 @@
         { key: 'higherLevel', label: 'At higher levels (optional)', type: 'textarea' }
       ]
     },
+    // The campaign's item store: the DM makes items here and gives them with 🎁 Gift Loot.
+    // Same field names as a sheet item (index.html, saveItem), so a gift is a straight copy.
+    items: {
+      label: 'Items', single: 'item', nested: null,
+      fields: [
+        { key: 'name', label: 'Name', type: 'text', required: true },
+        { key: 'icon', label: 'Icon (an emoji)', type: 'text', value: '🎁' },
+        { key: 'type', label: 'Type', type: 'select', options: ['Weapon', 'Armor', 'Shield', 'Consumable', 'Wondrous Item', 'Ring', 'Ammunition', 'Misc'], value: 'Wondrous Item' },
+        { key: 'rarity', label: 'Rarity', type: 'select', options: ['Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary', 'Artifact'], value: 'Uncommon' },
+        { key: 'slot', label: 'Equip slot', type: 'select', options: ['', 'head', 'neck', 'cloak', 'chest', 'hands', 'belt', 'ring1', 'main', 'off', 'boots'], labels: ['Not equippable', 'Head', 'Neck', 'Cloak', 'Chest', 'Hands', 'Belt', 'Ring', 'Main hand', 'Off hand', 'Boots'], value: '' },
+        { key: 'weight', label: 'Weight (lb, each)', type: 'number' },
+        { key: 'acBonus', label: 'AC bonus while equipped', type: 'number' },
+        { key: 'attunementRequired', label: 'Needs attunement', type: 'checkbox' },
+        { key: 'desc', label: 'What it does (your own words)', type: 'textarea' }
+      ]
+    },
     subclasses: {
       label: 'Subclasses', single: 'subclass', nested: 'classes',
       fields: [
@@ -212,7 +228,38 @@
       def.source = 'HB';
       def.license = 'homebrew';
     }
+    if (kind === 'items') {
+      def.type = v.type || 'Wondrous Item';
+      def.rarity = v.rarity || 'Common';
+      def.icon = String(v.icon || '').trim() || '🎁';
+      if (!def.slot) delete def.slot;
+      if (num(v.weight) !== null) def.weight = Math.max(0, num(v.weight)); else delete def.weight;
+    }
     return def;
+  }
+
+  // A store item as a new sheet item (the shape saveItem in index.html writes).
+  function itemForSheet(def, qty) {
+    const d = def || {};
+    const ac = Number(d.acBonus) || 0;
+    return {
+      name: d.name || 'Item',
+      icon: d.icon || '🎁',
+      type: d.type || 'Wondrous Item',
+      armorCategory: d.type === 'Shield' || (d.type !== 'Armor' && ac) ? 'Bonus' : (d.type === 'Armor' ? 'Medium' : null),
+      rarity: d.rarity || 'Common',
+      slot: d.slot || null,
+      weight: Number(d.weight) || 0,
+      qty: Math.max(1, Number(qty) || 1),
+      desc: d.desc || '',
+      attunementRequired: !!d.attunementRequired,
+      proficiencyType: d.type === 'Weapon' ? 'Simple' : null,
+      buffs: [],
+      debuffs: [],
+      statBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0, ac: ac, init: 0, speed: 0 },
+      skillBonuses: {},
+      equipped: false
+    };
   }
 
   function fromDef(kind, def, parent) {
@@ -246,7 +293,8 @@
 
   /* ---------- The editor ---------- */
 
-  function open(campId, campName) {
+  // startTab: which tab to show first ('items' from Gift Loot); species by default.
+  function open(campId, campName, startTab) {
     const E = root.CharacterEngine;
     const SRD = root.RULES_SRD5;
     if (!E || !SRD || !root.Campaigns) return;
@@ -254,7 +302,7 @@
     if (!SRD.spells && root.SPELLS_SRD5) E.attachSpells(SRD, root.SPELLS_SRD5);
     injectStyles();
     close();
-    let tab = 'species';
+    let tab = KINDS[startTab] ? startTab : 'species';
     let editing = null;     // { kind, id, parent } or { kind, id: null } for a new one
     let data = {};
     let settings = { allowManual: false, strict: true };
@@ -315,7 +363,9 @@
 
     function renderList(body) {
       const kind = tab;
-      body.appendChild(h('div', { class: 'hb-note', text: 'Everyone in this campaign can pick these in the character builder. Write the rules in your own words rather than copying a book.' }));
+      body.appendChild(h('div', { class: 'hb-note', text: kind === 'items'
+        ? 'The campaign\'s item store, shared by its DMs. Give an item to a player with 🎁 Gift Loot.'
+        : 'Everyone in this campaign can pick these in the character builder. Write the rules in your own words rather than copying a book.' }));
       body.appendChild(h('button', { type: 'button', class: 'btn small', text: '＋ New ' + KINDS[kind].single, onclick: () => { editing = { kind: kind, id: null, parent: null }; render(); } }));
       const list = entries(kind);
       const box = h('div', { class: 'hb-list' });
@@ -342,6 +392,7 @@
       if (kind === 'feats') return d.requires ? 'Needs ' + Object.keys(d.requires).map((a) => a.toUpperCase() + ' ' + d.requires[a]).join(', ') : 'No prerequisite';
       if (kind === 'subclasses') return parentName(kind, e.parent) + ' · features at level ' + Object.keys(d.features || {}).join(', ');
       if (kind === 'spells') return [Number(d.level) ? 'Level ' + d.level : 'Cantrip', d.school, (d.classes || []).map((c) => (SRD.classes[c] || { name: c }).name).join(', ') || 'no class list yet'].join(' · ');
+      if (kind === 'items') return [d.icon, d.type, d.rarity, d.attunementRequired ? 'attunement' : '', d.acBonus ? 'AC +' + d.acBonus : ''].filter(Boolean).join(' · ');
       return '';
     }
 
@@ -465,5 +516,5 @@
     load().catch((err) => render('Could not load: ' + (err.message || err), true));
   }
 
-  root.HomebrewEditor = { open: open, close: close, toDef: toDef, textToLevels: textToLevels };
+  root.HomebrewEditor = { open: open, close: close, toDef: toDef, textToLevels: textToLevels, itemForSheet: itemForSheet };
 })(typeof window !== 'undefined' ? window : this);
