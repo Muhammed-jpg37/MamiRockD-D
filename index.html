@@ -61,6 +61,7 @@
   <script src="spell-saved.js" defer></script>
   <script src="rules/srd5.js" defer></script>
   <script src="rules/srd5-spells.js" defer></script>
+  <script src="rules/srd5-features.js" defer></script>
   <script src="character-engine.js" defer></script>
   <script src="character-builder.js" defer></script>
   <script src="character-transfer.js" defer></script>
@@ -5845,7 +5846,9 @@
           <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Manage class abilities, racial traits,
             feats, background & alignment details</div>
         </div>
-        <div style="display:flex; gap:8px; align-items:center;">
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+          <button class="btn ghost small" onclick="restFeatures('short')" title="Features that come back on a short rest">☕ Short Rest</button>
+          <button class="btn ghost small" onclick="restFeatures('long')" title="Every feature and the spell slots come back">🌙 Long Rest</button>
           <button class="btn small" onclick="openAddFeatureModal()">+ Add Feature / Trait</button>
           <button class="btn ghost small" onclick="openEditBackgroundModal()">⚙️ Background & Alignment</button>
         </div>
@@ -6527,6 +6530,7 @@
           state.spellbook.loading = false;
           state.spellbook.error = '';
           refreshSavedSpells();
+          refreshBuildFeatures();
         } else if (Array.isArray(window.SPELL_CATALOG) && window.SPELL_CATALOG.length > 0) {
           buildGlobalCatalog(window.SPELL_CATALOG);
         } else if (!state.spellbook.loading) {
@@ -9464,21 +9468,93 @@
         currency: { platinum: 0, gold: gear.gold, electrum: 0, silver: 0, copper: 0 },
         spellSlots: { max: slots, used: emptySlotMax(), pactLevel: pactLevel, syncedFor: cs.characterClass + ':' + cs.level },
         spellbook: Object.assign({}, spellSheet.spellbook, { classFilter: firstClass ? firstClass.name : '' }),
-        features: { items: featuresFromDerived(d), backgroundInfo: backgroundInfoFrom(build, rules) }
+        features: { items: featuresFromDerived(d, build), backgroundInfo: backgroundInfoFrom(build, rules) }
       });
     }
 
-    function featuresFromDerived(d) {
+    function featuresFromDerived(d, build) {
       const titles = { CLASS: ' Features', SPECIES: ' Traits', FEATS: ' Feats', BG: ' Background' };
-      return d.features.map((f, i) => ({
-        id: 'build_' + i + '_' + Date.now().toString(36),
-        category: f.category,
-        title: f.category === 'FEATS' ? 'Feats & Ability Score Improvements' : (f.source + (titles[f.category] || '')),
-        name: f.name,
-        source: f.category === 'CLASS' || f.category === 'FEATS' ? 'Level ' + f.level : f.source,
-        desc: '',
-        fromBuild: true   // replaced when the character is rebuilt; features the player adds stay
-      }));
+      const ctx = featureContext(build || state.build, d && d.abilities && d.abilities.mods);
+      return d.features.map((f, i) => {
+        const card = {
+          id: 'build_' + i + '_' + Date.now().toString(36),
+          category: f.category,
+          title: f.category === 'FEATS' ? 'Feats & Ability Score Improvements' : (f.source + (titles[f.category] || '')),
+          name: f.name,
+          source: f.category === 'CLASS' || f.category === 'FEATS' ? 'Level ' + f.level : f.source,
+          desc: '',
+          fromBuild: true   // replaced when the character is rebuilt; features the player adds stay
+        };
+        return Object.assign(card, srdFeatureExtras(card, f.source, ctx));
+      });
+    }
+
+    /* ---------- SRD feature text and limited uses (feature plan 3.4, rules/srd5-features.js) ---------- */
+
+    // Class ids by name and class levels from the build; ability modifiers from the build
+    // (or the sheet's current scores).
+    function featureContext(build, mods) {
+      const rules = window.RULES_SRD5 || { classes: {} };
+      const idByName = {};
+      Object.keys(rules.classes || {}).forEach(function (id) { idByName[String(rules.classes[id].name).toLowerCase()] = id; });
+      const levels = {};
+      ((build && build.classes) || []).forEach(function (c) { if (c && c.id) levels[c.id] = (levels[c.id] || 0) + (Number(c.level) || 0); });
+      if (!mods) {
+        const cs = state.characterStats || {};
+        mods = {};
+        ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(function (k) { mods[k] = getAbilityMod(Number(cs[k] !== undefined ? cs[k] : 10)); });
+      }
+      return { idByName: idByName, levels: levels, mods: mods };
+    }
+
+    // { desc, maxUses, resetType } for a builder feature card. owner: the class or species name.
+    function srdFeatureExtras(card, owner, ctx) {
+      const F = window.FEATURES_SRD5;
+      if (!F || !card || (card.category !== 'CLASS' && card.category !== 'SPECIES')) return {};
+      const classId = card.category === 'CLASS' ? ctx.idByName[String(owner || '').toLowerCase()] || null : null;
+      const out = {};
+      const text = F.lookup(card.name, classId);
+      if (text) out.desc = text.desc;
+      const uses = F.usesFor(card.name, classId, { classLevel: classId ? ctx.levels[classId] : 0, mods: ctx.mods });
+      if (uses && uses.max) { out.maxUses = uses.max; out.resetType = uses.reset; }
+      if (uses && uses.pool) out.desc = 'Pool: ' + uses.pool + ' hit points (5 × paladin level), back on a long rest.\n\n' + (out.desc || '');
+      return out;
+    }
+
+    // Builder-made cards saved before 3.4 have no text or uses: fill in what is missing (never
+    // what the player wrote). Like refreshSavedSpells, only the sheet in memory changes; it reaches
+    // the database with the sheet's next normal save. Returns how many cards changed.
+    function refreshBuildFeatures() {
+      if (!window.FEATURES_SRD5 || !state || !state.build || !state.features || !Array.isArray(state.features.items)) return 0;
+      const ctx = featureContext(state.build);
+      let changed = 0;
+      state.features.items.forEach(function (card) {
+        if (!card || !card.fromBuild) return;
+        const owner = card.category === 'CLASS' ? String(card.title || '').replace(/ Features$/, '') : card.source;
+        const x = srdFeatureExtras(card, owner, ctx);
+        let did = false;
+        if (x.desc && !card.desc) { card.desc = x.desc; did = true; }
+        if (x.maxUses && card.maxUses === undefined) { card.maxUses = x.maxUses; card.resetType = x.resetType; card.usedUses = 0; did = true; }
+        if (did) changed++;
+      });
+      return changed;
+    }
+
+    // ☕ Short rest: features that come back on a short rest. 🌙 Long rest: every feature and the
+    // spell slots (the Spells tab's Long Rest does the same).
+    function restFeatures(kind) {
+      initDefaultFeatures();
+      const items = state.features.items || [];
+      const back = items.filter(function (f) { return f.maxUses > 0 && f.usedUses > 0 && (kind === 'long' || f.resetType === 'Short Rest'); });
+      back.forEach(function (f) { f.usedUses = 0; });
+      if (kind === 'long') {
+        const slots = state.spellSlots || {};
+        if (slots.used) for (let lvl = 1; lvl <= 9; lvl++) slots.used[lvl] = 0;
+      }
+      save();
+      renderFeaturesView();
+      if (kind === 'long' && typeof renderSpellSlots === 'function') renderSpellSlots();
+      toast(kind === 'long' ? '🌙 Long rest: features and spell slots are back.' : '☕ Short rest: ' + (back.length ? back.map(function (f) { return f.name; }).join(', ') + ' back.' : 'nothing to restore.'), 4000);
     }
 
     function backgroundInfoFrom(build, rules) {
@@ -9636,7 +9712,7 @@
       // The player's own feature cards stay; a built feature with the same name isn't added twice.
       const own = (state.features.items || []).filter((f) => !f.fromBuild);
       const ownNames = new Set(own.map((f) => String(f.name || '').trim().toLowerCase()));
-      state.features.items = own.concat(featuresFromDerived(d).filter((f) => !ownNames.has(f.name.trim().toLowerCase())));
+      state.features.items = own.concat(featuresFromDerived(d, result.build).filter((f) => !ownNames.has(f.name.trim().toLowerCase())));
       state.features.backgroundInfo = Object.assign({}, state.features.backgroundInfo || {}, backgroundInfoFrom(result.build, rules));
 
       // The build's spells replace the ones it added before; the player's own stay.
@@ -10660,6 +10736,10 @@
       save();
       renderSpellSlots();
       if (spent > 0) toast('🌙 Long rest — all spell slots restored');
+      // Features that come back on a long rest (feature plan 3.4).
+      let featuresBack = 0;
+      ((state.features && state.features.items) || []).forEach(function (f) { if (f.maxUses > 0 && f.usedUses > 0) { f.usedUses = 0; featuresBack++; } });
+      if (featuresBack) { save(); if (typeof renderFeaturesView === 'function') renderFeaturesView(); }
     }
 
     /* Called after the character's class or level changes. Offers to bring the
