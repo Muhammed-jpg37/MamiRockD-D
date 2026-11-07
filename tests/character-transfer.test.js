@@ -186,3 +186,18 @@ test('D&D Beyond: a sheet the site and the builder can use; files that are not c
   assert.throws(() => T.fromDdbJson({ data: { name: 'x' } }), /not a D&D Beyond character file/);
   assert.equal(T.stripHtml('<p>A &amp; B</p><p>C</p>'), 'A & B\nC');
 });
+
+test('D&D Beyond: description headings are not imported as features', () => {
+  const d = JSON.parse(DDB_TEXT);
+  const data = d.data || d;
+  const heading = (name) => ({ definition: { name: name } });
+  data.race.racialTraits = data.race.racialTraits.concat(['Ability Score Increase', 'Age', 'Size', 'Speed', 'Languages', 'Alignment'].map(heading));
+  data.classes[0].classFeatures = [heading('Hit Points'), heading('Proficiencies'), heading('Equipment')].concat(data.classes[0].classFeatures);
+  const r = T.fromDdbJson(d, { spellIndex: SPELLS });
+  const names = r.patch.featureCards.map((c) => c.name);
+  assert.deepEqual(names, ['Second Wind', 'Action Surge', 'Spellcasting', 'Darkvision', 'Dwarven Resilience', 'Athlete']);
+  // A real feature that only sounds like a heading stays: "Ability Score Improvement" is a class feature.
+  const fighter = data.classes.find((c) => c.classFeatures.some((f) => f.definition.name === 'Second Wind'));
+  fighter.classFeatures.push({ definition: { name: 'Ability Score Improvement', requiredLevel: 4 } });
+  assert.ok(T.fromDdbJson(d, { spellIndex: SPELLS }).patch.featureCards.some((c) => c.name === 'Ability Score Improvement'));
+});

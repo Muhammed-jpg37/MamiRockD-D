@@ -383,8 +383,11 @@
     if (unknownSpells.length) warnings.push('Not in the SRD spell list, kept by name only: ' + unknownSpells.slice(0, 8).join(', ') + (unknownSpells.length > 8 ? '…' : '') + '.');
 
     // Features as names (D&D Beyond's texts are book text; only names are kept).
+    // D&D Beyond also lists the headings of a species' or class's description as entries
+    // ("Hit Points", "Age", "Languages"…); those are not features and are left out.
+    const HEADINGS = new Set(['hit points', 'proficiencies', 'equipment', 'age', 'size', 'speed', 'languages', 'ability score increase', 'alignment', 'creature type']);
     const cards = [];
-    const addCard = (category, title, nm, source) => { if (nm) cards.push({ id: 'ddb_' + cards.length + '_' + Date.now().toString(36), category: category, title: title, name: String(nm).slice(0, 80), source: source, desc: '' }); };
+    const addCard = (category, title, nm, source) => { if (nm && !HEADINGS.has(String(nm).trim().toLowerCase())) cards.push({ id: 'ddb_' + cards.length + '_' + Date.now().toString(36), category: category, title: title, name: String(nm).slice(0, 80), source: source, desc: '' }); };
     classes.forEach((c) => arr(c.classFeatures).forEach((f) => {
       const def = (f && f.definition) || {};
       if (def.name && (def.requiredLevel == null || def.requiredLevel <= c.level)) addCard('CLASS', clsName(c) + ' Features', def.name, 'Level ' + (def.requiredLevel || 1));
