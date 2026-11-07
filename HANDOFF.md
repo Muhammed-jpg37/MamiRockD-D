@@ -28,7 +28,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 108 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 110 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
 
@@ -105,7 +105,9 @@ Every new piece of work goes on its own new branch. Order: **6** catalogs → **
 Step 6 so far (branch `kataloglar`):
 1. Data: done. `tools/build-srd-catalogs.js` turns the 5e-bits data (2014 and 2024) into `rules/catalog/*.json`: monsters, equipment, magic items, conditions, and the SRD 5.1 rule sections (the 2024 data has none). Licence and attribution in `rules/catalog/LICENSE.md` and in each file's `meta`. Tests: `tests/catalogs.test.js`.
 2. Rules section: done. **📚 Rules** is a fifth section in the top bar (`rules-catalog.js`, `#rules-view-container`). Tabs: Rules (2014 only), Conditions, Equipment, Magic items, Monsters; a 2014 / 2024 switch; search (names, and the text of rules and conditions) and a filter per tab (chapter, kind, rarity, CR band); the entry on the right (on phones the list and the entry take turns, with ← List). Files load on first use and stay for the session; the last tab and ruleset are remembered in the browser. The CC-BY attribution of the loaded file shows under it. Tests: `tests/rules-catalog.test.js`.
-3. Next: add a catalog item to the open sheet and to the campaign item store.
+3. Adding from the catalog: done. Equipment and magic item entries in Rules have **➕ Add to <sheet>** (the sheet open in the Character section; hidden for a DM with no player sheets) and, for DMs, **📦 Add to item store**. `RulesCatalog.toStoreDef` turns a catalog entry into the item store shape (weapons: Simple/Martial, slot main; armour: base AC, Light/Medium/Heavy, slot chest; shields +2, slot off; magic items: rarity, attunement, a slot guessed from the name), and `HomebrewEditor.itemForSheet` into a sheet item, so armour from the catalog sets AC the way the sheet already computes it. The homebrew Items form gained "Armour category" and "Weapon category". Sheet items remember `fromCatalog` (e.g. `srd51:longsword`).
+
+Step 6 is done. Next in the plan: **1** character import, on its own new branch.
 
 ## Next plan: closing the gaps with other character builders
 

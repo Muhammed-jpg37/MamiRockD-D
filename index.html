@@ -443,6 +443,9 @@
     .rc-table th, .rc-table td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; }
     .rc-table th { background: var(--panel-2); }
     .rc-back { display: none; margin-bottom: 8px; }
+    .rc-adds { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0 10px; }
+    .rc-add-msg { font-size: 12px; color: var(--success); }
+    .rc-add-msg.rc-bad { color: var(--danger-strong); }
     .rc-attrib { margin-top: 12px; font-size: 11px; color: var(--text-faint); line-height: 1.4; }
     @media (max-width: 760px) {
       .rc-body { grid-template-columns: minmax(0, 1fr); }
@@ -12619,6 +12622,18 @@
       else tempDebuffs.splice(idx, 1);
       renderEffectRows();
     }
+
+    // Adds a ready-made item (from the Rules catalog) to the sheet open in the Character section.
+    function addItemToOpenSheet(item) {
+      if (!currentUser || !item) return false;
+      state.items = state.items || [];
+      state.items.push(Object.assign({ id: uid(), equipped: false }, item));
+      save();
+      renderAll();
+      if (typeof toast === 'function') toast('➕ ' + item.name + ' added to ' + (activeInventoryUser || 'the sheet'), 2500);
+      return true;
+    }
+    window.addItemToOpenSheet = addItemToOpenSheet;
 
     function saveItem() {
       const nameInput = document.getElementById('f-name');

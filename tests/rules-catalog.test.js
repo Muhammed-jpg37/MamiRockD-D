@@ -36,3 +36,39 @@ test('rules section: search by name, by text for rules, and by filters', () => {
   assert.ok(!RC.matches('items', { name: 'Longsword', kind: 'weapon' }, '', 'gear'));
   assert.ok(RC.matches('magic', { name: 'Bag of Holding', rarity: 'Uncommon' }, '', 'Uncommon'));
 });
+
+// Catalog items become store items (homebrew editor shape) and then sheet items that the
+// sheet's AC maths recognise: armour = type Armor + category + base AC in statBonuses.ac.
+const fs = require('fs');
+const path = require('path');
+const HBmod = require('../homebrew-editor.js');
+const HB = (HBmod && HBmod.HomebrewEditor) || globalThis.HomebrewEditor;
+const cat = (f) => JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'rules', 'catalog', f), 'utf8')).entries;
+
+test('rules section: armour, shields and weapons from the catalog work on the sheet', () => {
+  const items = cat('srd51-items.json');
+  const chain = HB.itemForSheet(RC.toStoreDef('items', items.find((i) => i.id === 'chain_mail')), 1);
+  assert.deepEqual([chain.type, chain.slot, chain.armorCategory, chain.statBonuses.ac, chain.weight], ['Armor', 'chest', 'Heavy', 16, 55]);
+  const leather = HB.itemForSheet(RC.toStoreDef('items', items.find((i) => i.id === 'leather_armor')), 1);
+  assert.deepEqual([leather.armorCategory, leather.statBonuses.ac], ['Light', 11]);
+  const shield = HB.itemForSheet(RC.toStoreDef('items', items.find((i) => i.id === 'shield')), 1);
+  assert.deepEqual([shield.type, shield.slot, shield.armorCategory, shield.statBonuses.ac], ['Shield', 'off', 'Bonus', 2]);
+  const sword = HB.itemForSheet(RC.toStoreDef('items', items.find((i) => i.id === 'longsword')), 1);
+  assert.deepEqual([sword.type, sword.slot, sword.proficiencyType], ['Weapon', 'main', 'Martial']);
+  assert.match(sword.desc, /Damage 1d8 slashing \(versatile 1d10\)/);
+  const dagger = RC.toStoreDef('items', items.find((i) => i.id === 'dagger'));
+  assert.equal(dagger.proficiencyType, 'Simple');
+});
+
+test('rules section: magic items keep rarity and attunement and get a sensible slot', () => {
+  const magic = cat('srd51-magic-items.json');
+  const cloak = RC.toStoreDef('magic', magic.find((m) => m.id === 'cloak_of_protection'));
+  assert.deepEqual([cloak.type, cloak.rarity, cloak.attunementRequired, cloak.slot], ['Wondrous Item', 'Uncommon', true, 'cloak']);
+  const potion = RC.toStoreDef('magic', magic.find((m) => /^potion_of_healing/.test(m.id)));
+  assert.equal(potion.type, 'Consumable');
+  const ring = RC.toStoreDef('magic', magic.find((m) => m.id === 'ring_of_protection'));
+  assert.deepEqual([ring.type, ring.slot], ['Ring', 'ring1']);
+  assert.equal(RC.slotFromName('Boots of Speed'), 'boots');
+  assert.equal(RC.slotFromName('Bag of Holding'), '');
+  magic.forEach((m) => assert.ok(RC.toStoreDef('magic', m).desc.length <= 3000, m.id));
+});

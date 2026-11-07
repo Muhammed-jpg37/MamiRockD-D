@@ -122,13 +122,116 @@
       (m.variantOf ? '<div class="rc-line">A version of <strong>' + esc(m.variantOf) + '</strong>.</div>' : '') + md(m.desc);
   }
 
+  /* ---------- Catalog item -> campaign item store / sheet item ---------- */
+
+  const plain = (s) => String(s || '').replace(/\*\*\*|\*\*|\*|_/g, '');
+  const ICONS = { weapon: '⚔️', armor: '🥋', shield: '🛡️', ammunition: '🏹', tool: '🔧', pack: '🎒', mount: '🐴', gear: '🎒' };
+
+  // Where a magic item is worn, from its name (the SRD data has no slot).
+  function slotFromName(n) {
+    if (/\b(ring)\b/i.test(n)) return 'ring1';
+    if (/\b(cloak|cape|mantle|robe)\b/i.test(n)) return 'cloak';
+    if (/\b(boots|slippers)\b/i.test(n)) return 'boots';
+    if (/\b(gloves|gauntlets|bracers)\b/i.test(n)) return 'hands';
+    if (/\b(helm|hat|circlet|headband|crown|cap)\b/i.test(n)) return 'head';
+    if (/\b(amulet|necklace|periapt|medallion|brooch|scarab)\b/i.test(n)) return 'neck';
+    if (/\bbelt\b/i.test(n)) return 'belt';
+    return '';
+  }
+
+  // The shape of an item in the campaign's item store (homebrew editor, Items tab);
+  // HomebrewEditor.itemForSheet turns it into a sheet item.
+  function toStoreDef(tab, e) {
+    const facts = [];
+    let def = { name: e.name, rarity: 'Common', icon: ICONS[e.kind] || '🎁', type: 'Misc', source: e.ruleset === '2024' ? 'SRD 5.2' : 'SRD 5.1' };
+    if (tab === 'items') {
+      if (e.kind === 'weapon') {
+        Object.assign(def, { type: 'Weapon', slot: 'main', proficiencyType: e.weaponCategory === 'Martial' ? 'Martial' : 'Simple' });
+        if (e.damage) facts.push('Damage ' + e.damage + (e.versatile ? ' (versatile ' + e.versatile + ')' : ''));
+        if (e.range) facts.push('Range ' + e.range + ' ft');
+        if (e.properties && e.properties.length) facts.push(e.properties.join(', '));
+        if (e.mastery) facts.push('Mastery: ' + e.mastery);
+      } else if (e.kind === 'armor' && e.armor) {
+        Object.assign(def, { type: 'Armor', slot: 'chest', acBonus: e.armor.base, armorCategory: e.armor.category || (e.armor.dex ? (e.armor.max ? 'Medium' : 'Light') : 'Heavy') });
+        facts.push('AC ' + e.armor.base + (e.armor.dex ? ' + Dex' + (e.armor.max ? ' (max ' + e.armor.max + ')' : '') : ''));
+        if (e.strMin) facts.push('Strength ' + e.strMin);
+        if (e.stealthDisadvantage) facts.push('Stealth disadvantage');
+      } else if (e.kind === 'shield') {
+        Object.assign(def, { type: 'Shield', slot: 'off', acBonus: (e.armor && e.armor.base) || 2 });
+        facts.push('+' + def.acBonus + ' AC');
+      } else if (e.kind === 'ammunition') def.type = 'Ammunition';
+      if (typeof e.weight === 'number') def.weight = e.weight;
+      if (e.cost) facts.push('Cost ' + e.cost);
+      if (e.contents && e.contents.length) facts.push('Contains: ' + e.contents.map((c) => (c.qty > 1 ? c.qty + ' × ' : '') + c.name).join(', '));
+    } else {
+      const cat = String(e.category || '') + ' ' + String(e.typeLine || '');
+      def.rarity = e.rarity && e.rarity !== 'Varies' ? e.rarity : 'Uncommon';
+      def.attunementRequired = !!e.attunement;
+      if (/\bring\b/i.test(cat)) { def.type = 'Ring'; def.icon = '💍'; }
+      else if (/potion/i.test(cat)) { def.type = 'Consumable'; def.icon = '🧪'; }
+      else if (/scroll/i.test(cat)) { def.type = 'Consumable'; def.icon = '📜'; }
+      else if (/weapon/i.test(cat)) { def.type = 'Weapon'; def.icon = '⚔️'; def.slot = 'main'; }
+      else if (/armor/i.test(cat)) { def.type = /shield/i.test(e.name) ? 'Shield' : 'Armor'; def.icon = '🛡️'; def.slot = def.type === 'Shield' ? 'off' : 'chest'; }
+      else if (/\b(wand|rod|staff)\b/i.test(cat)) { def.type = 'Wondrous Item'; def.icon = '🪄'; def.slot = 'main'; }
+      else { def.type = 'Wondrous Item'; def.icon = '✨'; }
+      if (def.type === 'Wondrous Item' || def.type === 'Ring') def.slot = def.slot || slotFromName(e.name);
+      if (e.typeLine) facts.push(e.typeLine);
+    }
+    if (!def.slot) delete def.slot;
+    def.desc = facts.concat((e.desc || []).map(plain)).join('\n').slice(0, 3000);
+    return def;
+  }
+
+  function canAddToSheet() {
+    return !!(root.currentUser && typeof root.addItemToOpenSheet === 'function' && !(document.body && document.body.classList.contains('dm-no-sheet')));
+  }
+  function canAddToStore() {
+    const c = root.activeCampaign;
+    const C = root.Campaigns;
+    return !!(c && c.role === 'dm' && C && typeof C.saveHomebrew === 'function' && !(C.viewingAs && C.viewingAs()));
+  }
+
+  function addButtons(tab) {
+    if (tab !== 'items' && tab !== 'magic') return '';
+    const nameEl = document.getElementById('strip-name');
+    const who = nameEl && nameEl.textContent ? nameEl.textContent : 'the open sheet';
+    let html = '';
+    if (canAddToSheet()) html += '<button type="button" class="btn small" data-rc="add-sheet" title="Adds it to the sheet open in the Character section">➕ Add to ' + esc(who) + '</button>';
+    if (canAddToStore()) html += '<button type="button" class="btn ghost small" data-rc="add-store" title="Adds it to the campaign item store, for 🎁 Gift Loot">📦 Add to item store</button>';
+    return html ? '<div class="rc-adds">' + html + '<span class="rc-add-msg" role="status"></span></div>' : '';
+  }
+
+  function addCurrent(where) {
+    const data = current();
+    const e = data && data.entries.find((x) => x.id === view.open);
+    const msg = box && box.querySelector('.rc-add-msg');
+    const say = (t, bad) => { if (msg) { msg.textContent = t; msg.classList.toggle('rc-bad', !!bad); } };
+    if (!e) return;
+    const def = toStoreDef(view.tab, e);
+    if (where === 'sheet') {
+      if (!canAddToSheet() || !root.HomebrewEditor) return say('Open a character sheet first.', true);
+      const item = root.HomebrewEditor.itemForSheet(def, 1);
+      item.fromCatalog = (view.ruleset === '2024' ? 'srd52:' : 'srd51:') + e.id;
+      root.addItemToOpenSheet(item);
+      say('Added to ' + ((document.getElementById('strip-name') || {}).textContent || 'the sheet') + '.');
+    } else {
+      if (!canAddToStore()) return say('Only the campaign\'s DMs can add to its item store.', true);
+      const c = root.activeCampaign;
+      const have = ((root.Campaigns.homebrew && root.Campaigns.homebrew()) || {}).items || {};
+      if (Object.values(have).some((d) => d && d.name === def.name)) return say('"' + def.name + '" is already in the item store.', true);
+      let id = String(e.id).slice(0, 36);
+      if (have[id]) id = id.slice(0, 32) + '_' + Date.now().toString(36).slice(-3);
+      root.Campaigns.saveHomebrew(c.id, 'items', id, def).then(() => say('Added to the item store of ' + c.name + '.'), (err) => say(err.message || String(err), true));
+    }
+  }
+
   function entryHtml(tab, e) {
     let body = '';
     if (tab === 'monsters') body = monsterHtml(e);
     else if (tab === 'items') body = itemHtml(e);
     else if (tab === 'magic') body = magicHtml(e);
     else body = (e.section ? '<div class="rc-sub">' + esc(e.chapter + ' › ' + e.section) + '</div>' : e.chapter && e.chapter !== e.name ? '<div class="rc-sub">' + esc(e.chapter) + '</div>' : '') + md(e.desc);
-    return '<button type="button" class="btn ghost small rc-back" data-rc="back">← List</button><h3 class="rc-title">' + esc(e.name) + '</h3>' + body;
+    return '<button type="button" class="btn ghost small rc-back" data-rc="back">← List</button><h3 class="rc-title">' + esc(e.name) + '</h3>' + addButtons(tab) + body;
   }
 
   /* ---------- Lists and filters ---------- */
@@ -232,6 +335,8 @@
       if (t.dataset.rcTab) { view.tab = t.dataset.rcTab; view.q = ''; view.filter = ''; view.open = null; remember(); render(); }
       else if (t.dataset.rcRuleset) { view.ruleset = t.dataset.rcRuleset; view.open = null; remember(); render(); }
       else if (t.dataset.rcId) openEntry(t.dataset.rcId);
+      else if (t.dataset.rc === 'add-sheet') addCurrent('sheet');
+      else if (t.dataset.rc === 'add-store') addCurrent('store');
       else if (t.dataset.rc === 'back') { view.open = null; box.querySelector('.rc-body').classList.remove('rc-reading'); paintList(); }
     });
     document.addEventListener('input', (e) => {
@@ -244,5 +349,5 @@
     });
   }
 
-  root.RulesCatalog = { render: render, load: load, md: md, matches: matches, TABS: TABS };
+  root.RulesCatalog = { render: render, load: load, md: md, matches: matches, toStoreDef: toStoreDef, slotFromName: slotFromName, TABS: TABS };
 })(typeof window !== 'undefined' ? window : this);

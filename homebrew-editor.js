@@ -104,7 +104,9 @@
         { key: 'rarity', label: 'Rarity', type: 'select', options: ['Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary', 'Artifact'], value: 'Uncommon' },
         { key: 'slot', label: 'Equip slot', type: 'select', options: ['', 'head', 'neck', 'cloak', 'chest', 'hands', 'belt', 'ring1', 'main', 'off', 'boots'], labels: ['Not equippable', 'Head', 'Neck', 'Cloak', 'Chest', 'Hands', 'Belt', 'Ring', 'Main hand', 'Off hand', 'Boots'], value: '' },
         { key: 'weight', label: 'Weight (lb, each)', type: 'number' },
-        { key: 'acBonus', label: 'AC bonus while equipped', type: 'number' },
+        { key: 'acBonus', label: 'AC while equipped (armour: its base AC, e.g. 14; anything else: a bonus, e.g. 1)', type: 'number' },
+        { key: 'armorCategory', label: 'Armour category (armour only)', type: 'select', options: ['', 'Light', 'Medium', 'Heavy'], labels: ['—', 'Light (full DEX)', 'Medium (DEX max +2)', 'Heavy (no DEX)'], value: '' },
+        { key: 'proficiencyType', label: 'Weapon category (weapons only)', type: 'select', options: ['', 'Simple', 'Martial'], labels: ['—', 'Simple', 'Martial'], value: '' },
         { key: 'attunementRequired', label: 'Needs attunement', type: 'checkbox' },
         { key: 'desc', label: 'What it does (your own words)', type: 'textarea' }
       ]
@@ -246,14 +248,15 @@
       name: d.name || 'Item',
       icon: d.icon || '🎁',
       type: d.type || 'Wondrous Item',
-      armorCategory: d.type === 'Shield' || (d.type !== 'Armor' && ac) ? 'Bonus' : (d.type === 'Armor' ? 'Medium' : null),
+      // Armour: its category decides how DEX counts (sheet's calculateCharacterAC); AC is its base AC.
+      armorCategory: d.type === 'Shield' || (d.type !== 'Armor' && ac) ? 'Bonus' : (d.type === 'Armor' ? (['Light', 'Medium', 'Heavy'].includes(d.armorCategory) ? d.armorCategory : 'Medium') : null),
       rarity: d.rarity || 'Common',
       slot: d.slot || null,
       weight: Number(d.weight) || 0,
       qty: Math.max(1, Number(qty) || 1),
       desc: d.desc || '',
       attunementRequired: !!d.attunementRequired,
-      proficiencyType: d.type === 'Weapon' ? 'Simple' : null,
+      proficiencyType: d.type === 'Weapon' ? (d.proficiencyType === 'Martial' ? 'Martial' : 'Simple') : null,
       buffs: [],
       debuffs: [],
       statBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0, ac: ac, init: 0, speed: 0 },
