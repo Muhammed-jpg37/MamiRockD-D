@@ -70,6 +70,7 @@
   <script src="rules-catalog.js" defer></script>
   <script src="vtt-catalog.js" defer></script>
   <script src="dice.js" defer></script>
+  <script src="sheet-maths.js" defer></script>
   <script src="vtt.js" defer></script>
   <style>
     /* ============================================================
@@ -344,6 +345,17 @@
     .ability-card .roll-btn { position: absolute; top: 1px; right: 1px; font-size: 10px; }
     .save-row .roll-wrap { display: inline-flex; align-items: center; gap: 4px; }
     .strip-dice-mode { display: inline-flex; align-self: center; }
+    /* Actions block on Overview (feature plan 3.1) */
+    .actions-box { margin-bottom: 10px; }
+    .action-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04); flex-wrap: wrap; }
+    .action-row:last-child { border-bottom: none; }
+    .action-name { display: flex; flex-direction: column; min-width: 0; flex: 1 1 120px; font-size: 12px; color: var(--text); }
+    .action-name small { font-size: 10px; color: var(--text-muted); }
+    .action-rolls { display: flex; gap: 4px; flex-wrap: wrap; }
+    .action-roll { background: var(--well-2); border: 1px solid var(--border); border-radius: 4px; color: var(--accent-2-strong); font-family: var(--font-mono); font-weight: 700; font-size: 11px; padding: 2px 6px; cursor: pointer; }
+    .action-roll:hover, .action-roll:focus-visible { border-color: var(--gold); }
+    .action-roll.dmg { color: var(--text); }
+    .action-none, .action-empty { font-size: 11px; color: var(--text-muted); }
     .strip-dice-mode button { background: var(--panel-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 4px 6px; cursor: pointer; }
     .strip-dice-mode button:first-child { border-radius: 6px 0 0 6px; }
     .strip-dice-mode button:last-child { border-radius: 0 6px 6px 0; }
@@ -5675,6 +5687,7 @@
           <div id="character-identity-badge"></div>
           <div class="ability-scores-grid" id="ability-scores-grid"></div>
           <div class="combat-stats-bar" id="combat-stats-bar"></div>
+          <div class="dnd-box actions-box" id="actions-box"></div>
           <div id="equipped-item-bonuses-strip"
             style="display:none; flex-wrap:wrap; gap:4px; align-items:center; font-size:10px; margin-bottom:10px; background:var(--well-2); border:1px solid var(--border); border-radius:6px; padding:4px 8px;">
           </div>
@@ -7864,6 +7877,8 @@
           summaryEl.innerHTML = '';
         }
       }
+
+      renderActionsBlock(cs, itemBonuses);
 
       // Saving Throws List
       const savesEl = document.getElementById('saving-throws-list');
@@ -12272,7 +12287,8 @@
       if (!window.VTT || !window.Dice) { toast('The dice are still loading. Try again in a moment.'); return null; }
       const nameEl = document.getElementById('strip-name');
       const who = (nameEl && nameEl.textContent.trim()) || '';
-      const entry = window.VTT.roll(window.Dice.d20(bonus), { label: ((who ? who + ': ' : '') + label).slice(0, 60) });
+      // opts.expr: any other roll (weapon damage); the default is a d20 plus the bonus.
+      const entry = window.VTT.roll(opts.expr || window.Dice.d20(bonus), { label: ((who ? who + ': ' : '') + label).slice(0, 60) });
       if (!entry) return null;
       if (!opts.quiet) {
         const nat = entry.crit ? ' (natural 20!)' : entry.fumble ? ' (natural 1)' : '';
@@ -12298,6 +12314,74 @@
       renderDeathSaves();
       if (out.revived) renderHpTracker();
       toast('🎲 Death save: ' + e.total + ', ' + out.note, 5000);
+    }
+
+    /* ---------- ACTIONS: equipped weapons (feature plan 3.1, sheet-maths.js) ---------- */
+    let sheetWeaponCatalogs = null;      // { '2014': entries, '2024': entries } once loaded
+    let sheetWeaponCatalogsLoading = false;
+    let sheetAttacks = [];               // what the Actions block shows, for actionRoll(i, kind)
+    let sheetCritPending = null;         // index of the weapon whose last attack was a natural 20
+
+    function loadSheetWeaponCatalogs() {
+      if (sheetWeaponCatalogs || sheetWeaponCatalogsLoading || !window.RulesCatalog) return;
+      sheetWeaponCatalogsLoading = true;
+      Promise.all(['2014', '2024'].map(function (rs) {
+        return window.RulesCatalog.load('items', rs).then(function (d) { return d.entries || []; }).catch(function () { return []; });
+      })).then(function (lists) {
+        sheetWeaponCatalogs = { 2014: lists[0], 2024: lists[1] };
+        sheetWeaponCatalogsLoading = false;
+        if (state.characterStats) renderActionsBlock(state.characterStats, getEquippedItemBonuses());
+      });
+    }
+
+    function renderActionsBlock(cs, itemBonuses) {
+      const box = document.getElementById('actions-box');
+      if (!box || !window.SheetMaths) return;
+      loadSheetWeaponCatalogs();
+      const M = window.SheetMaths;
+      sheetAttacks = M.weaponAttacks(state.items || [], {
+        scores: M.effectiveScores(cs, itemBonuses && itemBonuses.totals),
+        prof: cs.profBonus || 2,
+        cs: cs,
+        catalogs: sheetWeaponCatalogs || {}
+      });
+      const rows = sheetAttacks.map(function (a, i) {
+        const reach = a.reach ? 'melee, reach 10 ft' : 'melee';
+        const where = a.ranged ? 'range ' + a.range + ' ft' : (a.range ? reach + ', thrown ' + a.range + ' ft' : reach);
+        const meta = [where, a.damageType, a.ability.toUpperCase()]
+          .concat(a.notes).filter(Boolean).join(' · ');
+        const why = 'To hit: ' + a.ability.toUpperCase() + ' modifier' + (a.proficient ? ' + proficiency' : ' (not proficient)') + (a.magic ? ' + ' + a.magic + ' magic' : '');
+        return '<div class="action-row">' +
+          '<div class="action-name"><span>' + escapeHtml(a.name) + (a.slot === 'off' ? ' <small>(off hand)</small>' : '') + '</span><small>' + escapeHtml(meta) + '</small></div>' +
+          '<div class="action-rolls">' +
+          '<button type="button" class="action-roll" title="' + escapeHtml(why) + '. Click to roll the attack." onclick="actionRoll(' + i + ', \'attack\')">🎲 ' + a.toHitText + '</button>' +
+          (a.damage ? '<button type="button" class="action-roll dmg" title="Roll damage (after a natural 20 the dice are doubled)" onclick="actionRoll(' + i + ', \'damage\')">' + escapeHtml(a.damage) + '</button>' : '<span class="action-none" title="No damage known: add a damage line to the item, like 1d8 slashing">no damage</span>') +
+          (a.versatile ? '<button type="button" class="action-roll dmg" title="Two-handed (versatile) damage" onclick="actionRoll(' + i + ', \'versatile\')">2h ' + escapeHtml(a.versatile) + '</button>' : '') +
+          '</div></div>';
+      }).join('');
+      box.innerHTML = '<div class="dnd-box-title">⚔️ ACTIONS</div>' +
+        (rows || '<div class="action-empty">No weapon equipped. Equip one in the Inventory tab and its attack shows here.</div>');
+    }
+
+    // sheet-maths.js is a deferred script: draw the block again once it has run.
+    document.addEventListener('DOMContentLoaded', function () {
+      if (state.characterStats) renderActionsBlock(state.characterStats, getEquippedItemBonuses());
+    });
+
+    function actionRoll(i, kind) {
+      const a = sheetAttacks[i];
+      if (!a) return;
+      if (kind === 'attack') {
+        const e = sheetRoll(a.name + ' attack', a.toHit);
+        sheetCritPending = e && e.crit ? i : null;
+        return;
+      }
+      let expr = kind === 'versatile' ? a.versatile : a.damage;
+      if (!expr) return;
+      const crit = sheetCritPending === i;
+      if (crit) expr = window.SheetMaths.critDamage(expr);
+      sheetCritPending = null;
+      sheetRoll(a.name + (crit ? ' critical' : '') + ' damage' + (a.damageType ? ' (' + a.damageType + ')' : ''), 0, { expr: expr });
     }
 
     function stripDiceModeHtml() {

@@ -4,9 +4,9 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ## Resume here
 
-**Where work stopped:** feature plan section **2 (dice) is done** (steps 2.1–2.5), on branch `zar` (cut from `karakter-aktarma`). `zar` is **not pushed** yet: push it when the user says so.
+**Where work stopped:** feature plan section **3 (sheet maths)**, on branch `sayfa-hesaplari` (cut from `zar`, which is done and pushed). Step 3.1 (weapon attacks) is done. `sayfa-hesaplari` is **not pushed**.
 
-**Do next: section 3 (sheet maths)** on a new branch cut from `zar` (e.g. `sayfa-hesaplari`), starting with 3.1, after the user's go.
+**Do next: step 3.2**, then wait for the user's go before 3.3.
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
 1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
@@ -18,14 +18,10 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ### Remaining plan, one line per step
 
-**2. Dice** (branch `zar`)
-- 2.2 Done (see "Step 2, dice" below).
-- 2.3 Done (see "Step 2, dice" below).
-- 2.4 Done (see "Step 2, dice" below).
-- 2.5 Done (see "Step 2, dice" below). Push `zar` when the user asks.
+**2. Dice** (branch `zar`): done and pushed (see "Step 2, dice" below).
 
-**3. Sheet maths** (new branch, e.g. `sayfa-hesaplari`)
-- 3.1 Weapons: for each equipped weapon, attack bonus (PB if proficient + STR, or DEX for finesse/ranged, the higher for finesse) and damage (die + mod, versatile), using `rules/catalog/srd5*-items.json` when `fromCatalog` or the name matches; an "Actions" block on Overview; each line click-to-rolls (step 2.4's roller).
+**3. Sheet maths** (branch `sayfa-hesaplari`, cut from `zar`)
+- 3.1 Done (see "Step 3, sheet maths" below).
 - 3.2 Spell attack and save DC per spellcasting class, and cantrip damage scaling by level, on Overview and in the Spells tab.
 - 3.3 AC from armour: already computed from equipped items (`calculateCharacterAC`); add Unarmored Defense (barbarian CON, monk WIS), Draconic Resilience and the Defense fighting style from the build, and test it.
 - 3.4 Feature text and limited uses: SRD 5.1 feature descriptions and `uses` (count by level or ability mod, reset short/long) in a new `rules/srd5-features.js`; `featuresFromDerived` fills the sheet's feature cards (`maxUses`, reset), which the rest buttons already reset. Source: 5e-bits `5e-SRD-Features.json` / `5e-SRD-Traits.json` (same pipeline as `tools/build-srd-catalogs.js`).
@@ -69,13 +65,14 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 | `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
 | `kampanya-sistemi` | Campaign system. Contained in `main`. |
 | `arayuz-duzeni` | Holds `LAYOUT_UI.md` (the role and layout plan). Contained in `main`. |
-| `zar` | Cut from `karakter-aktarma` for feature plan step 2 (dice). **Current branch**. Section 2 done (one commit per step). Not pushed. |
+| `sayfa-hesaplari` | Cut from `zar` for feature plan step 3 (sheet maths). **Current branch**. Not pushed. |
+| `zar` | Cut from `karakter-aktarma` for feature plan step 2 (dice). Done and pushed. |
 | `karakter-aktarma` | Cut from `kataloglar` for feature plan step 1 (character import). Done and pushed. |
 | `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). Done and pushed. Not merged: everything goes into `main` in one merge when the whole plan is done. |
 | `kampanya-rolleri` | Cut from `arayuz-duzeni`. Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
 | `karakter-olusturucu` | Character builder and the spell plan. Contained in `main`. |
 
-Branch chain of the feature plan: `main` → `kataloglar` (step 6) → `karakter-aktarma` (step 1) → `zar` (step 2). `git log --oneline main..zar` lists everything not yet in `main`.
+Branch chain of the feature plan: `main` → `kataloglar` (step 6) → `karakter-aktarma` (step 1) → `zar` (step 2) → `sayfa-hesaplari` (step 3). `git log --oneline main..sayfa-hesaplari` lists everything not yet in `main`.
 
 ## Run and test
 
@@ -87,7 +84,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 132 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 138 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 Node v24 and git are installed on the 2026-11-07 machine (`/c/Program Files/nodejs/node`). In the Claude desktop app the site runs through `.claude/launch.json` ("start" = `npm run start`, port 3000) in the browser pane. Python is not installed; use Node for scripts. In bash, avoid `node -e` with text containing a single quote (write a script file instead).
 
@@ -126,7 +123,7 @@ The builder follows D&D 5e **2014** rules (SRD 5.1 only, CC-BY-4.0 attribution i
 - The ⚔ Forge edit screen only shows choices for the **first** class. Multiclass choices are made in the level-up dialog.
 - A character built with campaign homebrew can only be re-edited inside that campaign.
 - Feature descriptions are names only, and builder features have no limited uses (Rage, Ki, Channel Divinity…); the sheet's feature cards support uses but they stay empty (plan A1).
-- No weapon attack bonus or damage anywhere; AC is only computed at creation, not when armour changes (A2, A3).
+- Weapon attacks and damage are on Overview's Actions box (feature plan 3.1); spell attack / save DC and Unarmored Defense etc. are still missing (3.2, 3.3).
 - Click-to-roll from the sheet covers checks, saves, skills, initiative and death saves (feature plan 2.4); attacks wait for 3.1.
 - No "prepared today" in the Spells tab and no check of the prepared count (B2). Spell picks in the builder are 2014 (SRD 5.1) only; 2024 spells exist only in the Spells tab catalog (C1).
 - Existing builder-made characters must complete their spell picks before an edit or level up can be saved (seeded from their Spells tab where possible).
@@ -188,7 +185,10 @@ Step 2, dice (branch `zar`, cut from `karakter-aktarma`):
 4. Click-to-roll on the sheet: done. `vtt.js` exports `window.VTT = { roll, postRoll, getRollMode, setRollMode }`, usable before the Table section was ever opened (rolls go to `vtt/<active campaign>/log`; with no campaign they only show locally). In `index.html` ("CLICK-TO-ROLL" block after `resetDeathSaves`): `sheetRoll(label, bonus, opts)` rolls `Dice.d20(bonus)` labelled "<character name>: <label>" (the strip's name), honours the shared Adv / Norm / Dis mode and the DM's 🙈 toggle, and shows a toast with the per-die text. Small 🎲 buttons (`.roll-btn`): top-right of each ability card (check), next to each save's number, and a fifth column in the skills list; the existing click-to-edit on those numbers is unchanged. The character strip has a **🎲 Roll init** pill and an **Adv / Norm / Dis** switch (`stripDiceModeHtml`; both switches stay in step through the `dicemode` window event). The death-save panel has **🎲 Roll death save** (`rollDeathSave`): 10+ success, natural 1 = two failures, natural 20 = saves reset and HP to 1 (SRD 5.1); three of either is announced in the toast. Attacks come with 3.1. Checked in the browser with writes stubbed (desktop and 375 px, no horizontal scroll); the DM account had no sheet in that campaign, so the sheet was made visible in memory only.
 5. Tests and docs: done. The log-entry and death-save logic moved out of `vtt.js` / `index.html` into `dice.js` so Node can test it: `Dice.logEntry(r, { by, label, at })`, `Dice.secretEntry(entry)`, `Dice.logView(entry, secret?)` (how a row reads, for new, old and hidden entries) and `Dice.deathSave(entry, boxes)`. `tests/dice.test.js` gained 4 tests (entry shape checked against the proposed database rules for `log` and `logHidden`, hidden placeholders, old entries, death saves): 132 tests pass in Node and in the browser runner. `VTT.md` has a "Zar" section, the new log schema and a test row.
 
-Section 2 is done (branch `zar`, not pushed yet).
+Section 2 is done (branch `zar`, pushed 2026-11-07).
+
+Step 3, sheet maths (branch `sayfa-hesaplari`, cut from `zar`):
+1. Weapon attacks: done. New `sheet-maths.js` (`window.SheetMaths`, no DOM; loaded in `index.html` after `dice.js`). `weaponAttacks(items, { scores, prof, cs, catalogs })` gives one line per equipped weapon (main hand, off hand, then the rest): ability (STR; DEX for ranged; finesse takes the higher), to-hit (ability mod + PB if proficient + magic bonus from "+N" in the name or `attackBonus`), damage and versatile damage (die + mod), damage type, range/reach, notes. Damage comes from the SRD equipment catalog (`findWeapon`: `fromCatalog` id, else the name: plurals, "Crossbow, hand" = "Hand crossbow", "Elven longsword" ends in "longsword", "Staff of …" is a quarterstaff), else from the item's own `damage` text (builder starter items, "1d8/1d10 Slashing"). Proficiency (`weaponProficient`): the Simple/Martial switches, the "Weapons" line (`weaponProf`) or old `weapons` notes, by category or by weapon name; Simple + Martial together cover any weapon. Off-hand weapons add no positive ability modifier to damage (two-weapon fighting). On Overview, an **⚔️ Actions** box under the Prof/Speed/Init/AC pills: name, a short line (melee / thrown / range, type, ability, notes), **🎲 +to-hit**, damage and "2h" versatile buttons; they roll through `sheetRoll` (which now takes `opts.expr`) into the table log. After a natural 20 on an attack, that weapon's next damage roll doubles its dice (`critDamage`) and is labelled "critical". The catalogs load once through `RulesCatalog.load('items', '2014' | '2024')`; until then items with their own damage text still show. Tests: `tests/sheet-maths.test.js` (6). 138 tests pass in Node and in the browser runner. Checked in the browser with writes stubbed and test weapons added in memory (desktop and 375 px); the DM account has no sheet in that campaign, so the sheet was made visible in memory.
 
 ## Next plan: closing the gaps with other character builders
 
