@@ -337,7 +337,18 @@
     .char-strip .stat-pill .val { font-size: 16px; }
     .char-strip .coin-breakdown { display: none; }
     .char-strip .hp-pill { min-width: 170px; }
-    .strip-combat { display: flex; gap: 6px; }
+    .strip-combat { display: flex; flex-wrap: wrap; gap: 6px; }
+    /* Click-to-roll (feature plan 2.4): small 🎲 buttons next to the sheet's numbers. */
+    .roll-btn { background: none; border: 1px solid transparent; border-radius: 4px; padding: 0 3px; font-size: 11px; line-height: 1.4; color: inherit; cursor: pointer; opacity: 0.6; }
+    .roll-btn:hover, .roll-btn:focus-visible { opacity: 1; border-color: var(--gold); }
+    .ability-card .roll-btn { position: absolute; top: 1px; right: 1px; font-size: 10px; }
+    .save-row .roll-wrap { display: inline-flex; align-items: center; gap: 4px; }
+    .strip-dice-mode { display: inline-flex; align-self: center; }
+    .strip-dice-mode button { background: var(--panel-2); border: 1px solid var(--border); color: var(--text-muted); font: inherit; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 4px 6px; cursor: pointer; }
+    .strip-dice-mode button:first-child { border-radius: 6px 0 0 6px; }
+    .strip-dice-mode button:last-child { border-radius: 0 6px 6px 0; }
+    .strip-dice-mode button + button { border-left: none; }
+    .strip-dice-mode button.on { color: var(--gold-bright); border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
     .strip-pill { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 58px; padding: 6px 8px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font: inherit; }
     .strip-pill:hover { border-color: var(--gold); }
     .strip-pill .v { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--gold-bright); }
@@ -2732,7 +2743,7 @@
 
     .skills-header-row {
       display: grid;
-      grid-template-columns: 24px 34px 1fr 40px;
+      grid-template-columns: 24px 34px 1fr 40px 22px;
       font-size: 9px;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -2744,7 +2755,7 @@
 
     .skill-row {
       display: grid;
-      grid-template-columns: 24px 34px 1fr 40px;
+      grid-template-columns: 24px 34px 1fr 40px 22px;
       align-items: center;
       font-size: 11px;
       padding: 3px 0;
@@ -7754,6 +7765,7 @@
           const title = 'Base: ' + baseScore + (bonus !== 0 ? ' [' + (bonus > 0 ? '+' : '') + bonus + ' from items: ' + bonusBreakdown + ' = Total ' + effectiveScore + ']' : '') + '. Click to edit base score';
           const bonusTagHtml = bonus !== 0 ? `<span class="item-bonus-tag" title="${escapeHtml(bonusBreakdown)}">${bonus > 0 ? '+' : ''}${bonus}</span>` : '';
           return `<div class="ability-card" style="cursor:pointer;" title="${escapeHtml(title)}" onclick="quickEditStat('${ab.key}')">
+          <button type="button" class="roll-btn" title="Roll a ${ab.label} check (${formatMod(mod)})" aria-label="Roll a ${ab.label} check" onclick="event.stopPropagation(); sheetRoll('${ab.label} check', ${mod})">🎲</button>
           <div class="mod">${formatMod(mod)}</div>
           <div class="name">${ab.label}</div>
           <div class="score">${effectiveScore}${bonusTagHtml}</div>
@@ -7798,7 +7810,9 @@
         stripCombat.innerHTML =
           '<button type="button" class="strip-pill" onclick="quickEditAC()" title="Armour Class"><span class="v">' + ac + '</span><span class="l">AC</span></button>' +
           '<button type="button" class="strip-pill" onclick="quickEditStat(\'initBonus\')" title="Initiative"><span class="v">' + formatMod(init) + '</span><span class="l">Init</span></button>' +
-          '<button type="button" class="strip-pill" onclick="quickEditStat(\'speed\')" title="Speed"><span class="v">' + spd + '</span><span class="l">Speed</span></button>';
+          '<button type="button" class="strip-pill" onclick="quickEditStat(\'speed\')" title="Speed"><span class="v">' + spd + '</span><span class="l">Speed</span></button>' +
+          '<button type="button" class="strip-pill" onclick="sheetRoll(\'Initiative\', ' + init + ')" title="Roll initiative (' + formatMod(init) + ')"><span class="v">🎲</span><span class="l">Roll init</span></button>' +
+          stripDiceModeHtml();
       }
 
       // Equipped Item Bonuses Summary Strip
@@ -7870,7 +7884,7 @@
           const itemBonusTag = totalItemBonus !== 0 ? `<span class="item-bonus-tag" style="font-size:9px;">${totalItemBonus > 0 ? '+' : ''}${totalItemBonus}</span>` : '';
           return `<div class="save-row" style="cursor:pointer;">
           <div onclick="toggleSaveProf('${st}'); event.stopPropagation();" title="Current: ${title}. Click dot to cycle: None -> Half -> Proficient"><span class="pip" style="color:${iconColor};">${icon}</span> ${st.toUpperCase()}${itemBonusTag}</div>
-          <span class="val" onclick="quickEditSaveBonus('${st}'); event.stopPropagation();" title="Click number to change total save bonus to any number">${formatMod(mod)}</span>
+          <span class="roll-wrap"><button type="button" class="roll-btn" title="Roll a ${st.toUpperCase()} save (${formatMod(mod)})" aria-label="Roll a ${st.toUpperCase()} save" onclick="event.stopPropagation(); sheetRoll('${st.toUpperCase()} save', ${mod})">🎲</button><span class="val" onclick="quickEditSaveBonus('${st}'); event.stopPropagation();" title="Click number to change total save bonus to any number">${formatMod(mod)}</span></span>
         </div>`;
         }).join('');
       }
@@ -7924,6 +7938,7 @@
           <span class="mod-tag" onclick="quickEditSkillBonus('${escapedName}'); event.stopPropagation();">${sk.stat.toUpperCase()}</span>
           <span class="name" onclick="quickEditSkillBonus('${escapedName}'); event.stopPropagation();" title="Click name/number to change bonus to any number">${escapeHtml(sk.name)}${skillBonusTag}</span>
           <span class="bonus" onclick="quickEditSkillBonus('${escapedName}'); event.stopPropagation();" title="Click number to change bonus to any number">${formatMod(totalBonus)}</span>
+          <button type="button" class="roll-btn" title="Roll ${escapeHtml(sk.name)} (${formatMod(totalBonus)})" aria-label="Roll ${escapeHtml(sk.name)}" onclick="event.stopPropagation(); sheetRoll('${escapeHtml(escapedName)}', ${totalBonus})">🎲</button>
         </div>`;
         }).join('');
       }
@@ -10250,6 +10265,7 @@
         '</div>' +
         '</div>' +
         '<div class="death-save-actions">' +
+        '<button class="btn small" onclick="rollDeathSave()" title="Roll a d20: 10 or more is a success, 1 counts as two failures, 20 brings you back with 1 HP">🎲 Roll death save</button>' +
         '<button class="btn ghost small" onclick="resetDeathSaves()">Reset</button>' +
         '</div>' +
         '</div>' : '<div class="hint">Death saves are hidden. Use the toggle to open the tracker.</div>';
@@ -12246,6 +12262,68 @@
       save();
       renderDeathSaves();
     }
+
+    /* ---------- CLICK-TO-ROLL (feature plan 2.4) ----------
+       The sheet's checks, saves, skills, initiative and death saves roll through vtt.js
+       (window.VTT.roll, dice from dice.js), post to the active campaign's table log and
+       show a toast. The Adv / Norm / Dis switch is shared with the table's dice bar. */
+    function sheetRoll(label, bonus, opts) {
+      opts = opts || {};
+      if (!window.VTT || !window.Dice) { toast('The dice are still loading. Try again in a moment.'); return null; }
+      const nameEl = document.getElementById('strip-name');
+      const who = (nameEl && nameEl.textContent.trim()) || '';
+      const entry = window.VTT.roll(window.Dice.d20(bonus), { label: ((who ? who + ': ' : '') + label).slice(0, 60) });
+      if (!entry) return null;
+      if (!opts.quiet) {
+        const nat = entry.crit ? ' (natural 20!)' : entry.fumble ? ' (natural 1)' : '';
+        toast('🎲 ' + label + ': ' + entry.total + nat + '  ·  ' + entry.text, 4500);
+      }
+      return entry;
+    }
+
+    // 10 or more: a success; a natural 1: two failures; a natural 20: back with 1 HP (SRD 5.1).
+    function rollDeathSave() {
+      const e = sheetRoll('Death save', 0, { quiet: true });
+      if (!e) return;
+      const ds = state.deathSaves;
+      const mark = (list, n) => { for (let i = 0; i < list.length && n > 0; i++) if (!list[i]) { list[i] = true; n--; } };
+      let note;
+      if (e.crit) {
+        ds.successes = [false, false, false];
+        ds.failures = [false, false, false];
+        if (!state.hp) state.hp = { current: 0, max: 45, temp: 0 };
+        state.hp.current = Math.max(1, Number(state.hp.current) || 0);
+        note = 'natural 20, back up with 1 HP';
+      } else if (e.fumble) { mark(ds.failures, 2); note = 'natural 1, two failures'; }
+      else if (e.total >= 10) { mark(ds.successes, 1); note = 'success'; }
+      else { mark(ds.failures, 1); note = 'failure'; }
+      if (ds.failures.every(Boolean)) note += '. Three failures: the character dies';
+      else if (ds.successes.every(Boolean)) note += '. Three successes: stable';
+      ds.open = true;
+      save();
+      renderDeathSaves();
+      if (e.crit) renderHpTracker();
+      toast('🎲 Death save: ' + e.total + ', ' + note, 5000);
+    }
+
+    function stripDiceModeHtml() {
+      const mode = window.VTT ? window.VTT.getRollMode() : 'normal';
+      const b = (m, text, title) => '<button type="button" data-dice-mode="' + m + '" class="' + (mode === m ? 'on' : '') + '" aria-pressed="' + (mode === m) + '" title="' + title + '" onclick="window.VTT && window.VTT.setRollMode(\'' + m + '\')">' + text + '</button>';
+      return '<span class="strip-dice-mode" role="group" aria-label="Rolls with advantage or disadvantage">' +
+        b('adv', 'Adv', 'Roll d20s with advantage (the higher of two)') +
+        b('normal', 'Norm', 'Normal rolls') +
+        b('dis', 'Dis', 'Roll d20s with disadvantage (the lower of two)') + '</span>';
+    }
+
+    // The table's switch and this one show the same mode (vtt.js fires "dicemode").
+    window.addEventListener('dicemode', function (ev) {
+      const mode = ev.detail && ev.detail.mode;
+      document.querySelectorAll('[data-dice-mode]').forEach(function (btn) {
+        const on = btn.dataset.diceMode === mode;
+        btn.classList.toggle('on', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    });
 
     function renderGrid() {
       const grid = document.getElementById('item-grid');

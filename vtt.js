@@ -2015,6 +2015,8 @@
   function setRollMode(mode) {
     rollMode = mode === 'adv' || mode === 'dis' ? mode : 'normal';
     store.set(MODE_KEY, rollMode);
+    // The sheet's switch in the character strip shows the same mode.
+    try { window.dispatchEvent(new CustomEvent('dicemode', { detail: { mode: rollMode } })); } catch (e) { /* old browser */ }
     if (root) root.querySelectorAll('[data-mode]').forEach((b) => {
       const on = b.dataset.mode === rollMode;
       b.classList.toggle('vtt-on', on);
@@ -2172,6 +2174,15 @@
   }
 
   window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid };
+
+  // For the rest of the site (the sheet's click-to-roll). Works before the Table section was ever
+  // opened: rolls post to the active campaign's log (vtt/<campaign>/log) as soon as there is one.
+  window.VTT = {
+    roll: (expr, opts) => roll(expr, opts),                 // -> log entry, or null for a bad expression
+    postRoll: (entry, hidden) => postRoll(entry, hidden),   // an entry built elsewhere
+    getRollMode: () => rollMode,                            // 'adv' | 'normal' | 'dis'
+    setRollMode: (mode) => setRollMode(mode),
+  };
 
   /* ---------- Coordinates ---------- */
 

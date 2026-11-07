@@ -4,9 +4,9 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ## Resume here
 
-**Where work stopped:** feature plan step **2 (dice)**, on branch `zar` (cut from `karakter-aktarma`). Steps 2.1 (engine, `dice.js`), 2.2 (the table's dice bar uses it) and 2.3 (hidden DM rolls) are done. `zar` is **not pushed**.
+**Where work stopped:** feature plan step **2 (dice)**, on branch `zar` (cut from `karakter-aktarma`). Steps 2.1 (engine, `dice.js`), 2.2 (the table's dice bar uses it), 2.3 (hidden DM rolls) and 2.4 (click-to-roll on the sheet) are done. `zar` is **not pushed**.
 
-**Do next: step 2.4**, then wait for the user's "go" before 2.5.
+**Do next: step 2.5**, then wait for the user's word on pushing `zar` and starting section 3.
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
 1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
@@ -21,7 +21,7 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 **2. Dice** (branch `zar`)
 - 2.2 Done (see "Step 2, dice" below).
 - 2.3 Done (see "Step 2, dice" below).
-- 2.4 Click-to-roll on the sheet: ability checks, saves, skills, initiative, death saves (and later attacks) become buttons that roll `Dice.d20(bonus)` with the label ("Perception"), honour the Adv/Normal/Dis switch (a small switch in the character strip), post to the active campaign's table log (export a `window.VTT.postRoll(entry)` from `vtt.js` that works even when the Table section was never opened) and show a toast; a death save result updates the death-save boxes.
+- 2.4 Done (see "Step 2, dice" below).
 - 2.5 Tests (`tests/dice.test.js` grows; log entry shape), docs, push when asked.
 
 **3. Sheet maths** (new branch, e.g. `sayfa-hesaplari`)
@@ -185,7 +185,8 @@ Step 2, dice (branch `zar`, cut from `karakter-aktarma`):
 1. Engine: done. `dice.js` (`window.Dice`, no DOM): `NdX`, `d%`, numbers, `+`/`-`, keep/drop (`kh`, `k`, `kl`, `dh`, `dl`), advantage/disadvantage on the first single d20, natural 20/1 flags, a text with every die (dropped ones struck through), limits (100 dice, 1000 sides, 20 parts, 120 characters) and messages for bad input. Random numbers come from `crypto.getRandomValues` without modulo bias. Tests: `tests/dice.test.js`.
 2. Table dice bar: done. `index.html` loads `dice.js` before `vtt.js`. The d4–d100 quick buttons roll `1dX` through `Dice.roll`; next to them an expression box (Enter rolls; a bad expression turns the box red and shows the message; the last 10 good ones are offered back through a `<datalist>`, kept in localStorage `vtt-dice-history`) and an **Adv / Norm / Dis** switch (remembered in localStorage `vtt-dice-mode`; a d20 quick button honours it too). In `vtt.js`: `roll(expr, { label, mode })` builds the log entry `{ by, expr, total, text, crit, fumble, label?, at }` and `postRoll(entry)` writes it (same key scheme and 20-entry trim as before); both `roll` and `rollDie` are on `window.vttApi`. The log shows the label (or the expression), the total, and under it the per-die text; old `{ by, die, result, at }` entries still show as before. `firebase-rules/database.rules.json` (still a proposal) accepts either shape. On phones the dice group wraps onto a second line instead of scrolling sideways. Checked in the browser with writes stubbed (desktop and 375 px, no horizontal scroll); 128 tests pass in Node and in the browser runner.
 3. Hidden DM rolls: done. A **🙈 Hidden** toggle (DMs only, `vtt-dm-only`; not remembered, and switched off when the role becomes player) in the dice bar. A hidden roll writes the full entry to `vtt/<room>/logHidden/<key>` and `{ by, hidden: true, at }` under the same key in `log`; DMs see the full entry marked 🙈, players see "rolled in secret ?". `roll(expr, { hidden })` overrides the toggle; a player's `hidden` is ignored. The 20-entry trim drops a hidden entry with its placeholder. Turning it on shows "hidden in the app only", and the button's tooltip explains it: without Firebase Auth `logHidden` still reaches every browser (the whole `vtt/<room>` is one listener). `firebase-rules/database.rules.json` (proposal) has `logHidden` and the placeholder shape. Checked in the browser with writes stubbed, as DM and (role switched in memory) as a player, desktop and 375 px.
-4. Next: click-to-roll on the sheet (2.4).
+4. Click-to-roll on the sheet: done. `vtt.js` exports `window.VTT = { roll, postRoll, getRollMode, setRollMode }`, usable before the Table section was ever opened (rolls go to `vtt/<active campaign>/log`; with no campaign they only show locally). In `index.html` ("CLICK-TO-ROLL" block after `resetDeathSaves`): `sheetRoll(label, bonus, opts)` rolls `Dice.d20(bonus)` labelled "<character name>: <label>" (the strip's name), honours the shared Adv / Norm / Dis mode and the DM's 🙈 toggle, and shows a toast with the per-die text. Small 🎲 buttons (`.roll-btn`): top-right of each ability card (check), next to each save's number, and a fifth column in the skills list; the existing click-to-edit on those numbers is unchanged. The character strip has a **🎲 Roll init** pill and an **Adv / Norm / Dis** switch (`stripDiceModeHtml`; both switches stay in step through the `dicemode` window event). The death-save panel has **🎲 Roll death save** (`rollDeathSave`): 10+ success, natural 1 = two failures, natural 20 = saves reset and HP to 1 (SRD 5.1); three of either is announced in the toast. Attacks come with 3.1. Checked in the browser with writes stubbed (desktop and 375 px, no horizontal scroll); the DM account had no sheet in that campaign, so the sheet was made visible in memory only.
+5. Next: tests and docs (2.5).
 
 ## Next plan: closing the gaps with other character builders
 
