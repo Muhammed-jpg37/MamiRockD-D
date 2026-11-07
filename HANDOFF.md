@@ -1,59 +1,38 @@
 # Handoff: MamiRock D&D site
 
-State on 2026-11-07 (afternoon), for the next working session. **Start with "Resume here"** just below; the rest of this file is reference.
+State on 2026-11-07 (evening), for the next working session. **Start with "Resume here"** just below; the rest of this file is reference.
 
 ## Resume here
 
-**Where work stopped:** feature plan sections **7 (PDF) and 8 (sound) are done**, both on one branch `pdf-ses` (cut from `savas`; the user asked for a single branch for the two). Section 4 is done on `savas`. Neither `savas` nor `pdf-ses` is pushed: the user pushes them themselves.
+**Where work stopped:** feature plan sections **6, 1, 2, 3, 4, 7 and 8 are done** and, on the user's word on 2026-11-07, **merged into `main`** (fast-forward, `main` = `c9210f5` "Sound step 1", no merge commit). `main` is **26 commits ahead of `origin/main` and not pushed**: the user pushes it themselves. The local `savas` and `pdf-ses` branches are not pushed either (both are contained in `main`).
 
-**Do next: section 5 (map)**, on a new branch cut from `pdf-ses` (e.g. `harita`), starting with 5.1, **only after the user's go**; then the Help page. The order was changed on 2026-11-07 (7 and 8 before 5) to save tokens; 5 is the biggest section, best started in a fresh session from this file.
+**Left in the plan:** section **5 (map)**, then the **Help page**. Order changed on 2026-11-07 (7 and 8 were done before 5) to save tokens; 5 is the biggest section, best started in a fresh session from this file.
+
+**Do next: section 5 (map)**, on a new branch cut from `main` (e.g. `harita`), starting with 5.1, **only after the user's go**.
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
-1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
-2. Inside a section, do **one numbered step**, then: run `npm test` (Node) **and** `tests/browser-runner.html` (add new test files to its `FILES` list), check the page in the browser (desktop and 375 px phone width, no horizontal scroll), update this file's step list, and **commit** (message ends with the Co-Authored-By line). Then report in Turkish and **wait for the user's go** before the next step, unless they say "sormadan … bitir".
-3. Testing on the live database: stub every write first (`window.save`, `fbSaveInventory`, `fbSaveInventoryInstant`, `fbSaveVtt`, `fbCampaignUpdate`, `fbWriteCharacterSheet`), reload the page afterwards. Never create real accounts.
-4. **Push** a section's branch only when the user asks (they usually ask at the end of a section). **Do not merge into `main`** until the whole plan is done: then one merge of everything (the chain is linear, so `main` fast-forwards), on the user's word.
+1. Each plan section gets its **own new branch**, now cut from `main` (everything so far is in it). Name it in the repo's Turkish kebab-case style (e.g. `harita`, `yardim`). The user may ask for several sections on one branch (they did for 7 and 8: `pdf-ses`).
+2. Inside a section, do **one numbered step**, then: run `npm test` (Node) **and** `tests/browser-runner.html` (add new test files to its `FILES` list), check that every inline script of `index.html` still parses (a broken quote once stopped the whole page), check the page in the browser (desktop and 375 px phone width, no horizontal scroll), update this file's step list, and **commit** (message ends with the Co-Authored-By line). Then report in Turkish and **wait for the user's go** before the next step, unless they say "sormadan … bitir" (a "no asking" go covers only the section they name).
+3. Testing on the live database: stub every write first (`window.save`, `fbSaveInventory`, `fbSaveInventoryInstant`, `fbSaveVtt`, `fbCampaignUpdate`, `fbWriteCharacterSheet`, `fbSaveSheetField`), reload the page afterwards. Never create real accounts. In the Claude app the browser pane is often hidden: screenshots then show stale paints, so check computed styles and the DOM instead.
+4. **Push**: the user pushes branches and `main` themselves now; don't push unless asked. **Merge into `main`** only on the user's word (they asked once, on 2026-11-07, for everything done so far). The chain stays linear so `main` fast-forwards.
 5. Downloads (e.g. sample files) only with the user's permission. Put them in the scratchpad, never in the repo.
 6. Write commit messages and this file in English; talk to the user in Turkish.
 
 ### Remaining plan, one line per step
 
-**2. Dice** (branch `zar`): done and pushed (see "Step 2, dice" below).
+Done and in `main` (details further down, under "Step 1" … "Steps 7 and 8"): **6** catalogs (`kataloglar`), **1** character import (`karakter-aktarma`), **2** dice (`zar`), **3** sheet maths (`sayfa-hesaplari`), **4** combat (`savas`), **7** PDF and **8** sound (`pdf-ses`).
 
-**3. Sheet maths** (branch `sayfa-hesaplari`, cut from `zar`)
-- 3.1 Done (see "Step 3, sheet maths" below).
-- 3.2 Done (see "Step 3, sheet maths" below).
-- 3.3 Done (see "Step 3, sheet maths" below).
-- 3.4 Done (see "Step 3, sheet maths" below).
-- 3.5 Done (see "Step 3, sheet maths" below).
-- 3.6 Done (see "Step 3, sheet maths" below).
-- 3.7 Done (see "Step 3, sheet maths" below). Push `sayfa-hesaplari` when the user asks.
-
-**4. Combat** (new branch, e.g. `savas`)
-- 4.1 Done (see "Step 4, combat" below).
-- 4.2 Done (see "Step 4, combat" below).
-- 4.3 Done (see "Step 4, combat" below).
-- 4.4 Done (see "Step 4, combat" below).
-
-**5. Map** (new branch, e.g. `harita`)
+**5. Map** (new branch from `main`, e.g. `harita`)
 - 5.1 Several scenes per campaign: `vtt/<campaign>/scenes/<id>` with a DM scene list; "Show to players" switches everyone; migrate the existing single map into the first scene.
 - 5.2 Freehand drawing on the map (pen, line, rectangle, circle, erase) and a DM-only layer (drawings and tokens hidden from players).
 - 5.3 Automatic fog: when a player token moves, fog opens around it within its vision radius; radius per token (token menu, default set by the DM, darkvision from the sheet), brush shape round with an adjustable size; manual reveal/cover stays.
 - 5.4 Walls: the DM draws wall lines; automatic fog does not open behind walls (simple line-of-sight on the grid, no lighting).
 - 5.5 Handouts: the DM shows an image or a journal note to all or some players as a pop-up.
 
-**7. PDF and printing** (new branch, e.g. `pdf-yazdirma`)
-- 7.1 Done (see "Steps 7 and 8" below).
-- 7.2 Done (see "Steps 7 and 8" below).
-
-**8. Sound** (new branch, e.g. `ses`)
-- 8.1 Done (see "Steps 7 and 8" below).
-
 **Last: Help** (new branch, e.g. `yardim`)
-- A "❓ Help" / "How to use" page reachable from the account menu: sections (Campaign, Character, Table, Rules, Notes), roles per campaign, invites, homebrew and the item store, importing characters, dice expressions, and whatever the plan added.
+- A "❓ Help" / "How to use" page reachable from the account menu: sections (Campaign, Character, Table, Rules, Notes), roles per campaign, invites, homebrew and the item store, importing characters, dice expressions and the dice bar, click-to-roll, conditions, monsters and the encounter builder, printing and filling a PDF sheet, the ambience player, and whatever section 5 adds.
 
-**Then:** on the user's word, merge everything into `main` (fast-forward from the last branch), push `main`.
-
+**Then:** on the user's word, merge into `main` again (fast-forward).
 
 **Also read `DIFFERENCES.md`** (Turkish): how the whole site, not just the character builder, compares with D&D Beyond (and its Maps VTT), Roll20, Foundry VTT and Owlbear Rodeo, including differences in how things work (accounts, permissions, data and syncing, dice). It ends with proposed work beyond the builder plan: E (table: dice expressions and hidden rolls, conditions, applying damage, SRD monsters and an encounter builder, several scenes, map drawing and a DM layer, walls and vision, handouts), F (saving sheets field by field instead of whole-object `set()`, campaign backup, undo, copying homebrew and maps between campaigns), G (a searchable SRD rules tab, SRD items), H (= phase D here). Each claim there is marked "(arandı)" (searched that day, sources listed) or "(genel bilgi)" (general knowledge, not re-checked); re-check before building on one. Ask the user which phase to start; the builder plan (A–D) was the default until they choose.
 
@@ -61,20 +40,18 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 | Branch | State |
 |---|---|
-| `main` | `1421cb4` (pushed): everything up to the role model and the new layout. `kampanya-sistemi`, `karakter-olusturucu`, `arayuz-duzeni` and `kampanya-rolleri` are all contained in it (fast-forwarded 2026-11-07). The feature-plan branches below are **not** in `main` yet. |
-| `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
-| `kampanya-sistemi` | Campaign system. Contained in `main`. |
-| `arayuz-duzeni` | Holds `LAYOUT_UI.md` (the role and layout plan). Contained in `main`. |
-| `sayfa-hesaplari` | Cut from `zar` for feature plan step 3 (sheet maths). Done and pushed. |
-| `pdf-ses` | Cut from `savas` for feature plan steps 7 (PDF) and 8 (sound), one branch for both. **Current branch**. Not pushed. |
-| `savas` | Cut from `sayfa-hesaplari` for feature plan step 4 (combat). Done. Not pushed (the user pushes it). |
-| `zar` | Cut from `karakter-aktarma` for feature plan step 2 (dice). Done and pushed. |
-| `karakter-aktarma` | Cut from `kataloglar` for feature plan step 1 (character import). Done and pushed. |
-| `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). Done and pushed. Not merged: everything goes into `main` in one merge when the whole plan is done. |
-| `kampanya-rolleri` | Cut from `arayuz-duzeni`. Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
-| `karakter-olusturucu` | Character builder and the spell plan. Contained in `main`. |
+| `main` | `c9210f5` locally: everything done so far (the role model and layout, and feature plan sections 6, 1, 2, 3, 4, 7, 8), fast-forwarded on 2026-11-07. **Not pushed** (`origin/main` = `1421cb4`, 26 commits behind). **Current branch.** |
+| `pdf-ses` | Cut from `savas` for feature plan steps 7 (PDF) and 8 (sound), one branch for both. Contained in `main`. Not pushed. |
+| `savas` | Cut from `sayfa-hesaplari` for feature plan step 4 (combat). Contained in `main`. Not pushed. |
+| `sayfa-hesaplari` | Step 3 (sheet maths). Contained in `main`. Pushed. |
+| `zar` | Step 2 (dice). Contained in `main`. Pushed. |
+| `karakter-aktarma` | Step 1 (character import). Contained in `main`. Pushed. |
+| `kataloglar` | Step 6 (catalogs), cut from `main` on 2026-11-07. Contained in `main`. Pushed. |
+| `kampanya-rolleri` | The role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section); read `LAYOUT_UI.md`. Contained in `main`. Pushed. |
+| `arayuz-duzeni` | Holds `LAYOUT_UI.md`. Contained in `main`. |
+| `kampanya-sistemi`, `karakter-olusturucu`, `vtt-ozelligi` | Campaigns, the character builder and spell plan, the VTT. Contained in `main`. |
 
-Branch chain of the feature plan: `main` → `kataloglar` (step 6) → `karakter-aktarma` (step 1) → `zar` (step 2) → `sayfa-hesaplari` (step 3) → `savas` (step 4) → `pdf-ses` (steps 7 and 8). `git log --oneline main..pdf-ses` lists everything not yet in `main`.
+Branch chain of the feature plan: `kataloglar` (6) → `karakter-aktarma` (1) → `zar` (2) → `sayfa-hesaplari` (3) → `savas` (4) → `pdf-ses` (7, 8), all fast-forwarded into `main`. `git log --oneline origin/main..main` lists what is not pushed yet.
 
 ## Run and test
 
@@ -261,8 +238,8 @@ Note: on the machine used on 2026-11-06 evening, Node.js was not installed and `
 
 ## Working rules agreed with the user
 
-- Do not push unless asked. Do not merge into `main` until the whole feature plan is done (then one merge, on the user's word).
-- One new branch per plan section, cut from the previous section's branch; commit after each step and wait for the user's go (see "Resume here").
+- Do not push unless asked (the user pushes themselves). Merge into `main` only on the user's word (done once, 2026-11-07).
+- One new branch per plan section, cut from `main` now; commit after each step and wait for the user's go (see "Resume here").
 - The "How to use" / Help page is the very last task.
 - End commit messages with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 - The site uses the live shared database:
