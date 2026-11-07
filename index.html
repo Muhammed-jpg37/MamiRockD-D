@@ -66,6 +66,7 @@
   <script src="campaign.js" defer></script>
   <script src="homebrew-editor.js" defer></script>
   <script src="campaign-home.js" defer></script>
+  <script src="rules-catalog.js" defer></script>
   <script src="vtt-catalog.js" defer></script>
   <script src="vtt.js" defer></script>
   <style>
@@ -320,7 +321,8 @@
     .user-menu-list button:hover, .user-menu-list button:focus-visible { background: var(--panel-3); }
     body[data-section="campaign"] .character-only,
     body[data-section="table"] .character-only,
-    body[data-section="notes"] .character-only { display: none !important; }
+    body[data-section="notes"] .character-only,
+    body[data-section="rules"] .character-only { display: none !important; }
     /* Character strip, sheet tabs and the Overview / Inventory halves (L3) */
     .char-strip { gap: 14px 20px; padding-bottom: 12px; margin-bottom: 12px; }
     .strip-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
@@ -403,6 +405,56 @@
     body.dm-no-sheet[data-section="character"] #spellbook-view-container,
     body.dm-no-sheet[data-section="character"] #features-view-container { display: none !important; }
 
+    /* Rules section (rules-catalog.js) */
+    .rules-catalog { max-width: 1200px; margin: 0 auto; }
+    .rc-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .rc-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .rc-ruleset { display: flex; gap: 4px; }
+    .rc-ruleset .rc-on { border-color: var(--gold); color: var(--gold-bright); }
+    .rc-body { display: grid; grid-template-columns: minmax(240px, 340px) minmax(0, 1fr); gap: 14px; align-items: start; }
+    .rc-list-col { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px; height: calc(100dvh - 250px); min-height: 300px; }
+    .rc-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+    .rc-search, .rc-filter { background: var(--well-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font: inherit; font-size: 13px; }
+    .rc-search { flex: 1 1 140px; min-width: 0; }
+    .rc-count { font-size: 11px; color: var(--text-faint); }
+    .rc-list { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1; min-height: 0; }
+    .rc-item { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 1px; padding: 6px 8px; background: transparent; border: 1px solid transparent; border-radius: 6px; color: var(--text); cursor: pointer; font: inherit; }
+    .rc-item:hover { background: var(--panel-2); }
+    .rc-item.rc-on { border-color: var(--gold); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+    .rc-name { font-size: 14px; }
+    .rc-meta { font-size: 11px; color: var(--text-dim); }
+    .rc-loading { padding: 10px; color: var(--text-dim); font-size: 13px; }
+    .rc-entry { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; height: calc(100dvh - 250px); min-height: 300px; overflow-y: auto; line-height: 1.55; }
+    .rc-entry p { margin: 0 0 10px; }
+    .rc-entry ul { margin: 0 0 10px; padding-left: 20px; }
+    .rc-empty { color: var(--text-dim); }
+    .rc-title { font-family: var(--font-display); color: var(--gold-bright); font-size: 22px; margin: 0 0 4px; }
+    .rc-sub { font-style: italic; color: var(--text-dim); margin-bottom: 10px; }
+    .rc-h { font-family: var(--font-display); color: var(--accent-2-strong); font-size: 15px; margin: 14px 0 6px; border-bottom: 1px solid var(--border); padding-bottom: 3px; }
+    .rc-stats { margin: 8px 0; }
+    .rc-line { font-size: 14px; margin: 2px 0; }
+    .rc-abil { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; margin: 10px 0; text-align: center; }
+    .rc-abil div { background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 2px; display: flex; flex-direction: column; }
+    .rc-abil span { font-size: 10px; color: var(--text-faint); letter-spacing: 1px; }
+    .rc-abil b { font-size: 16px; }
+    .rc-abil small { color: var(--text-dim); }
+    .rc-table-wrap { overflow-x: auto; margin: 0 0 10px; }
+    .rc-table { border-collapse: collapse; font-size: 13px; }
+    .rc-table th, .rc-table td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; }
+    .rc-table th { background: var(--panel-2); }
+    .rc-back { display: none; margin-bottom: 8px; }
+    .rc-attrib { margin-top: 12px; font-size: 11px; color: var(--text-faint); line-height: 1.4; }
+    @media (max-width: 760px) {
+      .rc-body { grid-template-columns: minmax(0, 1fr); }
+      .rc-body.rc-reading .rc-list-col { display: none; }
+      .rc-body:not(.rc-reading) .rc-entry { display: none; }
+      .rc-back { display: inline-flex; }
+      .rc-list-col, .rc-entry { height: auto; max-height: none; }
+      .rc-list-col .rc-list { max-height: 60dvh; }
+      .rc-tabs .nav-tab-btn { padding: 6px 8px; font-size: 12px; }
+      .rc-abil { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
     /* Campaign screen (campaign-home.js, L2) */
     .campaign-home { max-width: 1200px; margin: 4px auto 0; }
     .ch-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 16px; align-items: start; }
@@ -474,7 +526,7 @@
       .user-menu-btn strong, #cloud-sync-text { display: none; }
       .topbar-brand { display: none; }
       .topbar { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "campaign right" "tabs tabs"; }
-      .section-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+      .section-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; }
       .section-tab { font-size: 11px; letter-spacing: 0; padding: 6px 2px; white-space: normal; line-height: 1.3; text-align: center; overflow: hidden; }
     }
 
@@ -5479,6 +5531,7 @@
         <button type="button" class="section-tab" id="section-btn-campaign" onclick="showSection('campaign')">🏰 Campaign</button>
         <button type="button" class="section-tab" id="section-btn-character" onclick="showSection('character')">🧙 Character</button>
         <button type="button" class="section-tab" id="section-btn-table" onclick="showSection('table')">🗺 Table</button>
+        <button type="button" class="section-tab" id="section-btn-rules" onclick="showSection('rules')" title="SRD rules, conditions, equipment, magic items and monsters">📚 Rules</button>
         <button type="button" class="section-tab" id="section-btn-notes" onclick="showSection('notes')" title="Your own notes: they belong to your account, not to a character or a campaign">📓 Notes</button>
       </nav>
       <div class="topbar-right">
@@ -5786,6 +5839,9 @@
 
     <!-- CAMPAIGN SECTION (L1 skeleton; L2 builds the real campaign screen). Filled by renderCampaignHome(). -->
     <div id="campaign-view-container" class="campaign-home" style="display:none"></div>
+
+    <!-- RULES SECTION: the SRD catalogs (rules-catalog.js), loaded when first opened -->
+    <div id="rules-view-container" class="rules-catalog" style="display:none"></div>
 
     <!-- D&D CAMPAIGN NOTES WORKSPACE -->
     <div id="notes-view-container" class="fullscreen-notes">
@@ -6974,7 +7030,7 @@
        another character never throws you out of the Table or the Campaign screen.
        Character = the sheet tabs (inventory, spells, features); Table = the VTT; Notes = the
        account's own notes workspace (loadNotesState(nickname)), which is no character's. */
-    var SECTIONS = ['campaign', 'character', 'table', 'notes'];
+    var SECTIONS = ['campaign', 'character', 'table', 'rules', 'notes'];
     var lastSection = 'character';   // where ⬅ Back in the notes workspace returns to
     var currentSection = (function () {
       try { const s = localStorage.getItem('dnd-section'); return SECTIONS.indexOf(s) >= 0 ? s : 'character'; } catch (e) { return 'character'; }
@@ -7004,14 +7060,15 @@
       if (sec === 'table') { switchMainTab('vtt'); return; }
       if (sec === 'notes') { switchMainTab('notes'); return; }
       if (sec === 'character') { switchMainTab(characterTab()); return; }
-      ['inventory-view-container', 'spellbook-view-container', 'features-view-container', 'notes-view-container', 'vtt-view-container'].forEach(function (id) {
+      ['inventory-view-container', 'spellbook-view-container', 'features-view-container', 'notes-view-container', 'vtt-view-container', 'campaign-view-container', 'rules-view-container'].forEach(function (id) {
         const v = document.getElementById(id);
         if (v) v.style.display = 'none';
       });
-      markSection('campaign');
-      const home = document.getElementById('campaign-view-container');
-      if (home) home.style.display = 'block';
-      renderCampaignHome();
+      markSection(sec);
+      const page = document.getElementById(sec === 'rules' ? 'rules-view-container' : 'campaign-view-container');
+      if (page) page.style.display = 'block';
+      if (sec === 'rules') { if (window.RulesCatalog) window.RulesCatalog.render(page); }
+      else renderCampaignHome();
     }
     window.showSection = showSection;
 
@@ -7066,6 +7123,8 @@
       if (isSheetTab) state.activeTab = tabName;
       const campView = document.getElementById('campaign-view-container');
       if (campView) campView.style.display = 'none';
+      const rulesView = document.getElementById('rules-view-container');
+      if (rulesView) rulesView.style.display = 'none';
       markSection(tabName === 'vtt' ? 'table' : tabName === 'notes' ? 'notes' : 'character');
       const invView = document.getElementById('inventory-view-container');
       const spellView = document.getElementById('spellbook-view-container');
