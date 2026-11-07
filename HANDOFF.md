@@ -12,7 +12,8 @@ State on 2026-11-06 (evening), for the next working session. Start with "Where t
 | `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
 | `kampanya-sistemi` | Campaign system. Same commit as `main`. Pushed. |
 | `arayuz-duzeni` | Cut from `karakter-olusturucu` on 2026-11-07. Holds `LAYOUT_UI.md`, the plan for per-campaign roles and the new layout. Not pushed. |
-| `karakter-aktarma` | Cut from `kataloglar` for feature plan step 1 (character import). **Current branch.** Not pushed. |
+| `zar` | Cut from `karakter-aktarma` for feature plan step 2 (dice). **Current branch.** Not pushed. |
+| `karakter-aktarma` | Cut from `kataloglar` for feature plan step 1 (character import). Done and pushed. |
 | `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). Done and pushed. Not merged: everything goes into `main` in one merge when the whole plan is done. |
 | `kampanya-rolleri` | Cut from `arayuz-duzeni`. **Current branch.** Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
 | `karakter-olusturucu` | Character builder and the spell plan, cut from `kampanya-sistemi`. Pushed up to `25decde`; the spell-plan commits after it (steps 7–14 and this handoff) are **not pushed**. **Not merged** into `main`. |
@@ -29,7 +30,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 121 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 128 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
 
@@ -121,7 +122,11 @@ Step 1, character import (branch `karakter-aktarma`, cut from `kataloglar`):
    - Read: name, classes (starting class first; multiclass note), subclass, species/subrace, speed, scores (base + bonus/override stats + "<ability>-score" bonus modifiers), PB from level, save and skill proficiencies and expertise, armour/weapon/tool proficiencies and languages, HP (base + CON × level, minus damage taken, temp), coins, inventory (armour with AC and category, shields, weapons Simple/Martial, potions, rings, wondrous items; one equipped item per slot), spells from classes, species, feats and items (prepared kept), class features up to the class level, species traits and feats as names only (D&D Beyond's texts are book text), background, alignment, personality and notes, death saves, XP. The portrait is a web link and is not copied.
    - The field names are the ones community tools use; D&D Beyond's JSON is not an official API and has changed before. Tests use `tests/fixtures/ddb-character.json`, a made-up file in that shape. **When a real file is available, compare it with the fixture first.**
 
-Step 1 is done, except checking a real D&D Beyond PDF and JSON. Next in the plan: **2** dice, on a new branch cut from `karakter-aktarma`.
+Step 1 is done (branch `karakter-aktarma`, pushed). A real D&D Beyond JSON (a Warlock 3) was imported by the user on 2026-11-07 and read correctly (class, subclass, species, scores, proficiencies, 18 items, 6 SRD spells); it was deleted afterwards at their request. One flaw seen: D&D Beyond's heading entries ("Hit Points", "Proficiencies", "Equipment", "Age", "Size", "Speed", "Languages", "Ability Score Increase") come through as feature cards; filtering those names is a small open fix. A real D&D Beyond PDF has not been tried.
+
+Step 2, dice (branch `zar`, cut from `karakter-aktarma`):
+1. Engine: done. `dice.js` (`window.Dice`, no DOM): `NdX`, `d%`, numbers, `+`/`-`, keep/drop (`kh`, `k`, `kl`, `dh`, `dl`), advantage/disadvantage on the first single d20, natural 20/1 flags, a text with every die (dropped ones struck through), limits (100 dice, 1000 sides, 20 parts, 120 characters) and messages for bad input. Random numbers come from `crypto.getRandomValues` without modulo bias. Tests: `tests/dice.test.js`.
+2. Next: the table's dice bar takes an expression and an Advantage / Normal / Disadvantage switch, and the roll log shows each die.
 
 ## Next plan: closing the gaps with other character builders
 
