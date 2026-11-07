@@ -273,7 +273,7 @@
       color: var(--gold-bright);
       white-space: nowrap;
     }
-    .topbar-campaign { grid-area: campaign; display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .topbar-campaign { grid-area: campaign; display: flex; align-items: center; gap: 6px; }
     /* #id: beats campaign.js's own .camp-chip rule, which is injected later */
     #auth-user-bar .camp-chip { font-size: 14px; padding: 6px 12px; max-width: 260px; flex-shrink: 0; }
     #auth-user-bar #campaign-chip { border-color: var(--gold); color: var(--gold-bright); }
@@ -325,8 +325,9 @@
     .campaign-home-card p { color: var(--text-dim); margin: 0 0 14px; }
     .campaign-home-kicker { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-faint); margin-top: 6px; }
     .campaign-home-acts { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
-    @media (max-width: 900px) {
+    @media (max-width: 1100px) {
       .topbar { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "brand campaign right" "tabs tabs tabs"; }
+      .topbar-campaign { min-width: 0; }
       .section-tabs { justify-content: stretch; }
       .section-tab { flex: 1; padding: 8px 6px; font-size: 13px; }
       .topbar-brand { font-size: 16px; }
