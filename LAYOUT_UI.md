@@ -86,6 +86,7 @@ Kaynaklar:
 - Kayıt sadece nick ve şifre ister. `#role-card-player` / `#role-card-dm` ve `selectAuthRole` kaldırılır.
 - Kayıttan sonra kampanya ekranı açılır: kampanya oluştur, kodla katıl ya da karakter yap.
 - Kayıt artık Forge'a zorla göndermez.
+- **Yapıldı** (`kampanya-rolleri` dalı). Yeni hesaplara yine `role: 'player'` yazılıyor. Bunun iki sebebi var: eski kod bu alanı okuyor ve önerilen veritabanı kuralları bu alanı istiyor. R2'den sonra bu alan hiçbir şeyi belirlemez.
 
 **R2. Rolün tek kaynağı aktif kampanya olur.**
 - `accounts/<nick>.role` artık okunmaz. Silinmez; eski veri olduğu gibi durur.

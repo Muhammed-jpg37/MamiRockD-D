@@ -4521,38 +4521,6 @@
     .auth-pw-toggle:hover {
       color: var(--gold-bright);
     }
-    .auth-role-select {
-      display: flex;
-      gap: 10px;
-      margin-top: 4px;
-    }
-    .auth-role-card {
-      flex: 1;
-      border: 1px solid var(--border);
-      background: var(--well-2);
-      border-radius: 6px;
-      padding: 10px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-    }
-    .auth-role-card.selected {
-      border-color: var(--gold);
-      background: color-mix(in srgb, var(--accent) 15%, transparent);
-      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 30%, transparent);
-    }
-    .auth-role-card .role-title {
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--gold-bright);
-      margin-bottom: 3px;
-    }
-    .auth-role-card .role-desc {
-      font-size: 10px;
-      color: var(--text-dim);
-      line-height: 1.2;
-    }
     .auth-btn-submit {
       width: 100%;
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 50%, var(--accent) 100%);
@@ -5099,20 +5067,9 @@
           </div>
         </div>
 
-        <!-- Role Selector (Visible only on Register Tab) -->
-        <div class="auth-form-group" id="auth-role-group" style="display: none;">
-          <label class="auth-label">Choose Role</label>
-          <div class="auth-role-select">
-            <div class="auth-role-card selected" id="role-card-player" onclick="selectAuthRole('player')">
-              <div class="role-title">🛡️ Player</div>
-              <div class="role-desc">Individual personal inventory &amp; spells</div>
-            </div>
-            <div class="auth-role-card" id="role-card-dm" onclick="selectAuthRole('dm')">
-              <div class="role-title">👑 Dungeon Master</div>
-              <div class="role-desc">Full master access over all players' inventories</div>
-            </div>
-          </div>
-          <input type="hidden" id="auth-role" value="player">
+        <!-- No role here: an account is DM or player per campaign (campaign.js), not on its own. -->
+        <div class="auth-form-group" id="auth-register-note" style="display: none;">
+          <div class="auth-label" style="text-transform:none; letter-spacing:0;">After signing up you can start your own campaign (you are its DM) or join one with an invite code.</div>
         </div>
 
         <button type="submit" class="auth-btn-submit" id="auth-submit-btn">⚔ ENTER REALM</button>
@@ -9271,7 +9228,7 @@
     function switchAuthTab(tab) {
       const btnLogin = document.getElementById('auth-tab-login');
       const btnReg = document.getElementById('auth-tab-register');
-      const roleGroup = document.getElementById('auth-role-group');
+      const registerNote = document.getElementById('auth-register-note');
       const submitBtn = document.getElementById('auth-submit-btn');
       const msgBox = document.getElementById('auth-msg-box');
       if (msgBox) { msgBox.textContent = ''; msgBox.className = 'auth-msg'; }
@@ -9279,28 +9236,13 @@
       if (tab === 'register') {
         if (btnLogin) btnLogin.classList.remove('active');
         if (btnReg) btnReg.classList.add('active');
-        if (roleGroup) roleGroup.style.display = 'block';
+        if (registerNote) registerNote.style.display = 'block';
         if (submitBtn) submitBtn.textContent = '✨ FORGE ACCOUNT & ENTER';
       } else {
         if (btnLogin) btnLogin.classList.add('active');
         if (btnReg) btnReg.classList.remove('active');
-        if (roleGroup) roleGroup.style.display = 'none';
+        if (registerNote) registerNote.style.display = 'none';
         if (submitBtn) submitBtn.textContent = '⚔ ENTER REALM';
-      }
-    }
-
-    function selectAuthRole(role) {
-      const cardPlayer = document.getElementById('role-card-player');
-      const cardDm = document.getElementById('role-card-dm');
-      const roleInput = document.getElementById('auth-role');
-      if (roleInput) roleInput.value = role;
-
-      if (role === 'dm') {
-        if (cardPlayer) cardPlayer.classList.remove('selected');
-        if (cardDm) cardDm.classList.add('selected');
-      } else {
-        if (cardPlayer) cardPlayer.classList.add('selected');
-        if (cardDm) cardDm.classList.remove('selected');
       }
     }
 
@@ -9324,12 +9266,10 @@
       const nInput = document.getElementById('auth-nickname');
       const pInput = document.getElementById('auth-password');
       const msgBox = document.getElementById('auth-msg-box');
-      const roleInput = document.getElementById('auth-role');
 
       const nickname = (nInput ? nInput.value : '').trim();
       const password = (pInput ? pInput.value : '').trim();
       const isRegister = document.getElementById('auth-tab-register')?.classList.contains('active');
-      const role = (roleInput ? roleInput.value : 'player') || 'player';
 
       if (!nickname || !password) {
         if (msgBox) {
@@ -9350,24 +9290,20 @@
           }
           return;
         }
-        if (role === 'player') {
-          // Launch Character Generation Wizard
-          openCharacterForgeModal({
-            nickname: nickname,
-            password: password,
-            role: 'player'
-          });
-          return;
-        }
+        // No role choice and no forced character: after login the campaign
+        // screen lets them start a campaign (as its DM) or join one with a code,
+        // and asks for a character when they join as a player.
+        // `role: 'player'` is only kept for older code and the proposed database
+        // rules, which still expect the field; campaign roles decide the rest.
         const newAccount = {
           nickname: nickname,
           password: password,
-          role: role,
+          role: 'player',
           createdAt: Date.now()
         };
         saveStoredAccount(newAccount);
         if (msgBox) {
-          msgBox.textContent = 'Dungeon Master account forged! Entering realm...';
+          msgBox.textContent = 'Account forged! Entering realm...';
           msgBox.className = 'auth-msg success';
         }
         setTimeout(() => {
