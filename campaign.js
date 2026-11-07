@@ -330,6 +330,72 @@
     return saveImportedCharacter(parsed);
   }
 
+  // pdf-lib (reads PDF form fields) is loaded only when someone imports a PDF.
+  let pdfLibLoading = null;
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve(window.PDFLib);
+    if (pdfLibLoading) return pdfLibLoading;
+    pdfLibLoading = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js';
+      s.onload = () => (window.PDFLib ? resolve(window.PDFLib) : reject(new Error('The PDF reader did not load.')));
+      s.onerror = () => { pdfLibLoading = null; reject(new Error('Could not load the PDF reader (are you online?).')); };
+      document.head.appendChild(s);
+    });
+    return pdfLibLoading;
+  }
+
+  // Every form field of a PDF as { name: text | checked }.
+  function readPdfFields(bytes) {
+    return loadPdfLib().then((PDFLib) => PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true })).then((doc) => {
+      const out = {};
+      let form;
+      try { form = doc.getForm(); } catch (e) { return out; }
+      form.getFields().forEach((f) => {
+        const kind = f.constructor && f.constructor.name;
+        try {
+          if (typeof f.isChecked === 'function') out[f.getName()] = f.isChecked();
+          else if (typeof f.getText === 'function') out[f.getName()] = f.getText() || '';
+          else if (typeof f.getSelected === 'function') out[f.getName()] = [].concat(f.getSelected() || []).join(', ');
+        } catch (e) { /* a broken field is skipped */ }
+        return kind;
+      });
+      return out;
+    }).catch((err) => { throw /encrypt/i.test(String(err && err.message)) ? new Error('That PDF is password-protected.') : err; });
+  }
+
+  // Asks for a filled-in PDF character sheet and makes a new character from its fields.
+  // Resolves with { id, name, warnings }, or null when no file was picked.
+  function importCharacterPdf() {
+    const nick = myKey();
+    const T = window.CharacterTransfer;
+    if (!nick || !T) return Promise.reject(new Error('Log in first'));
+    return new Promise((resolve, reject) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.pdf,application/pdf';
+      input.onchange = () => {
+        const file = input.files && input.files[0];
+        if (!file) { resolve(null); return; }
+        if (file.size > 15 * 1024 * 1024) { reject(new Error('That PDF is too large (over 15 MB).')); return; }
+        file.arrayBuffer().then(readPdfFields).then((fields) => importCharacterFields(fields)).then(resolve, reject);
+      };
+      input.click();
+    });
+  }
+
+  function importCharacterFields(fields) {
+    const T = window.CharacterTransfer;
+    const spellIndex = {};
+    (window.SPELLS_SRD5 || []).forEach((s) => { spellIndex[s.name.toLowerCase()] = s; });
+    let read;
+    try { read = T.fromPdfFields(fields, { spellIndex: spellIndex }); } catch (e) { return Promise.reject(e); }
+    const base = typeof window.getDefaultState === 'function' ? window.getDefaultState(read.name) : {};
+    const parsed = T.sheetFromPdf(base, read);
+    parsed.warnings = read.warnings.concat(parsed.warnings || []);
+    return saveImportedCharacter(parsed);
+  }
+
   // Stores an imported character ({ name, sheet, warnings }) as a new character of this account.
   function saveImportedCharacter(parsed) {
     const nick = myKey();
@@ -472,6 +538,14 @@
           openCharacters('Imported "' + r.name + '".' + (r.warnings.length ? ' ' + r.warnings.join(' ') : ''));
         }, fail);
         card.appendChild(imp);
+        const impPdf = el('button', 'btn ghost small', '📄 From a PDF character sheet…');
+        impPdf.type = 'button';
+        impPdf.title = 'A filled-in, fillable PDF sheet (the official 5e sheet and similar). Scanned PDFs can not be read.';
+        impPdf.onclick = () => { say('Reading the PDF…'); importCharacterPdf().then((r) => {
+          if (!r) { say(''); return; }
+          openCharacters('Imported "' + r.name + '" from the PDF. To check it in the character builder, open it and press ⚔ Forge (it offers to convert it).' + (r.warnings.length ? ' Notes: ' + r.warnings.join(' ') : ''));
+        }, fail); };
+        card.appendChild(impPdf);
       }
       card.appendChild(msgBox);
       if (message) say(message, isError);
@@ -1581,6 +1655,9 @@
     exportCharacter: exportCharacter,
     importCharacterFile: importCharacterFile,
     importCharacterText: importCharacterText,
+    importCharacterPdf: importCharacterPdf,
+    importCharacterFields: importCharacterFields,
+    readPdfFields: readPdfFields,
     saveImportedCharacter: saveImportedCharacter,
     deleteCharacter: deleteCharacter,
     MAX_CHARACTERS: MAX_CHARACTERS,

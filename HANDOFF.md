@@ -29,7 +29,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 113 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 118 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
 
@@ -112,7 +112,12 @@ Step 6 is done (branch `kataloglar`, pushed).
 
 Step 1, character import (branch `karakter-aktarma`, cut from `kataloglar`):
 1. Site files: done. `character-transfer.js` (no DOM; tested) writes and reads `{ format: "mamirock-character", version: 1, name, sheet }`. In 🎭 My characters each character has **⬇** (download `<name>.mamirock.json`, without the shared spell catalog) and the list has **⬆ From a file…**, which makes a new character of the account (`Campaigns.importCharacterText` / `saveImportedCharacter`, `fbWriteCharacterSheet`). Imports keep only items with a name and portraits that are `data:image/` under 200 KB, and take the file's name. Tests: `tests/character-transfer.test.js`.
-2. Next: read fillable PDF character sheets (pdf.js), map their fields, and send them through `buildFromSheet` and the review screen.
+2. Fillable PDF sheets: done. 🎭 My characters has **📄 From a PDF character sheet…**. `campaign.js` loads pdf-lib 1.17.1 from cdnjs only then (`readPdfFields`), `CharacterTransfer.fromPdfFields` maps the fields and `sheetFromPdf` puts them on the site's empty sheet (`getDefaultState`), saved as a new character (`importCharacterFields`).
+   - Field names were taken from the official WotC 2014 fillable sheet (downloaded 2026-11-07 from media.wizards.com for this; not kept in the repo). Checkbox numbers were checked against the page layout: Check Box 11 and 18–22 = saves STR…CHA, 23–40 = skills A–Z, 12–14 / 15–17 = death saves. Names are matched loosely, with common variants ("Character Name", "Class & Level", "Strength", "HP Max"…).
+   - Read: name, class and level (multiclass: first class, total level, with a note), species, background, alignment, scores, PB, AC (base = AC − DEX so the sheet doesn't add DEX twice), initiative, speed, HP, saves, skills (a written bonus of mod + 2×PB = expertise), languages and armour/weapon/tool lines, coins, equipment lines with counts, spell names (levels from the SRD data; others kept by name), death saves, personality/ideals/bonds/flaws/backstory; long text boxes become "Imported from PDF" feature cards.
+   - The imported character is a plain sheet. Opening it and pressing ⚔ Forge offers the existing conversion to the character builder, whose review screen shows what was guessed (checked in a test with `buildFromSheet`). Non-SRD classes stay plain sheets.
+   - Not tried: a real D&D Beyond PDF (no sample yet; its field names may differ), scanned or flattened PDFs (refused with a message), password-protected PDFs.
+3. Next: a D&D Beyond JSON file the player downloads themselves.
 
 ## Next plan: closing the gaps with other character builders
 
