@@ -11,7 +11,9 @@ State on 2026-11-06 (evening), for the next working session. Start with "Where t
 | `main` | VTT, initiative tracker, LEGACY_BG fix and the campaign system: `main`, `origin/main` and `kampanya-sistemi` are the same commit (`20cd8a8`). |
 | `vtt-ozelligi` | VTT work, merged into `main`. Pushed. |
 | `kampanya-sistemi` | Campaign system. Same commit as `main`. Pushed. |
-| `karakter-olusturucu` | Character builder and the spell plan, cut from `kampanya-sistemi`. Current branch. Pushed up to `25decde`; the spell-plan commits after it (steps 7–14 and this handoff) are **not pushed**. **Not merged** into `main`. |
+| `arayuz-duzeni` | Cut from `karakter-olusturucu` on 2026-11-07. Holds `LAYOUT_UI.md`, the plan for per-campaign roles and the new layout. Not pushed. |
+| `kampanya-rolleri` | Cut from `arayuz-duzeni`. **Current branch.** Role-model steps R1–R6 of `LAYOUT_UI.md` are done, one commit each. The layout steps (L1–L6) come next. Not pushed, not merged. |
+| `karakter-olusturucu` | Character builder and the spell plan, cut from `kampanya-sistemi`. Pushed up to `25decde`; the spell-plan commits after it (steps 7–14 and this handoff) are **not pushed**. **Not merged** into `main`. |
 
 On `karakter-olusturucu`, after `main` (oldest first): character builder (`a55568f` … `dd0a121`, 8 commits), spell steps 1–6 (`957264d` … `40c0de2`), docs (`25decde`), then unpushed: step 7 `f61d72b`, 8 `fcf3a63`, 9 `6566754`, 10 `b720e27`, 11 `5a82711`, 12 `9cd44e5`, 14 `bbac6cb`, and the commit adding the "Next plan" below. `git log --oneline main..karakter-olusturucu` lists them.
 
@@ -25,7 +27,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 93 tests, which pass in `tests/browser-runner.html`; not yet run with Node.
+Runs all tests (`node --test "tests/*.test.js"`): 97 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 On Windows, if `node` or `git` is not found, refresh PATH or use the full path `"/c/Program Files/nodejs/node.exe"`. On the machine used on 2026-11-06 evening neither was installed: `git` came from GitHub Desktop (`%LOCALAPPDATA%\GitHubDesktop\app-*\resources\app\git\cmd\git.exe`), and the site was served with a small PowerShell `HttpListener` script instead of `npm start`.
 
