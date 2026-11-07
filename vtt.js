@@ -140,7 +140,8 @@
       .vtt-dice-mode .btn { border-radius: 0; }
       .vtt-dice-mode .btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
       .vtt-dice-mode .btn:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
-      .vtt-dice-mode .btn.vtt-on { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+      .vtt-dice-mode .btn.vtt-on, .vtt-dice [data-act="hidden-roll"].vtt-on { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+      .vtt-log-row.vtt-log-secret .vtt-log-what { font-style: italic; color: var(--text-muted); }
       .vtt-body { flex: 1; min-height: 0; display: flex; }
       .vtt-rail { display: flex; flex-direction: column; gap: 10px; padding: 8px 6px; border-right: 1px solid var(--border); background: linear-gradient(180deg, var(--panel-hi), var(--panel-lo)); overflow-y: auto; }
       .vtt-rail .vtt-group { flex-direction: column; gap: 4px; }
@@ -280,6 +281,7 @@
             <button type="button" class="btn small ghost" data-mode="normal" title="Normal roll">Norm</button>
             <button type="button" class="btn small ghost" data-mode="dis" title="Disadvantage: the d20 is rolled twice, the lower counts">Dis</button>
           </span>
+          <button type="button" class="btn small ghost vtt-dm-only" data-act="hidden-roll" aria-pressed="false" title="Hidden rolls: only DMs see the result; players see &quot;rolled in secret&quot;. Without real logins this is hidden in the app only: the result still reaches every player's browser.">🙈 Hidden</button>
         </div>
         <div class="vtt-group">
           <button class="btn small ghost" data-act="zoom-out" title="Zoom out">−</button>
@@ -341,6 +343,7 @@
       if (die) { rollDie(parseInt(die.dataset.roll, 10)); return; }
       const modeBtn = e.target.closest('[data-mode]');
       if (modeBtn) { setRollMode(modeBtn.dataset.mode); return; }
+      if (e.target.closest('[data-act="hidden-roll"]')) { setHiddenRoll(!hiddenRoll); return; }
       const toolBtn = e.target.closest('[data-tool]');
       if (toolBtn) { setTool(tool === toolBtn.dataset.tool ? null : toolBtn.dataset.tool); return; }
       if (e.target.closest('[data-act="clear-shapes"]')) { clearMyShapes(); return; }
@@ -496,8 +499,9 @@
     root.classList.toggle('vtt-player', !dm);
     const title = root.querySelector('[data-el="hint-title"]');
     if (title) title.textContent = dm ? 'Load a map to begin' : 'Waiting for the DM to set up the table';
-    if (!dm) { closePopups(); setFogMode(null); }
+    if (!dm) { closePopups(); setFogMode(null); setHiddenRoll(false); }
     renderInitiative();
+    renderLog();   // DMs see hidden rolls, players their placeholders
   }
 
   function syncGridInputs() {
@@ -1328,6 +1332,7 @@
     vtt.tokens = next;
     syncHpWatchers();
     vtt.log = room.log || {};
+    vtt.logHidden = room.logHidden || {};
     renderLog();
     applyRemoteTools(room);
     applyRemoteInitiative(room);
@@ -1988,7 +1993,12 @@
   const LOG_KEEP = 20;
   // vtt/<room>/log: { key: entry }, keys sort by time. entry = { by, expr, total, text, crit, fumble, label?, at };
   // entries written before the dice engine are { by, die, result, at } and still show.
+  // A hidden DM roll writes its full entry to vtt/<room>/logHidden/<key> (only DMs render it) and
+  // { by, hidden: true, at } under the same key in the shared log, so players see "rolled in secret".
+  // Without Firebase Auth this is hidden in the app only: logHidden still reaches every browser.
   vtt.log = {};
+  vtt.logHidden = {};
+  let hiddenRoll = false;   // the DM's 🙈 toggle; never remembered, so it can't stay on by surprise
   let logOpen = false;
   let lastLogKey = null;
 
@@ -2010,6 +2020,16 @@
       b.classList.toggle('vtt-on', on);
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
+  }
+
+  function setHiddenRoll(on) {
+    hiddenRoll = !!on && isDm();
+    const b = root && root.querySelector('[data-act="hidden-roll"]');
+    if (b) {
+      b.classList.toggle('vtt-on', hiddenRoll);
+      b.setAttribute('aria-pressed', hiddenRoll ? 'true' : 'false');
+    }
+    if (on) flashStatus(hiddenRoll ? 'Hidden rolls on: players see only "rolled in secret" (hidden in the app only)' : 'Only the DM can roll in secret');
   }
 
   function diceHistory() {
@@ -2043,7 +2063,8 @@
   }
 
   // Rolls with window.Dice (dice.js) and posts the result to the shared log.
-  // opts.label: what the roll is for ("Perception"); opts.mode overrides the Adv / Dis switch.
+  // opts.label: what the roll is for ("Perception"); opts.mode overrides the Adv / Dis switch;
+  // opts.hidden overrides the DM's 🙈 toggle (ignored for players).
   // Returns the log entry, or null when the expression could not be read.
   function roll(expr, opts) {
     opts = opts || {};
@@ -2063,24 +2084,34 @@
       crit: r.crit, fumble: r.fumble, at: Date.now(),
     };
     if (opts.label) entry.label = String(opts.label).slice(0, 60);
-    postRoll(entry);
+    postRoll(entry, opts.hidden === undefined ? hiddenRoll : !!opts.hidden);
     return entry;
   }
 
-  function postRoll(entry) {
+  // hidden (DMs only): the entry goes to logHidden, the shared log gets a placeholder.
+  function postRoll(entry, hidden) {
+    hidden = !!hidden && isDm();
     // Zero-padded time first so keys sort chronologically; random tail avoids clashes.
     const key = String(entry.at).padStart(15, '0') + Math.random().toString(36).slice(2, 6);
-    vtt.log[key] = entry;
+    const shared = hidden ? { by: entry.by, hidden: true, at: entry.at } : entry;
+    vtt.log[key] = shared;
+    if (hidden) vtt.logHidden[key] = entry;
     logOpen = true;
     renderLog();
     if (typeof window.fbSaveVtt !== 'function') return;
-    vttSave(roomPath('log/' + key), entry);
-    // Keep only the newest LOG_KEEP rolls in the database.
+    if (hidden) vttSave(roomPath('logHidden/' + key), entry);
+    vttSave(roomPath('log/' + key), shared);
+    // Keep only the newest LOG_KEEP rolls in the database (hidden ones go with their placeholder).
     const keys = Object.keys(vtt.log).sort();
     if (keys.length > LOG_KEEP) {
       const drop = {};
-      keys.slice(0, keys.length - LOG_KEEP).forEach((k) => { drop[k] = null; delete vtt.log[k]; });
+      const dropHidden = {};
+      keys.slice(0, keys.length - LOG_KEEP).forEach((k) => {
+        drop[k] = null; delete vtt.log[k];
+        if (vtt.logHidden[k]) { dropHidden[k] = null; delete vtt.logHidden[k]; }
+      });
       vttSave(roomPath('log'), drop);
+      if (Object.keys(dropHidden).length) vttSave(roomPath('logHidden'), dropHidden);
     }
   }
 
@@ -2097,7 +2128,7 @@
     panel.style.display = logOpen && keys.length ? '' : 'none';
     list.innerHTML = '';
     keys.slice().reverse().forEach((k, i) => {
-      const e = vtt.log[k] || {};
+      let e = vtt.log[k] || {};
       const row = document.createElement('div');
       row.className = 'vtt-log-row' + (i === 0 ? ' vtt-log-new' : '');
       const who = document.createElement('span');
@@ -2106,6 +2137,20 @@
       const what = document.createElement('span');
       what.className = 'vtt-log-what';
       const res = document.createElement('b');
+      if (e.hidden) {
+        const secret = isDm() && vtt.logHidden && vtt.logHidden[k];
+        row.classList.add('vtt-log-secret');
+        if (!secret) {
+          what.textContent = 'rolled in secret';
+          res.textContent = '?';
+          row.title = 'A hidden DM roll';
+          row.append(who, what, res);
+          list.appendChild(row);
+          return;
+        }
+        e = secret;
+        who.textContent = '🙈 ' + (e.by || '?');
+      }
       const old = e.expr === undefined;
       what.textContent = old ? 'd' + e.die : (e.label || e.expr || '');
       res.textContent = old ? e.result : e.total;
@@ -2119,7 +2164,7 @@
         const detail = document.createElement('span');
         detail.className = 'vtt-log-detail';
         detail.textContent = e.text;
-        row.title = (e.label ? e.label + ': ' : '') + e.text;
+        row.title = (row.classList.contains('vtt-log-secret') ? 'Hidden roll (players see "rolled in secret"). ' : '') + (e.label ? e.label + ': ' : '') + e.text;
         row.appendChild(detail);
       }
       list.appendChild(row);
