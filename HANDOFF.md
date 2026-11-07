@@ -4,9 +4,9 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 
 ## Resume here
 
-**Where work stopped:** feature plan section **4 (combat) is done** (steps 4.1–4.4), on branch `savas` (cut from `sayfa-hesaplari`; `zar` and `sayfa-hesaplari` are done and pushed). `savas` is **not pushed**: the user said they push it themselves.
+**Where work stopped:** feature plan sections **7 (PDF) and 8 (sound) are done**, both on one branch `pdf-ses` (cut from `savas`; the user asked for a single branch for the two). Section 4 is done on `savas`. Neither `savas` nor `pdf-ses` is pushed: the user pushes them themselves.
 
-**Do next: section 5 (map)** on a new branch cut from `savas` (e.g. `harita`), starting with 5.1, **only after the user's go** (their "no asking" go of 2026-11-07 covered section 4 only).
+**Do next: section 5 (map)**, on a new branch cut from `pdf-ses` (e.g. `harita`), starting with 5.1, **only after the user's go**; then the Help page. The order was changed on 2026-11-07 (7 and 8 before 5) to save tokens; 5 is the biggest section, best started in a fresh session from this file.
 
 **How every step is executed** (agreed with the user; also in their Claude memory):
 1. Each plan section gets its **own new branch**, cut from the previous section's branch (`kataloglar` → `karakter-aktarma` → `zar` → next…). Name it in the repo's Turkish kebab-case style (e.g. `sayfa-hesaplari`, `savas`, `harita`, `pdf-yazdirma`, `ses`, `yardim`).
@@ -43,11 +43,11 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 - 5.5 Handouts: the DM shows an image or a journal note to all or some players as a pop-up.
 
 **7. PDF and printing** (new branch, e.g. `pdf-yazdirma`)
-- 7.1 Print CSS for the Character section (Overview, Inventory, Spells, Features on paper), "🖨 Print / Save as PDF" in the account menu.
-- 7.2 Fill the official 2014 fillable sheet with pdf-lib from the character (the reverse of `fromPdfFields`; field names are listed in `character-transfer.js`) and download it.
+- 7.1 Done (see "Steps 7 and 8" below).
+- 7.2 Done (see "Steps 7 and 8" below).
 
 **8. Sound** (new branch, e.g. `ses`)
-- 8.1 A DM ambience player on the Table: a link or an uploaded short file, play/pause/volume synced to everyone in the campaign (`vtt/<campaign>/audio`). Other sites' extensions are not worth emulating (decided 2026-11-07).
+- 8.1 Done (see "Steps 7 and 8" below).
 
 **Last: Help** (new branch, e.g. `yardim`)
 - A "❓ Help" / "How to use" page reachable from the account menu: sections (Campaign, Character, Table, Rules, Notes), roles per campaign, invites, homebrew and the item store, importing characters, dice expressions, and whatever the plan added.
@@ -66,14 +66,15 @@ State on 2026-11-07 (afternoon), for the next working session. **Start with "Res
 | `kampanya-sistemi` | Campaign system. Contained in `main`. |
 | `arayuz-duzeni` | Holds `LAYOUT_UI.md` (the role and layout plan). Contained in `main`. |
 | `sayfa-hesaplari` | Cut from `zar` for feature plan step 3 (sheet maths). Done and pushed. |
-| `savas` | Cut from `sayfa-hesaplari` for feature plan step 4 (combat). **Current branch**. Not pushed. |
+| `pdf-ses` | Cut from `savas` for feature plan steps 7 (PDF) and 8 (sound), one branch for both. **Current branch**. Not pushed. |
+| `savas` | Cut from `sayfa-hesaplari` for feature plan step 4 (combat). Done. Not pushed (the user pushes it). |
 | `zar` | Cut from `karakter-aktarma` for feature plan step 2 (dice). Done and pushed. |
 | `karakter-aktarma` | Cut from `kataloglar` for feature plan step 1 (character import). Done and pushed. |
 | `kataloglar` | Cut from `main` on 2026-11-07 for feature plan step 6 (catalogs). Done and pushed. Not merged: everything goes into `main` in one merge when the whole plan is done. |
 | `kampanya-rolleri` | Cut from `arayuz-duzeni`. Everything in `LAYOUT_UI.md` is done, one commit per step: the role model (R1–R6) and the new layout (L1–L6, plus Notes as its own section). Pushed, and on 2026-11-07 fast-forwarded into `main` (`main` = `1421cb4`, pushed). Read `LAYOUT_UI.md` for what changed where. |
 | `karakter-olusturucu` | Character builder and the spell plan. Contained in `main`. |
 
-Branch chain of the feature plan: `main` → `kataloglar` (step 6) → `karakter-aktarma` (step 1) → `zar` (step 2) → `sayfa-hesaplari` (step 3) → `savas` (step 4). `git log --oneline main..savas` lists everything not yet in `main`.
+Branch chain of the feature plan: `main` → `kataloglar` (step 6) → `karakter-aktarma` (step 1) → `zar` (step 2) → `sayfa-hesaplari` (step 3) → `savas` (step 4) → `pdf-ses` (steps 7 and 8). `git log --oneline main..pdf-ses` lists everything not yet in `main`.
 
 ## Run and test
 
@@ -85,7 +86,7 @@ Serves on http://localhost:3000.
 ```bash
 npm test
 ```
-Runs all tests (`node --test "tests/*.test.js"`): 160 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
+Runs all tests (`node --test "tests/*.test.js"`): 164 tests. On 2026-11-07 they passed with Node (v24) and in `tests/browser-runner.html`.
 
 Node v24 and git are installed on the 2026-11-07 machine (`/c/Program Files/nodejs/node`). In the Claude desktop app the site runs through `.claude/launch.json` ("start" = `npm run start`, port 3000) in the browser pane. Python is not installed; use Node for scripts. In bash, avoid `node -e` with text containing a single quote (write a script file instead).
 
@@ -206,6 +207,13 @@ Step 4, combat (branch `savas`, cut from `sayfa-hesaplari`):
 4. Encounter builder: done. `combat.js`: `XP_THRESHOLDS` (easy / medium / hard / deadly per character level 1–20) and the monster-count multiplier (moved a step for parties under 3 or of 6+) from the **2014 DMG** (only the numbers; they are not in SRD 5.1), `partyLevels("3, 3, 4")`, `multiplier`, `encounter(lines, levels)` → monsters, XP, multiplier, adjusted XP, party thresholds, difficulty (Trivial…Deadly), XP per player. On the table (DMs): **⚖ Encounter** (`openEncounterBuilder`): party levels (filled from the campaign's player characters' sheets via `fbCharacterSheet`, editable), a monster search (name, type, "cr 3"; 2014 / 2024), the list with − / + / ✕, the rating badge and the numbers, **🗺 Place on map** (optionally hidden; `addMonsters` per line, initiative rolled) and Clear. The list stays while the page is open. Tests: 2 more (160 in all). Checked in the browser with writes stubbed: party 3,3,3,3 with 6 goblins = Medium (600 adjusted XP), + 2 bugbears = Deadly (1750), placing gave 8 numbered tokens and 8 initiative entries (~340 px and 1280 px).
 
 Section 4 is done (branch `savas`, not pushed yet).
+
+Steps 7 and 8, PDF and sound (one branch `pdf-ses`, cut from `savas`):
+1. (7.1) Print / Save as PDF: done. The account menu has **🖨 Print / Save as PDF** (`printSheet`): it draws every sheet tab, sets `body.print-sheet` and calls `window.print()` (the browser's dialog offers Save as PDF), then puts the view back on `afterprint`. The print styles (`@media print`, only with `body.print-sheet`) hide navigation, buttons, inputs, the DM bar and other sections, show Overview + Inventory + Spells + Features (Spells and Features each from a new page), print black on white (no forced background colours) and add a footer with the character's name and date (`#print-footer`). Checked by applying the print rules on screen in the browser (computed styles; the hidden pane did not repaint for screenshots); a real printout or PDF was not made.
+2. (7.2) Fill a PDF sheet: done. The account menu has **📄 Fill a PDF character sheet…** (`fillPdfSheet`): the player picks a **blank fillable sheet** (the official 2014 one works; the site does not ship it, as it is not openly licensed), `CharacterTransfer.toPdfFields(sheet, extra)` lays the character out in the official form's field names (with alternatives; "CHamod", "SlightofHand", "Animal"), `Campaigns.fillPdf(bytes, entries)` fills it with pdf-lib (matched like the importer) and `<name>.pdf` downloads; a toast says how many fields were filled. Filled: name, class & level, species, background, alignment, XP, scores and modifiers, PB, AC, initiative, speed, HP, saves and skills (bonus and proficiency box), passive Perception, proficiencies & languages, three weapon rows (more in the Attacks & Spellcasting box, with the spellcasting DC / attack and the spell names by level), spellcasting class / ability / DC / attack (page 3 header), coins, equipment, personality, ideals, bonds, flaws, backstory, features (with uses), death saves. **Not filled:** the official sheet's numbered spell boxes on page 3 (their order was not checked; the spell names are in the attacks box instead), hit dice, the portrait. Test: `tests/character-transfer.test.js` (a sheet → fields → the importer reads back the same character). Checked in the browser with a fillable PDF made on the spot with pdf-lib (17 of 18 fields filled and read back); not tried with the real official PDF.
+3. (8.1) Ambience: done. New `ambience.js` (`window.Ambience`, no DOM): `normalize` (only http(s) links and `data:audio/` URLs), `position` (everyone works out the same place from `at` / `offset`, looping), `play`, `pause`, `titleFrom`. State at `vtt/<campaign>/audio = { url, title, playing, at, offset, volume }`. The table's rail has **🎵**: for everyone, a panel with **Mute for me** (remembered in this browser) and, if the browser blocked autoplay, **Allow sound here**; for the DM also a link box, a short file upload (≤ 1.5 MB, stored in the database as a data URL since there is no Storage), **▶ / ⏸**, **⏹ Stop** and a volume slider for everyone. Each browser plays it with an `<audio>` element and seeks when it drifts more than 2 s. The proposed rules accept `audio`. Tests: `tests/ambience.test.js` (3; in the browser runner). Checked in the browser with writes stubbed (a generated 2 s WAV played, paused at 0.8 s, both saved); not tried with two people at once. The clocks of different computers are not synchronised, so positions can differ by their clock difference.
+
+Sections 7 and 8 are done (branch `pdf-ses`, not pushed yet).
 
 ## Next plan: closing the gaps with other character builders
 

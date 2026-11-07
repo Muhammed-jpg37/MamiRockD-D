@@ -214,6 +214,9 @@
       .vtt-sb-action .btn { min-width: 0; padding: 2px 6px; font-size: 11px; font-family: var(--font-mono); }
       .vtt-sb-dc { font-family: var(--font-mono); font-size: 11px; color: var(--gold-bright, var(--accent)); align-self: center; }
       .vtt-sb-credit { margin-top: 6px; font-size: 10px; color: var(--text-muted); }
+      .vtt-ambience { left: 12px; top: 12px; width: min(360px, calc(100% - 24px)); display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+      .vtt-ambience input[type=url] { flex: 1; min-width: 0; }
+      .vtt-ambience input[type=range] { flex: 1; min-width: 80px; }
       .vtt-encounter { left: 12px; top: 12px; width: min(420px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
       .vtt-encounter input[type=search] { flex: 1; min-width: 0; }
       .vtt-enc-hits { max-height: 160px; min-height: 0; }
@@ -348,6 +351,7 @@
           <div class="vtt-group">
             <button class="btn small ghost" data-act="initiative" title="Initiative order">⚔</button>
             <button class="btn small ghost" data-act="log" title="Show or hide recent rolls">📜</button>
+            <button class="btn small ghost" data-act="ambience" data-el="ambience-btn" title="Ambience: the DM's background sound">🎵</button>
           </div>
         </div>
         <div class="vtt-stage">
@@ -397,6 +401,7 @@
         dmToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         return;
       }
+      if (e.target.closest('[data-act="ambience"]')) { openAmbiencePanel(); return; }
       const toggle = e.target.closest('[data-act="log"]');
       if (toggle) { logOpen = !logOpen; renderLog(); }
     });
@@ -1387,6 +1392,7 @@
     renderLog();
     applyRemoteTools(room);
     applyRemoteInitiative(room);
+    applyRemoteAmbience(room.audio);
     if (selectedId && !next[selectedId]) selectedId = null;
     // Someone deleted the token we are holding: drop it. Otherwise our drag keeps
     // drawing at the pointer (tokenRect reads drag.px/py), so remote echoes can't yank it.
@@ -2263,7 +2269,175 @@
     });
   }
 
-  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t), changeTokenHp: (t, d) => changeTokenHp(t, d), addMonsters: (e, n, h) => addMonsters(e, n, h), openStatBlock: (t) => openStatBlock(t), loadMonsters: (rs) => loadMonsters(rs), openEncounterBuilder: () => openEncounterBuilder() };
+  /* ---------- Ambience (feature plan 8.1, ambience.js) ----------
+     vtt/<campaign>/audio holds the DM's sound; every browser plays it from the same position.
+     Browsers only start sound after a click on the page, so a listener may need to press
+     "Allow sound" once. Each listener can mute it for themselves (remembered in this browser). */
+  const AMB_MUTE_KEY = 'vtt-ambience-muted';
+  let ambience = null;          // Ambience.normalize()d state, or null
+  let ambienceEl = null;        // the <audio> element (not in the page; made on first use)
+  let ambienceBlocked = false;  // the browser refused to start the sound
+  let ambienceMuted = store.get(AMB_MUTE_KEY) === '1';
+
+  function ambienceAudio() {
+    if (!ambienceEl) {
+      ambienceEl = new Audio();
+      ambienceEl.loop = true;
+      ambienceEl.preload = 'auto';
+      ambienceEl.addEventListener('loadedmetadata', syncAmbience);
+      ambienceEl.addEventListener('error', () => { if (ambience) flashStatus('The ambience could not be played (is the link an audio file?)'); });
+    }
+    return ambienceEl;
+  }
+
+  function applyRemoteAmbience(a) {
+    ambience = window.Ambience ? window.Ambience.normalize(a) : null;
+    syncAmbience();
+    renderAmbienceButton();
+  }
+
+  function syncAmbience() {
+    if (!ambience && !ambienceEl) return;
+    const el = ambienceAudio();
+    if (!ambience) {
+      if (!el.paused) el.pause();
+      if (el.dataset.url) { el.dataset.url = ''; el.removeAttribute('src'); el.load(); }
+      return;
+    }
+    if (el.dataset.url !== ambience.url) { el.dataset.url = ambience.url; el.src = ambience.url; }
+    el.volume = ambienceMuted ? 0 : ambience.volume;
+    const want = window.Ambience.position(ambience, Date.now(), el.duration);
+    const known = isFinite(el.duration) && el.duration > 0;
+    if (ambience.playing) {
+      if (known && Math.abs((el.currentTime || 0) - want) > 2) { try { el.currentTime = want; } catch (e) { /* not seekable yet */ } }
+      if (el.paused) {
+        const p = el.play();
+        if (p && p.then) p.then(() => { ambienceBlocked = false; renderAmbienceButton(); }).catch(() => { ambienceBlocked = true; renderAmbienceButton(); });
+      }
+    } else {
+      if (!el.paused) el.pause();
+      if (known) { try { el.currentTime = want; } catch (e) { /* not seekable yet */ } }
+    }
+  }
+
+  function renderAmbienceButton() {
+    const b = root && root.querySelector('[data-el="ambience-btn"]');
+    if (!b) return;
+    const on = !!(ambience && ambience.playing);
+    b.classList.toggle('vtt-on', on && !ambienceMuted);
+    b.textContent = ambienceBlocked && on ? '🔇' : '🎵';
+    b.title = !ambience ? 'Ambience: the DM\'s background sound (nothing playing)'
+      : (ambienceBlocked && on ? 'Click to allow the ambience sound in this browser' : 'Ambience: ' + (ambience.title || 'sound') + (on ? ' (playing)' : ' (paused)') + (ambienceMuted ? ', muted here' : ''));
+  }
+
+  function saveAmbience(next) {
+    if (!isDm()) return;
+    ambience = next ? window.Ambience.normalize(next) : null;
+    syncAmbience();
+    renderAmbienceButton();
+    vttSave(roomPath('audio'), ambience);
+  }
+
+  function openAmbiencePanel() {
+    closePopups();
+    const A = window.Ambience;
+    if (!A) return;
+    const pop = document.createElement('div');
+    pop.className = 'vtt-pop vtt-form vtt-ambience';
+    const head = document.createElement('div');
+    head.className = 'vtt-sb-head';
+    const title = document.createElement('div');
+    title.className = 'vtt-pop-title';
+    title.textContent = '🎵 Ambience';
+    head.append(title, button('✕', closePopups));
+    pop.appendChild(head);
+    const now = document.createElement('div');
+    now.className = 'vtt-hp';
+    const draw = () => {
+      now.textContent = ambience ? (ambience.playing ? '▶ ' : '⏸ ') + (ambience.title || 'Sound') : 'Nothing playing.';
+      renderAmbienceButton();
+    };
+    pop.appendChild(now);
+
+    // Everyone: allow sound (after a browser block) and mute for themselves.
+    const mine = document.createElement('div');
+    mine.className = 'vtt-row';
+    if (ambienceBlocked) mine.appendChild(button('▶ Allow sound here', () => { ambienceBlocked = false; syncAmbience(); draw(); }));
+    const mute = button(ambienceMuted ? '🔈 Unmute for me' : '🔇 Mute for me', () => {
+      ambienceMuted = !ambienceMuted;
+      store.set(AMB_MUTE_KEY, ambienceMuted ? '1' : '0');
+      mute.textContent = ambienceMuted ? '🔈 Unmute for me' : '🔇 Mute for me';
+      syncAmbience();
+      draw();
+    });
+    mine.appendChild(mute);
+    pop.appendChild(mine);
+
+    if (isDm()) {
+      const link = document.createElement('div');
+      link.className = 'vtt-row';
+      const url = document.createElement('input');
+      url.type = 'url';
+      url.placeholder = 'https://…/rain.mp3';
+      url.setAttribute('aria-label', 'Link to an audio file');
+      link.append(url, button('Use link', () => {
+        const u = url.value.trim();
+        if (!/^https?:\/\//i.test(u)) { flashStatus('Paste a link to an audio file (mp3, ogg, …)'); return; }
+        saveAmbience({ url: u, title: A.titleFrom(u), playing: true, at: Date.now(), offset: 0, volume: ambience ? ambience.volume : 0.6 });
+        draw();
+      }));
+      pop.appendChild(link);
+
+      const fileRow = document.createElement('label');
+      fileRow.className = 'vtt-owner';
+      fileRow.textContent = 'Or a short file (up to ' + Math.round(A.MAX_UPLOAD / 1024 / 1024 * 10) / 10 + ' MB; it is stored in the table)';
+      const file = document.createElement('input');
+      file.type = 'file';
+      file.accept = 'audio/*';
+      file.onchange = () => {
+        const fl = file.files && file.files[0];
+        if (!fl) return;
+        if (!/^audio\//.test(fl.type)) { flashStatus('That is not an audio file'); return; }
+        if (fl.size > A.MAX_UPLOAD) { flashStatus('That file is too big: use a link for long tracks'); return; }
+        const r = new FileReader();
+        r.onload = () => { saveAmbience({ url: String(r.result), title: A.titleFrom(fl.name), playing: true, at: Date.now(), offset: 0, volume: ambience ? ambience.volume : 0.6 }); draw(); };
+        r.readAsDataURL(fl);
+      };
+      fileRow.appendChild(file);
+      pop.appendChild(fileRow);
+
+      const ctl = document.createElement('div');
+      ctl.className = 'vtt-row';
+      ctl.append(
+        button('▶ / ⏸', () => {
+          if (!ambience) return;
+          const el = ambienceAudio();
+          saveAmbience(ambience.playing ? A.pause(ambience, Date.now(), el.duration) : A.play(ambience, Date.now()));
+          draw();
+        }),
+        button('⏹ Stop', () => { saveAmbience(null); draw(); })
+      );
+      const vol = document.createElement('input');
+      vol.type = 'range';
+      vol.min = '0';
+      vol.max = '1';
+      vol.step = '0.05';
+      vol.value = ambience ? ambience.volume : 0.6;
+      vol.title = 'Volume for everyone';
+      vol.setAttribute('aria-label', 'Volume for everyone');
+      vol.onchange = () => { if (ambience) saveAmbience(Object.assign({}, ambience, { volume: Number(vol.value) })); };
+      ctl.appendChild(vol);
+      pop.appendChild(ctl);
+      const note = document.createElement('div');
+      note.className = 'vtt-sb-credit';
+      note.textContent = 'Use sounds you may share. Direct audio links only (YouTube and streaming pages do not work).';
+      pop.appendChild(note);
+    }
+    root.querySelector('.vtt-stage').appendChild(pop);
+    draw();
+  }
+
+  window.vttApi = { state: vtt, view: view, setMap: setMap, addToken: addToken, removeToken: removeToken, isVisible: (t) => isVisible(t), rollDie: rollDie, roll: roll, findGrid: findGrid, openTokenMenu: (t, p) => openTokenMenu(t, p || { x: 40, y: 40 }), tokenConditions: (t) => tokenConditions(t), changeTokenHp: (t, d) => changeTokenHp(t, d), addMonsters: (e, n, h) => addMonsters(e, n, h), openStatBlock: (t) => openStatBlock(t), loadMonsters: (rs) => loadMonsters(rs), openEncounterBuilder: () => openEncounterBuilder(), openAmbiencePanel: () => openAmbiencePanel(), ambience: () => ambience, saveAmbience: (a) => saveAmbience(a) };
 
   // For the rest of the site (the sheet's click-to-roll). Works before the Table section was ever
   // opened: rolls post to the active campaign's log (vtt/<campaign>/log) as soon as there is one.

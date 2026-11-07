@@ -228,6 +228,17 @@
             "$other": { ".validate": false }
           }
         },
+        "audio": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['url', 'playing'])",
+          "url": { ".validate": "newData.isString() && newData.val().length <= 2100000 && (newData.val().beginsWith('https://') || newData.val().beginsWith('http://') || newData.val().beginsWith('data:audio/'))" },
+          "title": { ".validate": "newData.isString() && newData.val().length <= 80" },
+          "playing": { ".validate": "newData.isBoolean()" },
+          "at": { ".validate": "newData.isNumber()" },
+          "offset": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+          "volume": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+          "$other": { ".validate": false }
+        },
         "logHidden": {
           "$entry": {
             ".write": true,

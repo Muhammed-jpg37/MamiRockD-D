@@ -21,6 +21,7 @@ Sitedeki mevcut sekme sistemine "🗺 VTT" sekmesi eklendi. Kodun neredeyse tama
 | Durumlar (15 SRD durumu + yorgunluk): token'da simge; DM token menüsünden, oyuncu sayfasından değiştirir | ✔ | Görür, kendi sayfasından değiştirir |
 | Token menüsünden hasar / iyileştirme (önce geçici HP); oyuncu token'ı karakter sayfasının HP'sini değiştirir | ✔ | Kendi token'ında |
 | 🐉 SRD canavarı ekleme: HP, AC, inisiyatif zarı; 📜 stat blok ve tıklanınca atılan saldırılar | ✔ | – |
+| 🎵 Ortam sesi: DM bağlantı ya da kısa dosya çalar, oynat / duraklat / ses herkese eşlenir; herkes kendi için kısabilir | ✔ | Dinler, kendi için kısar |
 | ⚖ Karşılaşma kurucu: parti seviyeleri, XP bütçesi, zorluk (2014), haritaya yerleştirme | ✔ | – |
 | Karakter sayfasından zar: yetenek, kurtarma, beceri, inisiyatif, ölüm kurtarma (🎲 butonları). Masa hiç açılmamış olsa da kampanyanın loguna düşer | ✔ | ✔ |
 | Inisiyatif sırası: tur sayacı, sıradaki karakter, haritada sıradaki token'ın etrafında halka | ✔ Yönetir (ekleme, değer girme, NPC'lere d20, ileri/geri, gizleme, bitirme) | Görür. Gizli girişleri ve sisteki düşmanları görmez |
@@ -38,6 +39,7 @@ vtt/<kampanya>/tokens/<id>    { id, name, x, y, size, img, color, owner, hidden,
 vtt/<kampanya>/fog            { enabled, revealed: { "x_y": true } }
 vtt/<kampanya>/log/<key>      { by, expr, total, text, crit, fumble, label?, at }   en yeni 20 kayıt tutulur
                               eski kayıtlar { by, die, result, at } hâlâ gösterilir; gizli zar burada { by, hidden: true, at }
+vtt/<kampanya>/audio         { url, title, playing, at, offset, volume }   DM'in ortam sesi (url: bağlantı ya da data:audio/…)
 vtt/<kampanya>/logHidden/<key> { by, expr, total, text, crit, fumble, label?, at }   gizli DM zarı, aynı anahtar; yalnızca DM'ler gösterir
 vtt/<kampanya>/initiative     { round, turn, entries: { <id>: { name, init, tokenId, hidden, at } } }   yalnızca DM yazar
 vtt/<kampanya>/shapes/<id>    { kind, ox, oy, ex, ey, by, color }   kare cinsinden; kind = circle | cone | line | square
